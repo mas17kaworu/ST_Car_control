@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+    <ImageView
+        android:id="@+id/seat_back_support_unclick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@mipmap/ic_seat_back_support_unclicked"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/seat_back_support_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/seat_back_support_up"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/seat_back_support_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/seat_back_support_left"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/seat_back_support_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/seat_back_support_down"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/seat_back_support_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/seat_back_support_right"/>
+</RelativeLayout>
