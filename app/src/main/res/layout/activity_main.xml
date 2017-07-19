@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.longkai.stcarcontrol.st_exp.activity.MainActivity">
+    android:orientation="vertical">
 
     <FrameLayout
         android:background="@drawable/homefragment_gray_background"
@@ -15,5 +13,5 @@
         android:layout_weight="1"
         android:id="@+id/main_fragment_content"/>
 
-    <include layout="@layout/activity_main_bottom"/>
+    <include layout="@layout/activity_main_bottom_ratio_group"/>
 </LinearLayout>

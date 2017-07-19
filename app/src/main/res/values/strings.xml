@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ST_Exp</string>
+    <string name="homepage_home">home page</string>
+
 </resources>

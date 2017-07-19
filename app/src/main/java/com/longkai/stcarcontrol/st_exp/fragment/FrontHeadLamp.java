@@ -18,8 +18,8 @@ public class FrontHeadLamp extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.fragment_front_lamp, container, false);
 
-        mView = inflater.inflate(R.layout.fragment_seat, container, false);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return mView;
     }
 }

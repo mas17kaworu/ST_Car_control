@@ -21,6 +21,6 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_homepage, container, false);
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return mView;
     }
 }
