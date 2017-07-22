@@ -7,6 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
         android:background="#bbbbbb"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,10 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="#1b212b"
             android:orientation="horizontal">
+
             <View
                 android:layout_width="100dp"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
+
             <RadioButton
                 android:id="@+id/rdoBtn_homepage_home"
                 android:layout_width="wrap_content"
@@ -28,62 +32,63 @@
                 android:layout_weight="1"
                 android:button="@null"
                 android:checked="true"
-                android:gravity="center"
                 android:drawablePadding="-3dp"
+                android:gravity="center"
                 android:text="@string/homepage_home"
                 android:textColor="@drawable/selector_radio_text_color"
                 android:textSize="15sp" />
+
             <RadioButton
                 android:id="@+id/rdoBtn_homepage_front_lamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:button="@null"
-                android:checked="true"
-                android:gravity="center"
                 android:drawablePadding="-3dp"
-                android:text="@string/homepage_home"
+                android:gravity="center"
+                android:text="@string/homepage_front_lamp"
                 android:textColor="@drawable/selector_radio_text_color"
                 android:textSize="15sp" />
+
             <RadioButton
-            android:id="@+id/rdoBtn_homepage_seat"
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:button="@null"
-            android:checked="true"
-            android:gravity="center"
-            android:drawablePadding="-3dp"
-            android:text="@string/homepage_home"
-            android:textColor="@drawable/selector_radio_text_color"
-            android:textSize="15sp" />
+                android:id="@+id/rdoBtn_homepage_seat"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawablePadding="-3dp"
+                android:gravity="center"
+                android:text="@string/homepage_seat"
+                android:textColor="@drawable/selector_radio_text_color"
+                android:textSize="15sp" />
+
             <RadioButton
                 android:id="@+id/rdoBtn_homepage_door"
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
                 android:layout_weight="1"
                 android:button="@null"
-                android:checked="true"
-                android:gravity="center"
                 android:drawablePadding="-3dp"
-                android:text="@string/homepage_home"
+                android:gravity="center"
+                android:text="@string/homepage_door"
                 android:textColor="@drawable/selector_radio_text_color"
                 android:textSize="15sp" />
+
             <RadioButton
                 android:id="@+id/rdoBtn_homepage_control"
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
                 android:layout_weight="1"
                 android:button="@null"
-                android:checked="true"
-                android:gravity="center"
                 android:drawablePadding="-3dp"
-                android:text="@string/homepage_home"
+                android:gravity="center"
+                android:text="@string/homepage_control_center"
                 android:textColor="@drawable/selector_radio_text_color"
                 android:textSize="15sp" />
+
             <View
                 android:layout_width="100dp"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </RadioGroup>
     </RelativeLayout>
 </LinearLayout>

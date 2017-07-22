@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">ST_Exp</string>
     <string name="homepage_home">home page</string>
+    <string name="homepage_front_lamp">LED</string>
+    <string name="homepage_seat">power seat</string>
+    <string name="homepage_door">door zone</string>
+    <string name="homepage_control_center">control center</string>
 
 </resources>

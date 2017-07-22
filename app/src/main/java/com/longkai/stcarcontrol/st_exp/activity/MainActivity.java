@@ -78,7 +78,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                    transaction.add(R.id.main_fragment_content, mHomeFragment);
                 }
                 transaction.replace(R.id.main_fragment_content, mHomeFragment);
-
                 break;
             case 1:
                 if (mFrontLampFragment == null) {

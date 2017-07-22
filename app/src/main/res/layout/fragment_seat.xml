@@ -1,40 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/homefragment_gray_background">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_seat_tmp"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/homepage_seat"
+        android:layout_marginTop="45dp"
+        android:layout_marginLeft="60dp"
+        android:textColor="#cccccc"
+        android:textAllCaps="true"
+        android:textSize="50sp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_seat_line1"
+        android:layout_marginTop="300dp"
+        android:layout_marginLeft="240dp"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="230dp"
+        android:layout_marginLeft="90dp">
+        <include layout="@layout/seat_back_support_collection"/>
+    </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3">
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:src="@mipmap/ic_seat_tmp"
-            android:layout_centerInParent="true"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="800dp"
+        android:layout_marginTop="200dp">
+        <include layout="@layout/seat_back_forward_backward_collection"/>
     </RelativeLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:orientation = "horizontal">
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center">
-            <include layout="@layout/seat_back_support_collection"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-        </RelativeLayout>
-    </LinearLayout>
-</LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_seat_line2"
+        android:layout_marginLeft="175dp"
+        android:layout_marginTop="420dp"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="75dp"
+        android:layout_marginTop="470dp">
+        <include layout="@layout/seat_bottom_rotate_collection"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="700dp"
+        android:layout_marginTop="440dp">
+        <include layout="@layout/seat_bottom_forward_backward_collection"/>
+    </RelativeLayout>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_seat_heat_white"
+        android:layout_marginStart="360dp"
+        android:layout_marginTop="600dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_seat_wind_white"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="600dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_seat_set_white"
+        android:layout_marginStart="620dp"
+        android:layout_marginTop="600dp"/>
+</RelativeLayout>
