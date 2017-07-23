@@ -2,31 +2,33 @@ package com.longkai.stcarcontrol.st_exp.activity;
 
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTManager;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTServer;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
-    private Button btnFront;
-    private Button btnControl;
-    private Button btnSeat;
-    private Button btnGate;
-    private Button btnBack;
-
     private int mLastflag = 10;
 
     private HomeFragment mHomeFragment;
     private FrontHeadLamp mFrontLampFragment;
     private SeatFragment mSeatFragment;
+
+    private BTServer mBtServer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +46,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         initUI();
         setSelect(0);
+        mBtServer = new BTServer(BTManager.getInstance().getBtAdapter(),
+                mBTDetectedHandler,
+                getApplicationContext());
+        startBTConnect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != mBtServer){
+            mBtServer.disconnectBT();
+        }
     }
 
     private void initUI(){
-        /*btnFront = (Button) findViewById(R.id.main_btn_front);
-        btnControl = (Button) findViewById(R.id.main_btn_control_panel);
-        btnSeat = (Button) findViewById(R.id.main_btn_seat);
-        btnGate = (Button) findViewById(R.id.main_btn_gate);
-        btnBack = (Button) findViewById(R.id.main_btn_back);*/
         findViewById(R.id.rdoBtn_homepage_home).setOnClickListener(this);
         findViewById(R.id.rdoBtn_homepage_control).setOnClickListener(this);
         findViewById(R.id.rdoBtn_homepage_door).setOnClickListener(this);
@@ -133,4 +142,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
         }
     }
+
+
+/********************************************************************************/
+    Handler mBTDetectedHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 1000:
+                    Toast.makeText(getApplicationContext(), "Bt Connected", Toast.LENGTH_SHORT).show();
+                    break;
+                case 1001:
+                    Toast.makeText(getApplicationContext(), "Bt Disconnected", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Toast.makeText(getApplicationContext(), "Unknow Bt event", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+    public void startBTConnect() {
+        Log.d("BT LK", "startSendThread");
+        //btServer = new BTServer(BTManager.getInstance().getBtAdapter(), detectedHandler, mWifiAdmin);
+        if (null != mBtServer) {
+            mBtServer.connectToDevice();
+        }
+        else {
+            Log.d("BT LK", "con't start fc thread.");
+        }
+    }
+
 }
