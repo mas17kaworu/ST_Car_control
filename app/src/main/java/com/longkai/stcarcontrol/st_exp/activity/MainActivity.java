@@ -28,7 +28,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private FrontHeadLamp mFrontLampFragment;
     private SeatFragment mSeatFragment;
 
-    private BTServer mBtServer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +46,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         initUI();
         setSelect(0);
-        mBtServer = new BTServer(BTManager.getInstance().getBtAdapter(),
-                mBTDetectedHandler,
-                getApplicationContext());
+
         startBTConnect();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (null != mBtServer){
-            mBtServer.disconnectBT();
-        }
+
     }
 
     private void initUI(){
@@ -144,33 +140,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-/********************************************************************************/
-    Handler mBTDetectedHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what){
-                case 1000:
-                    Toast.makeText(getApplicationContext(), "Bt Connected", Toast.LENGTH_SHORT).show();
-                    break;
-                case 1001:
-                    Toast.makeText(getApplicationContext(), "Bt Disconnected", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    Toast.makeText(getApplicationContext(), "Unknow Bt event", Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
 
-    public void startBTConnect() {
-        Log.d("BT LK", "startSendThread");
-        //btServer = new BTServer(BTManager.getInstance().getBtAdapter(), detectedHandler, mWifiAdmin);
-        if (null != mBtServer) {
-            mBtServer.connectToDevice();
-        }
-        else {
-            Log.d("BT LK", "con't start fc thread.");
-        }
-    }
 
 }

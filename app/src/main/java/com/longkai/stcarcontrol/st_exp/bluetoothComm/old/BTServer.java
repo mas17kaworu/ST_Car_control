@@ -21,6 +21,8 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.util.Log;
 
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BaseBtCommand;
+
 public class BTServer {
 
 	private static final String TAG = "BTServer";
@@ -243,6 +245,25 @@ public class BTServer {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	private boolean sendbyteArray(byte[] msg){
+		boolean result=false;
+		if(null==mBtClientSocket || bos==null)
+			return false;
+		try {
+			bos.write(msg);
+			bos.flush();
+			result=true;
+			Log.d(TAG, "BT send:" + msg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public boolean sendCommend(BaseBtCommand command){
+		return sendbyteArray(command.toRawData());
 	}
 
 	/*
