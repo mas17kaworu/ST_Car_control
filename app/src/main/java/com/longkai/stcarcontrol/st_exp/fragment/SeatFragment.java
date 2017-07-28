@@ -31,6 +31,8 @@ public class SeatFragment extends Fragment implements View.OnClickListener{
         mView.findViewById( R.id.seat_back_forward).setOnClickListener(this);
         mView.findViewById( R.id.seat_bottom_clockwise).setOnClickListener(this);
         mView.findViewById( R.id.seat_bottom_anticlockwise).setOnClickListener(this);
+        mView.findViewById( R.id.seat_bottom_up).setOnClickListener(this);
+        mView.findViewById( R.id.seat_bottom_down).setOnClickListener(this);
         return mView;
     }
 
@@ -66,6 +68,12 @@ public class SeatFragment extends Fragment implements View.OnClickListener{
 
                 break;
             case R.id.seat_bottom_anticlockwise:
+
+                break;
+            case R.id.seat_bottom_up:
+
+                break;
+            case R.id.seat_bottom_down:
 
                 break;
         }

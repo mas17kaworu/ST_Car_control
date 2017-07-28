@@ -9,82 +9,100 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_car"
         android:layout_marginTop="200dp"
-        android:layout_centerInParent="true"
-        />
+        android:layout_centerInParent="true" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_seat"
-        android:layout_marginStart="530dp"
-        android:layout_centerVertical="true" />
+        android:layout_marginStart="545dp"
+        android:layout_marginTop="100dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/homepage_seat"
-        android:layout_marginStart="580dp"
-        android:layout_centerVertical="true"
+        android:layout_marginStart="600dp"
+        android:layout_marginTop="115dp"
         android:textColor="#ffffff"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_lights"
-        android:layout_marginStart="180dp"
-        android:layout_marginTop="220dp" />
+        android:layout_marginStart="155dp"
+        android:layout_marginTop="540dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/homepage_front_lamp"
-        android:layout_marginStart="230dp"
-        android:layout_marginTop="235dp"
+        android:layout_marginStart="210dp"
+        android:layout_marginTop="555dp"
         android:textColor="#ffffff"/>
 
-    <ImageView
+<!--    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_line"
         android:layout_marginStart="490dp"
-        android:layout_marginTop="470dp"/>
+        android:layout_marginTop="470dp"/>-->
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_door"
-        android:layout_marginStart="470dp"
-        android:layout_marginTop="520dp" />
+        android:layout_marginStart="480dp"
+        android:layout_marginTop="540dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="door"
-        android:layout_marginStart="520dp"
-        android:layout_marginTop="535dp"
+        android:layout_marginStart="530dp"
+        android:layout_marginTop="555dp"
         android:textColor="#ffffff"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_daochejin"
-        android:layout_marginStart="410dp"
-        android:layout_marginTop="160dp" />
+        android:layout_marginStart="400dp"
+        android:layout_marginTop="100dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Reverse mirror"
-        android:layout_marginStart="460dp"
-        android:layout_marginTop="175dp"
+        android:layout_marginStart="450dp"
+        android:layout_marginTop="115dp"
         android:textColor="#ffffff"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_houbeixiang"
-        android:layout_marginStart="790dp"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        android:layout_marginStart="930dp"
+        android:id="@+id/iv_homepage_back_trunk" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Trunk"
-        android:layout_marginStart="840dp"
+        android:textColor="#ffffff"
         android:layout_centerVertical="true"
-        android:textColor="#ffffff"/>
+        android:layout_toEndOf="@+id/iv_homepage_back_trunk" />
+
+    <ImageView
+        android:id="@+id/iv_homepage_auto_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_homepage_auto_display_u"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="60dp"/>
+
+    <ImageView
+        android:id="@+id/iv_homepage_lost_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_homepage_lost_bt"
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="900dp"/>
+
+
 </RelativeLayout>

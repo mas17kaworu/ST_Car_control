@@ -65,23 +65,34 @@
 
 
     <ImageView
+        android:id="@+id/iv_seat_heat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_heat_white"
-        android:layout_marginStart="360dp"
+        android:src="@mipmap/ic_seat_heat_gray"
+        android:layout_marginStart="320dp"
         android:layout_marginTop="600dp"/>
 
     <ImageView
+        android:id="@+id/iv_seat_wind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_wind_white"
+        android:src="@mipmap/ic_seat_wind_gray"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="600dp"/>
+    <RelativeLayout
+        android:id="@+id/set_group_wind"
+        android:layout_marginTop="600dp"
+        android:layout_toEndOf="@id/iv_seat_wind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <include layout="@layout/seat_set_group"/>
+    </RelativeLayout>
 
     <ImageView
+        android:id="@+id/iv_seat_set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_set_white"
-        android:layout_marginStart="620dp"
+        android:src="@mipmap/ic_seat_set_gray"
+        android:layout_marginStart="750dp"
         android:layout_marginTop="600dp"/>
 </RelativeLayout>

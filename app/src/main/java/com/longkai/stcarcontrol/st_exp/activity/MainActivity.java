@@ -7,8 +7,12 @@ import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -119,11 +123,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         System.loadLibrary("native-lib");
     }
 
+
+    Animation animation;
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.rdoBtn_homepage_home:
                 setSelect(0);
+                /*animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.btn_scale_up);
+                v.startAnimation(animation);*/
+//                ((RadioButton)v).setBackgroundResource(R.mipmap.ic_navigationbar_homepage_chose);
+//                ((RadioButton)v).setButtonDrawable(R.color.transparent);
+//                ViewGroup.LayoutParams params = v.getLayoutParams();
+//                params.width*=1.5;
+//                v.setLayoutParams(params);
                 break;
             case R.id.rdoBtn_homepage_control:
 

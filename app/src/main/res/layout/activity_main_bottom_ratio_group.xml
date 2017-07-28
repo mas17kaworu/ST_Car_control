@@ -28,7 +28,7 @@
             <RadioButton
                 android:id="@+id/rdoBtn_homepage_home"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 android:button="@null"
                 android:checked="true"
@@ -41,7 +41,7 @@
             <RadioButton
                 android:id="@+id/rdoBtn_homepage_front_lamp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 android:button="@null"
                 android:drawablePadding="-3dp"

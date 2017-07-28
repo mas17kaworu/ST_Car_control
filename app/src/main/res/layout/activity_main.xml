@@ -1,17 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <FrameLayout
-        android:background="@drawable/homefragment_gray_background"
+    android:layout_height="match_parent">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/main_fragment_content"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <include layout="@layout/activity_main_bottom_ratio_group"/>
-</LinearLayout>
+        <FrameLayout
+            android:background="@drawable/homefragment_gray_background"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/main_fragment_content"/>
+
+        <include layout="@layout/activity_main_bottom_ratio_group_background"/>
+        <!--<include layout="@layout/activity_main_bottom_ratio_group"/>-->
+    </LinearLayout>
+
+
+    <RadioGroup
+        android:id="@+id/rg_homepage_select"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:layout_alignParentBottom="true">
+
+        <View
+            android:layout_width="100dp"
+            android:layout_height="match_parent" />
+
+        <RadioButton
+            android:id="@+id/rdoBtn_homepage_home"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:drawableBottom="@drawable/main_activity_bottom_hompage"
+            android:checked="true"
+            android:button="@null" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <RadioButton
+            android:id="@+id/rdoBtn_homepage_front_lamp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:drawableBottom="@drawable/main_activity_bottom_lamp"
+            android:button="@null"/>
+        <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+        <RadioButton
+            android:id="@+id/rdoBtn_homepage_seat"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:drawableBottom="@drawable/main_activity_bottom_seat"
+            android:button="@null"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        <RadioButton
+            android:id="@+id/rdoBtn_homepage_door"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:drawableBottom="@drawable/main_activity_bottom_door"
+            android:button="@null"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        <RadioButton
+            android:id="@+id/rdoBtn_homepage_control"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:drawableBottom="@drawable/main_activity_bottom_control"
+            android:button="@null"/>
+        <View
+            android:layout_width="100dp"
+            android:layout_height="match_parent" />
+    </RadioGroup>
+</RelativeLayout>
