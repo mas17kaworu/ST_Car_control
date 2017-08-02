@@ -70,7 +70,32 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_seat_heat_gray"
         android:layout_marginStart="320dp"
-        android:layout_marginTop="600dp"/>
+        android:layout_marginTop="570dp"/>
+    <ImageView
+        android:id="@+id/iv_seat_heat_stage_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_seat_stage_gray"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/iv_seat_heat"
+        android:layout_alignStart="@id/iv_seat_heat" />
+    <ImageView
+        android:id="@+id/iv_seat_heat_stage_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_seat_stage_gray"
+        android:layout_marginLeft="19dp"
+        android:layout_alignTop="@id/iv_seat_heat_stage_1"
+        android:layout_toRightOf="@id/iv_seat_heat_stage_1"/>
+    <ImageView
+        android:id="@+id/iv_seat_heat_stage_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_seat_stage_gray"
+        android:layout_marginLeft="43dp"
+        android:layout_alignTop="@id/iv_seat_heat_stage_1"
+        android:layout_toRightOf="@id/iv_seat_heat_stage_1"/>
+
 
     <ImageView
         android:id="@+id/iv_seat_wind"
@@ -78,14 +103,15 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_seat_wind_gray"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="600dp"/>
+        android:layout_marginTop="570dp"/>
     <RelativeLayout
         android:id="@+id/set_group_wind"
-        android:layout_marginTop="600dp"
+        android:layout_marginTop="570dp"
         android:layout_toEndOf="@id/iv_seat_wind"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <include layout="@layout/seat_set_group"/>
+        android:layout_height="wrap_content"
+        android:visibility="invisible">
+        <include layout="@layout/seat_wind_group"/>
     </RelativeLayout>
 
     <ImageView
@@ -94,5 +120,30 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_seat_set_gray"
         android:layout_marginStart="750dp"
-        android:layout_marginTop="600dp"/>
+        android:layout_marginTop="570dp"/>
+    <RelativeLayout
+        android:id="@+id/set_group_set"
+        android:layout_marginTop="570dp"
+        android:layout_toEndOf="@id/iv_seat_set"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible">
+        <include layout="@layout/seat_set_group"/>
+    </RelativeLayout>
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_seat_left"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"/>
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_seat_right"
+        android:layout_marginStart="400dp"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
 </RelativeLayout>

@@ -50,10 +50,15 @@ public class MenuViewItem extends FrameLayout {
 
 
     @Override
-
     public boolean onTouchEvent(MotionEvent event) {
 
         int action = event.getAction();
+
+        if (action == MotionEvent.ACTION_UP){
+            if (mOnNewTouchEventListener!= null) {
+                mOnNewTouchEventListener.onUp();
+            }
+        }
 
         if(action != MotionEvent.ACTION_DOWN) {
 
@@ -91,8 +96,22 @@ public class MenuViewItem extends FrameLayout {
 
         }
 
+        if (mOnNewTouchEventListener!=null) {
+            mOnNewTouchEventListener.onDown();
+        }
         return super.onTouchEvent( event);
 
+    }
+
+    public void setOnNewTouchEventListener(OnNewTouchEventListener listener){
+        mOnNewTouchEventListener = listener;
+    }
+
+    OnNewTouchEventListener mOnNewTouchEventListener;
+
+    public interface OnNewTouchEventListener{
+        void onDown();
+        void onUp();
     }
 
 }

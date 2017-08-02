@@ -26,6 +26,7 @@
         android:textColor="#ffffff"/>
 
     <ImageView
+        android:id="@+id/iv_homepage_led"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_lights"
@@ -37,7 +38,8 @@
         android:text="@string/homepage_front_lamp"
         android:layout_marginStart="210dp"
         android:layout_marginTop="555dp"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff"
+        android:layout_alignBottom="@+id/textView" />
 
 <!--    <ImageView
         android:layout_width="wrap_content"
@@ -57,7 +59,22 @@
         android:text="door"
         android:layout_marginStart="530dp"
         android:layout_marginTop="555dp"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff" />
+
+    <ImageView
+        android:id="@+id/iv_homepage_front_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_homepage_qiangai"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="40dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Front box"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/iv_homepage_front_box"
+        android:layout_alignStart="@+id/iv_homepage_front_box" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -86,7 +103,8 @@
         android:text="Trunk"
         android:textColor="#ffffff"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/iv_homepage_back_trunk" />
+        android:layout_toEndOf="@+id/iv_homepage_back_trunk"
+        android:id="@+id/textView2" />
 
     <ImageView
         android:id="@+id/iv_homepage_auto_display"

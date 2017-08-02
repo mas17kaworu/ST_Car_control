@@ -52,9 +52,9 @@
             android:drawableBottom="@drawable/main_activity_bottom_lamp"
             android:button="@null"/>
         <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
         <RadioButton
             android:id="@+id/rdoBtn_homepage_seat"

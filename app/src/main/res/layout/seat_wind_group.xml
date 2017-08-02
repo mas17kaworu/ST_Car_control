@@ -24,20 +24,20 @@
         android:orientation="horizontal"
         android:layout_marginLeft="24dp">
         <RadioButton
-            android:id="@+id/radiobtn_set_stage1"
+            android:id="@+id/radiobtn_wind_stage1"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:button="@null"
             android:background="@drawable/set_group_cover"/>
         <RadioButton
-            android:id="@+id/radiobtn_set_stage2"
+            android:id="@+id/radiobtn_wind_stage2"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:checked="true"
             android:button="@null"
             android:background="@drawable/set_group_cover"/>
         <RadioButton
-            android:id="@+id/radiobtn_set_stage3"
+            android:id="@+id/radiobtn_wind_stage3"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:button="@null"

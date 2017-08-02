@@ -207,7 +207,7 @@ public class BTServer {
 				}
 				sendmsg("first message");
 			}
-			//receive data from bluetooth
+			//receive ConstantData from bluetooth
 			if (mBtClientSocket != null) {
 				Log.d(TAG, "test5");
 				byte[] Gbuffer = new byte[128];
@@ -215,7 +215,7 @@ public class BTServer {
 				while(BtConnect_state){
 					try {
 						int count = inputStream.read(Gbuffer);
-						Log.d(TAG, "count = " + count + "Gamepad data : ");
+						Log.d(TAG, "count = " + count + "Gamepad ConstantData : ");
 					}catch (IOException e){
 //						e.printStackTrace();
 					}
