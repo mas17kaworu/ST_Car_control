@@ -20,6 +20,14 @@
         <!--<include layout="@layout/activity_main_bottom_ratio_group"/>-->
     </LinearLayout>
 
+    <com.longkai.stcarcontrol.st_exp.customView.HorizontalListView
+        android:id="@+id/horizon_listview"
+        android:layout_width="600dp"
+        android:layout_height="100dp"
+        android:gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
 
     <RadioGroup
         android:id="@+id/rg_homepage_select"
@@ -27,7 +35,8 @@
         android:layout_height="180dp"
         android:orientation="horizontal"
         android:gravity="bottom"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
 
         <View
             android:layout_width="100dp"

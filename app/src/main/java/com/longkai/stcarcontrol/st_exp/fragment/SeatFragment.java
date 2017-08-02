@@ -38,6 +38,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
     private GifImageView gif_view_seat_right;
 
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

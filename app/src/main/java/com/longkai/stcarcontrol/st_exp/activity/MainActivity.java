@@ -13,13 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.adapter.HorizontalListViewAdapter;
 import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTManager;
 import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTServer;
+import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
@@ -33,6 +36,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private SeatFragment mSeatFragment;
 
 
+    private HorizontalListView hListView;
+    private HorizontalListViewAdapter hListViewAdapter;
+    public int mSelectedMode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +73,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.rdoBtn_homepage_front_lamp).setOnClickListener(this);
         findViewById(R.id.rdoBtn_homepage_seat).setOnClickListener(this);
 
+        hListView = (HorizontalListView) findViewById(R.id.horizon_listview);
+        final int[] ids = {R.drawable.main_activity_bottom_hompage,
+                R.drawable.main_activity_bottom_control,
+                R.drawable.main_activity_bottom_door,
+                R.drawable.main_activity_bottom_lamp,
+                R.drawable.main_activity_bottom_seat};
+
+        hListViewAdapter = new HorizontalListViewAdapter(getApplicationContext(), ids);
+        hListView.setAdapter(hListViewAdapter);
+        hListViewAdapter.setSelectIndex(mSelectedMode);
+        hListViewAdapter.notifyDataSetChanged();
+
+        hListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Log.i("MainActivity", "position = " + position);
+                mSelectedMode = position;
+                hListViewAdapter.setSelectIndex(position);
+                hListViewAdapter.notifyDataSetChanged();
+                setSelect(position);
+            }
+        });
     }
 
 
