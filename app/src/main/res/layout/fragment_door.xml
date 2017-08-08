@@ -26,6 +26,77 @@
         <include layout="@layout/door_window_up_down_collection"/>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="50dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_door_mirror_back"/>
+        <RelativeLayout
+            android:id="@+id/collection_mirror_adjust"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp">
+            <include layout="@layout/door_mirro_adjust_collection"/>
+        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RearView mirror position"
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:layout_below="@id/collection_mirror_adjust"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"/>
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="350dp"
+            android:layout_marginStart="40dp">
+            <ImageView
+                android:id="@+id/iv_door_mirror_heat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/door_mirror_heat"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="mirror heat"
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:layout_below="@id/iv_door_mirror_heat"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="350dp"
+            android:layout_marginStart="170dp">
+            <ImageView
+                android:id="@+id/iv_door_mirror_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/door_mirror_small_light"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="mirror light"
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:layout_below="@id/iv_door_mirror_light"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
