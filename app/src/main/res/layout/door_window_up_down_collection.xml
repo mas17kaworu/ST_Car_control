@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@mipmap/ic_door_window_updown_background"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/iv_door_window_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/door_window_down"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/iv_door_window_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/door_window_up"/>
+</RelativeLayout>

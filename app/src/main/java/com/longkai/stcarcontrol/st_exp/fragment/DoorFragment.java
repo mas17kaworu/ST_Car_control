@@ -10,16 +10,21 @@ import android.view.ViewGroup;
 import com.longkai.stcarcontrol.st_exp.R;
 
 /**
- * Created by Administrator on 2017/7/10.
+ * Created by Administrator on 2017/8/6.
  */
 
-public class HightBeamLight extends Fragment{
+public class DoorFragment extends Fragment implements View.OnClickListener{
+
     private View mView;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_seat, container, false);
-
+        mView = inflater.inflate(R.layout.fragment_door, container, false);
         return mView;
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

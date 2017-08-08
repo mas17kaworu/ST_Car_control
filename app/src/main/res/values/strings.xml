@@ -5,5 +5,12 @@
     <string name="homepage_seat">power seat</string>
     <string name="homepage_door">door zone</string>
     <string name="homepage_control_center">control center</string>
+    
+    <string name="high_beam_Urban">Urban Light</string>
+    <string name="high_beam_Highway">Highway Light</string>
+    <string name="high_beam_Country">Country Light</string>
+    <string name="high_beam_Curve">Curve Light</string>
+    <string name="high_beam_Parking">Parking Light</string>
+    <string name="high_beam_Energy_saving">Energy-saving Light</string>
 
 </resources>

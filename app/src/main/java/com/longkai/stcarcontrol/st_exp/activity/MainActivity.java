@@ -20,10 +20,12 @@ import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.adapter.HorizontalListViewAdapter;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BTCMDGetVersion;
 import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTManager;
 import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTServer;
 import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
+import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
 
@@ -34,6 +36,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private HomeFragment mHomeFragment;
     private FrontHeadLamp mFrontLampFragment;
     private SeatFragment mSeatFragment;
+    private HighBeamLight mHighBeamLight;
 
 
     private HorizontalListView hListView;
@@ -58,6 +61,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setSelect(0);
 
         startBTConnect();
+        mBtServer.sendCommend(new BTCMDGetVersion());
     }
 
     @Override
@@ -75,10 +79,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         hListView = (HorizontalListView) findViewById(R.id.horizon_listview);
         final int[] ids = {R.drawable.main_activity_bottom_hompage,
-                R.drawable.main_activity_bottom_control,
-                R.drawable.main_activity_bottom_door,
                 R.drawable.main_activity_bottom_lamp,
-                R.drawable.main_activity_bottom_seat};
+                R.drawable.main_activity_bottom_seat,
+                R.drawable.main_activity_bottom_door,
+                R.drawable.main_activity_bottom_control};
 
         hListViewAdapter = new HorizontalListViewAdapter(getApplicationContext(), ids);
         hListView.setAdapter(hListViewAdapter);
@@ -99,7 +103,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
 
-    private void setSelect(int i) {
+    public void setSelect(int i) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if (i > mLastflag) {
@@ -134,6 +138,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case 3:
                 break;
             case 4:
+                break;
+            case 5:
+                if (mHighBeamLight == null) {
+                    mHighBeamLight = new HighBeamLight();
+                }
+                transaction.replace(R.id.main_fragment_content, mHighBeamLight);
                 break;
 
         }

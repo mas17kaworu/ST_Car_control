@@ -34,8 +34,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
     private ImageView iv_seat_wind;
     private ImageView iv_seat_set;
 
-    private GifImageView gif_view_seat_left;
-    private GifImageView gif_view_seat_right;
+    private GifImageView gif_view_seat;
 
 
 
@@ -64,7 +63,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         ((MenuViewItem)mView.findViewById( R.id.seat_bottom_forward)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                loadGifonLeft(R.mipmap.git_seat_bottom_forward);
+                loadGifonLeft(R.mipmap.gif_seat_bottom_forward);
             }
 
             @Override
@@ -87,8 +86,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         iv_seat_set = (ImageView) mView.findViewById(R.id.iv_seat_set);
         iv_seat_set.setOnClickListener(this);
 
-        gif_view_seat_left = (GifImageView) mView.findViewById(R.id.gifv_seat_left);
-        gif_view_seat_right = (GifImageView) mView.findViewById(R.id.gifv_seat_right);
+        gif_view_seat = (GifImageView) mView.findViewById(R.id.gifv_seat);
 
         iv_seat_heat_stage_1 = (ImageView) mView.findViewById(R.id.iv_seat_heat_stage_1);
         iv_seat_heat_stage_2 = (ImageView) mView.findViewById(R.id.iv_seat_heat_stage_2);
@@ -222,7 +220,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
             GifDrawable gifDrawable = new GifDrawable(getResources(), resID);
 
             // gif1加载一个动态图gif
-            gif_view_seat_left.setImageDrawable(gifDrawable);
+            gif_view_seat.setImageDrawable(gifDrawable);
 
             // 如果是普通的图片资源，就像Android的ImageView set图片资源一样简单设置进去即可。
             // gif2加载一个普通的图片（如png，bmp，jpeg等等）
@@ -233,7 +231,8 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
 
     private void releaseLeftGifView(){
         try {
-            gif_view_seat_left.setImageDrawable(null);
+            gif_view_seat.setImageDrawable(null);
+            gif_view_seat.setImageResource(R.mipmap.ic_seat_tmp);
         } catch (Exception e) {
             e.printStackTrace();
         }

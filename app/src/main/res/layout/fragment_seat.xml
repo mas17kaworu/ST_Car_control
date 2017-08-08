@@ -2,13 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/homefragment_gray_background">
-    <ImageView
+    android:background="@mipmap/ic_fragment_background">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_seat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_seat_tmp"
-        android:layout_marginTop="100dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginTop="112px"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="533px"
+         />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -132,18 +136,12 @@
     </RelativeLayout>
 
     <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/gifv_seat_left"
+
         android:layout_marginStart="100dp"
         android:layout_marginTop="100dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"/>
 
-    <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/gifv_seat_right"
-        android:layout_marginStart="400dp"
-        android:layout_marginTop="100dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"/>
+
 </RelativeLayout>

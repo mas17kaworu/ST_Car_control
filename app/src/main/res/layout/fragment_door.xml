@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/ic_fragment_background">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FRONT LAMP"
+        android:text="Door and Mirror"
         android:textColor="#ffffff"
         android:textSize="40sp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="160dp"
+        android:layout_marginStart="200dp"
+        android:src="@mipmap/ic_door"/>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="200dp">
-        <include layout="@layout/lamp_front_collection"/>
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="270dp">
+        <include layout="@layout/door_window_up_down_collection"/>
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/iv_lamp_jump"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/lamp_jump_to_high_beam"
-        android:layout_marginTop="600dp"
-        android:layout_marginStart="880dp"/>
+
+
 </RelativeLayout>

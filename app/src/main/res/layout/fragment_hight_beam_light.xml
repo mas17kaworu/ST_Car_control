@@ -1,6 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/ic_fragment_background">
 
-</LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="High Beam"
+        android:textColor="#ffffff"
+        android:textSize="40sp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="30dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_highbeam_car"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"/>
+
+    <RadioGroup
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="150dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_urban"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:button="@drawable/choose_btn_high_beam"
+            android:padding="15dp"
+            android:gravity="center"
+            android:text="@string/high_beam_Urban"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_highway"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:padding="15dp"
+            android:gravity="center"
+            android:text="@string/high_beam_Highway"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_country"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:padding="15dp"
+            android:gravity="center"
+            android:text="@string/high_beam_Country"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="20sp"/>
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_curve"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:padding="15dp"
+            android:gravity="center"
+            android:text="@string/high_beam_Curve"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_parking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:padding="15dp"
+            android:gravity="center"
+            android:text="@string/high_beam_Parking"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_energy_saving"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:padding="15dp"
+            android:gravity="center"
+            android:text="@string/high_beam_Energy_saving"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="20sp"/>
+    </RadioGroup>
+
+    <ImageView
+        android:id="@+id/iv_high_beam_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/high_beam_back"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="600dp"
+        />
+
+</RelativeLayout>

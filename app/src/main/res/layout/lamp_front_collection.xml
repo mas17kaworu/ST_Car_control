@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_lamp_front_background"/>
+    <ImageView
+        android:id="@+id/iv_lamp_dadeng_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_lamp_dadeng_on"
+        android:visibility="invisible"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/iv_lamp_dadeng_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lamp_dadeng"
+        />
+
+    <ImageView
+        android:id="@+id/iv_lamp_jiaodeng_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_lamp_jiaodeng_on"
+        android:visibility="invisible"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/iv_lamp_jiaodeng_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lamp_jiaodeng"
+        />
+
+    <ImageView
+        android:id="@+id/iv_lamp_jinguangdeng_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_lamp_jinguangdeng_on"
+        android:visibility="invisible"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/iv_lamp_jinguangdeng_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lamp_jinguangdeng"
+        />
+
+    <ImageView
+        android:id="@+id/iv_lamp_rixingdeng_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_lamp_rixingdeng_on"
+        android:visibility="invisible"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/iv_lamp_rixingdeng_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lamp_rixingdeng"
+        />
+
+    <ImageView
+        android:id="@+id/iv_lamp_turnleft_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_lamp_turnleft_on"
+        />
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/iv_lamp_turnleft_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lamp_turnleft"
+        />
+
+    <ImageView
+        android:id="@+id/iv_lamp_turnright_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_lamp_turnright_on"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/iv_lamp_turnright_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lamp_turnright"
+        />
+
+</RelativeLayout>
