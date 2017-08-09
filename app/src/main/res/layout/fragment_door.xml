@@ -52,7 +52,35 @@
             android:textSize="15sp"
             android:layout_below="@id/collection_mirror_adjust"
             android:layout_marginTop="10dp"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:id="@+id/textView_rearwindow_adjust" />
+        <ProgressBar
+            android:id="@+id/pb_door_mirror_anti_glare"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="170dp"
+            android:layout_height="10dp"
+            android:max="100"
+            android:progress="20"
+            android:progressDrawable="@drawable/door_progress_bar_drawable"
+            android:layout_marginTop="45dp"
+            android:layout_below="@+id/textView_rearwindow_adjust"
+            android:layout_centerHorizontal="true" />
+        <ImageView
+            android:id="@+id/iv_door_mirror_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_door_mirror_minus"
+            android:layout_marginTop="265dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/pb_door_mirror_anti_glare"/>
+        <ImageView
+            android:id="@+id/iv_door_mirror_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_door_mirror_plus"
+            android:layout_marginTop="265dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/pb_door_mirror_anti_glare"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -98,5 +126,13 @@
                 android:layout_centerHorizontal="true"/>
         </RelativeLayout>
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_door_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_door_lock"
+        android:layout_marginTop="540dp"
+        android:layout_marginStart="80dp"/>
 
 </RelativeLayout>
