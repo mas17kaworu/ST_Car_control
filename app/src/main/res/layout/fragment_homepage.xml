@@ -121,5 +121,10 @@
         android:layout_marginTop="60dp"
         android:layout_marginStart="900dp"/>
 
-
+    <com.longkai.stcarcontrol.st_exp.customView.AirconditionDiscView
+        android:id="@+id/aircondition"
+        android:clickable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 </RelativeLayout>
