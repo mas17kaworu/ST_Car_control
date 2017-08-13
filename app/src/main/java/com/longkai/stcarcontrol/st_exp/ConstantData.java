@@ -16,5 +16,8 @@ public class ConstantData {
     public static int sLampTurnLeftStatus = 0;
     public static int sLampTurnRightStatus = 0;
 
-
+    /**
+     * 0-1000
+     */
+    public static int sAirConditionProgress = 0;
 }

@@ -24,6 +24,7 @@ import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BTCMDGetVersion
 import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTManager;
 import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTServer;
 import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
+import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.DoorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
 import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
@@ -39,6 +40,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private SeatFragment mSeatFragment;
     private HighBeamLight mHighBeamLight;
     private DoorFragment mDoorFragment;
+    private CenterControlFragment mCenterControlFragment;
 
 
     private HorizontalListView hListView;
@@ -145,6 +147,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 transaction.replace(R.id.main_fragment_content, mDoorFragment);
                 break;
             case 4:
+                if (mCenterControlFragment == null) {
+                    mCenterControlFragment = new CenterControlFragment();
+//                    transaction.add(R.id.main_fragment_content, mSeatFragment);
+                }
+                transaction.replace(R.id.main_fragment_content, mCenterControlFragment);
+
                 break;
             case 5:
                 if (mHighBeamLight == null) {
@@ -184,7 +192,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                v.setLayoutParams(params);
                 break;
             case R.id.rdoBtn_homepage_control:
-
+                setSelect(4);
                 break;
             case R.id.rdoBtn_homepage_door:
                 setSelect(3);
