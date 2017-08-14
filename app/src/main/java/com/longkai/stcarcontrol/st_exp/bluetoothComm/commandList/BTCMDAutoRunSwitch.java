@@ -5,6 +5,7 @@ package com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList;
  */
 
 public class BTCMDAutoRunSwitch extends BaseBtCommand {
+
     public BTCMDAutoRunSwitch(boolean state){
         try{
             data = new byte[3];
@@ -22,7 +23,21 @@ public class BTCMDAutoRunSwitch extends BaseBtCommand {
     }
 
     @Override
-    protected byte getCommandID(){
+    public BaseBTResponse toResponse(byte[] data) throws Exception {
+
+        return null;
+    }
+
+    @Override
+    public byte getCommandId() {
         return COMMAND_AUTO_RUN;
+    }
+
+
+    public static class Response extends BaseBTResponse{
+
+        public Response(byte commandId) {
+            super(commandId);
+        }
     }
 }

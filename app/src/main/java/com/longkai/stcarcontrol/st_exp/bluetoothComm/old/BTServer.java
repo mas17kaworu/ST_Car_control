@@ -20,8 +20,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.util.Log;
+import android.util.SparseArray;
 
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BaseBtCommand;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.BTCommand;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.BTCommandListener;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.CheckSumBit;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BaseBTResponse;
 
 public class BTServer {
 
@@ -211,12 +215,15 @@ public class BTServer {
 			if (mBtClientSocket != null) {
 				Log.d(TAG, "test5");
 				byte[] Gbuffer = new byte[128];
-				//初始化发送的包
+				//初始化接收的包
 				while(BtConnect_state){
 					try {
 						int count = inputStream.read(Gbuffer);
+                        if (count >=4){
+                            onReceiveMessage(Gbuffer, count);
+                        }
 						Log.d(TAG, "count = " + count + "Gamepad ConstantData : ");
-					}catch (IOException e){
+					} catch (IOException e){
 //						e.printStackTrace();
 					}
 						/*for (int i=0; i<20;i++)
@@ -232,7 +239,7 @@ public class BTServer {
 		}
 	}
 
-	public boolean sendmsg(String msg){
+	public synchronized boolean sendmsg(String msg){
 		boolean result=false;
 		if(null==mBtClientSocket || bos==null)
 			return false;
@@ -247,7 +254,7 @@ public class BTServer {
 		return result;
 	}
 
-	private boolean sendbyteArray(byte[] msg){
+	private synchronized boolean sendbyteArray(byte[] msg){
 		boolean result=false;
 		if(null==mBtClientSocket || bos==null)
 			return false;
@@ -261,10 +268,65 @@ public class BTServer {
 		}
 		return result;
 	}
+    private Object listLock = new Object();
+    private SparseArray<BTCommand> mSentCommandList;
+    private SparseArray<BTCommandListener> mCommandListenerList;
 
-	public boolean sendCommend(BaseBtCommand command){
+	public synchronized boolean sendCommend(BTCommand command, BTCommandListener listener){
+        if (listener != null) {
+            listener.setSendTimeStamp(System.currentTimeMillis());
+            synchronized (listLock) {
+                mSentCommandList.put(command.getCommandId(), command);
+                mCommandListenerList.put(command.getCommandId(), listener);
+            }
+        }
+
 		return sendbyteArray(command.toRawData());
 	}
+
+
+
+	private void onReceiveMessage(byte[] data, int length){
+        if (data[0] == 0x3C && data[1] == 0x5a){
+            byte[] raw = new byte[128];
+            System.arraycopy(data, 0, raw, 2, length);
+            if (data[length-1] == CheckSumBit.checkSum(raw, length-3)){//检查完毕
+                int commandId = raw[3];
+
+                BTCommand command;
+                BTCommandListener listener;
+                synchronized (listLock) {
+                    command = mSentCommandList.get(commandId);
+                    listener = mCommandListenerList.get(commandId);
+                    mSentCommandList.remove(commandId);
+                    mCommandListenerList.remove(commandId);
+                }
+
+                if (command == null || listener == null) {
+                    return;
+                }
+
+                if ((System.currentTimeMillis() - listener.getSendTimestamp()) > listener.getTimeout()) {
+                    listener.onTimeout();
+                } else {
+                    BaseBTResponse response = null;
+                    try {
+                        response = command.toResponse(data);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        listener.onTimeout();
+                        return;
+                    }
+                    if (response != null) {
+                        listener.onSuccess(response);
+                    }
+                }
+
+
+            }
+        }
+    }
+
 
 	/*
     public void startBTServer() {

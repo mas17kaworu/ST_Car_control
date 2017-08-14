@@ -1,12 +1,13 @@
 package com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList;
 
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.CrcUtils;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.BTCommand;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.CheckSumBit;
 
 /**
  * Created by Administrator on 2017/7/25.
  */
 
-public class BaseBtCommand {
+public abstract class BaseBtCommand implements BTCommand {
     public static final boolean IS_BIGENDIAN = false;
     protected static final byte COMMAND_HEAD0 = 0x3C;
     protected static final byte COMMAND_HEAD1 = 0x5A;
@@ -22,7 +23,7 @@ public class BaseBtCommand {
     protected static final byte COMMAND_CENTRAL_CONTORL = 0x09;
 
     protected byte[] data;//payload
-    protected byte dataLength;
+    protected int dataLength;
 
 
     public byte[] toRawData() {
@@ -35,7 +36,7 @@ public class BaseBtCommand {
         raw[0] = COMMAND_HEAD0;
         raw[1] = COMMAND_HEAD1;
         System.arraycopy(data, 0, raw, 2, dataLength);
-        raw[raw.length-1] = checkSum(data, dataLength);
+        raw[raw.length-1] = CheckSumBit.checkSum(data, dataLength);
         return raw;
     }
 
@@ -48,21 +49,4 @@ public class BaseBtCommand {
         }
         return result;
     }*/
-
-    private byte checkSum(byte[] raw,byte length){
-        int sum = 0;
-        int i;
-        for (i=0;i<length;i++){
-            sum = sum + raw[i];
-            if (sum>255){
-                sum = sum - 255;
-            }
-        }
-        sum = 255 - sum;
-        return (byte) (sum&0xff);
-    }
-
-    protected byte getCommandID(){
-        return 0x00;
-    }
 }

@@ -31,6 +31,8 @@ import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private int mLastflag = 10;

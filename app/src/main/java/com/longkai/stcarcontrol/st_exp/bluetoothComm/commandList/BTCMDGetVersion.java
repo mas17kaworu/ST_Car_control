@@ -17,7 +17,38 @@ public class BTCMDGetVersion extends BaseBtCommand{
     }
 
     @Override
-    protected byte getCommandID(){
+    public BaseBTResponse toResponse(byte[] data) throws Exception {
+        int length = data[2] -1;
+        byte[] payload = new byte[length];
+        System.arraycopy(data, 4, payload, 0, length);
+
+        Response response=new Response(getCommandId());
+        response.setVersion(new String(payload));
+        return response;
+    }
+
+    @Override
+    public byte getCommandId() {
         return COMMAND_GET_FIRMWARE;
+    }
+
+
+    public static class Response extends BaseBTResponse{
+
+        private String version;
+
+        public Response(byte commandId) {
+            super(commandId);
+        }
+
+        public String getVersion(){
+            return version;
+        }
+
+        public void setVersion(String v){
+            version = v;
+        }
+
+
     }
 }
