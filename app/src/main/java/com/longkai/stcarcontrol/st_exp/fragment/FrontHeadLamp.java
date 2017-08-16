@@ -12,7 +12,12 @@ import android.widget.ImageView;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.activity.BaseActivity;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BTCMDLEDHeadLamp;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BaseBTResponse;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.CommandListenerAdapter;
+import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTServer;
 
 /**
  * Created by Administrator on 2017/7/10.
@@ -21,6 +26,8 @@ import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 public class FrontHeadLamp extends Fragment implements View.OnClickListener{
     private View mView;
     private ImageView ivLampDadeng, ivLampJingguangdeng, ivLampJiaodeng, ivLampRixingdeng, ivLampTurnLeft, ivLampTurnRight;
+
+    private BTServer mBTServer;
 
     @Nullable
     @Override
@@ -41,6 +48,8 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
         ivLampTurnLeft = (ImageView) mView.findViewById(R.id.iv_lamp_turnleft_on);
         ivLampTurnRight = (ImageView) mView.findViewById(R.id.iv_lamp_turnright_on);
         refreshUI();
+        mBTServer = ((BaseActivity)getActivity()).mBtServer;
+
         return mView;
     }
 
@@ -49,11 +58,25 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
         switch (v.getId()){
             case R.id.iv_lamp_dadeng_click:
                 if (ConstantData.sLampDadengStatus == 0) {
-                    ConstantData.sLampDadengStatus = 1;
-                    ivLampDadeng.setVisibility(View.VISIBLE);
+                    BTCMDLEDHeadLamp.DRLLightOn();
+                    mBTServer.sendCommend(new BTCMDLEDHeadLamp(), new CommandListenerAdapter(){
+                        @Override
+                        public void onSuccess(BaseBTResponse response) {
+                            super.onSuccess(response);
+                            ConstantData.sLampDadengStatus = 1;
+                            ivLampDadeng.setVisibility(View.VISIBLE);
+                        }
+                    });
                 } else {
-                    ConstantData.sLampDadengStatus = 0;
-                    ivLampDadeng.setVisibility(View.INVISIBLE);
+                    BTCMDLEDHeadLamp.DRLLightOff();
+                    mBTServer.sendCommend(new BTCMDLEDHeadLamp(), new CommandListenerAdapter(){
+                        @Override
+                        public void onSuccess(BaseBTResponse response) {
+                            super.onSuccess(response);
+                            ConstantData.sLampDadengStatus = 0;
+                            ivLampDadeng.setVisibility(View.INVISIBLE);
+                        }
+                    });
                 }
                 break;
             case R.id.iv_lamp_jinguangdeng_click:

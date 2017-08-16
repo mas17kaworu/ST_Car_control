@@ -20,7 +20,7 @@ import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTServer;
  */
 
 public class BaseActivity extends AppCompatActivity {
-    protected BTServer mBtServer;
+    public BTServer mBtServer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
