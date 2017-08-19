@@ -2,36 +2,23 @@ package com.longkai.stcarcontrol.st_exp.activity;
 
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.adapter.HorizontalListViewAdapter;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BTCMDGetVersion;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTManager;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTServer;
 import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
+import com.longkai.stcarcontrol.st_exp.fragment.CarBackFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.DoorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
 import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
-
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -43,6 +30,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private HighBeamLight mHighBeamLight;
     private DoorFragment mDoorFragment;
     private CenterControlFragment mCenterControlFragment;
+    private CarBackFragment mCarBackFragment;
 
 
     private HorizontalListView hListView;
@@ -67,7 +55,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setSelect(0);
 
         startBTConnect();
-        mBtServer.sendCommend(new BTCMDGetVersion());
+//        mBtServer.sendCommend(new CMDGetVersion());
     }
 
     @Override
@@ -88,7 +76,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 R.drawable.main_activity_bottom_lamp,
                 R.drawable.main_activity_bottom_seat,
                 R.drawable.main_activity_bottom_door,
-                R.drawable.main_activity_bottom_control};
+                R.drawable.main_activity_bottom_control,
+                R.drawable.main_activity_bottom_back_car};
 
         hListViewAdapter = new HorizontalListViewAdapter(getApplicationContext(), ids);
         hListView.setAdapter(hListViewAdapter);
@@ -157,10 +146,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 break;
             case 5:
+                if (mCarBackFragment == null) {
+                    mCarBackFragment = new CarBackFragment();
+                }
+                transaction.replace(R.id.main_fragment_content, mCarBackFragment);
+                break;
+            case 100:
                 if (mHighBeamLight == null) {
                     mHighBeamLight = new HighBeamLight();
                 }
                 transaction.replace(R.id.main_fragment_content, mHighBeamLight);
+                break;
+            default:
                 break;
 
         }

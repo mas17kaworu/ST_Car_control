@@ -10,8 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTManager;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTServer;
+import com.longkai.stcarcontrol.st_exp.communication.btComm.BTManager;
+import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 
 /**
  * 用于与底层蓝牙通信

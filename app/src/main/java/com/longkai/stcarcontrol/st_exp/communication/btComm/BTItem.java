@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm.old;
+package com.longkai.stcarcontrol.st_exp.communication.btComm;
 
 public class BTItem {
 

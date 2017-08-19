@@ -1,13 +1,13 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList;
+package com.longkai.stcarcontrol.st_exp.communication.commandList;
 
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.BTCommand;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.CheckSumBit;
+import com.longkai.stcarcontrol.st_exp.communication.Command;
+import com.longkai.stcarcontrol.st_exp.communication.CheckSumBit;
 
 /**
  * Created by Administrator on 2017/7/25.
  */
 
-public abstract class BaseBtCommand implements BTCommand {
+public abstract class BaseCommand implements Command {
     public static final boolean IS_BIGENDIAN = false;
     protected static final byte COMMAND_HEAD0 = 0x3C;
     protected static final byte COMMAND_HEAD1 = 0x5A;

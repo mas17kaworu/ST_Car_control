@@ -1,7 +1,7 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList;
+package com.longkai.stcarcontrol.st_exp.communication.commandList;
 
 
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.BTCommandListener;
+import com.longkai.stcarcontrol.st_exp.communication.CommandListener;
 
 /**
  * When a command be sending,a listener correspond to it.
@@ -9,9 +9,9 @@ import com.longkai.stcarcontrol.st_exp.bluetoothComm.BTCommandListener;
  *
  * @author jw.gu
  * @version 1.0
- * @see BTCommandListener
+ * @see CommandListener
  */
-public class CommandListenerAdapter implements BTCommandListener {
+public class CommandListenerAdapter implements CommandListener {
     private long sendTimeStamp;
 
     /**
@@ -40,7 +40,7 @@ public class CommandListenerAdapter implements BTCommandListener {
      * @param response the response of command.
      */
     @Override
-    public void onSuccess(BaseBTResponse response) {
+    public void onSuccess(BaseResponse response) {
     }
 
     /**

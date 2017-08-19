@@ -22,7 +22,7 @@
 
     <com.longkai.stcarcontrol.st_exp.customView.HorizontalListView
         android:id="@+id/horizon_listview"
-        android:layout_width="600dp"
+        android:layout_width="750dp"
         android:layout_height="100dp"
         android:gravity="bottom"
         android:layout_alignParentBottom="true"

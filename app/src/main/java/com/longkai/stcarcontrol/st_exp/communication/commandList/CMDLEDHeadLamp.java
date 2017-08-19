@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList;
+package com.longkai.stcarcontrol.st_exp.communication.commandList;
 
 /**
  *
@@ -6,7 +6,7 @@ package com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList;
  * Created by Administrator on 2017/8/15.
  */
 
-public class BTCMDLEDHeadLamp extends BaseBtCommand {
+public class CMDLEDHeadLamp extends BaseCommand {
 
     /**
      *          b7          b6          b5          b4          b3          b3          b1          b0
@@ -48,7 +48,7 @@ public class BTCMDLEDHeadLamp extends BaseBtCommand {
 
     public static byte[] payload = {0x00,0x00,0x00};
 
-    public BTCMDLEDHeadLamp(){
+    public CMDLEDHeadLamp(){
         try{
             data = new byte[5];
             dataLength = 5;
@@ -109,7 +109,7 @@ public class BTCMDLEDHeadLamp extends BaseBtCommand {
 
 
     @Override
-    public BaseBTResponse toResponse(byte[] data) throws Exception {
+    public BaseResponse toResponse(byte[] data) throws Exception {
         return null;
     }
 

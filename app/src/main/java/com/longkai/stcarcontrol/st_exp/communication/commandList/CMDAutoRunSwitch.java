@@ -1,12 +1,12 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList;
+package com.longkai.stcarcontrol.st_exp.communication.commandList;
 
 /**
  * Created by Administrator on 2017/8/5.
  */
 
-public class BTCMDAutoRunSwitch extends BaseBtCommand {
+public class CMDAutoRunSwitch extends BaseCommand {
 
-    public BTCMDAutoRunSwitch(boolean state){
+    public CMDAutoRunSwitch(boolean state){
         try{
             data = new byte[3];
             dataLength = 3;
@@ -23,7 +23,7 @@ public class BTCMDAutoRunSwitch extends BaseBtCommand {
     }
 
     @Override
-    public BaseBTResponse toResponse(byte[] data) throws Exception {
+    public BaseResponse toResponse(byte[] data) throws Exception {
 
         return null;
     }
@@ -34,7 +34,7 @@ public class BTCMDAutoRunSwitch extends BaseBtCommand {
     }
 
 
-    public static class Response extends BaseBTResponse{
+    public static class Response extends BaseResponse {
 
         public Response(byte commandId) {
             super(commandId);

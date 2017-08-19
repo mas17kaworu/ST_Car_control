@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm;
+package com.longkai.stcarcontrol.st_exp.communication;
 
 public class CrcUtils {
     static char[] CRC8T =

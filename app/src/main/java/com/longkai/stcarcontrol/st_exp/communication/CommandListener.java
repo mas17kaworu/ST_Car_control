@@ -1,12 +1,12 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm;
+package com.longkai.stcarcontrol.st_exp.communication;
 
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BaseBTResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 
 /**
  * Created by Administrator on 2017/8/14.
  */
 
-public interface BTCommandListener {
+public interface CommandListener {
 
     /**
      * Set the timestamp of send this command.
@@ -24,7 +24,7 @@ public interface BTCommandListener {
      * Called when command execute success.
      * @param response the response of command.
      */
-    void onSuccess(BaseBTResponse response);
+    void onSuccess(BaseResponse response);
 
     /**
      * Called when command execute timeout. the default value of timeout is 2 second.

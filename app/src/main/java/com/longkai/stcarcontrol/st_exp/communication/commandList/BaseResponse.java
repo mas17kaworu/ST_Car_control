@@ -1,10 +1,10 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList;
+package com.longkai.stcarcontrol.st_exp.communication.commandList;
 
 /**
  * Created by Administrator on 2017/8/14.
  */
 
-public class BaseBTResponse {
+public class BaseResponse {
     public static final int CODE_SUCCESS=0;
     public static final int CODE_ERR_NOT_SUPPORT=1;
     public static final int CODE_ERR_INVAL_PARAM=2;
@@ -16,7 +16,7 @@ public class BaseBTResponse {
 
     protected byte commandId;
 
-    public BaseBTResponse(byte commandId) {
+    public BaseResponse(byte commandId) {
         this.commandId=commandId;
     }
 
@@ -26,10 +26,10 @@ public class BaseBTResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof BaseBTResponse)) {
+        if (!(o instanceof BaseResponse)) {
             return false;
         }
-        BaseBTResponse oo = (BaseBTResponse) o;
+        BaseResponse oo = (BaseResponse) o;
         return commandId == oo.commandId;
     }
 }

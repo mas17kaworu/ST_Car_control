@@ -1,19 +1,19 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm;
+package com.longkai.stcarcontrol.st_exp.communication;
 
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BaseBTResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 
 /**
  * Created by Administrator on 2017/8/14.
  */
 
-public interface BTCommand {
+public interface Command {
     /**
      * Parse raw data to 'T' Structure.
      *
      * @param data   The data buffer of needed parse message.
      * @return Parsed message.
      */
-    BaseBTResponse toResponse(byte[]data) throws Exception;
+    BaseResponse toResponse(byte[]data) throws Exception;
 
     /**
      * Convert to raw data.

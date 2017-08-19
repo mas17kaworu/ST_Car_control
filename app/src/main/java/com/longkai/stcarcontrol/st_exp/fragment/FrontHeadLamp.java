@@ -14,10 +14,10 @@ import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.activity.BaseActivity;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BTCMDLEDHeadLamp;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BaseBTResponse;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.CommandListenerAdapter;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.old.BTServer;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLamp;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 
 /**
  * Created by Administrator on 2017/7/10.
@@ -57,123 +57,112 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_lamp_dadeng_click:
-                if (ConstantData.sLampDadengStatus == 0) {
-                    BTCMDLEDHeadLamp.DRLLightOn();
-                    mBTServer.sendCommend(new BTCMDLEDHeadLamp(), new CommandListenerAdapter(){
+                /*if (ConstantData.sLampDadengStatus == 0) {
+                    CMDLEDHeadLamp.DRLLightOn();
+                    mBTServer.sendCommend(new CMDLEDHeadLamp(), new CommandListenerAdapter(){
                         @Override
-                        public void onSuccess(BaseBTResponse response) {
+                        public void onSuccess(BaseResponse response) {
                             super.onSuccess(response);
                             ConstantData.sLampDadengStatus = 1;
                             ivLampDadeng.setVisibility(View.VISIBLE);
                         }
                     });
+
                 } else {
-                    BTCMDLEDHeadLamp.DRLLightOff();
-                    mBTServer.sendCommend(new BTCMDLEDHeadLamp(), new CommandListenerAdapter(){
+                    CMDLEDHeadLamp.DRLLightOff();
+                    mBTServer.sendCommend(new CMDLEDHeadLamp(), new CommandListenerAdapter(){
                         @Override
-                        public void onSuccess(BaseBTResponse response) {
+                        public void onSuccess(BaseResponse response) {
                             super.onSuccess(response);
                             ConstantData.sLampDadengStatus = 0;
                             ivLampDadeng.setVisibility(View.INVISIBLE);
                         }
                     });
-                }
+                }*/
+                clickLamp(ConstantData.sLampDadengStatus, ivLampDadeng);
                 break;
             case R.id.iv_lamp_jinguangdeng_click:
-                if (ConstantData.sLampJinguangdengStatus == 0) {
-                    ConstantData.sLampJinguangdengStatus = 1;
-                    ivLampJingguangdeng.setVisibility(View.VISIBLE);
-                } else {
-                    ConstantData.sLampJinguangdengStatus = 0;
-                    ivLampJingguangdeng.setVisibility(View.INVISIBLE);
-                }
+                clickLamp(ConstantData.sLampJinguangdengStatus, ivLampJingguangdeng);
                 break;
             case R.id.iv_lamp_jiaodeng_click:
-                if (ConstantData.sLampJiaodengStatus == 0) {
-                    ConstantData.sLampJiaodengStatus = 1;
-                    ivLampJiaodeng.setVisibility(View.VISIBLE);
-                } else {
-                    ConstantData.sLampJiaodengStatus = 0;
-                    ivLampJiaodeng.setVisibility(View.INVISIBLE);
-                }
+                clickLamp(ConstantData.sLampJiaodengStatus, ivLampJiaodeng);
                 break;
             case R.id.iv_lamp_rixingdeng_click:
-                if (ConstantData.sLampRixingdengStatus == 0) {
-                    ConstantData.sLampRixingdengStatus = 1;
-                    ivLampRixingdeng.setVisibility(View.VISIBLE);
-                } else {
-                    ConstantData.sLampRixingdengStatus = 0;
-                    ivLampRixingdeng.setVisibility(View.INVISIBLE);
-                }
+                clickLamp(ConstantData.sLampRixingdengStatus, ivLampRixingdeng);
                 break;
             case R.id.iv_lamp_turnleft_click:
-                if (ConstantData.sLampTurnLeftStatus == 0){
-                    ConstantData.sLampTurnLeftStatus = 1;
-                    ivLampTurnLeft.setVisibility(View.VISIBLE);
-                    setBlink(ivLampTurnLeft);
-
-                    //左右转向灯不要同时闪烁
-                    ConstantData.sLampTurnRightStatus = 0;
-                    ivLampTurnRight.setAnimation(null);
-                    ivLampTurnRight.setVisibility(View.INVISIBLE);
-
-                } else {
-                    ConstantData.sLampTurnLeftStatus = 0;
-                    ivLampTurnLeft.setAnimation(null);
-                    ivLampTurnLeft.setVisibility(View.INVISIBLE);
-                }
+                clickLamp(ConstantData.sLampTurnLeftStatus, ivLampTurnLeft);
                 break;
             case R.id.iv_lamp_turnright_click:
-                if (ConstantData.sLampTurnRightStatus == 0){
-                    ConstantData.sLampTurnRightStatus = 1;
-                    ivLampTurnRight.setVisibility(View.VISIBLE);
-                    setBlink(ivLampTurnRight);
-
-                    //左右转向灯不要同时闪烁
-                    ConstantData.sLampTurnLeftStatus = 0;
-                    ivLampTurnLeft.setAnimation(null);
-                    ivLampTurnLeft.setVisibility(View.INVISIBLE);
-                } else {
-                    ConstantData.sLampTurnRightStatus = 0;
-                    ivLampTurnRight.setAnimation(null);
-                    ivLampTurnRight.setVisibility(View.INVISIBLE);
-                }
+                clickLamp(ConstantData.sLampTurnRightStatus, ivLampTurnRight);
                 break;
             case R.id.iv_lamp_jump:
-                ((MainActivity)getActivity()).setSelect(5);
+                ((MainActivity)getActivity()).setSelect(100);
                 break;
         }
     }
 
+    private void clickLamp(int index, View view){
+        if (ConstantData.sFrontLampFragmentStatus[index] == 0) {
+            ConstantData.sFrontLampFragmentStatus[index] = 1;
+            view.setVisibility(View.VISIBLE);
+            if (index == ConstantData.sLampTurnRightStatus){
+                setBlink(view);
+
+                //左右转向灯不要同时闪烁
+                ConstantData.sFrontLampFragmentStatus[ConstantData.sLampTurnLeftStatus] = 0;
+                ivLampTurnLeft.setAnimation(null);
+                ivLampTurnLeft.setVisibility(View.INVISIBLE);
+            }
+            if (index == ConstantData.sLampTurnLeftStatus){
+                setBlink(view);
+
+                //左右转向灯不要同时闪烁
+                ConstantData.sFrontLampFragmentStatus[ConstantData.sLampTurnRightStatus] = 0;
+                ivLampTurnRight.setAnimation(null);
+                ivLampTurnRight.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            ConstantData.sFrontLampFragmentStatus[index] = 0;
+            if (index == ConstantData.sLampTurnRightStatus){
+                view.setAnimation(null);
+            }
+            if (index == ConstantData.sLampTurnLeftStatus){
+                view.setAnimation(null);
+            }
+            view.setVisibility(View.INVISIBLE);
+        }
+    }
+
     private void refreshUI(){
-        if (ConstantData.sLampDadengStatus == 1) {
+        if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampDadengStatus] == 1) {
             ivLampDadeng.setVisibility(View.VISIBLE);
         } else {
             ivLampDadeng.setVisibility(View.INVISIBLE);
         }
-        if (ConstantData.sLampJinguangdengStatus == 1) {
+        if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampJinguangdengStatus] == 1) {
             ivLampJingguangdeng.setVisibility(View.VISIBLE);
         } else {
             ivLampJingguangdeng.setVisibility(View.INVISIBLE);
         }
-        if (ConstantData.sLampJiaodengStatus == 1) {
+        if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampJiaodengStatus] == 1) {
             ivLampJiaodeng.setVisibility(View.VISIBLE);
         } else {
             ivLampJiaodeng.setVisibility(View.INVISIBLE);
         }
-        if (ConstantData.sLampRixingdengStatus == 1) {
+        if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] == 1) {
             ivLampRixingdeng.setVisibility(View.VISIBLE);
         } else {
             ivLampRixingdeng.setVisibility(View.INVISIBLE);
         }
-        if (ConstantData.sLampTurnLeftStatus == 1){
+        if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampTurnLeftStatus] == 1){
             ivLampTurnLeft.setVisibility(View.VISIBLE);
             setBlink(ivLampTurnLeft);
         } else {
             ivLampTurnLeft.setAnimation(null);
             ivLampTurnLeft.setVisibility(View.INVISIBLE);
         }
-        if (ConstantData.sLampTurnRightStatus == 1){
+        if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampTurnRightStatus] == 1){
             ivLampTurnRight.setVisibility(View.VISIBLE);
             setBlink(ivLampTurnRight);
         } else {

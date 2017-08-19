@@ -1,11 +1,11 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList;
+package com.longkai.stcarcontrol.st_exp.communication.commandList;
 
 /**
  * Created by Administrator on 2017/8/5.
  */
 
-public class BTCMDGetVersion extends BaseBtCommand{
-    public BTCMDGetVersion(){
+public class CMDGetVersion extends BaseCommand {
+    public CMDGetVersion(){
         try{
             data = new byte[2];
             dataLength = 2;
@@ -17,7 +17,7 @@ public class BTCMDGetVersion extends BaseBtCommand{
     }
 
     @Override
-    public BaseBTResponse toResponse(byte[] data) throws Exception {
+    public BaseResponse toResponse(byte[] data) throws Exception {
         int length = data[2] -1;
         byte[] payload = new byte[length];
         System.arraycopy(data, 4, payload, 0, length);
@@ -33,7 +33,7 @@ public class BTCMDGetVersion extends BaseBtCommand{
     }
 
 
-    public static class Response extends BaseBTResponse{
+    public static class Response extends BaseResponse {
 
         private String version;
 

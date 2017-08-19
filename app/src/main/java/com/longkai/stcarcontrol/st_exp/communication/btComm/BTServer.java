@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.bluetoothComm.old;
+package com.longkai.stcarcontrol.st_exp.communication.btComm;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -22,10 +22,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.BTCommand;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.BTCommandListener;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.CheckSumBit;
-import com.longkai.stcarcontrol.st_exp.bluetoothComm.commandList.BaseBTResponse;
+import com.longkai.stcarcontrol.st_exp.communication.Command;
+import com.longkai.stcarcontrol.st_exp.communication.CommandListener;
+import com.longkai.stcarcontrol.st_exp.communication.CheckSumBit;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 
 public class BTServer {
 
@@ -269,10 +269,10 @@ public class BTServer {
 		return result;
 	}
     private Object listLock = new Object();
-    private SparseArray<BTCommand> mSentCommandList;
-    private SparseArray<BTCommandListener> mCommandListenerList;
+    private SparseArray<Command> mSentCommandList;
+    private SparseArray<CommandListener> mCommandListenerList;
 
-	public synchronized boolean sendCommend(BTCommand command, BTCommandListener listener){
+	public synchronized boolean sendCommend(Command command, CommandListener listener){
         if (listener != null) {
             listener.setSendTimeStamp(System.currentTimeMillis());
             synchronized (listLock) {
@@ -293,8 +293,8 @@ public class BTServer {
             if (data[length-1] == CheckSumBit.checkSum(raw, length-3)){//检查完毕
                 int commandId = raw[3];
 
-                BTCommand command;
-                BTCommandListener listener;
+                Command command;
+                CommandListener listener;
                 synchronized (listLock) {
                     command = mSentCommandList.get(commandId);
                     listener = mCommandListenerList.get(commandId);
@@ -309,7 +309,7 @@ public class BTServer {
                 if ((System.currentTimeMillis() - listener.getSendTimestamp()) > listener.getTimeout()) {
                     listener.onTimeout();
                 } else {
-                    BaseBTResponse response = null;
+                    BaseResponse response = null;
                     try {
                         response = command.toResponse(data);
                     } catch (Exception e) {
