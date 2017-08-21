@@ -14,12 +14,14 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"/>
 
-    <ImageView
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_high_beam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_highbeam_car"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        />
 
     <RadioGroup
         android:layout_width="250dp"
@@ -33,7 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:checked="true"
             android:button="@drawable/choose_btn_high_beam"
             android:padding="15dp"
             android:gravity="center"

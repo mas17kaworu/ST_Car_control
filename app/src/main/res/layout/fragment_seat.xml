@@ -58,6 +58,13 @@
         android:layout_marginTop="470dp">
         <include layout="@layout/seat_bottom_rotate_collection"/>
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="140dp"
+        android:layout_marginTop="520dp">
+        <include layout="@layout/seat_bottom_updown_collection"/>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"

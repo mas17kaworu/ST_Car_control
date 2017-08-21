@@ -7,18 +7,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@mipmap/ic_seat_bottom_rotate_background"/>
+        android:background="@mipmap/ic_seat_bottom_updown_background"/>
+
     <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
-        android:id="@+id/seat_bottom_clockwise"
+        android:id="@+id/seat_bottom_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/seat_bottom_clockwise"/>
+        android:background="@drawable/seat_bottom_up"/>
     <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
-        android:id="@+id/seat_bottom_anticlockwise"
+        android:id="@+id/seat_bottom_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/seat_bottom_anticlockwise"/>
+        android:background="@drawable/seat_bottom_down"/>
 
 </RelativeLayout>
