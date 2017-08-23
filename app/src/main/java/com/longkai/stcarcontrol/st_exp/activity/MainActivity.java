@@ -54,7 +54,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initUI();
         setSelect(0);
 
-        startBTConnect();
+//        startBTConnect();
 //        mBtServer.sendCommend(new CMDGetVersion());
     }
 

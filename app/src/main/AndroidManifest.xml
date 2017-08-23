@@ -23,6 +23,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".communication.CommunicationServer"
+            android:enabled="true">
+            <!--<intent-filter>
+                <action android:name="com.yuneec.droneservice.remote" />
+            </intent-filter>-->
+        </service>
     </application>
 
 </manifest>

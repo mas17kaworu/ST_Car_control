@@ -57,6 +57,7 @@ public class BTServer implements ConnectionInterface{
 	private DatagramPacket rcvFlyPacket = null;  //收数据
 
 	private boolean BtConnect_state = false;
+
 	public BTServer() {
 
 	}
@@ -82,9 +83,15 @@ public class BTServer implements ConnectionInterface{
 			String action = intent.getAction();
             Log.i(TAG, "Receive action" + action);
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)){
-                detectedHandler.sendEmptyMessage(1000);
+				if (detectedHandler != null) {
+					detectedHandler.sendEmptyMessage(1000);
+				}
+				mConnectionListener.onConnected();
             }else if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                detectedHandler.sendEmptyMessage(1001);
+				if (detectedHandler != null) {
+					detectedHandler.sendEmptyMessage(1001);
+				}
+				mConnectionListener.onDisconnected();
             }else if( BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED.equals(action)){//ST CAR 的蓝牙连接不走这里
 //				Toast.makeText(getApplicationContext(), "lk", Toast.LENGTH_SHORT).show();
 				if(intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, -1)
@@ -179,8 +186,11 @@ public class BTServer implements ConnectionInterface{
 		mContext.unregisterReceiver(mReceive);
 	}
 
+	private ConnectionListener mConnectionListener;
+
     @Override
     public boolean open(Bundle parameter, ConnectionListener listener) {
+		mConnectionListener = listener;
         connectToDevice();
         return true;
     }

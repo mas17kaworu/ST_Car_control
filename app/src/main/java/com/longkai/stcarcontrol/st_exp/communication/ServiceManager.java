@@ -18,6 +18,9 @@ public class ServiceManager {
     private Intent serviceIntent;
 
     protected boolean mIsBinded = false;
+
+    private InitCompleteListener mInitCompleteListener;
+
     private ServiceManager() {
         instance = this;
     }
@@ -37,6 +40,7 @@ public class ServiceManager {
         public void onServiceConnected(ComponentName className, IBinder service) {
             binder = (CommunicationServer.CommServerBinder) service;
             mIsBinded = true;
+            mInitCompleteListener.onInitComplete();
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -44,13 +48,19 @@ public class ServiceManager {
         }
     };
 
-    public void init(Context context) {
+    public interface InitCompleteListener {
+        void onInitComplete();
+    }
+
+    public void init(Context context, InitCompleteListener initCompleteListener) {
         if (this.context != null) {
             return;
         }
         this.context = context;
+        this.mInitCompleteListener = initCompleteListener;
         serviceIntent = new Intent();
-        serviceIntent.setClass(context, com.longkai.stcarcontrol.st_exp.communication.CommunicationServer.class);
+        serviceIntent.setClass(context,
+                com.longkai.stcarcontrol.st_exp.communication.CommunicationServer.class);
         bindCommService();
     }
 
@@ -82,6 +92,12 @@ public class ServiceManager {
     public void sendCommandToCar(Command command, CommandListener listener) {
         if (binder != null) {
             binder.asyncSendCommand(command, listener);
+        }
+    }
+
+    public void setConnectionListener(ConnectionListener connectionListener) {
+        if (connectionListener != null) {
+            binder.registerConnectionListener(connectionListener);
         }
     }
 

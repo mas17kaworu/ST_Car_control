@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
@@ -41,13 +42,29 @@ public class BaseActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         //// TODO: 2017/7/9 start service
-        ServiceManager.getInstance().init(getApplicationContext());
+        ServiceManager.getInstance().init(getApplicationContext(), new ServiceManager.InitCompleteListener() {
+            @Override
+            public void onInitComplete() {
+                ServiceManager.getInstance().setConnectionListener(mConnectionListener);
+            }
+        });
 
-        mBtServer = new BTServer(BTManager.getInstance().getBtAdapter(),
+        /*mBtServer = new BTServer(BTManager.getInstance().getBtAdapter(),
                 mBTDetectedHandler,
-                getApplicationContext());
+                getApplicationContext());*/
     }
 
+    ConnectionListener mConnectionListener = new ConnectionListener() {
+        @Override
+        public void onConnected() {
+            Toast.makeText(getApplicationContext(), "Bt Connected", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onDisconnected() {
+            Toast.makeText(getApplicationContext(), "Bt Disconnected", Toast.LENGTH_SHORT).show();
+        }
+    };
 
 
     /********************************************************************************/
