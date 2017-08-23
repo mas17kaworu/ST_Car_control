@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 
@@ -40,6 +41,7 @@ public class BaseActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         //// TODO: 2017/7/9 start service
+        ServiceManager.getInstance().init(getApplicationContext());
 
         mBtServer = new BTServer(BTManager.getInstance().getBtAdapter(),
                 mBTDetectedHandler,
@@ -75,5 +77,11 @@ public class BaseActivity extends AppCompatActivity {
         else {
             Log.d("BT LK", "con't start fc thread.");
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ServiceManager.getInstance().destroy();
     }
 }
