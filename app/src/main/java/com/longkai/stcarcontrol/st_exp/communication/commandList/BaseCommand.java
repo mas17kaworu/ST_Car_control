@@ -1,7 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.communication.commandList;
 
 import com.longkai.stcarcontrol.st_exp.communication.Command;
-import com.longkai.stcarcontrol.st_exp.communication.CheckSumBit;
+import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
 
 /**
  * Created by Administrator on 2017/7/25.

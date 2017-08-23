@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.communication;
+package com.longkai.stcarcontrol.st_exp.communication.utils;
 
 public class CrcUtils {
     static char[] CRC8T =

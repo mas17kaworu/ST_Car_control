@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.communication;
+package com.longkai.stcarcontrol.st_exp.communication.utils;
 
 /**
  * Created by Administrator on 2017/8/14.

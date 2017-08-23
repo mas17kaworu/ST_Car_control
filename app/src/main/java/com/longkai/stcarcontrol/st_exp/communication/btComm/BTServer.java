@@ -18,16 +18,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
 
 import com.longkai.stcarcontrol.st_exp.communication.Command;
 import com.longkai.stcarcontrol.st_exp.communication.CommandListener;
-import com.longkai.stcarcontrol.st_exp.communication.CheckSumBit;
+import com.longkai.stcarcontrol.st_exp.communication.ConnectionInterface;
+import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
+import com.longkai.stcarcontrol.st_exp.communication.MessageReceivedListener;
+import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 
-public class BTServer {
+public class BTServer implements ConnectionInterface{
 
 	private static final String TAG = "BTServer";
 	private static final String GamePadName = "DemoCar";//Gamesir-G2u
@@ -115,12 +119,12 @@ public class BTServer {
             }
 		}
 	};
+
 	public void connectToDevice() {
 		Log.d(TAG, "connectToDevice.");
 		try {
 			if(null == mBtDevice) {
 				Set<BluetoothDevice> BondedDevieces = mBtAdapter.getBondedDevices();
-
 				if (BondedDevieces.size()>0) {
 					int tmp = GamePadName.length();
 					for (BluetoothDevice bdevice:BondedDevieces)
@@ -175,11 +179,38 @@ public class BTServer {
 		mContext.unregisterReceiver(mReceive);
 	}
 
-	private class ConnectThread extends Thread {
+    @Override
+    public boolean open(Bundle parameter, ConnectionListener listener) {
+        connectToDevice();
+        return true;
+    }
+
+    @Override
+    public void close() {
+        resetBT();
+        mContext.unregisterReceiver(mReceive);
+    }
+
+    @Override
+    public int writeDataBlock(byte[] data) {
+        if (sendbyteArray(data)){
+            return data.length;
+        }else {
+            return -1;
+        }
+    }
+
+    private MessageReceivedListener MessageReceivedListener;
+    @Override
+    public void setReceiveListener(final MessageReceivedListener listener) {
+        MessageReceivedListener = listener;
+
+    }
+
+    private class ConnectThread extends Thread {
 		private  BluetoothSocket btSocket;
 		private  BluetoothDevice btDevice;
 		private InputStream inputStream;
-		private OutputStream mOutputStream;
 
 		public ConnectThread(BluetoothDevice btDevice) {
 			this.btDevice  = btDevice;
@@ -220,7 +251,7 @@ public class BTServer {
 					try {
 						int count = inputStream.read(Gbuffer);
                         if (count >=4){
-                            onReceiveMessage(Gbuffer, count);
+                            MessageReceivedListener.onReceive(Gbuffer, 0, count);
                         }
 						Log.d(TAG, "count = " + count + "Gamepad ConstantData : ");
 					} catch (IOException e){
@@ -253,11 +284,11 @@ public class BTServer {
 		}
 		return result;
 	}
-
 	private synchronized boolean sendbyteArray(byte[] msg){
 		boolean result=false;
-		if(null==mBtClientSocket || bos==null)
-			return false;
+		if(null==mBtClientSocket || bos==null) {
+            return false;
+        }
 		try {
 			bos.write(msg);
 			bos.flush();
@@ -266,148 +297,9 @@ public class BTServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return result;
-	}
-    private Object listLock = new Object();
-    private SparseArray<Command> mSentCommandList;
-    private SparseArray<CommandListener> mCommandListenerList;
-
-	public synchronized boolean sendCommend(Command command, CommandListener listener){
-        if (listener != null) {
-            listener.setSendTimeStamp(System.currentTimeMillis());
-            synchronized (listLock) {
-                mSentCommandList.put(command.getCommandId(), command);
-                mCommandListenerList.put(command.getCommandId(), listener);
-            }
-        }
-
-		return sendbyteArray(command.toRawData());
+        return result;
 	}
 
-
-
-	private void onReceiveMessage(byte[] data, int length){
-        if (data[0] == 0x3C && data[1] == 0x5a){
-            byte[] raw = new byte[128];
-            System.arraycopy(data, 0, raw, 2, length);
-            if (data[length-1] == CheckSumBit.checkSum(raw, length-3)){//检查完毕
-                int commandId = raw[3];
-
-                Command command;
-                CommandListener listener;
-                synchronized (listLock) {
-                    command = mSentCommandList.get(commandId);
-                    listener = mCommandListenerList.get(commandId);
-                    mSentCommandList.remove(commandId);
-                    mCommandListenerList.remove(commandId);
-                }
-
-                if (command == null || listener == null) {
-                    return;
-                }
-
-                if ((System.currentTimeMillis() - listener.getSendTimestamp()) > listener.getTimeout()) {
-                    listener.onTimeout();
-                } else {
-                    BaseResponse response = null;
-                    try {
-                        response = command.toResponse(data);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        listener.onTimeout();
-                        return;
-                    }
-                    if (response != null) {
-                        listener.onSuccess(response);
-                    }
-                }
-
-
-            }
-        }
-    }
-
-
-	/*
-    public void startBTServer() {
-        ThreadPool.getInstance().excuteTask(new Runnable() {
-            public void run() {
-                try {
-                    mBtServerSocket = mBtAdapter.listenUsingRfcommWithServiceRecord(PROTOCOL_SCHEME_RFCOMM,
-                    UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-
-                    Message msg = new Message();
-                    msg.obj = "请稍候，正在等待客户端的连接...";
-                    msg.what = 0;
-                    detectedHandler.sendMessage(msg);
-
-                    mBtClientSocket = mBtServerSocket.accept();
-                    Message msg2 = new Message();
-                    String info = "客户端已经连接上！可以发送信息。";
-                    msg2.obj = info;    
-                    msg.what = 0;    
-                    detectedHandler.sendMessage(msg2);    
-                       
-                    receiverMessageTask();  
-                } catch(EOFException e){  
-                    Message msg = new Message();    
-                    msg.obj = "client has close!";    
-                    msg.what = 1;    
-                    detectedHandler.sendMessage(msg);  
-                }catch (IOException e) {  
-                    e.printStackTrace();  
-                    Message msg = new Message();    
-                    msg.obj = "receiver message error! please make client try again connect!";    
-                    msg.what = 1;    
-                    detectedHandler.sendMessage(msg);  
-                }  
-            }  
-        });  
-    }  
-    private void receiverMessageTask(){  
-        ThreadPool.getInstance().excuteTask(new Runnable() {  
-            public void run() {  
-                byte[] buffer = new byte[2048];  
-                int totalRead;  
-                InputStream input = null; 
-                OutputStream output=null; 
-                try {  
-                    bis = new BufferedInputStream(mBtClientSocket.getInputStream());  
-                    bos = new BufferedOutputStream(mBtClientSocket.getOutputStream());  
-                } catch (IOException e) {  
-                    e.printStackTrace();  
-                }  
-                  
-                try {  
-                //  ByteArrayOutputStream arrayOutput=null;  
-                    while((totalRead = bis.read(buffer)) > 0 ){  
-                //       arrayOutput=new ByteArrayOutputStream();  
-                        String txt = new String(buffer, 0, totalRead, "UTF-8");   
-                        Message msg = new Message();    
-                        msg.obj = txt;    
-                        msg.what = 1;    
-                        detectedHandler.sendMessage(msg);    
-                    }  
-                } catch (IOException e) {  
-                    e.printStackTrace();  
-                }  
-            }  
-        });  
-    }  
-    public boolean sendmsg(String msg){  
-        boolean result=false;  
-        if(null==mBtClientSocket || bos==null)  
-            return false;  
-        try {  
-            bos.write(msg.getBytes());  
-            bos.flush();  
-            result=true;  
-        } catch (IOException e) {  
-            e.printStackTrace();  
-        }  
-        return result;  
-    }  
-     */
 	public void closeBTServer(){
 		try{
 			if(bis != null)
