@@ -8,9 +8,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.adapter.HorizontalListViewAdapter;
+import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
 import com.longkai.stcarcontrol.st_exp.fragment.CarBackFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
@@ -35,6 +39,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
+
+    private ImageView ivConnectionState;
     public int mSelectedMode = 0;
 
     @Override
@@ -51,6 +57,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         }
         setContentView(R.layout.activity_main);
+
+        ServiceManager.getInstance().init(getApplicationContext(), new ServiceManager.InitCompleteListener() {
+            @Override
+            public void onInitComplete() {
+                ServiceManager.getInstance().setConnectionListener(mConnectionListener);
+            }
+        });
+
         initUI();
         setSelect(0);
 
@@ -70,6 +84,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.rdoBtn_homepage_door).setOnClickListener(this);
         findViewById(R.id.rdoBtn_homepage_front_lamp).setOnClickListener(this);
         findViewById(R.id.rdoBtn_homepage_seat).setOnClickListener(this);
+        ivConnectionState = (ImageView) findViewById(R.id.iv_mainactivity_lost_connect);
+        ivConnectionState.setOnClickListener(this);
 
         hListView = (HorizontalListView) findViewById(R.id.horizon_listview);
         final int[] ids = {R.drawable.main_activity_bottom_hompage,
@@ -94,9 +110,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 setSelect(position);
             }
         });
+
+
     }
 
+    ConnectionListener mConnectionListener = new ConnectionListener() {
+        @Override
+        public void onConnected() {
+            Toast.makeText(getApplicationContext(), "Bt Connected", Toast.LENGTH_SHORT).show();
+            ivConnectionState.setVisibility(View.INVISIBLE);
+        }
 
+        @Override
+        public void onDisconnected() {
+            Toast.makeText(getApplicationContext(), "Bt Disconnected", Toast.LENGTH_SHORT).show();
+            ivConnectionState.setVisibility(View.VISIBLE);
+        }
+    };
 
     public void setSelect(int i) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -201,6 +231,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.rdoBtn_homepage_seat:
                 setSelect(2);
+                break;
+            case R.id.iv_mainactivity_lost_connect:
+                ServiceManager.getInstance().connectToDevice(null, mConnectionListener);
                 break;
         }
     }

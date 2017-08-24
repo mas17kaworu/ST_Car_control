@@ -113,13 +113,7 @@
         android:layout_marginStart="100dp"
         android:layout_marginTop="60dp"/>
 
-    <ImageView
-        android:id="@+id/iv_homepage_lost_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_lost_bt"
-        android:layout_marginTop="60dp"
-        android:layout_marginStart="900dp"/>
+
 
 
 </RelativeLayout>

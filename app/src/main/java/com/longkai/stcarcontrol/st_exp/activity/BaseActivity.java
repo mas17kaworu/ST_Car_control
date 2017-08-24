@@ -41,30 +41,14 @@ public class BaseActivity extends AppCompatActivity {
             getWindow().setNavigationBarColor(Color.TRANSPARENT);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-        //// TODO: 2017/7/9 start service
-        ServiceManager.getInstance().init(getApplicationContext(), new ServiceManager.InitCompleteListener() {
-            @Override
-            public void onInitComplete() {
-                ServiceManager.getInstance().setConnectionListener(mConnectionListener);
-            }
-        });
+
 
         /*mBtServer = new BTServer(BTManager.getInstance().getBtAdapter(),
                 mBTDetectedHandler,
                 getApplicationContext());*/
     }
 
-    ConnectionListener mConnectionListener = new ConnectionListener() {
-        @Override
-        public void onConnected() {
-            Toast.makeText(getApplicationContext(), "Bt Connected", Toast.LENGTH_SHORT).show();
-        }
 
-        @Override
-        public void onDisconnected() {
-            Toast.makeText(getApplicationContext(), "Bt Disconnected", Toast.LENGTH_SHORT).show();
-        }
-    };
 
 
     /********************************************************************************/

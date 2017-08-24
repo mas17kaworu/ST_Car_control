@@ -17,6 +17,15 @@
             android:id="@+id/main_fragment_content"/>
 
         <include layout="@layout/activity_main_bottom_ratio_group_background"/>
+
+        <ImageView
+            android:id="@+id/iv_mainactivity_lost_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_homepage_lost_bt"
+            android:layout_marginTop="60dp"
+            android:layout_marginStart="900dp"/>
+
         <!--<include layout="@layout/activity_main_bottom_ratio_group"/>-->
     </RelativeLayout>
 
