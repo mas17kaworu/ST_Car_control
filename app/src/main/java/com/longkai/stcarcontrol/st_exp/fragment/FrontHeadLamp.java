@@ -14,9 +14,6 @@ import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.activity.BaseActivity;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLamp;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 
 /**
@@ -58,8 +55,7 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
         switch (v.getId()){
             case R.id.iv_lamp_dadeng_click:
                 /*if (ConstantData.sLampDadengStatus == 0) {
-                    CMDLEDHeadLamp.DRLLightOn();
-                    mBTServer.sendCommend(new CMDLEDHeadLamp(), new CommandListenerAdapter(){
+                    mBTServer.sendCommend(new CMDBCMRearLamp(), new CommandListenerAdapter(){
                         @Override
                         public void onSuccess(BaseResponse response) {
                             super.onSuccess(response);
@@ -69,8 +65,8 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                     });
 
                 } else {
-                    CMDLEDHeadLamp.DRLLightOff();
-                    mBTServer.sendCommend(new CMDLEDHeadLamp(), new CommandListenerAdapter(){
+                    CMDBCMRearLamp.DRLLightOff();
+                    mBTServer.sendCommend(new CMDBCMRearLamp(), new CommandListenerAdapter(){
                         @Override
                         public void onSuccess(BaseResponse response) {
                             super.onSuccess(response);
