@@ -39,12 +39,12 @@ public class CMDLEDHeadLamp extends BaseCommand {
     protected static final byte Highway = (byte)0x02;
     protected static final byte Urban = (byte)0x01;
 
-    protected static final byte HBLED8 = (byte)0x08;
-    protected static final byte HBLED7 = (byte)0x07;
-    protected static final byte HBLED6 = (byte)0x06;
-    protected static final byte HBLED5 = (byte)0x05;
-    protected static final byte HBLED4 = (byte)0x04;
-    protected static final byte HBLED3 = (byte)0x03;
+    protected static final byte HBLED8 = (byte)0x80;
+    protected static final byte HBLED7 = (byte)0x40;
+    protected static final byte HBLED6 = (byte)0x20;
+    protected static final byte HBLED5 = (byte)0x10;
+    protected static final byte HBLED4 = (byte)0x08;
+    protected static final byte HBLED3 = (byte)0x04;
     protected static final byte HBLED2 = (byte)0x02;
     protected static final byte HBLED1 = (byte)0x01;
 
