@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.communication.commandList.powerSeatCMDList;
+package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList;
 
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
