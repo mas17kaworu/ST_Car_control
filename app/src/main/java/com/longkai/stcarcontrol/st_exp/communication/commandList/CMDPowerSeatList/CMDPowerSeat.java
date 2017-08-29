@@ -46,6 +46,7 @@ public class CMDPowerSeat extends BaseCommand{
 
     protected static byte[] payload = {0x00,0x00,0x00,0x00};
 
+
     public CMDPowerSeat(){
         try{
             data = new byte[6];
@@ -69,7 +70,7 @@ public class CMDPowerSeat extends BaseCommand{
 
     @Override
     public byte getCommandId() {
-        return 0;
+        return COMMAND_POWER_SEAT;
     }
 
 

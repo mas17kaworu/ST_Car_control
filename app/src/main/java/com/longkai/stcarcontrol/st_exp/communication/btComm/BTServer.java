@@ -173,7 +173,6 @@ public class BTServer implements ConnectionInterface{
                 mBtClientSocket = null;
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         mBtDevice=null;

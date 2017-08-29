@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
@@ -68,6 +69,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initUI();
         setSelect(0);
 
+        byte UnlockR	= (byte) 0x80;
+        byte test = (byte) 0xff;
+        test &= (~UnlockR);
+        Log.i("testLK", UnlockR + "  " + test);
 //        startBTConnect();
 //        mBtServer.sendCommend(new CMDGetVersion());
     }

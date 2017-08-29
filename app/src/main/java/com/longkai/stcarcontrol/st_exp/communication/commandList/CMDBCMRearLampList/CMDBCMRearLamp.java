@@ -87,6 +87,6 @@ public class CMDBCMRearLamp extends BaseCommand {
     }
 
     private void func(int[] dstArray, int startBit, byte srcByte){
-
+// TODO: 2017/8/29 拼接
     }
 }
