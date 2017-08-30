@@ -197,6 +197,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         }
         transaction.commit();
+        // TODO: 2017/8/29 release fragment
     }
 
 

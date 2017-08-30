@@ -44,8 +44,35 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         mView = inflater.inflate(R.layout.fragment_seat, container, false);
         mView.findViewById( R.id.seat_back_support_up).setOnClickListener(this);
         mView.findViewById( R.id.seat_back_support_down).setOnClickListener( this);
+
+
         mView.findViewById( R.id.seat_back_support_left).setOnClickListener( this);
         mView.findViewById( R.id.seat_back_support_right).setOnClickListener( this);
+        ((MenuViewItem)mView.findViewById(R.id.seat_back_support_left)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
+            @Override
+            public void onDown() {
+                loadGifonLeft(R.mipmap.gif_seat_back_support_forward);
+            }
+
+            @Override
+            public void onUp() {
+                releaseLeftGifView();
+            }
+        });
+        ((MenuViewItem)mView.findViewById( R.id.seat_back_support_right)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
+            @Override
+            public void onDown() {
+                loadGifonLeft(R.mipmap.gif_seat_back_support_backward);
+            }
+
+            @Override
+            public void onUp() {
+                releaseLeftGifView();
+            }
+        });
+
+
+
 
         mView.findViewById( R.id.seat_bottom_backward).setOnClickListener(this);
         mView.findViewById( R.id.seat_bottom_forward).setOnClickListener(this);
@@ -75,10 +102,59 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
 
         mView.findViewById( R.id.seat_back_backward).setOnClickListener(this);
         mView.findViewById( R.id.seat_back_forward).setOnClickListener(this);
+        ((MenuViewItem)mView.findViewById( R.id.seat_back_backward)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
+            @Override
+            public void onDown() {
+//                loadGifonLeft(R.mipmap.gif_seat_back_backward);
+            }
+
+            @Override
+            public void onUp() {
+                releaseLeftGifView();
+            }
+        });
+        ((MenuViewItem)mView.findViewById( R.id.seat_back_forward)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
+            @Override
+            public void onDown() {
+//                loadGifonLeft(R.mipmap.gif_seat_back_forward);
+            }
+
+            @Override
+            public void onUp() {
+                releaseLeftGifView();
+            }
+        });
+
+
         mView.findViewById( R.id.seat_bottom_clockwise).setOnClickListener(this);
         mView.findViewById( R.id.seat_bottom_anticlockwise).setOnClickListener(this);
+
+
         mView.findViewById( R.id.seat_bottom_up).setOnClickListener(this);
         mView.findViewById( R.id.seat_bottom_down).setOnClickListener(this);
+        ((MenuViewItem)mView.findViewById( R.id.seat_bottom_up)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
+            @Override
+            public void onDown() {
+                loadGifonLeft(R.mipmap.gif_seat_bottom_up);
+            }
+
+            @Override
+            public void onUp() {
+                releaseLeftGifView();
+            }
+        });
+        ((MenuViewItem)mView.findViewById( R.id.seat_bottom_down)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
+            @Override
+            public void onDown() {
+                loadGifonLeft(R.mipmap.gif_seat_bottom_down);
+            }
+
+            @Override
+            public void onUp() {
+                releaseLeftGifView();
+            }
+        });
+
         iv_seat_heat = (ImageView) mView.findViewById(R.id.iv_seat_heat);
         iv_seat_heat.setOnClickListener(this);
         iv_seat_wind = (ImageView) mView.findViewById(R.id.iv_seat_wind);
@@ -243,39 +319,28 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
     public boolean onTouch(View v, MotionEvent event) {
         switch (v.getId()){
             case R.id.seat_back_support_up:
-
                 break;
             case R.id.seat_back_support_down:
-
                 break;
             case R.id.seat_back_support_left:
-
                 break;
             case R.id.seat_back_support_right:
-
                 break;
             case R.id.seat_bottom_backward:
-
                 break;
             case R.id.seat_bottom_forward:
                 break;
             case R.id.seat_back_backward:
-
                 break;
             case R.id.seat_back_forward:
-
                 break;
             case R.id.seat_bottom_clockwise:
-
                 break;
             case R.id.seat_bottom_anticlockwise:
-
                 break;
             case R.id.seat_bottom_up:
-
                 break;
             case R.id.seat_bottom_down:
-
                 break;
         }
         return false;
