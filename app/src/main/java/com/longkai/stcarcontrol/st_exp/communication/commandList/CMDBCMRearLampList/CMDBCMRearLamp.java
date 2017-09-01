@@ -59,7 +59,7 @@ public class CMDBCMRearLamp extends BaseCommand {
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());
         if (data[2] == 0x1A){
-            func(response.overLoad, 0, data[4]);
+            func(response.openLoad, 0, data[4]);
             func(response.overLoad, 8, data[5]);
         } else if (data[2] == 0x02){
 

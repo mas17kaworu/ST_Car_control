@@ -16,6 +16,9 @@ import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.adapter.HorizontalListViewAdapter;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
 import com.longkai.stcarcontrol.st_exp.fragment.CarBackFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
@@ -63,6 +66,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onInitComplete() {
                 ServiceManager.getInstance().setConnectionListener(mConnectionListener);
+
+                ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(),new CommandListenerAdapter(){
+                    @Override
+                    public void onSuccess(BaseResponse response) {
+                        super.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        super.onTimeout();
+                    }
+                });
             }
         });
 
@@ -73,8 +88,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         byte test = (byte) 0xff;
         test &= (~UnlockR);
         Log.i("testLK", UnlockR + "  " + test);
-//        startBTConnect();
-//        mBtServer.sendCommend(new CMDGetVersion());
     }
 
     @Override

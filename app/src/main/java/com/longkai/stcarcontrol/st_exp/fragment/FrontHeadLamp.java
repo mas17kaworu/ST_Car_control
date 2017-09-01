@@ -3,6 +3,7 @@ package com.longkai.stcarcontrol.st_exp.fragment;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,11 @@ import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.activity.BaseActivity;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLamplist.CMDLEDHeadLampHighBeamOn;
 
 /**
  * Created by Administrator on 2017/7/10.
@@ -76,6 +81,19 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                     });
                 }*/
                 clickLamp(ConstantData.sLampDadengStatus, ivLampDadeng);
+                ServiceManager.getInstance().sendCommandToCar(new CMDLEDHeadLampHighBeamOn(),new CommandListenerAdapter(){
+                    @Override
+                    public void onSuccess(BaseResponse response) {
+                        super.onSuccess(response);
+                        Log.i("FrontHeadLamp","onSuccess");
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        super.onTimeout();
+                        Log.i("FrontHeadLamp","onTimeout");
+                    }
+                });
                 break;
             case R.id.iv_lamp_jinguangdeng_click:
                 clickLamp(ConstantData.sLampJinguangdengStatus, ivLampJingguangdeng);

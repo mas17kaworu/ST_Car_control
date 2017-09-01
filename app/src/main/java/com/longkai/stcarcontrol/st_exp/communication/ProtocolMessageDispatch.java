@@ -79,9 +79,9 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
 
         if (data[0] == 0x3C && data[1] == 0x5a){
             byte[] raw = new byte[128];
-            System.arraycopy(data, 0, raw, 2, length);
+            System.arraycopy(data, 2, raw, 0, length);
             if (data[length-1] == CheckSumBit.checkSum(raw, length-3)){//检查完毕
-                int commandId = raw[3];
+                int commandId = raw[1];
 
                 Command command;
                 CommandListener listener;

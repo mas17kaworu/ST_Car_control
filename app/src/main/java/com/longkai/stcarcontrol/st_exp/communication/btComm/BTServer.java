@@ -216,6 +216,8 @@ public class BTServer implements ConnectionInterface{
 
     }
 
+	byte[] receivePackage = new byte[128];
+
     private class ConnectThread extends Thread {
 		private  BluetoothSocket btSocket;
 		private  BluetoothDevice btDevice;
@@ -254,14 +256,17 @@ public class BTServer implements ConnectionInterface{
 			//receive ConstantData from bluetooth
 			if (mBtClientSocket != null) {
 				Log.d(TAG, "test5");
-				byte[] Gbuffer = new byte[128];
+
 				//初始化接收的包
 				while(BtConnect_state){
 					try {
+						byte[] Gbuffer = new byte[128];
 						int count = inputStream.read(Gbuffer);
                         if (count >=4){
                             MessageReceivedListener.onReceive(Gbuffer, 0, count);
-                        }
+                        } else {
+							// TODO: 2017/8/31 拼包
+						}
 						Log.d(TAG, "count = " + count + "Gamepad ConstantData : ");
 					} catch (IOException e){
 //						e.printStackTrace();
