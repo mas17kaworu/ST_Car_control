@@ -3,7 +3,7 @@ import time
 import os
 import codecs
 
-baseName="CMDLEDHeadLamp"
+baseName="CMDBCMRearLamp"
 srcName=baseName+'.csv'
 
 print ("hello")
@@ -27,9 +27,6 @@ for filename,second in csv_reader:
         file.writelines(li)
         li=["      super();\n"]
         file.writelines(li)
-        if bitNum==1:
-            li=["      payload[",str(bitNum),"] = 0;\n"]
-            file.writelines(li)
         li=["   }\n"]
         file.writelines(li)
         li=["   @Override\n\tpublic void turnOn(){\n"]

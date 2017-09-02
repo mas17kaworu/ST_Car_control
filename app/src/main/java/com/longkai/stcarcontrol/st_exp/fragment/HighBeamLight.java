@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,13 @@ import android.widget.RadioButton;
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampCurve;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampParking;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampUrban;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -55,7 +63,8 @@ public class HighBeamLight extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.rdoBtn_high_beam_urban:
-                clickTask(rdoUrban,1,R.mipmap.gif_high_beam_urban);
+                //new command 的时候已经自动清零
+                clickTask(rdoUrban,1,R.mipmap.gif_high_beam_urban, new CMDLEDHeadLampUrban());
                 break;
             case R.id.rdoBtn_high_beam_highway:
 
@@ -64,10 +73,10 @@ public class HighBeamLight extends Fragment implements View.OnClickListener{
 
                 break;
             case R.id.rdoBtn_high_beam_curve:
-                clickTask(rdoCurve,4,R.mipmap.gif_high_beam_curve);
+                clickTask(rdoCurve,4,R.mipmap.gif_high_beam_curve, new CMDLEDHeadLampCurve());
                 break;
             case R.id.rdoBtn_high_beam_parking:
-                clickTask(rdoParking,5,R.mipmap.gif_high_beam_park);
+                clickTask(rdoParking,5,R.mipmap.gif_high_beam_park, new CMDLEDHeadLampParking());
                 break;
             case R.id.rdoBtn_high_beam_energy_saving:
 
@@ -78,15 +87,45 @@ public class HighBeamLight extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void clickTask(RadioButton rb, int num, int gifResId){
+    private void clickTask(RadioButton rb, int num, int gifResId, BaseCommand command){
         if (highBeamStatus == num) {
             rb.setChecked(false);
             highBeamStatus = 0;
             releaseGifView();
+            //send command
+            command.turnOff();
+            ServiceManager.getInstance().sendCommandToCar(command,new CommandListenerAdapter(){
+                @Override
+                public void onSuccess(BaseResponse response) {
+                    super.onSuccess(response);
+                    Log.i("HighBeamLight","onSuccess");
+                }
+
+                @Override
+                public void onTimeout() {
+                    super.onTimeout();
+                    Log.i("HighBeamLight","onTimeout");
+                }
+            });
         } else {
             rb.setChecked(true);
             highBeamStatus = num;
             loadGif(gifResId);
+
+            command.turnOn();
+            ServiceManager.getInstance().sendCommandToCar(command,new CommandListenerAdapter(){
+                @Override
+                public void onSuccess(BaseResponse response) {
+                    super.onSuccess(response);
+                    Log.i("HighBeamLight","onSuccess");
+                }
+
+                @Override
+                public void onTimeout() {
+                    super.onTimeout();
+                    Log.i("HighBeamLight","onTimeout");
+                }
+            });
         }
     }
 

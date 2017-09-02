@@ -25,6 +25,13 @@ public abstract class BaseCommand implements Command {
     protected byte[] data;//payload
     protected int dataLength;
 
+    public void turnOn(){
+    }
+
+    public void turnOff(){
+
+    }
+
 
     public byte[] toRawData() {
         byte[] raw;

@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLamplist;
+package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList;
 
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;

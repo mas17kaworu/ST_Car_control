@@ -34,7 +34,7 @@ public class CMDPowerSeat extends BaseCommand{
     protected static final byte SeatBackward = (byte)0x01;
 
     protected static final byte Ventilation = (byte)0x10;
-    protected static final byte VentilationLevel = (byte)0x04;
+    protected static final byte VentilationLevel = (byte)0x0C;
     protected static final byte HeatCode = (byte)0x03;
 
 

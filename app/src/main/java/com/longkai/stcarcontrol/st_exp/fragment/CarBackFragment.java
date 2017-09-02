@@ -3,6 +3,7 @@ package com.longkai.stcarcontrol.st_exp.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,15 @@ import android.widget.ImageView;
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.activity.BaseActivity;
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampBrake;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampPosition;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampTurnLeft;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampTurnRight;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 import java.security.spec.ECField;
 
@@ -53,25 +62,44 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_carback_break_click:
-                clickLamp(ConstantData.sCarBackBreakLampStatus, ivCarbackBreakLamp);
+                clickLamp(ConstantData.sCarBackBreakLampStatus, ivCarbackBreakLamp,
+                        new CMDBCMRearLampBrake());
                 break;
             case R.id.iv_carback_position_click:
-                clickLamp(ConstantData.sCarBackPositionLampStatus, ivCarbackPositionLamp);
+                clickLamp(ConstantData.sCarBackPositionLampStatus, ivCarbackPositionLamp,
+                        new CMDBCMRearLampPosition());
                 break;
             case R.id.iv_carback_turnleft_click:
-                clickLamp(ConstantData.sCarBackTurnLeftLampStatus, ivCarbackTurnleftLamp);
+                clickLamp(ConstantData.sCarBackTurnLeftLampStatus, ivCarbackTurnleftLamp,
+                        new CMDBCMRearLampTurnLeft());
                 break;
             case R.id.iv_carback_turnright_click:
-                clickLamp(ConstantData.sCarBackTurnRightLampStatus, ivCarbackTurnrightLamp);
+                clickLamp(ConstantData.sCarBackTurnRightLampStatus, ivCarbackTurnrightLamp,
+                        new CMDBCMRearLampTurnRight());
                 break;
         }
     }
 
 
-    private void clickLamp(int index, View view){
+    private void clickLamp(int index, View view, BaseCommand command){
         if (ConstantData.sCarBackFragmentStatus[index] == 0) {
             ConstantData.sCarBackFragmentStatus[index] = 1;
             view.setVisibility(View.VISIBLE);
+            command.turnOn();
+            ServiceManager.getInstance().sendCommandToCar(command,new CommandListenerAdapter(){
+                @Override
+                public void onSuccess(BaseResponse response) {
+                    super.onSuccess(response);
+                    Log.i("CarBackFragment","onSuccess");
+                }
+
+                @Override
+                public void onTimeout() {
+                    super.onTimeout();
+                    Log.i("CarBackFragment","onTimeout");
+                }
+            });
+
             if (index == ConstantData.sCarBackTurnLeftLampStatus){
                 setBlink(view);
 
@@ -88,6 +116,21 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
             }
         } else {
             ConstantData.sCarBackFragmentStatus[index] = 0;
+            command.turnOff();
+            ServiceManager.getInstance().sendCommandToCar(command,new CommandListenerAdapter(){
+                @Override
+                public void onSuccess(BaseResponse response) {
+                    super.onSuccess(response);
+                    Log.i("CarBackFragment","onSuccess");
+                }
+
+                @Override
+                public void onTimeout() {
+                    super.onTimeout();
+                    Log.i("CarBackFragment","onTimeout");
+                }
+            });
+
             if (index == ConstantData.sCarBackTurnLeftLampStatus){
                 view.setAnimation(null);
             }

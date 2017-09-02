@@ -17,9 +17,16 @@ import com.longkai.stcarcontrol.st_exp.activity.BaseActivity;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampCorner;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampCurve;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHBAll;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampLowBeam1;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampPosition;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampTurnLeft;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampTurnRight;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLamplist.CMDLEDHeadLampHighBeamOn;
 
 /**
  * Created by Administrator on 2017/7/10.
@@ -59,56 +66,23 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_lamp_dadeng_click:
-                /*if (ConstantData.sLampDadengStatus == 0) {
-                    mBTServer.sendCommend(new CMDBCMRearLamp(), new CommandListenerAdapter(){
-                        @Override
-                        public void onSuccess(BaseResponse response) {
-                            super.onSuccess(response);
-                            ConstantData.sLampDadengStatus = 1;
-                            ivLampDadeng.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-                } else {
-                    CMDBCMRearLamp.DRLLightOff();
-                    mBTServer.sendCommend(new CMDBCMRearLamp(), new CommandListenerAdapter(){
-                        @Override
-                        public void onSuccess(BaseResponse response) {
-                            super.onSuccess(response);
-                            ConstantData.sLampDadengStatus = 0;
-                            ivLampDadeng.setVisibility(View.INVISIBLE);
-                        }
-                    });
-                }*/
-                clickLamp(ConstantData.sLampDadengStatus, ivLampDadeng);
-                ServiceManager.getInstance().sendCommandToCar(new CMDLEDHeadLampHighBeamOn(),new CommandListenerAdapter(){
-                    @Override
-                    public void onSuccess(BaseResponse response) {
-                        super.onSuccess(response);
-                        Log.i("FrontHeadLamp","onSuccess");
-                    }
-
-                    @Override
-                    public void onTimeout() {
-                        super.onTimeout();
-                        Log.i("FrontHeadLamp","onTimeout");
-                    }
-                });
+                clickLamp(ConstantData.sLampDadengStatus, ivLampDadeng, new CMDLEDHeadLampHBAll());
                 break;
             case R.id.iv_lamp_jinguangdeng_click:
-                clickLamp(ConstantData.sLampJinguangdengStatus, ivLampJingguangdeng);
+                // TODO: 2017/9/1 lowbeam 合并
+                clickLamp(ConstantData.sLampJinguangdengStatus, ivLampJingguangdeng, new CMDLEDHeadLampLowBeam1());
                 break;
             case R.id.iv_lamp_jiaodeng_click:
-                clickLamp(ConstantData.sLampJiaodengStatus, ivLampJiaodeng);
+                clickLamp(ConstantData.sLampJiaodengStatus, ivLampJiaodeng, new CMDLEDHeadLampCorner());
                 break;
             case R.id.iv_lamp_rixingdeng_click:
-                clickLamp(ConstantData.sLampRixingdengStatus, ivLampRixingdeng);
+                clickLamp(ConstantData.sLampRixingdengStatus, ivLampRixingdeng, new CMDLEDHeadLampPosition());
                 break;
             case R.id.iv_lamp_turnleft_click:
-                clickLamp(ConstantData.sLampTurnLeftStatus, ivLampTurnLeft);
+                clickLamp(ConstantData.sLampTurnLeftStatus, ivLampTurnLeft, new CMDLEDHeadLampTurnLeft());
                 break;
             case R.id.iv_lamp_turnright_click:
-                clickLamp(ConstantData.sLampTurnRightStatus, ivLampTurnRight);
+                clickLamp(ConstantData.sLampTurnRightStatus, ivLampTurnRight, new CMDLEDHeadLampTurnRight());
                 break;
             case R.id.iv_lamp_jump:
                 ((MainActivity)getActivity()).setSelect(100);
@@ -116,9 +90,24 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void clickLamp(int index, View view){
+    private void clickLamp(int index, View view, BaseCommand command){
         if (ConstantData.sFrontLampFragmentStatus[index] == 0) {
             ConstantData.sFrontLampFragmentStatus[index] = 1;
+            command.turnOn();
+            ServiceManager.getInstance().sendCommandToCar(command,new CommandListenerAdapter(){
+                @Override
+                public void onSuccess(BaseResponse response) {
+                    super.onSuccess(response);
+                    Log.i("FrontHeadLamp","onSuccess");
+                }
+
+                @Override
+                public void onTimeout() {
+                    super.onTimeout();
+                    Log.i("FrontHeadLamp","onTimeout");
+                }
+            });
+
             view.setVisibility(View.VISIBLE);
             if (index == ConstantData.sLampTurnRightStatus){
                 setBlink(view);
@@ -127,6 +116,7 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                 ConstantData.sFrontLampFragmentStatus[ConstantData.sLampTurnLeftStatus] = 0;
                 ivLampTurnLeft.setAnimation(null);
                 ivLampTurnLeft.setVisibility(View.INVISIBLE);
+                // TODO: 2017/9/1 close turnLeft
             }
             if (index == ConstantData.sLampTurnLeftStatus){
                 setBlink(view);
@@ -135,9 +125,24 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                 ConstantData.sFrontLampFragmentStatus[ConstantData.sLampTurnRightStatus] = 0;
                 ivLampTurnRight.setAnimation(null);
                 ivLampTurnRight.setVisibility(View.INVISIBLE);
+                // TODO: 2017/9/1 close turnRight
             }
         } else {
             ConstantData.sFrontLampFragmentStatus[index] = 0;
+            command.turnOff();
+            ServiceManager.getInstance().sendCommandToCar(command,new CommandListenerAdapter(){
+                @Override
+                public void onSuccess(BaseResponse response) {
+                    super.onSuccess(response);
+                    Log.i("FrontHeadLamp","onSuccess");
+                }
+
+                @Override
+                public void onTimeout() {
+                    super.onTimeout();
+                    Log.i("FrontHeadLamp","onTimeout");
+                }
+            });
             if (index == ConstantData.sLampTurnRightStatus){
                 view.setAnimation(null);
             }

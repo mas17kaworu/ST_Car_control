@@ -263,10 +263,11 @@ public class BTServer implements ConnectionInterface{
 						byte[] Gbuffer = new byte[128];
 						int count = inputStream.read(Gbuffer);
                         if (count >=4){
-                            MessageReceivedListener.onReceive(Gbuffer, 0, count);
-                        } else {
-							// TODO: 2017/8/31 拼包
-						}
+//                            MessageReceivedListener.onReceive(Gbuffer, 0, count);
+							//  拼包
+							spliceArray(Gbuffer,count);
+                        }
+
 						Log.d(TAG, "count = " + count + "Gamepad ConstantData : ");
 					} catch (IOException e){
 //						e.printStackTrace();
@@ -281,6 +282,18 @@ public class BTServer implements ConnectionInterface{
 
 				}
 			}
+		}
+	}
+
+	private boolean gotHead = false;
+	private void spliceArray(byte[] gbuffer,int length){
+		if (length==1 && gbuffer[0] == 0x3C){
+			gotHead=true;
+			receivePackage[0] = 0x3C;
+		} else if (gotHead && gbuffer[0]==0x5A){
+			System.arraycopy(gbuffer,0,receivePackage,1,length);
+			gotHead=false;
+			MessageReceivedListener.onReceive(receivePackage, 0, length+1);
 		}
 	}
 

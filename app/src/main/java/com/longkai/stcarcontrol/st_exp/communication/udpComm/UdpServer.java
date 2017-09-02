@@ -20,8 +20,10 @@ import java.util.Arrays;
 
 public class UdpServer implements ConnectionInterface {
     private static final String TAG = "BaseUdpServer";
-    private String mServerIp = "127.0.0.1";//目标IP
+//    private String mServerIp = "127.0.0.1";//我自己的IP
     private int mServerPort = 49130;//我的UDP端口号
+    private String mTargetIp = "192.168.1.1";//对方的IP
+    private int mTargetPort = 49131;//对方的UDP端口号
 
     private byte[] mRecvBuffer = new byte[1024];
     private byte[] mSendBuffer = new byte[1024];
@@ -36,20 +38,19 @@ public class UdpServer implements ConnectionInterface {
     public UdpServer(){
         recvPacket = new DatagramPacket(mRecvBuffer, mRecvBuffer.length);
         try {
-            sendPacket = new DatagramPacket(mSendBuffer, mSendBuffer.length, new InetSocketAddress(mServerIp, mServerPort));
+            sendPacket = new DatagramPacket(mSendBuffer, mSendBuffer.length, new InetSocketAddress(mTargetIp, mTargetPort));
         } catch (SocketException e) {
             e.printStackTrace();
         }
 
     }
 
-    public UdpServer(String ip, int port) {
-        mServerIp = ip;
+    public UdpServer(int port) {
         mServerPort = port;
 
         recvPacket = new DatagramPacket(mRecvBuffer, mRecvBuffer.length);
         try {
-            sendPacket = new DatagramPacket(mSendBuffer, mSendBuffer.length, new InetSocketAddress(mServerIp, mServerPort));
+            sendPacket = new DatagramPacket(mSendBuffer, mSendBuffer.length, new InetSocketAddress(mTargetIp, mTargetPort));
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -79,9 +80,9 @@ public class UdpServer implements ConnectionInterface {
         public void run() {
             super.run();
 
-            InetSocketAddress socketAddress = new InetSocketAddress(mServerIp, mServerPort);
             try {
-                mSocket = new DatagramSocket(socketAddress);
+//                InetSocketAddress socketAddress = new InetSocketAddress(mServerIp, mServerPort);
+                mSocket = new DatagramSocket(mServerPort);//mSocket = new DatagramSocket(socketAddress);
                 mSocket.setReuseAddress(true);
                 mSocket.setSoTimeout(200);
                 //Log.d(TAG, "LocalUdpServer Started!");

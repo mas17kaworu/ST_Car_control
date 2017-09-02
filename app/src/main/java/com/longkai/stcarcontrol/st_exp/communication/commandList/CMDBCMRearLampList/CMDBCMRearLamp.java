@@ -59,8 +59,10 @@ public class CMDBCMRearLamp extends BaseCommand {
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());
         if (data[2] == 0x1A){
-            func(response.openLoad, 0, data[4]);
-            func(response.overLoad, 8, data[5]);
+            func(response.openLoad, data, 4);
+            func(response.overLoad, data, 7);
+            // TODO: 2017/9/2 adc采样怎样读取
+
         } else if (data[2] == 0x02){
 
         }
@@ -86,7 +88,22 @@ public class CMDBCMRearLamp extends BaseCommand {
         }
     }
 
-    private void func(int[] dstArray, int startBit, byte srcByte){
-// TODO: 2017/8/29 拼接
+    private void func(final int[] dstArray, final byte[] srcByte,final int startBit){
+        int num = 0;
+        int i=0;
+        byte tmp = srcByte[startBit + num];
+        for (; i < 8;i++) {
+            dstArray[i] = tmp & 0x01;
+            tmp = (byte) (tmp>>1);
+        }
+        num++;
+        tmp = srcByte[startBit + num];
+        for (; i < 16;i++) {
+            dstArray[i] = tmp & 0x01;
+            tmp = (byte) (tmp>>1);
+        }
+        num++;
+        tmp = srcByte[startBit + num];
+        dstArray[i] = tmp & 0x01;
     }
 }
