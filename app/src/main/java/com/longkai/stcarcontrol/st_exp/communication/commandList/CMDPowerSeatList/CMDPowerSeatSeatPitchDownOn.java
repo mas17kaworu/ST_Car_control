@@ -3,5 +3,6 @@ public class CMDPowerSeatSeatPitchDownOn extends CMDPowerSeat{
    public CMDPowerSeatSeatPitchDownOn(){
        super();
        payload[1] |= SeatPitchDown;
+       refreshDataPayload();
    }
 }

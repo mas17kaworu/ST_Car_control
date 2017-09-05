@@ -38,6 +38,12 @@ public class CMDControlCenter extends BaseCommand {
         }
     }
 
+    protected void refreshDataPayload(){
+        for (int i=0; i < payload.length; i++) {
+            data[2+i] = payload[i];
+        }
+    }
+
     @Override
     public byte getCommandId() {
         return COMMAND_CENTRAL_CONTORL;

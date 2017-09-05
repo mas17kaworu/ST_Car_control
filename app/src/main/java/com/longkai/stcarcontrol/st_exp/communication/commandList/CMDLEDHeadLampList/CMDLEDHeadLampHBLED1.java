@@ -6,9 +6,11 @@ public class CMDLEDHeadLampHBLED1 extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[2] |= HBLED1;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[2] &= ~(HBLED1);
+          refreshDataPayload();
    }
 }

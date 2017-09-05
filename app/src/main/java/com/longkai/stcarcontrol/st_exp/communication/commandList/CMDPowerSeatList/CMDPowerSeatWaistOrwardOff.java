@@ -3,5 +3,6 @@ public class CMDPowerSeatWaistOrwardOff extends CMDPowerSeat{
    public CMDPowerSeatWaistOrwardOff(){
        super();
        payload[0] &= ~(WaistOrward);
+       refreshDataPayload();
    }
 }

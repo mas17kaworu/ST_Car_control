@@ -34,6 +34,15 @@ public class ConstantData {
     public static int sDoorLock = 1;
     public static int sDoorMirrorHeat = 2;
     public static int sDoorMirrorLight = 3;
+
+    public static int[] sCenterControlStatus = new int[10];
+    public static int sCenterControlWindAngle   = 0;
+    public static int sCenterControlWindPower   = 1;
+    public static int sCenterControlDomeLight   = 2;
+    public static int sCenterControlFuelTankLock = 3;
+    public static int sCenterControlCentralLock = 4;
+    public static int sCenterControlWiper       = 5;//有档位？
+    public static int sCenterControlSafeBelt    = 6;
     /**
      * 0-1000
      */

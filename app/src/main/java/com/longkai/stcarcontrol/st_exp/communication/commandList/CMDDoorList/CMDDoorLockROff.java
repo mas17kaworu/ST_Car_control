@@ -3,5 +3,6 @@ public class CMDDoorLockROff extends CMDDoor{
    public CMDDoorLockROff(){
        super();
        payload[0] &= ~(LockR);
+       refreshDataPayload();
    }
 }

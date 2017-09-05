@@ -7,9 +7,11 @@ public class CMDLEDHeadLampParking extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[1] |= Parking;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[1] &= ~(Parking);
+          refreshDataPayload();
    }
 }

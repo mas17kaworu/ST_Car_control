@@ -5,5 +5,6 @@ public class CMDPowerSeatHeatCodeSet extends CMDPowerSeat{
        //先清零
        payload[2] &= (~HeatCode);
        payload[2] |= (HeatCode & value);
+       refreshDataPayload();
    }
 }

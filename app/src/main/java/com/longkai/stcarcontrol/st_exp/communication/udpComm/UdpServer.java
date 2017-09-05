@@ -21,9 +21,9 @@ import java.util.Arrays;
 public class UdpServer implements ConnectionInterface {
     private static final String TAG = "BaseUdpServer";
 //    private String mServerIp = "127.0.0.1";//我自己的IP
-    private int mServerPort = 49130;//我的UDP端口号
-    private String mTargetIp = "192.168.1.1";//对方的IP
-    private int mTargetPort = 49131;//对方的UDP端口号
+    private int mServerPort = 45130;//我的UDP端口号
+    private String mTargetIp = "192.168.31.11";//对方的IP
+    private int mTargetPort = 1388;//对方的UDP端口号
 
     private byte[] mRecvBuffer = new byte[1024];
     private byte[] mSendBuffer = new byte[1024];
@@ -88,18 +88,23 @@ public class UdpServer implements ConnectionInterface {
                 //Log.d(TAG, "LocalUdpServer Started!");
             } catch (SocketException e) {
                 e.printStackTrace();
+
                 Log.e(TAG, "BaseUdpServer Start Error");
                 //return;
             }
 
             while (isRunning) {
                 try {
-                    mSocket.receive(recvPacket);
-                    sendPacket.setSocketAddress(recvPacket.getSocketAddress());
-                    //AOA Send
-                    byte[] temp = Arrays.copyOf(recvPacket.getData(), recvPacket.getLength());
-                    //Log.d(TAG, "LocalUdpServer Recv:" + ByteUtils.byteArrayToHexString(temp));
-                    mMessageReceivedListener.onReceive(temp,0,temp.length);
+                    if (mSocket != null) {
+                        mSocket.receive(recvPacket);
+
+                        sendPacket.setSocketAddress(recvPacket.getSocketAddress());
+                        //AOA Send
+                        byte[] temp = Arrays.copyOf(recvPacket.getData(), recvPacket.getLength());
+                        //Log.d(TAG, "LocalUdpServer Recv:" + ByteUtils.byteArrayToHexString(temp));
+                        mMessageReceivedListener.onReceive(temp,0,temp.length);
+                        Log.i(TAG,"Got UDP package length = "+ temp.length);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

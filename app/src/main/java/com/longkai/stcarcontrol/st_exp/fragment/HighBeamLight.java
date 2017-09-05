@@ -17,7 +17,10 @@ import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampCountry;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampCurve;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampEnergySave;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHighway;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampParking;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampUrban;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
@@ -67,10 +70,10 @@ public class HighBeamLight extends Fragment implements View.OnClickListener{
                 clickTask(rdoUrban,1,R.mipmap.gif_high_beam_urban, new CMDLEDHeadLampUrban());
                 break;
             case R.id.rdoBtn_high_beam_highway:
-
+                clickTask(rdoHighway,2,R.mipmap.gif_high_beam_highway, new CMDLEDHeadLampHighway());
                 break;
             case R.id.rdoBtn_high_beam_country:
-
+                clickTask(rdoCountry,3,R.mipmap.gif_high_beam_country, new CMDLEDHeadLampCountry());
                 break;
             case R.id.rdoBtn_high_beam_curve:
                 clickTask(rdoCurve,4,R.mipmap.gif_high_beam_curve, new CMDLEDHeadLampCurve());
@@ -79,7 +82,7 @@ public class HighBeamLight extends Fragment implements View.OnClickListener{
                 clickTask(rdoParking,5,R.mipmap.gif_high_beam_park, new CMDLEDHeadLampParking());
                 break;
             case R.id.rdoBtn_high_beam_energy_saving:
-
+                clickTask(rdoEnergySaving,6,R.mipmap.gif_high_beam_energy_saving,new CMDLEDHeadLampEnergySave());
                 break;
             case R.id.iv_high_beam_back:
                 ((MainActivity)getActivity()).setSelect(1);

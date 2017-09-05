@@ -7,9 +7,11 @@ public class CMDLEDHeadLampCurve extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[1] |= Curve;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[1] &= ~(Curve);
+          refreshDataPayload();
    }
 }

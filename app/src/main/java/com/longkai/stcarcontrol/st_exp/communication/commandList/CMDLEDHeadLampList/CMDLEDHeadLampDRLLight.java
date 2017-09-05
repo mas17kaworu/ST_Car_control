@@ -6,9 +6,11 @@ public class CMDLEDHeadLampDRLLight extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[0] |= DRLLight;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[0] &= ~(DRLLight);
+          refreshDataPayload();
    }
 }

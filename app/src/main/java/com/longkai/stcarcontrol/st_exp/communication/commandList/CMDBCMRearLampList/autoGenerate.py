@@ -33,11 +33,15 @@ for filename,second in csv_reader:
         file.writelines(li)
         li=["          payload[",str(bitNum),"] |= ",filename,";\n"]
         file.writelines(li)
+        li=["          refreshDataPayload();\n"]
+        file.writelines(li)
         li=["   }\n"]
         file.writelines(li)
         li=["   @Override\n\tpublic void turnOff(){\n"]
         file.writelines(li)
         li=["          payload[",str(bitNum),"] &= ~(",filename,");\n"]
+        file.writelines(li)
+        li=["          refreshDataPayload();\n"]
         file.writelines(li)
         li=["   }\n"]
         file.writelines(li)

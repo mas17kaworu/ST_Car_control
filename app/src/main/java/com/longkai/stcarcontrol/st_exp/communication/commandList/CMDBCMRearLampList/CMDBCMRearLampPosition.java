@@ -6,9 +6,11 @@ public class CMDBCMRearLampPosition extends CMDBCMRearLamp{
    @Override
 	public void turnOn(){
           payload[0] |= Position;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[0] &= ~(Position);
+          refreshDataPayload();
    }
 }

@@ -3,5 +3,6 @@ public class CMDPowerSeatVentilationOn extends CMDPowerSeat{
    public CMDPowerSeatVentilationOn(){
        super();
        payload[2] |= Ventilation;
+       refreshDataPayload();
    }
 }

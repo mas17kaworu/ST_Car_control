@@ -7,9 +7,11 @@ public class CMDLEDHeadLampHighway extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[1] |= Highway;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[1] &= ~(Highway);
+          refreshDataPayload();
    }
 }

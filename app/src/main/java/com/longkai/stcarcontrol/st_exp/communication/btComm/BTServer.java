@@ -28,8 +28,11 @@ import com.longkai.stcarcontrol.st_exp.communication.CommandListener;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionInterface;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
 import com.longkai.stcarcontrol.st_exp.communication.MessageReceivedListener;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+
+import static com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand.COMMAND_HEAD0;
 
 public class BTServer implements ConnectionInterface{
 
@@ -262,13 +265,13 @@ public class BTServer implements ConnectionInterface{
 					try {
 						byte[] Gbuffer = new byte[128];
 						int count = inputStream.read(Gbuffer);
-                        if (count >=4){
-//                            MessageReceivedListener.onReceive(Gbuffer, 0, count);
-							//  拼包
-							spliceArray(Gbuffer,count);
-                        }
+						//  拼包
+						spliceArray(Gbuffer,count);
+                        /*if (count >=4){
+                            MessageReceivedListener.onReceive(Gbuffer, 0, count);
+                        }*/
 
-						Log.d(TAG, "count = " + count + "Gamepad ConstantData : ");
+						Log.d(TAG, "Got count = " + count );
 					} catch (IOException e){
 //						e.printStackTrace();
 					}
@@ -285,15 +288,52 @@ public class BTServer implements ConnectionInterface{
 		}
 	}
 
-	private boolean gotHead = false;
+	private int gotHead = 0;
+	private int firstPackageNum = 0;
+
 	private void spliceArray(byte[] gbuffer,int length){
-		if (length==1 && gbuffer[0] == 0x3C){
-			gotHead=true;
-			receivePackage[0] = 0x3C;
-		} else if (gotHead && gbuffer[0]==0x5A){
+		if (length==1 && gbuffer[0] == COMMAND_HEAD0){
+			gotHead=1;
+			Log.i(TAG, "Got first byte success");
+			receivePackage[0] = COMMAND_HEAD0;
+		} else if (gotHead == 1 && gbuffer[0]== BaseCommand.COMMAND_HEAD1){
 			System.arraycopy(gbuffer,0,receivePackage,1,length);
-			gotHead=false;
+			gotHead=0;
+			Log.i(TAG, "spliceArray success");
 			MessageReceivedListener.onReceive(receivePackage, 0, length+1);
+		}
+
+		if (length==2 && gbuffer[0] == COMMAND_HEAD0 && gbuffer[1] == BaseCommand.COMMAND_HEAD1){
+			gotHead=2;
+			Log.i(TAG, "Got first byte success");
+			receivePackage[0] = COMMAND_HEAD0;
+			receivePackage[1] = BaseCommand.COMMAND_HEAD1;
+		} else if (gotHead == 2 /*&& gbuffer[0] == length - 1*/){
+			System.arraycopy(gbuffer,0,receivePackage,2,length);
+			gotHead=0;
+			Log.i(TAG, "spliceArray success");
+			MessageReceivedListener.onReceive(receivePackage, 0, length+2);
+		}
+
+		if (length==3 && gbuffer[0] == COMMAND_HEAD0 && gbuffer[1] == BaseCommand.COMMAND_HEAD1){
+			gotHead=3;
+			Log.i(TAG, "Got first byte success");
+			receivePackage[0] = COMMAND_HEAD0;
+			receivePackage[1] = BaseCommand.COMMAND_HEAD1;
+			receivePackage[2] = gbuffer[2];
+			firstPackageNum = gbuffer[2];
+		} else if (gotHead == 3 /*&& firstPackageNum == length*/){
+			System.arraycopy(gbuffer,0,receivePackage,3,length);
+			gotHead=0;
+			Log.i(TAG, "spliceArray success");
+			MessageReceivedListener.onReceive(receivePackage, 0, length+3);
+		}
+
+
+		if (length>4 && gbuffer[0] == COMMAND_HEAD0 && gbuffer[1] == BaseCommand.COMMAND_HEAD1){
+			System.arraycopy(gbuffer,0,receivePackage,0,length);
+			MessageReceivedListener.onReceive(receivePackage, 0, length);
+			gotHead=0;
 		}
 	}
 
@@ -320,7 +360,7 @@ public class BTServer implements ConnectionInterface{
 			bos.write(msg);
 			bos.flush();
 			result=true;
-			Log.d(TAG, "BT send:" + msg);
+			Log.d(TAG, "BT send:" + msg[4]);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

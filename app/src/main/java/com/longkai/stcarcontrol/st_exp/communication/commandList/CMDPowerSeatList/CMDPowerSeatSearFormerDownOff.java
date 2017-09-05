@@ -3,5 +3,6 @@ public class CMDPowerSeatSearFormerDownOff extends CMDPowerSeat{
    public CMDPowerSeatSearFormerDownOff(){
        super();
        payload[1] &= ~(SearFormerDown);
+       refreshDataPayload();
    }
 }

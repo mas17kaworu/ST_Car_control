@@ -7,9 +7,11 @@ public class CMDLEDHeadLampEnergySave extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[1] |= EnergySave;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[1] &= ~(EnergySave);
+          refreshDataPayload();
    }
 }

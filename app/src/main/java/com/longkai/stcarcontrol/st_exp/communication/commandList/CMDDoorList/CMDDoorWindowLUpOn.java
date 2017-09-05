@@ -3,5 +3,6 @@ public class CMDDoorWindowLUpOn extends CMDDoor{
    public CMDDoorWindowLUpOn(){
        super();
        payload[0] |= WindowLUp;
+       refreshDataPayload();
    }
 }

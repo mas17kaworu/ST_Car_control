@@ -55,6 +55,10 @@ public class CMDBCMRearLamp extends BaseCommand {
         }
     }
 
+    protected void refreshDataPayload(){
+        data[2] = payload[0];
+    }
+
     @Override
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());
@@ -68,6 +72,7 @@ public class CMDBCMRearLamp extends BaseCommand {
         }
         return response;
     }
+
 
     @Override
     public byte getCommandId() {

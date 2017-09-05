@@ -6,9 +6,11 @@ public class CMDBCMRearLampReversing extends CMDBCMRearLamp{
    @Override
 	public void turnOn(){
           payload[0] |= Reversing;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[0] &= ~(Reversing);
+          refreshDataPayload();
    }
 }

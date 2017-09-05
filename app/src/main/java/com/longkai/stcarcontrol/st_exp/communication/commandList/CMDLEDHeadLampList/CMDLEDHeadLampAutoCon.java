@@ -7,9 +7,11 @@ public class CMDLEDHeadLampAutoCon extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[1] |= AutoCon;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[1] &= ~(AutoCon);
+          refreshDataPayload();
    }
 }

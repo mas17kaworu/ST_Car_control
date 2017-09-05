@@ -3,5 +3,6 @@ public class CMDDoorOut15_LOn extends CMDDoor{
    public CMDDoorOut15_LOn(){
        super();
        payload[5] |= Out15_L;
+       refreshDataPayload();
    }
 }

@@ -61,7 +61,12 @@ public class CMDPowerSeat extends BaseCommand{
             e.printStackTrace();
         }
     }
-
+    protected void refreshDataPayload(){
+        data[2] = payload[0];
+        data[3] = payload[1];
+        data[4] = payload[2];
+        data[5] = payload[3];
+    }
     @Override
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());

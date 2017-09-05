@@ -12,19 +12,34 @@ public class CMDPLGM extends BaseCommand {
     protected static final byte TrunkUp = (byte)0x02;
     protected static final byte TrunkDown = (byte)0x01;
 
-    protected static byte[] payload = {0x00,0x00};
+    protected static byte[] payload = {0x00};
 
     public CMDPLGM(){
         try{
-            data = new byte[4];
-            dataLength = 4;
-            data[0] = 0x04;
+            data = new byte[3];
+            dataLength = 3;
+            data[0] = 0x03;
             data[1] = COMMAND_PLGM;
             data[2] = payload[0];
-            data[3] = payload[1];
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public CMDPLGM(boolean isDiagnostic){
+        try{
+            data = new byte[3];
+            dataLength = 3;
+            data[0] = 0x03;
+            data[1] = (byte) 0x80 | COMMAND_PLGM;
+            data[2] = payload[0];
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    protected void refreshDataPayload(){
+        data[2] = payload[0];
     }
 
     @Override

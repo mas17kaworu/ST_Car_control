@@ -3,5 +3,6 @@ public class CMDDoorWindowRUpOff extends CMDDoor{
    public CMDDoorWindowRUpOff(){
        super();
        payload[0] &= ~(WindowRUp);
+       refreshDataPayload();
    }
 }

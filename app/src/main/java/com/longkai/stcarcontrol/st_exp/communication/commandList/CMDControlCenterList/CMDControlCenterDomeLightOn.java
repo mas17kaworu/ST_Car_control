@@ -3,5 +3,6 @@ public class CMDControlCenterDomeLightOn extends CMDControlCenter{
    public CMDControlCenterDomeLightOn(){
        super();
        payload[0] |= DomeLight;
+       refreshDataPayload();
    }
 }

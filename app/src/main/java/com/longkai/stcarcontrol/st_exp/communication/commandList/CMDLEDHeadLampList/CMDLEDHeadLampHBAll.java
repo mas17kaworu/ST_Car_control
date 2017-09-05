@@ -6,9 +6,11 @@ public class CMDLEDHeadLampHBAll extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[0] |= HBAll;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[0] &= ~(HBAll);
+          refreshDataPayload();
    }
 }

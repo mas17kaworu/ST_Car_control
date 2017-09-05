@@ -1,5 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.communication.commandList;
 
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDHVACList.CMDHVAC;
+
 /**
  * Created by Administrator on 2017/8/5.
  */
@@ -10,7 +12,7 @@ public class CMDAutoRunSwitch extends BaseCommand {
         try{
             data = new byte[3];
             dataLength = 3;
-            data[0] = 0x02;
+            data[0] = 0x03;
             data[1] = COMMAND_AUTO_RUN;
             if (state){
                 data[2] = 0x01;
@@ -25,7 +27,7 @@ public class CMDAutoRunSwitch extends BaseCommand {
     @Override
     public BaseResponse toResponse(byte[] data) throws Exception {
 
-        return null;
+        return new Response(getCommandId());
     }
 
     @Override

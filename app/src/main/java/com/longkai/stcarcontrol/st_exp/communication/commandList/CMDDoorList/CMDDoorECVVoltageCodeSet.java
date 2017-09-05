@@ -5,5 +5,6 @@ public class CMDDoorECVVoltageCodeSet extends CMDDoor{
        //先清零
        payload[2] &= (~ECVVoltageCode);
        payload[2] |= (ECVVoltageCode & value);
+       refreshDataPayload();
    }
 }

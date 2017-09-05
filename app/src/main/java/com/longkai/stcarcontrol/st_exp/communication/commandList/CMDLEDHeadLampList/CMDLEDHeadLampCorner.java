@@ -6,9 +6,11 @@ public class CMDLEDHeadLampCorner extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[0] |= Corner;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[0] &= ~(Corner);
+          refreshDataPayload();
    }
 }

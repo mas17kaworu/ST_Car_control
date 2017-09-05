@@ -12,5 +12,6 @@ public class CMDHVACFlapCodeSet extends CMDHVAC{
     public CMDHVACFlapCodeSet(int value){
         super();
         payload[1] = (byte) value;
+        refreshDataPayload();
     }
 }

@@ -3,5 +3,6 @@ public class CMDDoorLockROn extends CMDDoor{
    public CMDDoorLockROn(){
        super();
        payload[0] |= LockR;
+       refreshDataPayload();
    }
 }

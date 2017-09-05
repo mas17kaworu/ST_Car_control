@@ -20,7 +20,6 @@ import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampCorner;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampCurve;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHBAll;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampLowBeam1;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampPosition;
@@ -92,6 +91,7 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
 
     private void clickLamp(int index, View view, BaseCommand command){
         if (ConstantData.sFrontLampFragmentStatus[index] == 0) {
+            Log.i("FrontHeadLamp","On");
             ConstantData.sFrontLampFragmentStatus[index] = 1;
             command.turnOn();
             ServiceManager.getInstance().sendCommandToCar(command,new CommandListenerAdapter(){
@@ -129,6 +129,7 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
             }
         } else {
             ConstantData.sFrontLampFragmentStatus[index] = 0;
+            Log.i("FrontHeadLamp","Off");
             command.turnOff();
             ServiceManager.getInstance().sendCommandToCar(command,new CommandListenerAdapter(){
                 @Override

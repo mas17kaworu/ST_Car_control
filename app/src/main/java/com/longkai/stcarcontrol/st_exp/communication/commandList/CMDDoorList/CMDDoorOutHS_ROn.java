@@ -3,5 +3,6 @@ public class CMDDoorOutHS_ROn extends CMDDoor{
    public CMDDoorOutHS_ROn(){
        super();
        payload[5] |= OutHS_R;
+       refreshDataPayload();
    }
 }

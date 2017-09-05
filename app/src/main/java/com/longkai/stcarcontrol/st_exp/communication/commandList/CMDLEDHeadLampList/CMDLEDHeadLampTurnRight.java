@@ -6,9 +6,11 @@ public class CMDLEDHeadLampTurnRight extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[0] |= TurnRight;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[0] &= ~(TurnRight);
+          refreshDataPayload();
    }
 }

@@ -3,5 +3,6 @@ public class CMDDoorMirrorTLLightOff extends CMDDoor{
    public CMDDoorMirrorTLLightOff(){
        super();
        payload[3] &= ~(MirrorTLLight);
+       refreshDataPayload();
    }
 }

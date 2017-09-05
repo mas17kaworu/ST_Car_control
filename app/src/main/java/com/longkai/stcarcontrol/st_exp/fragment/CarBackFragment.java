@@ -1,6 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,9 +23,14 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampL
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampPosition;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampTurnLeft;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampTurnRight;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGM;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 import java.security.spec.ECField;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2017/8/19.
@@ -37,7 +43,7 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
     private ImageView ivCarbackBreakLamp, ivCarbackPositionLamp, ivCarbackTurnleftLamp, ivCarbackTurnrightLamp;
 
     private BTServer mBTServer;
-
+    private static ExecutorService sExecutorService;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -54,9 +60,59 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
 
         mBTServer = ((BaseActivity)getActivity()).mBtServer;
 
+
+
+
+        handler.postDelayed(runnable, 500);// 打开定时器，50ms后执行runnable
+
+
+        /*TimerTask diagnosticTask = new TimerTask() {
+            @Override
+            public void run() {
+                ServiceManager.getInstance().sendCommandToCar(new CMDPLGM(true),new CommandListenerAdapter(){
+                    @Override
+                    public void onSuccess(BaseResponse response) {
+                        super.onSuccess(response);
+                        int AntiPinch = ((CMDPLGM.Response)response).getAntiPinch();
+                        int MotorStatus = ((CMDPLGM.Response)response).getMotorStatus();
+                        Log.i("CarBackFragment", AntiPinch + "  " + MotorStatus);
+                    }
+                });
+            }
+        };
+        timer = new Timer();
+        timer.schedule(diagnosticTask, 500);//开启定时器，*/
+
+
         return mView;
     }
+    Timer timer;
 
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable(){
+        @Override
+        public void run() {
+            ServiceManager.getInstance().sendCommandToCar(new CMDPLGM(true),new CommandListenerAdapter(){
+                @Override
+                public void onSuccess(BaseResponse response) {
+                    super.onSuccess(response);
+                    int AntiPinch = ((CMDPLGM.Response)response).getAntiPinch();
+                    int MotorStatus = ((CMDPLGM.Response)response).getMotorStatus();
+                    Log.i("CarBackFragment", AntiPinch + "  " + MotorStatus);
+                }
+            });
+            handler.removeCallbacks(this); //移除定时任务
+            handler.postDelayed(runnable, 500);
+        }
+    };
+
+    private class DiagnosticRunner implements Runnable{
+
+        @Override
+        public void run() {
+            ServiceManager.getInstance().sendCommandToCar(new CMDPLGM(true),new CommandListenerAdapter());
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -149,5 +205,11 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
         alphaAnimation1.setRepeatMode(Animation.REVERSE);
         view.setAnimation(alphaAnimation1);
         alphaAnimation1.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        timer.cancel();
     }
 }

@@ -3,5 +3,6 @@ public class CMDControlCenterSafebeltSendoutOn extends CMDControlCenter{
    public CMDControlCenterSafebeltSendoutOn(){
        super();
        payload[1] |= SafebeltSendout;
+       refreshDataPayload();
    }
 }

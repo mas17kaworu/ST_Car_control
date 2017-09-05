@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
+import com.longkai.stcarcontrol.st_exp.communication.udpComm.UdpServer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -50,8 +51,12 @@ public class CommunicationServer extends Service {
         doBackgroundHandler = new Handler(handlerThread.getLooper());
 
         // use BTserver now
-        mConnection = new BTServer(BTManager.getInstance().getBtAdapter(), null, getApplicationContext());
+        /*mConnection = new BTServer(BTManager.getInstance().getBtAdapter(), null, getApplicationContext());
+        mConnection.open(null, mConnectionListener);*/
+
+        mConnection = new UdpServer();
         mConnection.open(null, mConnectionListener);
+
         mMessageHandler = new ProtocolMessageDispatch(mConnection);
         doBackgroundHandler.postDelayed(commandTimeoutCheck, 400);
     }

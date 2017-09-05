@@ -6,9 +6,11 @@ public class CMDBCMRearLampBrake extends CMDBCMRearLamp{
    @Override
 	public void turnOn(){
           payload[0] |= Brake;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[0] &= ~(Brake);
+          refreshDataPayload();
    }
 }

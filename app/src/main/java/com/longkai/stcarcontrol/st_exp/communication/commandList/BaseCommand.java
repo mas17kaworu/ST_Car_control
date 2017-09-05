@@ -9,8 +9,8 @@ import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
 
 public abstract class BaseCommand implements Command {
     public static final boolean IS_BIGENDIAN = false;
-    protected static final byte COMMAND_HEAD0 = 0x3C;
-    protected static final byte COMMAND_HEAD1 = 0x5A;
+    public static final byte COMMAND_HEAD0 = 0x5A;
+    public static final byte COMMAND_HEAD1 = 0x3C;
 
     protected static final byte COMMAND_GET_FIRMWARE    = 0x01;
     protected static final byte COMMAND_AUTO_RUN        = 0x02;

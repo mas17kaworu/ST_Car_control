@@ -4,5 +4,6 @@ public class CMDPowerSeatVentilationLevelSet extends CMDPowerSeat{
        super();
        payload[2] &= (~VentilationLevel);
        payload[2] |= (value<<2);
+       refreshDataPayload();
    }
 }

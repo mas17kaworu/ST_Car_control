@@ -3,5 +3,6 @@ public class CMDControlCenterCentralUnlockOn extends CMDControlCenter{
    public CMDControlCenterCentralUnlockOn(){
        super();
        payload[0] |= CentralUnlock;
+       refreshDataPayload();
    }
 }

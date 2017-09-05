@@ -6,9 +6,11 @@ public class CMDBCMRearLampTurnLeft extends CMDBCMRearLamp{
    @Override
 	public void turnOn(){
           payload[0] |= TurnLeft;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[0] &= ~(TurnLeft);
+          refreshDataPayload();
    }
 }

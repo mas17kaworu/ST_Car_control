@@ -3,5 +3,6 @@ public class CMDDoorMirrorSelectOn extends CMDDoor{
    public CMDDoorMirrorSelectOn(){
        super();
        payload[1] |= MirrorSelect;
+       refreshDataPayload();
    }
 }

@@ -7,9 +7,11 @@ public class CMDLEDHeadLampUrban extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[1] |= Urban;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[1] &= ~(Urban);
+          refreshDataPayload();
    }
 }

@@ -6,9 +6,11 @@ public class CMDLEDHeadLampLowBeam1 extends CMDLEDHeadLamp{
    @Override
 	public void turnOn(){
           payload[0] |= LowBeam1;
+          refreshDataPayload();
    }
    @Override
 	public void turnOff(){
           payload[0] &= ~(LowBeam1);
+          refreshDataPayload();
    }
 }

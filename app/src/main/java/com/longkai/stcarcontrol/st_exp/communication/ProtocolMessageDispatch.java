@@ -1,9 +1,13 @@
 package com.longkai.stcarcontrol.st_exp.communication;
 
+import android.util.Log;
 import android.util.SparseArray;
 
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
+
+import static com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand.COMMAND_HEAD0;
 
 /**
  * Created by lk.sun on 3/8/2016.
@@ -36,6 +40,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
             synchronized (listLock) {
                 mSentCommandList.put(command.getCommandId(), command);
                 mCommandListenerList.put(command.getCommandId(), listener);
+                Log.i("Command","Send package commandID = " + command.getCommandId());
             }
         }
         byte[] sendData = command.toRawData();
@@ -77,12 +82,12 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
     @Override
     public void onReceive(byte[] data, int offset, int length) {
 
-        if (data[0] == 0x3C && data[1] == 0x5a){
+        if (data[0] == BaseCommand.COMMAND_HEAD0 && data[1] == BaseCommand.COMMAND_HEAD1){
             byte[] raw = new byte[128];
-            System.arraycopy(data, 2, raw, 0, length);
-            if (data[length-1] == CheckSumBit.checkSum(raw, length-3)){//检查完毕
-                int commandId = raw[1];
-
+            System.arraycopy(data, 0, raw, 0, length);
+            if (data[length-1] == CheckSumBit.checkSum(raw, length-1)){//检查完毕
+                int commandId = raw[3];
+                Log.i("Command","Got package commandId = " + commandId);
                 Command command;
                 CommandListener listener;
                 synchronized (listLock) {
@@ -91,7 +96,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
                     mSentCommandList.remove(commandId);
                     mCommandListenerList.remove(commandId);
                 }
-
+                Log.i("Command","Got package command = " + command);
                 if (command == null || listener == null) {
                     return;
                 }

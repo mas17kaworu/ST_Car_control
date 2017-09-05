@@ -3,5 +3,6 @@ public class CMDDoorWindowLDownOn extends CMDDoor{
    public CMDDoorWindowLDownOn(){
        super();
        payload[0] |= WindowLDown;
+       refreshDataPayload();
    }
 }

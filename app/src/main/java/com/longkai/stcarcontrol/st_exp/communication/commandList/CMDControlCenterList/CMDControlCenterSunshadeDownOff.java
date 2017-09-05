@@ -3,5 +3,6 @@ public class CMDControlCenterSunshadeDownOff extends CMDControlCenter{
    public CMDControlCenterSunshadeDownOff(){
        super();
        payload[0] &= ~(SunshadeDown);
+       refreshDataPayload();
    }
 }
