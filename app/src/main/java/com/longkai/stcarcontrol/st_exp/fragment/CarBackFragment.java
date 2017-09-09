@@ -23,6 +23,8 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampL
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampPosition;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampTurnLeft;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampTurnRight;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampDRLLight;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampPosition;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGM;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
@@ -49,12 +51,12 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_car_back, container, false);
         mView.findViewById(R.id.iv_carback_break_click).setOnClickListener(this);
-        mView.findViewById(R.id.iv_carback_position_click).setOnClickListener(this);
+        mView.findViewById(R.id.iv_carback_reversing_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_carback_turnleft_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_carback_turnright_click).setOnClickListener(this);
 
         ivCarbackBreakLamp = (ImageView) mView.findViewById(R.id.iv_carback_break_light);
-        ivCarbackPositionLamp = (ImageView) mView.findViewById(R.id.iv_carback_position_light);
+        ivCarbackPositionLamp = (ImageView) mView.findViewById(R.id.iv_carback_reversing_light);
         ivCarbackTurnleftLamp = (ImageView) mView.findViewById(R.id.iv_carback_turnleft_light);
         ivCarbackTurnrightLamp = (ImageView) mView.findViewById(R.id.iv_carback_turnright_light);
 
@@ -118,10 +120,37 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_carback_break_click:
-                clickLamp(ConstantData.sCarBackBreakLampStatus, ivCarbackBreakLamp,
-                        new CMDBCMRearLampBrake());
+                /*clickLamp(ConstantData.sCarBackBreakLampStatus, ivCarbackBreakLamp,
+                        new CMDBCMRearLampBrake());*/
+                if (ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 0) {
+                    ivCarbackBreakLamp.setImageResource(R.mipmap.ic_carback_position_light);
+                    ivCarbackBreakLamp.setVisibility(View.VISIBLE);
+                    ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] = 1;
+
+                    BaseCommand commandtmp = new CMDBCMRearLampPosition();
+                    commandtmp.turnOn();
+                    ServiceManager.getInstance().sendCommandToCar(commandtmp, new CommandListenerAdapter());
+                }else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 1) {
+                    ivCarbackBreakLamp.setImageResource(R.mipmap.ic_carback_break_light);
+                    ivCarbackBreakLamp.setVisibility(View.VISIBLE);
+                    ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] = 2;
+                    BaseCommand commandtmp = new CMDBCMRearLampPosition();
+                    commandtmp.turnOff();
+                    ServiceManager.getInstance().sendCommandToCar(commandtmp, new CommandListenerAdapter());
+
+                    BaseCommand commandtmp2 = new CMDBCMRearLampBrake();
+                    commandtmp2.turnOn();
+                    ServiceManager.getInstance().sendCommandToCar(commandtmp2, new CommandListenerAdapter());
+                }else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 2) {
+                    ivCarbackBreakLamp.setVisibility(View.INVISIBLE);
+                    ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] = 0;
+                    BaseCommand commandtmp = new CMDBCMRearLampBrake();
+                    commandtmp.turnOff();
+                    ServiceManager.getInstance().sendCommandToCar(commandtmp, new CommandListenerAdapter());
+                }
+
                 break;
-            case R.id.iv_carback_position_click:
+            case R.id.iv_carback_reversing_click:
                 clickLamp(ConstantData.sCarBackPositionLampStatus, ivCarbackPositionLamp,
                         new CMDBCMRearLampPosition());
                 break;
@@ -159,16 +188,16 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
             if (index == ConstantData.sCarBackTurnLeftLampStatus){
                 setBlink(view);
 
-                ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackTurnRightLampStatus] = 0;
+                /*ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackTurnRightLampStatus] = 0;
                 ivCarbackTurnrightLamp.setAnimation(null);
-                ivCarbackTurnrightLamp.setVisibility(View.INVISIBLE);
+                ivCarbackTurnrightLamp.setVisibility(View.INVISIBLE);*/
             }
             if (index == ConstantData.sCarBackTurnRightLampStatus){
                 setBlink(view);
 
-                ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackTurnLeftLampStatus] = 0;
+                /*ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackTurnLeftLampStatus] = 0;
                 ivCarbackTurnleftLamp.setAnimation(null);
-                ivCarbackTurnleftLamp.setVisibility(View.INVISIBLE);
+                ivCarbackTurnleftLamp.setVisibility(View.INVISIBLE);*/
             }
         } else {
             ConstantData.sCarBackFragmentStatus[index] = 0;
@@ -210,6 +239,5 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        timer.cancel();
     }
 }

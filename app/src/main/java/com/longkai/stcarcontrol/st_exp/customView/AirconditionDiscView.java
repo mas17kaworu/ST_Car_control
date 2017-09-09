@@ -61,6 +61,14 @@ public class AirconditionDiscView extends View {
         scaleCoverBitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_air_scale_cover);
     }
 
+    /**
+     * get Progress
+     *
+     * @return 本应用的范围0~240
+     */
+    public int getProgress(){
+        return progressReal;
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

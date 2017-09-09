@@ -24,7 +24,6 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
         avWindAngle = (AirconditionDiscView) mView.findViewById(R.id.aircondition_angle);
         avWindPower = (AirconditionDiscView) mView.findViewById(R.id.aircondition_power);
 
-
         return mView;
     }
 

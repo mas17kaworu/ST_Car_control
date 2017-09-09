@@ -44,7 +44,7 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
 
     private ProgressBar pb_door_mirror;
 
-    private ImageView ivDoorLock, ivMirrorHeat, ivMirrorLight;
+    private ImageView ivDoorLock, ivMirrorHeat, ivMirrorLight, ivMirrorFold, ivMirrorUnfold, ivMirrorSelect;
 
     @Nullable
     @Override
@@ -140,6 +140,13 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
         ivMirrorLight = (ImageView) mView.findViewById(R.id.iv_door_mirror_light);
         ivMirrorLight.setOnClickListener(this);
 
+        ivMirrorSelect = (ImageView) mView.findViewById(R.id.iv_door_mirror_select);
+        ivMirrorSelect.setOnClickListener(this);
+        ivMirrorFold = (ImageView) mView.findViewById(R.id.iv_door_mirror_fold);
+        ivMirrorFold.setOnClickListener(this);
+        ivMirrorUnfold = (ImageView) mView.findViewById(R.id.iv_door_mirror_unfold);
+        ivMirrorUnfold.setOnClickListener(this);
+
         refreshUI();
         return mView;
     }
@@ -161,11 +168,21 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
                 onBtnClick(ConstantData.sDoorLock, ivDoorLock, "CMDDoorLockL");
                 break;
             case R.id.iv_door_mirror_heat:
-                onBtnClick(ConstantData.sDoorMirrorHeat, ivDoorLock, "CMDDoorMirrorHeat");
+                onBtnClick(ConstantData.sDoorMirrorHeat, ivMirrorHeat, "CMDDoorMirrorHeat");
                 break;
             case R.id.iv_door_mirror_light:
-                onBtnClick(ConstantData.sDoorMirrorLight, ivDoorLock, "CMDDoorMirrorTLLight");
+                onBtnClick(ConstantData.sDoorMirrorLight, ivMirrorLight, "CMDDoorMirrorTLLight");
                 break;
+            case R.id.iv_door_mirror_select:
+                onBtnClick(ConstantData.sDoorMirrorSelect, ivMirrorSelect, "CMDDoorMirrorSelect");
+                break;
+            case R.id.iv_door_mirror_fold:
+
+                break;
+            case R.id.iv_door_mirror_unfold:
+
+                break;
+
         }
     }
 
@@ -253,7 +270,11 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
         } else {
             ivMirrorLight.setSelected(true);
         }
-
+        if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorMirrorSelect] == 0){
+            ivMirrorSelect.setSelected(false);
+        } else {
+            ivMirrorSelect.setSelected(true);
+        }
     }
 
     private void loadGif(int resID){

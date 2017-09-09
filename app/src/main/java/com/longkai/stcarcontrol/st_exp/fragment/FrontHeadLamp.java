@@ -20,6 +20,7 @@ import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampCorner;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampDRLLight;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHBAll;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampLowBeam1;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampPosition;
@@ -75,7 +76,35 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                 clickLamp(ConstantData.sLampJiaodengStatus, ivLampJiaodeng, new CMDLEDHeadLampCorner());
                 break;
             case R.id.iv_lamp_rixingdeng_click:
-                clickLamp(ConstantData.sLampRixingdengStatus, ivLampRixingdeng, new CMDLEDHeadLampPosition());
+//                clickLamp(ConstantData.sLampRixingdengStatus, ivLampRixingdeng, new CMDLEDHeadLampPosition());
+                if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] == 0) {
+                    ivLampRixingdeng.setImageResource(R.mipmap.ic_lamp_position_on);
+                    ivLampRixingdeng.setVisibility(View.VISIBLE);
+                    ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] = 1;
+
+                    BaseCommand commandtmp = new CMDLEDHeadLampPosition();
+                    commandtmp.turnOn();
+                    ServiceManager.getInstance().sendCommandToCar(commandtmp, new CommandListenerAdapter());
+                }else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] == 1) {
+                    ivLampRixingdeng.setImageResource(R.mipmap.ic_lamp_rixingdeng_on);
+                    ivLampRixingdeng.setVisibility(View.VISIBLE);
+                    ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] = 2;
+
+                    BaseCommand commandtmp = new CMDLEDHeadLampPosition();
+                    commandtmp.turnOff();
+                    ServiceManager.getInstance().sendCommandToCar(commandtmp, new CommandListenerAdapter());
+
+                    BaseCommand commandtmp2 = new CMDLEDHeadLampDRLLight();
+                    commandtmp2.turnOn();
+                    ServiceManager.getInstance().sendCommandToCar(commandtmp2, new CommandListenerAdapter());
+                }else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] == 2) {
+                    ivLampRixingdeng.setVisibility(View.INVISIBLE);
+                    ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] = 0;
+
+                    BaseCommand commandtmp = new CMDLEDHeadLampDRLLight();
+                    commandtmp.turnOff();
+                    ServiceManager.getInstance().sendCommandToCar(commandtmp, new CommandListenerAdapter());
+                }
                 break;
             case R.id.iv_lamp_turnleft_click:
                 clickLamp(ConstantData.sLampTurnLeftStatus, ivLampTurnLeft, new CMDLEDHeadLampTurnLeft());
@@ -91,6 +120,7 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
 
     private void clickLamp(int index, View view, BaseCommand command){
         if (ConstantData.sFrontLampFragmentStatus[index] == 0) {
+
             Log.i("FrontHeadLamp","On");
             ConstantData.sFrontLampFragmentStatus[index] = 1;
             command.turnOn();
@@ -113,19 +143,17 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                 setBlink(view);
 
                 //左右转向灯不要同时闪烁
-                ConstantData.sFrontLampFragmentStatus[ConstantData.sLampTurnLeftStatus] = 0;
+                /*ConstantData.sFrontLampFragmentStatus[ConstantData.sLampTurnLeftStatus] = 0;
                 ivLampTurnLeft.setAnimation(null);
-                ivLampTurnLeft.setVisibility(View.INVISIBLE);
-                // TODO: 2017/9/1 close turnLeft
+                ivLampTurnLeft.setVisibility(View.INVISIBLE);*/
             }
             if (index == ConstantData.sLampTurnLeftStatus){
                 setBlink(view);
 
                 //左右转向灯不要同时闪烁
-                ConstantData.sFrontLampFragmentStatus[ConstantData.sLampTurnRightStatus] = 0;
+                /*ConstantData.sFrontLampFragmentStatus[ConstantData.sLampTurnRightStatus] = 0;
                 ivLampTurnRight.setAnimation(null);
-                ivLampTurnRight.setVisibility(View.INVISIBLE);
-                // TODO: 2017/9/1 close turnRight
+                ivLampTurnRight.setVisibility(View.INVISIBLE);*/
             }
         } else {
             ConstantData.sFrontLampFragmentStatus[index] = 0;

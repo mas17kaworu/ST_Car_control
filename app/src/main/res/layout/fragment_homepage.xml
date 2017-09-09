@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@mipmap/ic_fragment_background">
 
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -114,6 +115,9 @@
         android:layout_marginTop="60dp"/>
 
 
-
+    <com.longkai.stcarcontrol.st_exp.customView.CoverHeatView
+        android:id="@+id/coverhomefff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>
