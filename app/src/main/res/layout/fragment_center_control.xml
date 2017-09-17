@@ -9,6 +9,12 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_center_control_backpic"
         android:layout_centerHorizontal="true"/>
+    <com.longkai.stcarcontrol.st_exp.customView.CoverWindView
+        android:id="@+id/cover_wind_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"/>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

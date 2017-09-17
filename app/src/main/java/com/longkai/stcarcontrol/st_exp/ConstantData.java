@@ -36,7 +36,7 @@ public class ConstantData {
     public static int sDoorMirrorLight = 3;
     public static int sDoorMirrorSelect = 4;
 
-    public static int[] sCenterControlStatus = new int[10];
+    public static int[] sCenterControlStatus = new int[]{120,120,0,0,0,0,0};
     public static int sCenterControlWindAngle   = 0;
     public static int sCenterControlWindPower   = 1;
     public static int sCenterControlDomeLight   = 2;

@@ -11,10 +11,12 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.activity.BaseActivity;
+import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
@@ -38,7 +40,7 @@ import java.util.concurrent.Executors;
  * Created by Administrator on 2017/8/19.
  */
 
-public class CarBackFragment extends Fragment implements View.OnClickListener {
+public class CarBackLampFragment extends Fragment implements View.OnClickListener {
 
     private View mView;
 
@@ -54,6 +56,7 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
         mView.findViewById(R.id.iv_carback_reversing_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_carback_turnleft_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_carback_turnright_click).setOnClickListener(this);
+        mView.findViewById(R.id.tv_car_back_title).setOnClickListener(this);
 
         ivCarbackBreakLamp = (ImageView) mView.findViewById(R.id.iv_carback_break_light);
         ivCarbackPositionLamp = (ImageView) mView.findViewById(R.id.iv_carback_reversing_light);
@@ -77,7 +80,7 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
                         super.onSuccess(response);
                         int AntiPinch = ((CMDPLGM.Response)response).getAntiPinch();
                         int MotorStatus = ((CMDPLGM.Response)response).getMotorStatus();
-                        Log.i("CarBackFragment", AntiPinch + "  " + MotorStatus);
+                        Log.i("CarBackLampFragment", AntiPinch + "  " + MotorStatus);
                     }
                 });
             }
@@ -100,7 +103,7 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
                     super.onSuccess(response);
                     int AntiPinch = ((CMDPLGM.Response)response).getAntiPinch();
                     int MotorStatus = ((CMDPLGM.Response)response).getMotorStatus();
-                    Log.i("CarBackFragment", AntiPinch + "  " + MotorStatus);
+                    Log.i("CarBackLampFragment", AntiPinch + "  " + MotorStatus);
                 }
             });
             handler.removeCallbacks(this); //移除定时任务
@@ -162,6 +165,9 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
                 clickLamp(ConstantData.sCarBackTurnRightLampStatus, ivCarbackTurnrightLamp,
                         new CMDBCMRearLampTurnRight());
                 break;
+            case R.id.tv_car_back_title:
+                ((MainActivity)getActivity()).setSelect(101);
+                break;
         }
     }
 
@@ -175,13 +181,13 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onSuccess(BaseResponse response) {
                     super.onSuccess(response);
-                    Log.i("CarBackFragment","onSuccess");
+                    Log.i("CarBackLampFragment","onSuccess");
                 }
 
                 @Override
                 public void onTimeout() {
                     super.onTimeout();
-                    Log.i("CarBackFragment","onTimeout");
+                    Log.i("CarBackLampFragment","onTimeout");
                 }
             });
 
@@ -206,13 +212,13 @@ public class CarBackFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onSuccess(BaseResponse response) {
                     super.onSuccess(response);
-                    Log.i("CarBackFragment","onSuccess");
+                    Log.i("CarBackLampFragment","onSuccess");
                 }
 
                 @Override
                 public void onTimeout() {
                     super.onTimeout();
-                    Log.i("CarBackFragment","onTimeout");
+                    Log.i("CarBackLampFragment","onTimeout");
                 }
             });
 

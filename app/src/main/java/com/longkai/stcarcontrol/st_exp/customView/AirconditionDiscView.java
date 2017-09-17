@@ -37,6 +37,7 @@ public class AirconditionDiscView extends View {
 
     private Bitmap discBitmap, scaleBgBitmap, scaleCoverBitmap;
 
+    private ProgressChangeListener mProgressChangeListener;
     public AirconditionDiscView(Context context) {
         super(context);
         init(context);
@@ -61,6 +62,10 @@ public class AirconditionDiscView extends View {
         scaleCoverBitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_air_scale_cover);
     }
 
+    public void setProgressChangeListener(ProgressChangeListener listener){
+        mProgressChangeListener = listener;
+    }
+
     /**
      * get Progress
      *
@@ -68,6 +73,13 @@ public class AirconditionDiscView extends View {
      */
     public int getProgress(){
         return progressReal;
+    }
+
+
+    public void setProgress(int progress){
+        progressOld = progress;
+        progressReal = progress;
+        this.postInvalidate();
     }
 
     @Override
@@ -145,6 +157,7 @@ public class AirconditionDiscView extends View {
             }
             Log.i(TAG,"Angle = " + progressPresent);
             invalidate();
+            mProgressChangeListener.onProgressChangeListener(progressReal);
         }
 
         return super.onTouchEvent(event);
@@ -192,5 +205,9 @@ public class AirconditionDiscView extends View {
         angle = Math.acos((dx1 * dx2 + dy1 * dy2) / c);
         angle = Math.toDegrees(angle);
         return angle;
+    }
+
+    public interface ProgressChangeListener{
+        void onProgressChangeListener(int progress);
     }
 }

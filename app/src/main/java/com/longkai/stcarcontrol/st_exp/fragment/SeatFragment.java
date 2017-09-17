@@ -75,7 +75,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         ((MenuViewItem)mView.findViewById(R.id.seat_back_support_up)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                onBtnDown(R.mipmap.gif_seat_back_support_forward, new CMDPowerSeatWaistUpOn());
+                onBtnDown(R.mipmap.gif_seat_back_support_up, new CMDPowerSeatWaistUpOn());
             }
 
             @Override
@@ -86,7 +86,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         ((MenuViewItem)mView.findViewById( R.id.seat_back_support_down)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                onBtnDown(R.mipmap.gif_seat_back_support_backward, new CMDPowerSeatWaistDownOn());
+                onBtnDown(R.mipmap.gif_seat_back_support_down, new CMDPowerSeatWaistDownOn());
             }
 
             @Override
@@ -154,7 +154,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         ((MenuViewItem)mView.findViewById( R.id.seat_back_backward)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                onBtnDown(R.mipmap.gif_seat_bottom_up, new CMDPowerSeatBackrestForwardOn());
+                onBtnDown(R.mipmap.gif_seat_back_backward, new CMDPowerSeatBackrestForwardOn());
             }
 
             @Override
@@ -165,7 +165,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         ((MenuViewItem)mView.findViewById( R.id.seat_back_forward)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                onBtnDown(R.mipmap.gif_seat_bottom_up, new CMDPowerSeatSeatPitchUpOn());
+                onBtnDown(R.mipmap.gif_seat_back_forward, new CMDPowerSeatSeatPitchUpOn());
             }
 
             @Override
@@ -180,7 +180,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         ((MenuViewItem)mView.findViewById( R.id.seat_bottom_clockwise)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                onBtnDown(R.mipmap.gif_seat_bottom_up, new CMDPowerSeatSeatPitchUpOn());
+                onBtnDown(R.mipmap.gif_seat_bottom_pitch_up, new CMDPowerSeatSeatPitchUpOn());
             }
 
             @Override
@@ -191,7 +191,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         ((MenuViewItem)mView.findViewById( R.id.seat_bottom_anticlockwise)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                onBtnDown(R.mipmap.gif_seat_bottom_down,new CMDPowerSeatSeatPitchDownOn());
+                onBtnDown(R.mipmap.gif_seat_bottom_pitch_down,new CMDPowerSeatSeatPitchDownOn());
             }
 
             @Override
