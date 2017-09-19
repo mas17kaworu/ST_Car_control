@@ -67,6 +67,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         setContentView(R.layout.activity_main);
 
+        
+
         ServiceManager.getInstance().init(getApplicationContext(), new ServiceManager.InitCompleteListener() {
             @Override
             public void onInitComplete() {

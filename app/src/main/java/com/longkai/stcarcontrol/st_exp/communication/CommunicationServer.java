@@ -50,6 +50,7 @@ public class CommunicationServer extends Service {
         handlerThread.start();
         doBackgroundHandler = new Handler(handlerThread.getLooper());
 
+
         // use BTserver now
         mConnection = new BTServer(BTManager.getInstance().getBtAdapter(), null, getApplicationContext());
         mConnection.open(null, mConnectionListener);

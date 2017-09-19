@@ -16,4 +16,13 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="#554B0082"/>
+
+    <ImageView
+        android:id="@+id/iv_diagnostic_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/high_beam_back"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="600dp"
+        />
 </RelativeLayout>
