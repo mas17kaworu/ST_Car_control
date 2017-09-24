@@ -13,9 +13,12 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
 import com.longkai.stcarcontrol.st_exp.adapter.HorizontalListViewAdapter;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
+import com.longkai.stcarcontrol.st_exp.communication.ConnectionType;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
@@ -30,6 +33,9 @@ import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
 import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -49,7 +55,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
 
-    private ImageView ivConnectionState;
+    private ImageView ivConnectionState, ivWifiConnectionState;
     public int mSelectedMode = 0;
 
     @Override
@@ -63,11 +69,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             decorView.setSystemUiVisibility(option);
             getWindow().setNavigationBarColor(Color.TRANSPARENT);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
-
         }
         setContentView(R.layout.activity_main);
 
-        
+
+
 
         ServiceManager.getInstance().init(getApplicationContext(), new ServiceManager.InitCompleteListener() {
             @Override
@@ -101,6 +107,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         ivConnectionState = (ImageView) findViewById(R.id.iv_mainactivity_lost_connect);
         ivConnectionState.setOnClickListener(this);
+        ivWifiConnectionState = (ImageView) findViewById(R.id.iv_mainacivity_lost_wifi);
+        ivWifiConnectionState.setOnClickListener(this);
 
         hListView = (HorizontalListView) findViewById(R.id.horizon_listview);
         final int[] ids = {R.drawable.main_activity_bottom_hompage,
@@ -131,19 +139,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public String mVersion;
+
+    Timer timer;
+
     ConnectionListener mConnectionListener = new ConnectionListener() {
         @Override
         public void onConnected() {
 //            Toast.makeText(getApplicationContext(), "Bt Connected", Toast.LENGTH_SHORT).show();
-            ivConnectionState.setVisibility(View.INVISIBLE);
-
-            new Handler().postDelayed(new Runnable() {
+            if (null == timer){
+                timer = new Timer();
+            }
+            timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(),new CommandListenerAdapter(){
                         @Override
                         public void onSuccess(BaseResponse response) {
                             super.onSuccess(response);
+                            //invisible View
+                            ivConnectionState.setVisibility(View.INVISIBLE);
+                            ivWifiConnectionState.setVisibility(View.INVISIBLE);
+
+
+
                             mVersion = ((CMDGetVersion.Response)response).getVersion();
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -161,8 +179,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         }
                     });
                 }
-            }, 2000);
+            }, 1800);
 
+
+            /*new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            }, 2000);
+*/
 
         }
 
@@ -289,8 +315,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.rdoBtn_homepage_seat:
                 setSelect(2);
                 break;*/
-            case R.id.iv_mainactivity_lost_connect:
-                ServiceManager.getInstance().connectToDevice(null, mConnectionListener);
+            case R.id.iv_mainactivity_lost_connect://bt connection
+                SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "BT");
+                ServiceManager.getInstance().connectToDevice(null, mConnectionListener, ConnectionType.BT);
+                break;
+            case R.id.iv_mainacivity_lost_wifi:
+                SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "WIFI");
+                ServiceManager.getInstance().connectToDevice(null, mConnectionListener, ConnectionType.Wifi);
                 break;
         }
     }

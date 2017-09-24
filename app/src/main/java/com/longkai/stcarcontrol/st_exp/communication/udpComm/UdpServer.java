@@ -34,6 +34,7 @@ public class UdpServer implements ConnectionInterface {
     DatagramPacket sendPacket = null;
 
     MessageReceivedListener mMessageReceivedListener;
+    private ConnectionListener mConnectionListener;
 
     public UdpServer(){
         recvPacket = new DatagramPacket(mRecvBuffer, mRecvBuffer.length);
@@ -79,7 +80,6 @@ public class UdpServer implements ConnectionInterface {
         @Override
         public void run() {
             super.run();
-
             try {
 //                InetSocketAddress socketAddress = new InetSocketAddress(mServerIp, mServerPort);
                 mSocket = new DatagramSocket(mServerPort);//mSocket = new DatagramSocket(socketAddress);
@@ -92,6 +92,8 @@ public class UdpServer implements ConnectionInterface {
                 Log.e(TAG, "BaseUdpServer Start Error");
                 //return;
             }
+
+            mConnectionListener.onConnected();
 
             while (isRunning) {
                 try {
@@ -132,6 +134,8 @@ public class UdpServer implements ConnectionInterface {
             mRecevThread = null;
         }
         if (mSocket != null) {
+            //test
+//            mConnectionListener.onDisconnected();
             mSocket.disconnect();
             mSocket.close();
             mSocket = null;
@@ -140,6 +144,7 @@ public class UdpServer implements ConnectionInterface {
 
     @Override
     public boolean open(Bundle parameter, ConnectionListener listener) {
+        mConnectionListener = listener;
         startUdpServer();
         return false;
     }
@@ -147,6 +152,7 @@ public class UdpServer implements ConnectionInterface {
     @Override
     public void close() {
         stopUdpServer();
+        mConnectionListener.onDisconnected();
     }
 
     @Override

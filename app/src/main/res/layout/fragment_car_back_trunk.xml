@@ -11,4 +11,25 @@
         android:textSize="40sp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"/>
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_car_trunk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_car_back_trunk_close"
+        android:layout_marginLeft="50dp"
+        android:layout_centerVertical="true" />
+    <ImageView
+        android:id="@+id/iv_carback_trunk_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="870dp"
+        android:layout_marginTop="400dp"
+        android:src="@mipmap/ic_car_back_btn_trunk_close_gray"/>
+    <ImageView
+        android:id="@+id/iv_carback_trunk_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="870dp"
+        android:layout_marginTop="500dp"
+        android:src="@mipmap/ic_car_back_btn_trunk_open_gray"/>
 </RelativeLayout>

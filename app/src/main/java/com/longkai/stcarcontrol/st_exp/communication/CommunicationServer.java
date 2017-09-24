@@ -11,6 +11,8 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
+import com.longkai.stcarcontrol.st_exp.ConstantData;
+import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 import com.longkai.stcarcontrol.st_exp.communication.udpComm.UdpServer;
@@ -32,6 +34,8 @@ public class CommunicationServer extends Service {
 
     private List<ConnectionListener> mConnectionListenerList;
 
+    private int COMMAND_TIME_OUT = 1000;
+
     private final CommServerBinder mBinder = new CommServerBinder();
     private Handler doBackgroundHandler;
 
@@ -51,15 +55,19 @@ public class CommunicationServer extends Service {
         doBackgroundHandler = new Handler(handlerThread.getLooper());
 
 
-        // use BTserver now
-        mConnection = new BTServer(BTManager.getInstance().getBtAdapter(), null, getApplicationContext());
-        mConnection.open(null, mConnectionListener);
+        String type = (String) SharedPreferencesUtil.get(this, ConstantData.CONNECTION_TYPE, "BT");
 
-        /*mConnection = new UdpServer();
-        mConnection.open(null, mConnectionListener);*/
+        if (type.equalsIgnoreCase("BT")) {// use BTserver
+
+            mConnection = new BTServer(BTManager.getInstance().getBtAdapter(), null, getApplicationContext());
+            mConnection.open(null, mConnectionListener);
+        } else {// UDP
+            mConnection = new UdpServer();
+            mConnection.open(null, mConnectionListener);
+        }
 
         mMessageHandler = new ProtocolMessageDispatch(mConnection);
-        doBackgroundHandler.postDelayed(commandTimeoutCheck, 400);
+        doBackgroundHandler.postDelayed(commandTimeoutCheck, COMMAND_TIME_OUT);
     }
 
     @Override
@@ -139,7 +147,7 @@ public class CommunicationServer extends Service {
         @Override
         public void run() {
             mMessageHandler.checkTimeoutCommand();
-            doBackgroundHandler.postDelayed(commandTimeoutCheck, 400);
+            doBackgroundHandler.postDelayed(commandTimeoutCheck, COMMAND_TIME_OUT);
         }
     };
 
@@ -187,7 +195,14 @@ public class CommunicationServer extends Service {
             mConnectionListenerList.remove(listener);
         }
 
-        public void ConnectToDevice(Bundle bundle, ConnectionListener listener){
+        public void ConnectToDevice(Bundle bundle, ConnectionListener listener, ConnectionType type){
+            if (type.equals(ConnectionType.BT)){
+                mConnection = new BTServer(BTManager.getInstance().getBtAdapter(), null, getApplicationContext());
+            } else if (type.equals(ConnectionType.Wifi)){
+                mConnection = new UdpServer();
+            }
+
+
             mConnection.open(bundle, listener);
             mConnectionListenerList.clear();
             mConnectionListenerList.add(listener);

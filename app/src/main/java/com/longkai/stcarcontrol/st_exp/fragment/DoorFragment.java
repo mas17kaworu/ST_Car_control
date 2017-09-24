@@ -14,6 +14,10 @@ import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorECVVoltageCodeSet;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorFoldOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorFoldOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorUnfoldOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorUnfoldOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorXLeftOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorXLeftOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorXRightOff;
@@ -28,6 +32,9 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMD
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorWindowLUpOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.MenuViewItem;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -177,15 +184,39 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
                 onBtnClick(ConstantData.sDoorMirrorSelect, ivMirrorSelect, "CMDDoorMirrorSelect");
                 break;
             case R.id.iv_door_mirror_fold:
-
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOn(),new CommandListenerAdapter());
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOff(),new CommandListenerAdapter());
+                loadGif(R.mipmap.gif_door_mirror_fold);
+                scheduleMirrorFoldDelayTask();
                 break;
             case R.id.iv_door_mirror_unfold:
-
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOff(),new CommandListenerAdapter());
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOn(),new CommandListenerAdapter());
+                loadGif(R.mipmap.gif_door_mirror_unfold);
+                scheduleMirrorFoldDelayTask();
                 break;
 
         }
     }
 
+    Timer timer = new Timer();
+
+    private void scheduleMirrorFoldDelayTask(){
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOff(),new CommandListenerAdapter());
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOff(),new CommandListenerAdapter());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        releaseGifView();
+                    }
+                });
+
+            }
+        }, 3000);
+    }
 
 
     private void onBtnDown(int resId, BaseCommand command){

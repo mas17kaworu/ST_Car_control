@@ -165,7 +165,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="mirror heat"
+                android:text="mirror fold"
                 android:textColor="#ffffff"
                 android:textSize="15sp"
                 android:layout_below="@id/iv_door_mirror_fold"
@@ -177,7 +177,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="440dp"
-            android:layout_marginStart="170dp">
+            android:layout_marginStart="163dp">
             <ImageView
                 android:id="@+id/iv_door_mirror_unfold"
                 android:layout_width="wrap_content"
@@ -187,7 +187,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="mirror heat"
+                android:text="mirror unfold"
                 android:textColor="#ffffff"
                 android:textSize="15sp"
                 android:layout_below="@id/iv_door_mirror_unfold"

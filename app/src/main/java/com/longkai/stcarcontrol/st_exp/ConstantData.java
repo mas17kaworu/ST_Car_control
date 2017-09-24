@@ -44,10 +44,11 @@ public class ConstantData {
     public static int sCenterControlCentralLock = 4;
     public static int sCenterControlWiper       = 5;//有档位？
     public static int sCenterControlSafeBelt    = 6;
-    /**
-     * 0-1000
-     */
-    public static int sAirConditionProgress = 0;
+
+    public static int[] sTrunkStatus = new int[]{0};
+    public static int sTrunkStatu   = 0;
+
+    public static final String CONNECTION_TYPE = "connection_type";
 
     public ConstantData(){
 /*        sDataMap = new HashMap<Integer,Integer>();
