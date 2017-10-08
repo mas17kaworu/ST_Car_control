@@ -15,9 +15,10 @@ public class ConstantData {
     public static int mSeatWindStatus = 0;
     public static int mSeatSetStatus = 0;
 
-    public static int[] sFrontLampFragmentStatus = new int[6];
+    public static int[] sFrontLampFragmentStatus = new int[7];
     public static int sLampDadengStatus = 0;
-    public static int sLampJiaodengStatus = 1;
+    public static int sLampJiaodengLeftStatus = 1;
+    public static int sLampJiaodengRightStatus = 6;
     public static int sLampJinguangdengStatus = 2;
     public static int sLampRixingdengStatus = 3;
     public static int sLampTurnLeftStatus = 4;

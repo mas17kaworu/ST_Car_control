@@ -30,6 +30,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.CarBackLampFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.DoorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
+import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLampTest;
 import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private CarBackLampFragment mCarBackFragment;
     private CarBackCoverFragment mCarBackCoverFragment;
     private BCMDiagnosticFragment mBCMDiagnosticFragment;
+    private FrontHeadLampTest frontHeadLampTest;
 
 
     private HorizontalListView hListView;
@@ -89,7 +91,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         byte UnlockR	= (byte) 0x80;
         byte test = (byte) 0xff;
         test &= (~UnlockR);
-        Log.i("testLK", UnlockR + "  " + test);
+        Log.d("testLK", UnlockR + "  " + test);
     }
 
     @Override
@@ -157,8 +159,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         public void onSuccess(BaseResponse response) {
                             super.onSuccess(response);
                             //invisible View
-                            ivConnectionState.setVisibility(View.INVISIBLE);
-                            ivWifiConnectionState.setVisibility(View.INVISIBLE);
+
 
 
 
@@ -166,8 +167,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    ivConnectionState.setVisibility(View.INVISIBLE);
+                                    ivWifiConnectionState.setVisibility(View.INVISIBLE);
                                     Toast.makeText(getApplicationContext(),
-                                            mVersion ,Toast.LENGTH_SHORT).show();
+                                            "version:" + mVersion ,Toast.LENGTH_SHORT).show();
                                 }
                             });
 
@@ -179,7 +182,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         }
                     });
                 }
-            }, 1800);
+            }, 2000);
 
 
             /*new Handler().postDelayed(new Runnable() {
@@ -270,6 +273,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 transaction.replace(R.id.main_fragment_content, mBCMDiagnosticFragment);
                 break;
+            case 102:
+                if (frontHeadLampTest == null){
+                    frontHeadLampTest = new FrontHeadLampTest();
+                }
+                transaction.replace(R.id.main_fragment_content, frontHeadLampTest);
+                break;
             default:
                 break;
 
@@ -318,10 +327,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.iv_mainactivity_lost_connect://bt connection
                 SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "BT");
                 ServiceManager.getInstance().connectToDevice(null, mConnectionListener, ConnectionType.BT);
+                ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(),new CommandListenerAdapter());
                 break;
             case R.id.iv_mainacivity_lost_wifi:
                 SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "WIFI");
                 ServiceManager.getInstance().connectToDevice(null, mConnectionListener, ConnectionType.Wifi);
+                ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(),new CommandListenerAdapter());
                 break;
         }
     }

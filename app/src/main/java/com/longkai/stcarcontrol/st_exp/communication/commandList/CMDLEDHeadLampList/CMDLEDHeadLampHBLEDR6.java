@@ -1,17 +1,16 @@
 package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList;
-public class CMDLEDHeadLampDRLLight extends CMDLEDHeadLamp{
-   public CMDLEDHeadLampDRLLight() {
+public class CMDLEDHeadLampHBLEDR6 extends CMDLEDHeadLamp{
+   public CMDLEDHeadLampHBLEDR6() {
       super();
-      payload[1] = 0;
    }
    @Override
 	public void turnOn(){
-          payload[1] |= DRLLight;
+          payload[3] |= HBLEDR6;
           refreshDataPayload();
    }
    @Override
 	public void turnOff(){
-          payload[1] &= ~(DRLLight);
+          payload[3] &= ~(HBLEDR6);
           refreshDataPayload();
    }
 }

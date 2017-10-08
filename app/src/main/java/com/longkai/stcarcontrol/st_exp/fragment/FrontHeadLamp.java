@@ -1,5 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,11 +21,12 @@ import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampCorner;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampDRLLight;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHBAll;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampLeftCorner;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampLowBeam1;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampPosition;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampRightCorner;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampTurnLeft;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampTurnRight;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
@@ -34,7 +37,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListener
 
 public class FrontHeadLamp extends Fragment implements View.OnClickListener{
     private View mView;
-    private ImageView ivLampDadeng, ivLampJingguangdeng, ivLampJiaodeng, ivLampRixingdeng, ivLampTurnLeft, ivLampTurnRight;
+    private ImageView ivLampDadeng, ivLampJingguangdeng, ivLampJiaodengRight, ivLampJiaodengLeft, ivLampRixingdeng, ivLampTurnLeft, ivLampTurnRight;
 
     private BTServer mBTServer;
 
@@ -44,15 +47,18 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
         mView = inflater.inflate(R.layout.fragment_front_lamp, container, false);
         mView.findViewById(R.id.iv_lamp_dadeng_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_lamp_jinguangdeng_click).setOnClickListener(this);
-        mView.findViewById(R.id.iv_lamp_jiaodeng_click).setOnClickListener(this);
+        mView.findViewById(R.id.iv_lamp_jiaodeng_right_click).setOnClickListener(this);
+        mView.findViewById(R.id.iv_lamp_jiaodeng_left_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_lamp_rixingdeng_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_lamp_turnleft_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_lamp_turnright_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_lamp_jump).setOnClickListener(this);
+        mView.findViewById(R.id.tv_car_front_lamp).setOnClickListener(this);
 
         ivLampDadeng = (ImageView) mView.findViewById(R.id.iv_lamp_dadeng_on);
         ivLampJingguangdeng = (ImageView) mView.findViewById(R.id.iv_lamp_jinguangdeng_on);
-        ivLampJiaodeng = (ImageView) mView.findViewById(R.id.iv_lamp_jiaodeng_on);
+        ivLampJiaodengRight = (ImageView) mView.findViewById(R.id.iv_lamp_jiaodeng_right_on);
+        ivLampJiaodengLeft = (ImageView) mView.findViewById(R.id.iv_lamp_jiaodeng_left_on);
         ivLampRixingdeng = (ImageView) mView.findViewById(R.id.iv_lamp_rixingdeng_on);
         ivLampTurnLeft = (ImageView) mView.findViewById(R.id.iv_lamp_turnleft_on);
         ivLampTurnRight = (ImageView) mView.findViewById(R.id.iv_lamp_turnright_on);
@@ -72,8 +78,11 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                 // TODO: 2017/9/1 lowbeam 合并
                 clickLamp(ConstantData.sLampJinguangdengStatus, ivLampJingguangdeng, new CMDLEDHeadLampLowBeam1());
                 break;
-            case R.id.iv_lamp_jiaodeng_click:
-                clickLamp(ConstantData.sLampJiaodengStatus, ivLampJiaodeng, new CMDLEDHeadLampCorner());
+            case R.id.iv_lamp_jiaodeng_right_click:
+                clickLamp(ConstantData.sLampJiaodengRightStatus, ivLampJiaodengRight, new CMDLEDHeadLampRightCorner());
+                break;
+            case R.id.iv_lamp_jiaodeng_left_click:
+                clickLamp(ConstantData.sLampJiaodengLeftStatus, ivLampJiaodengLeft, new CMDLEDHeadLampLeftCorner());
                 break;
             case R.id.iv_lamp_rixingdeng_click:
 //                clickLamp(ConstantData.sLampRixingdengStatus, ivLampRixingdeng, new CMDLEDHeadLampPosition());
@@ -115,8 +124,32 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
             case R.id.iv_lamp_jump:
                 ((MainActivity)getActivity()).setSelect(100);
                 break;
+            case R.id.tv_car_front_lamp:
+                if (clickNum==0){
+                    mHandler.sendEmptyMessageDelayed(1, 1000);
+                }
+                mHandler.sendEmptyMessage(0);
+                break;
         }
     }
+    private int clickNum = 0;
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    clickNum++;
+                    if (clickNum >= 3){
+                        ((MainActivity)getActivity()).setSelect(102);
+                    }
+                    break;
+                case 1:
+                    clickNum = 0;
+                    break;
+            }
+        }
+    };
 
     private void clickLamp(int index, View view, BaseCommand command){
         if (ConstantData.sFrontLampFragmentStatus[index] == 0) {
@@ -193,10 +226,15 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
         } else {
             ivLampJingguangdeng.setVisibility(View.INVISIBLE);
         }
-        if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampJiaodengStatus] == 1) {
-            ivLampJiaodeng.setVisibility(View.VISIBLE);
+        if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampJiaodengRightStatus] == 1) {
+            ivLampJiaodengRight.setVisibility(View.VISIBLE);
         } else {
-            ivLampJiaodeng.setVisibility(View.INVISIBLE);
+            ivLampJiaodengRight.setVisibility(View.INVISIBLE);
+        }
+        if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampJiaodengLeftStatus] == 1) {
+            ivLampJiaodengLeft.setVisibility(View.VISIBLE);
+        } else {
+            ivLampJiaodengLeft.setVisibility(View.INVISIBLE);
         }
         if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] == 1) {
             ivLampRixingdeng.setVisibility(View.VISIBLE);

@@ -85,8 +85,8 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
         if (data[0] == BaseCommand.COMMAND_HEAD0 && data[1] == BaseCommand.COMMAND_HEAD1){
             byte[] raw = new byte[128];
             System.arraycopy(data, 0, raw, 0, length);//接收的时候checksum包含头
-            if (data[length-1] == CheckSumBit.checkSum(raw, length-1)){//检查完毕
-                int commandId = raw[3];
+            if (data[length-1] == CheckSumBit.checkSum(raw, length-1) ){//检查完毕
+                int commandId = raw[3] & 0x1f;
                 Log.i("Command","Got package commandId = " + commandId);
                 Command command;
                 CommandListener listener;

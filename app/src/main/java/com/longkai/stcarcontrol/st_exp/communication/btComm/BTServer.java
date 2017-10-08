@@ -335,6 +335,8 @@ public class BTServer implements ConnectionInterface{
 			MessageReceivedListener.onReceive(receivePackage, 0, length);
 			gotHead=0;
 		}
+
+		// TODO: 2017/10/4 50个字符的长包拼接
 	}
 
 	public synchronized boolean sendmsg(String msg){

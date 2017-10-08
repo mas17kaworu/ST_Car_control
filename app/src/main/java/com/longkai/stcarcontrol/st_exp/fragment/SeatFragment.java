@@ -369,13 +369,13 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
             case R.id.iv_seat_set:
                 if (ConstantData.mSeatSetStatus == 0){
                     iv_seat_set.setImageResource(R.mipmap.ic_seat_set_white);
-                    v_seat_set_group.setVisibility(View.VISIBLE);
+//                    v_seat_set_group.setVisibility(View.VISIBLE);
                     ConstantData.mSeatSetStatus = 2;
                     //// TODO: 2017/9/4 send command
 
                 } else {
                     iv_seat_set.setImageResource(R.mipmap.ic_seat_set_gray);
-                    v_seat_set_group.setVisibility(View.INVISIBLE);
+//                    v_seat_set_group.setVisibility(View.INVISIBLE);
                     ConstantData.mSeatSetStatus = 0;
                 }
                 break;

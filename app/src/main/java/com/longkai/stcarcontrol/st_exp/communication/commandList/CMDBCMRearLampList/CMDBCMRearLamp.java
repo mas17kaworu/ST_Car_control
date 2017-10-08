@@ -62,10 +62,13 @@ public class CMDBCMRearLamp extends BaseCommand {
     @Override
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());
-        if (data[2] == 0x1A){
+        if (data[2] >= 0x1A){
             func(response.openLoad, data, 4);
-            func(response.overLoad, data, 7);
-            // TODO: 2017/9/2 adc采样怎样读取
+            func(response.overLoad, data, 6);
+            //  adc采样
+            for (int i=0;i<9;i++){
+                response.tempreture[i] = data[7+i*2] | (data[8+i*2]<<8);
+            }
 
         } else if (data[2] == 0x02){
 
@@ -76,7 +79,7 @@ public class CMDBCMRearLamp extends BaseCommand {
 
     @Override
     public byte getCommandId() {
-        return 0;
+        return COMMAND_BCM_REAR_LIGHT;
     }
 
     public static class Response extends BaseResponse {
