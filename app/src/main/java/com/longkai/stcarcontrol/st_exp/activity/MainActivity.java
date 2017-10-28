@@ -31,6 +31,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.DoorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLampTest;
+import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLampTest2;
 import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
@@ -51,7 +52,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private CarBackLampFragment mCarBackFragment;
     private CarBackCoverFragment mCarBackCoverFragment;
     private BCMDiagnosticFragment mBCMDiagnosticFragment;
-    private FrontHeadLampTest frontHeadLampTest;
+    private FrontHeadLampTest2 frontHeadLampTest;
 
 
     private HorizontalListView hListView;
@@ -211,6 +212,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             transaction.setCustomAnimations(R.anim.right_slide_in, R.anim.right_slide_out);
         }
         mLastflag = i;
+        releaseFragment();
         switch (i) {
             case 0:
                 if (mHomeFragment == null) {
@@ -275,7 +277,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case 102:
                 if (frontHeadLampTest == null){
-                    frontHeadLampTest = new FrontHeadLampTest();
+                    frontHeadLampTest = new FrontHeadLampTest2();
                 }
                 transaction.replace(R.id.main_fragment_content, frontHeadLampTest);
                 break;
@@ -338,6 +340,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
+    private void releaseFragment(){
+        mHomeFragment = null;
+          mFrontLampFragment = null;
+          mSeatFragment = null;
+          mHighBeamLight = null;
+          mDoorFragment = null;
+          mCenterControlFragment = null;
+          mCarBackFragment = null;
+          mCarBackCoverFragment = null;
+          mBCMDiagnosticFragment = null;
+          frontHeadLampTest = null;
+        System.gc();
+
+    }
 
 
 }

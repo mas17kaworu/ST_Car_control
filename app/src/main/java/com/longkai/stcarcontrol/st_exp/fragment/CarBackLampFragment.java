@@ -46,8 +46,6 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
 
     private ImageView ivCarbackBreakLamp, ivCarbackPositionLamp, ivCarbackTurnleftLamp, ivCarbackTurnrightLamp;
 
-    private BTServer mBTServer;
-    private static ExecutorService sExecutorService;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -63,12 +61,11 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
         ivCarbackTurnleftLamp = (ImageView) mView.findViewById(R.id.iv_carback_turnleft_light);
         ivCarbackTurnrightLamp = (ImageView) mView.findViewById(R.id.iv_carback_turnright_light);
 
-        mBTServer = ((BaseActivity)getActivity()).mBtServer;
 
 
 
 
-        handler.postDelayed(runnable, 500);// 打开定时器，50ms后执行runnable
+//        handler.postDelayed(runnable, 500);// 打开定时器，50ms后执行runnable
 
 
         /*TimerTask diagnosticTask = new TimerTask() {
@@ -91,7 +88,6 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
 
         return mView;
     }
-    Timer timer;
 
     Handler handler = new Handler();
     Runnable runnable = new Runnable(){

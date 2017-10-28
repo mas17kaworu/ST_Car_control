@@ -25,11 +25,14 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampL
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHBAll;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampLeftCorner;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampLowBeam1;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampLowBeam2;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampPosition;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampRightCorner;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampTurnLeft;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampTurnRight;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sLampJinguangdengStatus;
 
 /**
  * Created by Administrator on 2017/7/10.
@@ -75,8 +78,27 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                 clickLamp(ConstantData.sLampDadengStatus, ivLampDadeng, new CMDLEDHeadLampHBAll());
                 break;
             case R.id.iv_lamp_jinguangdeng_click:
-                // TODO: 2017/9/1 lowbeam 合并
-                clickLamp(ConstantData.sLampJinguangdengStatus, ivLampJingguangdeng, new CMDLEDHeadLampLowBeam1());
+//                clickLamp(sLampJinguangdengStatus, ivLampJingguangdeng, new CMDLEDHeadLampLowBeam1());
+                if (ConstantData.sFrontLampFragmentStatus[sLampJinguangdengStatus] == 0){
+                    ivLampJingguangdeng.setVisibility(View.VISIBLE);
+                    ConstantData.sFrontLampFragmentStatus[sLampJinguangdengStatus] = 1;
+                    BaseCommand cmdTmp = new CMDLEDHeadLampLowBeam1();
+                    cmdTmp.turnOn();
+                    cmdTmp = new CMDLEDHeadLampLowBeam2();
+                    cmdTmp.turnOn();
+                    ServiceManager.getInstance().sendCommandToCar(cmdTmp, new CommandListenerAdapter());
+
+                } else {
+                    ivLampJingguangdeng.setVisibility(View.INVISIBLE);
+                    ConstantData.sFrontLampFragmentStatus[sLampJinguangdengStatus] = 0;
+                    BaseCommand cmdTmp = new CMDLEDHeadLampLowBeam1();
+                    cmdTmp.turnOff();
+                    cmdTmp = new CMDLEDHeadLampLowBeam2();
+                    cmdTmp.turnOff();
+                    ServiceManager.getInstance().sendCommandToCar(cmdTmp, new CommandListenerAdapter());
+                }
+
+
                 break;
             case R.id.iv_lamp_jiaodeng_right_click:
                 clickLamp(ConstantData.sLampJiaodengRightStatus, ivLampJiaodengRight, new CMDLEDHeadLampRightCorner());
@@ -221,7 +243,7 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
         } else {
             ivLampDadeng.setVisibility(View.INVISIBLE);
         }
-        if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampJinguangdengStatus] == 1) {
+        if (ConstantData.sFrontLampFragmentStatus[sLampJinguangdengStatus] == 1) {
             ivLampJingguangdeng.setVisibility(View.VISIBLE);
         } else {
             ivLampJingguangdeng.setVisibility(View.INVISIBLE);

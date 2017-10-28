@@ -10,6 +10,8 @@ import java.util.Map;
 public class ConstantData {
     public static Map<Integer,Integer> sDataMap;
 
+    public static final String BluetoothName = "DemoCar";//HC-05
+
     public static int[] sSeatFragmentStatus = new int[3];
     public static int mSeatHeatStatus = 0;
     public static int mSeatWindStatus = 0;

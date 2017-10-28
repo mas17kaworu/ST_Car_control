@@ -23,6 +23,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.longkai.stcarcontrol.st_exp.ConstantData;
+import com.longkai.stcarcontrol.st_exp.Utils.ByteUtils;
 import com.longkai.stcarcontrol.st_exp.communication.Command;
 import com.longkai.stcarcontrol.st_exp.communication.CommandListener;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionInterface;
@@ -37,7 +39,7 @@ import static com.longkai.stcarcontrol.st_exp.communication.commandList.BaseComm
 public class BTServer implements ConnectionInterface{
 
 	private static final String TAG = "BTServer";
-	private static final String GamePadName = "DemoCar";//Gamesir-G2u
+	private static String GamePadName = ConstantData.BluetoothName;//Gamesir-G2u
 
     private Context mContext;
 
@@ -391,7 +393,6 @@ public class BTServer implements ConnectionInterface{
 		}
 
 
-		// TODO: 2017/10/4 50个字符的长包拼接
 		if (gotHead == 100){
 			System.arraycopy(gbuffer,0,receivePackage,presentGotNum,length);
 			presentGotNum += length;
@@ -416,12 +417,13 @@ public class BTServer implements ConnectionInterface{
 			bos.write(msg.getBytes());
 			bos.flush();
 			result=true;
-			Log.d(TAG, "BT send:" + msg);
+			Log.d(TAG, "BT send num:" + msg.length());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return result;
 	}
+
 	private synchronized boolean sendbyteArray(byte[] msg){
 		boolean result=false;
 		if(null==mBtClientSocket || bos==null) {
@@ -431,12 +433,16 @@ public class BTServer implements ConnectionInterface{
 			bos.write(msg);
 			bos.flush();
 			result=true;
-			Log.d(TAG, "BT send:" + msg[4]);
+
+            Log.d(TAG, "BT send:" + ByteUtils.bytes2hex(msg));
+
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
         return result;
 	}
+
 
 	public void closeBTServer(){
 		try{

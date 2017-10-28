@@ -9,7 +9,7 @@ public class CheckSumBit {
         int sum = 0;
         int i;
         for (i=0;i<length;i++){
-            sum = sum + raw[i];
+            sum = sum + (raw[i] & 0xff);
             if (sum>255){
                 sum = sum - 255;
             }
