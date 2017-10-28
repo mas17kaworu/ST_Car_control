@@ -3,5 +3,6 @@ public class CMDPLGMTrunkUpOn extends CMDPLGM{
    public CMDPLGMTrunkUpOn(){
        super();
        payload[0] |= TrunkUp;
+       refreshDataPayload();
    }
 }

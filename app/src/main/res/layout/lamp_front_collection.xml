@@ -20,16 +20,29 @@
         />
 
     <ImageView
-        android:id="@+id/iv_lamp_jiaodeng_on"
+        android:id="@+id/iv_lamp_jiaodeng_right_on"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_lamp_jiaodeng_on"
+        android:src="@mipmap/ic_lamp_jiaodeng_right_on"
         android:visibility="invisible"/>
     <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
-        android:id="@+id/iv_lamp_jiaodeng_click"
+        android:id="@+id/iv_lamp_jiaodeng_right_click"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/lamp_jiaodeng"
+        android:background="@drawable/lamp_jiaodeng_right"
+        />
+
+    <ImageView
+        android:id="@+id/iv_lamp_jiaodeng_left_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_lamp_jiaodeng_left_on"
+        android:visibility="invisible"/>
+    <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
+        android:id="@+id/iv_lamp_jiaodeng_left_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lamp_jiaodeng_left"
         />
 
     <ImageView

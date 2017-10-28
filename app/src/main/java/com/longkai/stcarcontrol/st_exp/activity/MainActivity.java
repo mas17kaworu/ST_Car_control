@@ -2,6 +2,7 @@ package com.longkai.stcarcontrol.st_exp.activity;
 
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -12,18 +13,31 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
 import com.longkai.stcarcontrol.st_exp.adapter.HorizontalListViewAdapter;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
+import com.longkai.stcarcontrol.st_exp.communication.ConnectionType;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
-import com.longkai.stcarcontrol.st_exp.fragment.CarBackFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.BCMDiagnosticFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.CarBackCoverFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.CarBackLampFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.DoorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
+import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLampTest;
+import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLampTest2;
 import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -35,13 +49,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private HighBeamLight mHighBeamLight;
     private DoorFragment mDoorFragment;
     private CenterControlFragment mCenterControlFragment;
-    private CarBackFragment mCarBackFragment;
+    private CarBackLampFragment mCarBackFragment;
+    private CarBackCoverFragment mCarBackCoverFragment;
+    private BCMDiagnosticFragment mBCMDiagnosticFragment;
+    private FrontHeadLampTest2 frontHeadLampTest;
 
 
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
 
-    private ImageView ivConnectionState;
+    private ImageView ivConnectionState, ivWifiConnectionState;
     public int mSelectedMode = 0;
 
     @Override
@@ -55,14 +72,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             decorView.setSystemUiVisibility(option);
             getWindow().setNavigationBarColor(Color.TRANSPARENT);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
-
         }
         setContentView(R.layout.activity_main);
+
+
+
 
         ServiceManager.getInstance().init(getApplicationContext(), new ServiceManager.InitCompleteListener() {
             @Override
             public void onInitComplete() {
                 ServiceManager.getInstance().setConnectionListener(mConnectionListener);
+
             }
         });
 
@@ -72,9 +92,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         byte UnlockR	= (byte) 0x80;
         byte test = (byte) 0xff;
         test &= (~UnlockR);
-        Log.i("testLK", UnlockR + "  " + test);
-//        startBTConnect();
-//        mBtServer.sendCommend(new CMDGetVersion());
+        Log.d("testLK", UnlockR + "  " + test);
     }
 
     @Override
@@ -89,8 +107,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.rdoBtn_homepage_door).setOnClickListener(this);
         findViewById(R.id.rdoBtn_homepage_front_lamp).setOnClickListener(this);
         findViewById(R.id.rdoBtn_homepage_seat).setOnClickListener(this);
+
         ivConnectionState = (ImageView) findViewById(R.id.iv_mainactivity_lost_connect);
         ivConnectionState.setOnClickListener(this);
+        ivWifiConnectionState = (ImageView) findViewById(R.id.iv_mainacivity_lost_wifi);
+        ivWifiConnectionState.setOnClickListener(this);
 
         hListView = (HorizontalListView) findViewById(R.id.horizon_listview);
         final int[] ids = {R.drawable.main_activity_bottom_hompage,
@@ -98,7 +119,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 R.drawable.main_activity_bottom_seat,
                 R.drawable.main_activity_bottom_door,
                 R.drawable.main_activity_bottom_control,
-                R.drawable.main_activity_bottom_back_car};
+                R.drawable.main_activity_bottom_back_car,
+                R.drawable.main_activity_bottom_back_trunk};
 
         hListViewAdapter = new HorizontalListViewAdapter(getApplicationContext(), ids);
         hListView.setAdapter(hListViewAdapter);
@@ -119,16 +141,64 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
+    public String mVersion;
+
+    Timer timer;
+
     ConnectionListener mConnectionListener = new ConnectionListener() {
         @Override
         public void onConnected() {
-            Toast.makeText(getApplicationContext(), "Bt Connected", Toast.LENGTH_SHORT).show();
-            ivConnectionState.setVisibility(View.INVISIBLE);
+//            Toast.makeText(getApplicationContext(), "Bt Connected", Toast.LENGTH_SHORT).show();
+            if (null == timer){
+                timer = new Timer();
+            }
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(),new CommandListenerAdapter(){
+                        @Override
+                        public void onSuccess(BaseResponse response) {
+                            super.onSuccess(response);
+                            //invisible View
+
+
+
+
+                            mVersion = ((CMDGetVersion.Response)response).getVersion();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ivConnectionState.setVisibility(View.INVISIBLE);
+                                    ivWifiConnectionState.setVisibility(View.INVISIBLE);
+                                    Toast.makeText(getApplicationContext(),
+                                            "version:" + mVersion ,Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            super.onTimeout();
+                        }
+                    });
+                }
+            }, 2000);
+
+
+            /*new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            }, 2000);
+*/
+
         }
 
         @Override
         public void onDisconnected() {
-            Toast.makeText(getApplicationContext(), "Bt Disconnected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
             ivConnectionState.setVisibility(View.VISIBLE);
         }
     };
@@ -142,6 +212,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             transaction.setCustomAnimations(R.anim.right_slide_in, R.anim.right_slide_out);
         }
         mLastflag = i;
+        releaseFragment();
         switch (i) {
             case 0:
                 if (mHomeFragment == null) {
@@ -182,15 +253,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case 5:
                 if (mCarBackFragment == null) {
-                    mCarBackFragment = new CarBackFragment();
+                    mCarBackFragment = new CarBackLampFragment();
                 }
                 transaction.replace(R.id.main_fragment_content, mCarBackFragment);
+                break;
+            case 6:
+                if (mCarBackCoverFragment == null){
+                    mCarBackCoverFragment = new CarBackCoverFragment();
+                }
+                transaction.replace(R.id.main_fragment_content, mCarBackCoverFragment);
                 break;
             case 100:
                 if (mHighBeamLight == null) {
                     mHighBeamLight = new HighBeamLight();
                 }
                 transaction.replace(R.id.main_fragment_content, mHighBeamLight);
+                break;
+            case 101:
+                if (mBCMDiagnosticFragment == null){
+                    mBCMDiagnosticFragment = new BCMDiagnosticFragment();
+                }
+                transaction.replace(R.id.main_fragment_content, mBCMDiagnosticFragment);
+                break;
+            case 102:
+                if (frontHeadLampTest == null){
+                    frontHeadLampTest = new FrontHeadLampTest2();
+                }
+                transaction.replace(R.id.main_fragment_content, frontHeadLampTest);
                 break;
             default:
                 break;
@@ -212,14 +301,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    Animation animation;
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.rdoBtn_homepage_home:
+            /*case R.id.rdoBtn_homepage_home:
                 setSelect(0);
-                /*animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.btn_scale_up);
-                v.startAnimation(animation);*/
+                *//*animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.btn_scale_up);
+                v.startAnimation(animation);*//*
 //                ((RadioButton)v).setBackgroundResource(R.mipmap.ic_navigationbar_homepage_chose);
 //                ((RadioButton)v).setButtonDrawable(R.color.transparent);
 //                ViewGroup.LayoutParams params = v.getLayoutParams();
@@ -237,14 +325,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.rdoBtn_homepage_seat:
                 setSelect(2);
+                break;*/
+            case R.id.iv_mainactivity_lost_connect://bt connection
+                SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "BT");
+                ServiceManager.getInstance().connectToDevice(null, mConnectionListener, ConnectionType.BT);
+                ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(),new CommandListenerAdapter());
                 break;
-            case R.id.iv_mainactivity_lost_connect:
-                ServiceManager.getInstance().connectToDevice(null, mConnectionListener);
+            case R.id.iv_mainacivity_lost_wifi:
+                SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "WIFI");
+                ServiceManager.getInstance().connectToDevice(null, mConnectionListener, ConnectionType.Wifi);
+                ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(),new CommandListenerAdapter());
                 break;
         }
     }
 
 
+    private void releaseFragment(){
+        mHomeFragment = null;
+          mFrontLampFragment = null;
+          mSeatFragment = null;
+          mHighBeamLight = null;
+          mDoorFragment = null;
+          mCenterControlFragment = null;
+          mCarBackFragment = null;
+          mCarBackCoverFragment = null;
+          mBCMDiagnosticFragment = null;
+          frontHeadLampTest = null;
+        System.gc();
+
+    }
 
 
 }

@@ -3,5 +3,6 @@ public class CMDControlCenterSafebeltTakebackOff extends CMDControlCenter{
    public CMDControlCenterSafebeltTakebackOff(){
        super();
        payload[1] &= ~(SafebeltTakeback);
+       refreshDataPayload();
    }
 }

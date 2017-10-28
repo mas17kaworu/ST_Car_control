@@ -19,16 +19,16 @@
         android:background="@drawable/carback_break_click"/>
 
     <ImageView
-        android:id="@+id/iv_carback_position_light"
+        android:id="@+id/iv_carback_reversing_light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_carback_position_light"
+        android:src="@mipmap/ic_carback_reversing_light"
         android:visibility="invisible"/>
     <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
-        android:id="@+id/iv_carback_position_click"
+        android:id="@+id/iv_carback_reversing_click"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/carback_position_click"/>
+        android:background="@drawable/carback_reversing_click"/>
 
     <ImageView
         android:id="@+id/iv_carback_turnleft_light"

@@ -3,5 +3,6 @@ public class CMDDoorMirrorYDownOn extends CMDDoor{
    public CMDDoorMirrorYDownOn(){
        super();
        payload[1] |= MirrorYDown;
+       refreshDataPayload();
    }
 }

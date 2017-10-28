@@ -3,5 +3,6 @@ public class CMDDoorMirrorSelectOff extends CMDDoor{
    public CMDDoorMirrorSelectOff(){
        super();
        payload[1] &= ~(MirrorSelect);
+       refreshDataPayload();
    }
 }

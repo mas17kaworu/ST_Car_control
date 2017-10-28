@@ -9,13 +9,19 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_center_control_backpic"
         android:layout_centerHorizontal="true"/>
+    <com.longkai.stcarcontrol.st_exp.customView.CoverWindView
+        android:id="@+id/cover_wind_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"/>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="760dp"
-        android:layout_marginTop="300dp">
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="330dp">
         <com.longkai.stcarcontrol.st_exp.customView.AirconditionDiscView
-            android:id="@+id/aircondition"
+            android:id="@+id/aircondition_angle"
             android:clickable="true"
 
             android:layout_width="wrap_content"
@@ -24,7 +30,29 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/aircondition"
+            android:layout_below="@id/aircondition_angle"
+            android:layout_marginTop="5dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="#ffffff"
+            android:text="Angle"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="760dp"
+        android:layout_marginTop="330dp">
+        <com.longkai.stcarcontrol.st_exp.customView.AirconditionDiscView
+            android:id="@+id/aircondition_power"
+            android:clickable="true"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/aircondition_power"
             android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true"
             android:textColor="#ffffff"
@@ -168,7 +196,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_centerHorizontal="true"
                 android:textColor="#ffffff"
-                android:text="Trunk Cover"/>
+                android:text="safe belt lock"/>
         </RelativeLayout>
     </LinearLayout>
 

@@ -102,9 +102,9 @@ public class ServiceManager {
         }
     }
 
-    public void connectToDevice(Bundle bundle, ConnectionListener listener){
+    public void connectToDevice(Bundle bundle, ConnectionListener listener, ConnectionType type){
         if (null != binder) {
-            binder.ConnectToDevice(bundle, listener);
+            binder.ConnectToDevice(bundle, listener, type);
         }
     }
 }

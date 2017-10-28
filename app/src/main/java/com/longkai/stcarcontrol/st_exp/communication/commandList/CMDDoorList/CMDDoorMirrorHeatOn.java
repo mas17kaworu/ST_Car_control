@@ -3,5 +3,6 @@ public class CMDDoorMirrorHeatOn extends CMDDoor{
    public CMDDoorMirrorHeatOn(){
        super();
        payload[2] |= MirrorHeat;
+       refreshDataPayload();
    }
 }

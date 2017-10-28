@@ -22,9 +22,19 @@
             android:id="@+id/iv_mainactivity_lost_connect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_homepage_lost_bt"
+            android:src="@drawable/homepage_lost_bt"
             android:layout_marginTop="60dp"
-            android:layout_marginStart="900dp"/>
+            android:layout_marginStart="860dp"/>
+
+        <ImageView
+            android:id="@+id/iv_mainacivity_lost_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/homepage_lost_wifi"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@id/iv_mainactivity_lost_connect"
+            android:layout_alignTop="@id/iv_mainactivity_lost_connect"
+            android:layout_marginStart="18dp" />
 
         <!--<include layout="@layout/activity_main_bottom_ratio_group"/>-->
     </RelativeLayout>

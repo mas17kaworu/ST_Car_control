@@ -3,5 +3,6 @@ public class CMDControlCenterWiperFastOff extends CMDControlCenter{
    public CMDControlCenterWiperFastOff(){
        super();
        payload[0] &= ~(WiperFast);
+       refreshDataPayload();
    }
 }

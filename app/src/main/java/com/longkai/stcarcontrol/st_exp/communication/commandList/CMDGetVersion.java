@@ -20,7 +20,7 @@ public class CMDGetVersion extends BaseCommand {
     public BaseResponse toResponse(byte[] data) throws Exception {
         int length = data[2] -1;
         byte[] payload = new byte[length];
-        System.arraycopy(data, 4, payload, 0, length);
+        System.arraycopy(data, 4, payload, 0, length - 1);
 
         Response response=new Response(getCommandId());
         response.setVersion(new String(payload));

@@ -3,5 +3,6 @@ public class CMDPLGMTrunkUpOff extends CMDPLGM{
    public CMDPLGMTrunkUpOff(){
        super();
        payload[0] &= ~(TrunkUp);
+       refreshDataPayload();
    }
 }

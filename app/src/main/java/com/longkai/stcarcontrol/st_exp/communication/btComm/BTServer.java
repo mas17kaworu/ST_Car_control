@@ -23,18 +23,23 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.longkai.stcarcontrol.st_exp.ConstantData;
+import com.longkai.stcarcontrol.st_exp.Utils.ByteUtils;
 import com.longkai.stcarcontrol.st_exp.communication.Command;
 import com.longkai.stcarcontrol.st_exp.communication.CommandListener;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionInterface;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
 import com.longkai.stcarcontrol.st_exp.communication.MessageReceivedListener;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+
+import static com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand.COMMAND_HEAD0;
 
 public class BTServer implements ConnectionInterface{
 
 	private static final String TAG = "BTServer";
-	private static final String GamePadName = "DemoCar";//Gamesir-G2u
+	private static String GamePadName = ConstantData.BluetoothName;//Gamesir-G2u
 
     private Context mContext;
 
@@ -216,6 +221,8 @@ public class BTServer implements ConnectionInterface{
 
     }
 
+	byte[] receivePackage = new byte[128];
+
     private class ConnectThread extends Thread {
 		private  BluetoothSocket btSocket;
 		private  BluetoothDevice btDevice;
@@ -254,15 +261,20 @@ public class BTServer implements ConnectionInterface{
 			//receive ConstantData from bluetooth
 			if (mBtClientSocket != null) {
 				Log.d(TAG, "test5");
-				byte[] Gbuffer = new byte[128];
+
 				//初始化接收的包
 				while(BtConnect_state){
 					try {
+						byte[] Gbuffer = new byte[128];
 						int count = inputStream.read(Gbuffer);
-                        if (count >=4){
+						Log.d(TAG, "Got count = " + count );
+						//  拼包
+						spliceArray(Gbuffer,count);
+                        /*if (count >=4){
                             MessageReceivedListener.onReceive(Gbuffer, 0, count);
-                        }
-						Log.d(TAG, "count = " + count + "Gamepad ConstantData : ");
+                        }*/
+
+
 					} catch (IOException e){
 //						e.printStackTrace();
 					}
@@ -279,6 +291,124 @@ public class BTServer implements ConnectionInterface{
 		}
 	}
 
+	private int gotHead = 0;
+	private int assumedPackageNum = 0;
+	private int presentGotNum = 0;
+
+
+	private void spliceArray(byte[] gbuffer,int length){
+		if (length==1 && gbuffer[0] == COMMAND_HEAD0 && gotHead == 0){
+			gotHead=1;
+			Log.i(TAG, "Got first byte success");
+			receivePackage[0] = COMMAND_HEAD0;
+			return;
+		} else if (gotHead == 1 && gbuffer[0]== BaseCommand.COMMAND_HEAD1){
+			System.arraycopy(gbuffer,0,receivePackage,1,length);
+			gotHead=0;
+			//  msg.length = msg.realLength - 3;
+			if (length > 4 && gbuffer[1] == length - 2) {
+				Log.i(TAG, "spliceArray success");
+				MessageReceivedListener.onReceive(receivePackage, 0, length + 1);
+				return;
+			} else if (length>=2){//再次分包
+				assumedPackageNum = gbuffer[1];
+				gotHead = 100;
+				presentGotNum = 1 + length;
+				return;
+			} else {
+				gotHead = 0;
+				presentGotNum = 0;
+				assumedPackageNum = 0;
+				return;
+			}
+		}
+
+		if (length==2 && gbuffer[0] == COMMAND_HEAD0 && gbuffer[1] == BaseCommand.COMMAND_HEAD1 && gotHead == 0){
+			gotHead=2;
+			Log.i(TAG, "Got first byte success");
+			receivePackage[0] = COMMAND_HEAD0;
+			receivePackage[1] = BaseCommand.COMMAND_HEAD1;
+			return;
+		} else if (gotHead == 2 /*&& gbuffer[0] == length - 1*/){
+			System.arraycopy(gbuffer,0,receivePackage,2,length);
+			if (gbuffer[0] == length - 1) {//收了两个byte了
+				gotHead = 0;
+				Log.i(TAG, "spliceArray success");
+				MessageReceivedListener.onReceive(receivePackage, 0, length + 2);
+				return;
+			} else if ((length - 1) < gbuffer[0]){
+				assumedPackageNum = gbuffer[0];
+				gotHead = 100;
+				presentGotNum = 2 + length;
+				return;
+			} else {
+				gotHead = 0;
+				presentGotNum = 0;
+				assumedPackageNum = 0;
+				return;
+			}
+		}
+
+		if (length==3 && gbuffer[0] == COMMAND_HEAD0 && gbuffer[1] == BaseCommand.COMMAND_HEAD1 && gotHead == 0){
+			gotHead=3;
+			Log.i(TAG, "Got first byte success");
+			receivePackage[0] = COMMAND_HEAD0;
+			receivePackage[1] = BaseCommand.COMMAND_HEAD1;
+			receivePackage[2] = gbuffer[2];
+			return;
+		} else if (gotHead == 3 /*&& firstPackageNum == length*/){
+			if (receivePackage[2] == length) {
+				System.arraycopy(gbuffer, 0, receivePackage, 3, length);
+				gotHead = 0;
+				Log.i(TAG, "spliceArray success");
+				MessageReceivedListener.onReceive(receivePackage, 0, length + 3);
+				return;
+			} else if ((length) < receivePackage[2]){
+				assumedPackageNum = receivePackage[2];
+				gotHead = 100;
+				presentGotNum = 3 + length;
+				return;
+			} else {
+				gotHead = 0;
+				presentGotNum = 0;
+				assumedPackageNum = 0;
+				return;
+			}
+		}
+
+
+		if (length>=4 && gbuffer[0] == COMMAND_HEAD0 && gbuffer[1] == BaseCommand.COMMAND_HEAD1 && gotHead==0){
+			System.arraycopy(gbuffer,0,receivePackage,0,length);
+			if (gbuffer[2] == (length - 3)) {
+				MessageReceivedListener.onReceive(receivePackage, 0, length);
+				gotHead = 0;
+				Log.i(TAG, "spliceArray success, one package");
+				return;
+			} else {
+				assumedPackageNum = gbuffer[2];
+				presentGotNum = length;
+				gotHead = 100;
+				return;
+			}
+		}
+
+
+		if (gotHead == 100){
+			System.arraycopy(gbuffer,0,receivePackage,presentGotNum,length);
+			presentGotNum += length;
+			if (presentGotNum == (assumedPackageNum + 3)){//头 尾共多了三个
+				MessageReceivedListener.onReceive(receivePackage,0,presentGotNum);
+				Log.i(TAG, "spliceArray success, several package");
+				gotHead=0;
+			} else if (presentGotNum > (assumedPackageNum + 3)){
+				//放弃这个包
+				gotHead=0;
+				presentGotNum = 0;
+				assumedPackageNum = 0;
+			}
+		}
+	}
+
 	public synchronized boolean sendmsg(String msg){
 		boolean result=false;
 		if(null==mBtClientSocket || bos==null)
@@ -287,12 +417,13 @@ public class BTServer implements ConnectionInterface{
 			bos.write(msg.getBytes());
 			bos.flush();
 			result=true;
-			Log.d(TAG, "BT send:" + msg);
+			Log.d(TAG, "BT send num:" + msg.length());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return result;
 	}
+
 	private synchronized boolean sendbyteArray(byte[] msg){
 		boolean result=false;
 		if(null==mBtClientSocket || bos==null) {
@@ -302,12 +433,16 @@ public class BTServer implements ConnectionInterface{
 			bos.write(msg);
 			bos.flush();
 			result=true;
-			Log.d(TAG, "BT send:" + msg);
+
+            Log.d(TAG, "BT send:" + ByteUtils.bytes2hex(msg));
+
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
         return result;
 	}
+
 
 	public void closeBTServer(){
 		try{

@@ -3,5 +3,6 @@ public class CMDControlCenterTrunkCoberUnfoldOff extends CMDControlCenter{
    public CMDControlCenterTrunkCoberUnfoldOff(){
        super();
        payload[1] &= ~(TrunkCoberUnfold);
+       refreshDataPayload();
    }
 }

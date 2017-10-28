@@ -3,5 +3,6 @@ public class CMDDoorUnlockLOn extends CMDDoor{
    public CMDDoorUnlockLOn(){
        super();
        payload[0] |= UnlockL;
+       refreshDataPayload();
    }
 }

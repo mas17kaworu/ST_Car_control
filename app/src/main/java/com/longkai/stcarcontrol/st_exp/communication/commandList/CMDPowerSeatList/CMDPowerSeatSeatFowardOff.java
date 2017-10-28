@@ -3,5 +3,6 @@ public class CMDPowerSeatSeatFowardOff extends CMDPowerSeat{
    public CMDPowerSeatSeatFowardOff(){
        super();
        payload[1] &= ~(SeatFoward);
+       refreshDataPayload();
    }
 }

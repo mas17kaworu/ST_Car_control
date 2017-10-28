@@ -3,5 +3,6 @@ public class CMDPowerSeatWaistBackwardOn extends CMDPowerSeat{
    public CMDPowerSeatWaistBackwardOn(){
        super();
        payload[0] |= WaistBackward;
+       refreshDataPayload();
    }
 }

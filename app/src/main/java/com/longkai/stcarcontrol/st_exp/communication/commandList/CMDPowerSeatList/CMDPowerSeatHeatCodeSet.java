@@ -2,7 +2,9 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatLi
 public class CMDPowerSeatHeatCodeSet extends CMDPowerSeat{
    public CMDPowerSeatHeatCodeSet(int value){
        super();
-       // TODO: 2017/8/29 赋值
-       payload[2] |= HeatCode;
+       //先清零
+       payload[2] &= (~HeatCode);
+       payload[2] |= (HeatCode & value);
+       refreshDataPayload();
    }
 }

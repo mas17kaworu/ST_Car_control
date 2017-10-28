@@ -3,5 +3,6 @@ public class CMDPowerSeatPositionKey2Off extends CMDPowerSeat{
    public CMDPowerSeatPositionKey2Off(){
        super();
        payload[3] &= ~(PositionKey2);
+       refreshDataPayload();
    }
 }

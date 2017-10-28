@@ -3,5 +3,6 @@ public class CMDDoorMirrorUnfoldOn extends CMDDoor{
    public CMDDoorMirrorUnfoldOn(){
        super();
        payload[1] |= MirrorUnfold;
+       refreshDataPayload();
    }
 }

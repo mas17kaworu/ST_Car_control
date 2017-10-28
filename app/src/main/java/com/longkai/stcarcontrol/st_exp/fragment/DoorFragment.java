@@ -6,11 +6,35 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorECVVoltageCodeSet;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorFoldOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorFoldOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorUnfoldOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorUnfoldOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorXLeftOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorXLeftOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorXRightOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorXRightOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorYDownOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorYDownOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorYupOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorYupOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorWindowLDownOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorWindowLDownOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorWindowLUpOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorWindowLUpOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.MenuViewItem;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -27,6 +51,8 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
 
     private ProgressBar pb_door_mirror;
 
+    private ImageView ivDoorLock, ivMirrorHeat, ivMirrorLight, ivMirrorFold, ivMirrorUnfold, ivMirrorSelect;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,23 +63,23 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
         ((MenuViewItem)mView.findViewById( R.id.iv_door_window_up)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                loadGif(R.mipmap.gif_door_window_up);
+                onBtnDown(R.mipmap.gif_door_window_up, new CMDDoorWindowLUpOn());
             }
 
             @Override
             public void onUp() {
-                releaseGifView();
+                onBtnUp(new CMDDoorWindowLUpOff());
             }
         });
         ((MenuViewItem)mView.findViewById( R.id.iv_door_window_down)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                loadGif(R.mipmap.gif_door_window_down);
+                onBtnDown(R.mipmap.gif_door_window_down, new CMDDoorWindowLDownOn());
             }
 
             @Override
             public void onUp() {
-                releaseGifView();
+                onBtnUp(new CMDDoorWindowLDownOff());
             }
         });
 
@@ -62,23 +88,23 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
         ((MenuViewItem)mView.findViewById( R.id.door_mirror_up)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                loadGif(R.mipmap.gif_door_mirror_up);
+                onBtnDown(R.mipmap.gif_door_mirror_up, new CMDDoorMirrorYupOn());
             }
 
             @Override
             public void onUp() {
-                releaseGifView();
+                onBtnUp(new CMDDoorMirrorYupOff());
             }
         });
         ((MenuViewItem)mView.findViewById( R.id.door_mirror_down)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                loadGif(R.mipmap.gif_door_mirror_down);
+                onBtnDown(R.mipmap.gif_door_mirror_down, new CMDDoorMirrorYDownOn());
             }
 
             @Override
             public void onUp() {
-                releaseGifView();
+                onBtnUp(new CMDDoorMirrorYDownOff());
             }
         });
 
@@ -87,23 +113,23 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
         ((MenuViewItem)mView.findViewById( R.id.door_mirror_left)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                loadGif(R.mipmap.gif_door_mirror_forward);
+                onBtnDown(R.mipmap.gif_door_mirror_forward, new CMDDoorMirrorXLeftOn());
             }
 
             @Override
             public void onUp() {
-                releaseGifView();
+                onBtnUp(new CMDDoorMirrorXLeftOff());
             }
         });
         ((MenuViewItem)mView.findViewById( R.id.door_mirror_right)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                loadGif(R.mipmap.gif_door_mirror_backward);
+                onBtnDown(R.mipmap.gif_door_mirror_backward, new CMDDoorMirrorXRightOn());
             }
 
             @Override
             public void onUp() {
-                releaseGifView();
+                onBtnUp(new CMDDoorMirrorXRightOff());
             }
         });
 
@@ -114,6 +140,19 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
         mView.findViewById(R.id.iv_door_mirror_plus).setOnClickListener(this);
         mView.findViewById(R.id.iv_door_mirror_minus).setOnClickListener(this);
 
+        ivDoorLock = (ImageView) mView.findViewById(R.id.iv_door_lock);
+        ivDoorLock.setOnClickListener(this);
+        ivMirrorHeat = (ImageView) mView.findViewById(R.id.iv_door_mirror_heat);
+        ivMirrorHeat.setOnClickListener(this);
+        ivMirrorLight = (ImageView) mView.findViewById(R.id.iv_door_mirror_light);
+        ivMirrorLight.setOnClickListener(this);
+
+        ivMirrorSelect = (ImageView) mView.findViewById(R.id.iv_door_mirror_select);
+        ivMirrorSelect.setOnClickListener(this);
+        ivMirrorFold = (ImageView) mView.findViewById(R.id.iv_door_mirror_fold);
+        ivMirrorFold.setOnClickListener(this);
+        ivMirrorUnfold = (ImageView) mView.findViewById(R.id.iv_door_mirror_unfold);
+        ivMirrorUnfold.setOnClickListener(this);
 
         refreshUI();
         return mView;
@@ -132,26 +171,141 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
             case R.id.iv_door_mirror_minus:
                 clickProgress(false);
                 break;
+            case R.id.iv_door_lock:
+                onBtnClick(ConstantData.sDoorLock, ivDoorLock, "CMDDoorLockL");
+                break;
+            case R.id.iv_door_mirror_heat:
+                onBtnClick(ConstantData.sDoorMirrorHeat, ivMirrorHeat, "CMDDoorMirrorHeat");
+                break;
+            case R.id.iv_door_mirror_light:
+                onBtnClick(ConstantData.sDoorMirrorLight, ivMirrorLight, "CMDDoorMirrorTLLight");
+                break;
+            case R.id.iv_door_mirror_select:
+                onBtnClick(ConstantData.sDoorMirrorSelect, ivMirrorSelect, "CMDDoorMirrorSelect");
+                break;
+            case R.id.iv_door_mirror_fold:
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOn(),new CommandListenerAdapter());
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOff(),new CommandListenerAdapter());
+                loadGif(R.mipmap.gif_door_mirror_fold);
+                scheduleMirrorFoldDelayTask();
+                break;
+            case R.id.iv_door_mirror_unfold:
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOff(),new CommandListenerAdapter());
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOn(),new CommandListenerAdapter());
+                loadGif(R.mipmap.gif_door_mirror_unfold);
+                scheduleMirrorFoldDelayTask();
+                break;
 
         }
+    }
 
+    Timer timer = new Timer();
+
+    private void scheduleMirrorFoldDelayTask(){
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOff(),new CommandListenerAdapter());
+                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOff(),new CommandListenerAdapter());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        releaseGifView();
+                    }
+                });
+
+            }
+        }, 3000);
+    }
+
+
+    private void onBtnDown(int resId, BaseCommand command){
+        loadGif(resId);
+        ServiceManager.getInstance().sendCommandToCar(command, new CommandListenerAdapter());
+    }
+
+    private void onBtnUp(BaseCommand command){
+        releaseGifView();
+        ServiceManager.getInstance().sendCommandToCar(command, new CommandListenerAdapter());
+    }
+
+    private void onBtnClick(int index, View view, String baseCommand){
+        if (ConstantData.sDoorFragmentStatus[index] == 0){
+            view.setSelected(true);
+            ConstantData.sDoorFragmentStatus[index] = 1;
+
+            try {//反射
+                Class<?> class1 = Class.forName("com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList." +
+                        baseCommand + "On");
+                Object object = class1.newInstance();
+                ServiceManager.getInstance().sendCommandToCar((BaseCommand)object, new CommandListenerAdapter());
+            } catch ( ClassNotFoundException e){
+                e.printStackTrace();
+            } catch ( java.lang.InstantiationException e){
+                e.printStackTrace();
+            } catch ( IllegalAccessException e){
+                e.printStackTrace();
+            }
+
+        } else {
+            view.setSelected(false);
+            ConstantData.sDoorFragmentStatus[index] = 0;
+
+            try {
+                Class<?> class1 = Class.forName("com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList." +
+                        baseCommand + "Off");
+                Object object = class1.newInstance();
+                ServiceManager.getInstance().sendCommandToCar((BaseCommand)object, new CommandListenerAdapter());
+            } catch ( ClassNotFoundException e){
+                e.printStackTrace();
+            } catch ( java.lang.InstantiationException e){
+                e.printStackTrace();
+            } catch ( IllegalAccessException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     private void clickProgress(boolean isPlus){
         int progress = ConstantData.sDoorFragmentStatus[ConstantData.sDoorAntiGlare];
-        if (isPlus && progress <= 100){
+        if (isPlus && progress < 100){
             progress+=10;
         }
-        if (!isPlus && progress >= 0){
+        if (!isPlus && progress > 0){
             progress-=10;
         }
         pb_door_mirror.setProgress(progress);
         ConstantData.sDoorFragmentStatus[ConstantData.sDoorAntiGlare] = progress;
+
+        //progress 0~100  转换到 0~63
+        progress*=0.63;
+
+        ServiceManager.getInstance().sendCommandToCar(new CMDDoorECVVoltageCodeSet(progress),
+                new CommandListenerAdapter());
     }
 
     private void refreshUI(){
         pb_door_mirror.setProgress(ConstantData.sDoorFragmentStatus[ConstantData.sDoorAntiGlare]);
-
+        if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorLock] == 0){
+            ivDoorLock.setSelected(false);
+        } else {
+            ivDoorLock.setSelected(true);
+        }
+        if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorMirrorHeat] == 0){
+            ivMirrorHeat.setSelected(false);
+        } else {
+            ivMirrorHeat.setSelected(true);
+        }
+        if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorMirrorLight] == 0){
+            ivMirrorLight.setSelected(false);
+        } else {
+            ivMirrorLight.setSelected(true);
+        }
+        if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorMirrorSelect] == 0){
+            ivMirrorSelect.setSelected(false);
+        } else {
+            ivMirrorSelect.setSelected(true);
+        }
     }
 
     private void loadGif(int resID){

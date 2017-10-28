@@ -27,17 +27,32 @@
         <include layout="@layout/door_window_up_down_collection"/>
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/iv_door_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/door_lock"
+        android:layout_marginTop="540dp"
+        android:layout_marginStart="80dp"/>
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="50dp"
         android:layout_marginEnd="48dp"
-        android:layout_alignBottom="@+id/iv_door_lock"
+        android:layout_alignBottom="@id/iv_door_lock"
         android:layout_alignParentEnd="true">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_door_mirror_back"/>
+        <ImageView
+            android:id="@+id/iv_door_mirror_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/door_mirror_select"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/collection_mirror_adjust" />
+
         <RelativeLayout
             android:id="@+id/collection_mirror_adjust"
             android:layout_width="wrap_content"
@@ -67,6 +82,14 @@
             android:layout_marginTop="45dp"
             android:layout_below="@+id/textView_rearwindow_adjust"
             android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Anti Glare"
+            android:textColor="#ffffff"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/pb_door_mirror_anti_glare"/>
         <ImageView
             android:id="@+id/iv_door_mirror_minus"
             android:layout_width="wrap_content"
@@ -87,7 +110,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="350dp"
+            android:layout_marginTop="330dp"
             android:layout_marginStart="40dp">
             <ImageView
                 android:id="@+id/iv_door_mirror_heat"
@@ -109,7 +132,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="350dp"
+            android:layout_marginTop="330dp"
             android:layout_marginStart="170dp">
             <ImageView
                 android:id="@+id/iv_door_mirror_light"
@@ -127,14 +150,53 @@
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"/>
         </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="440dp"
+            android:layout_marginStart="40dp">
+            <ImageView
+                android:id="@+id/iv_door_mirror_fold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/door_mirror_fold"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="mirror fold"
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:layout_below="@id/iv_door_mirror_fold"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="440dp"
+            android:layout_marginStart="163dp">
+            <ImageView
+                android:id="@+id/iv_door_mirror_unfold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/door_mirror_unfold"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="mirror unfold"
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:layout_below="@id/iv_door_mirror_unfold"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/iv_door_lock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_door_lock"
-        android:layout_marginTop="540dp"
-        android:layout_marginStart="80dp"/>
+
 
 </RelativeLayout>

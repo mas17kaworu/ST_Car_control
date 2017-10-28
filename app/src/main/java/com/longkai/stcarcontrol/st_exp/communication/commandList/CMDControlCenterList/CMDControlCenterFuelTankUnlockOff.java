@@ -3,5 +3,6 @@ public class CMDControlCenterFuelTankUnlockOff extends CMDControlCenter{
    public CMDControlCenterFuelTankUnlockOff(){
        super();
        payload[0] &= ~(FuelTankUnlock);
+       refreshDataPayload();
    }
 }

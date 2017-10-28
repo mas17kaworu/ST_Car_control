@@ -30,6 +30,11 @@ public class CMDHVAC extends BaseCommand {
         }
     }
 
+    protected void refreshDataPayload(){
+        data[2] = payload[0];
+        data[3] = payload[1];
+    }
+
     @Override
     public byte getCommandId() {
         return COMMAND_HAVC;

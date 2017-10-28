@@ -3,5 +3,6 @@ public class CMDDoorDoorFoot_L_LightOn extends CMDDoor{
    public CMDDoorDoorFoot_L_LightOn(){
        super();
        payload[3] |= DoorFoot_L_Light;
+       refreshDataPayload();
    }
 }

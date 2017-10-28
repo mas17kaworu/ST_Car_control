@@ -27,7 +27,7 @@ public class CMDDoor extends BaseCommand{
     protected static final byte MirrorFold	= 0x01;
 
     protected static final byte MirrorHeat	= 0x40;
-    protected static final byte ECVVoltageCode = 0x00;
+    protected static final byte ECVVoltageCode = 0x3f;
 
     protected static final byte Small_L_Light	= (byte) 0x80;
     protected static final byte MirrorTLLight	= 0x40;
@@ -72,6 +72,12 @@ public class CMDDoor extends BaseCommand{
             data[7] = payload[5];
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    protected void refreshDataPayload(){
+        for (int i=0; i < payload.length; i++) {
+            data[2+i] = payload[i];
         }
     }
 

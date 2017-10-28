@@ -3,5 +3,6 @@ public class CMDControlCenterTrunkCoverFoldOff extends CMDControlCenter{
    public CMDControlCenterTrunkCoverFoldOff(){
        super();
        payload[1] &= ~(TrunkCoverFold);
+       refreshDataPayload();
    }
 }

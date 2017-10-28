@@ -3,5 +3,6 @@ public class CMDPowerSeatBackrestBackwardOn extends CMDPowerSeat{
    public CMDPowerSeatBackrestBackwardOn(){
        super();
        payload[0] |= BackrestBackward;
+       refreshDataPayload();
    }
 }

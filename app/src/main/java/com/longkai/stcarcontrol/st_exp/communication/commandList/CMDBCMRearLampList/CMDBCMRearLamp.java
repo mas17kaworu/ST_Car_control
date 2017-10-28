@@ -55,26 +55,39 @@ public class CMDBCMRearLamp extends BaseCommand {
         }
     }
 
+    protected void refreshDataPayload(){
+        data[2] = payload[0];
+    }
+
     @Override
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());
-        if (data[2] == 0x1A){
-            func(response.overLoad, 0, data[4]);
-            func(response.overLoad, 8, data[5]);
+        if (data[2] >= 0x1A){
+            readOpenLoad(response.openLoad, data, 4);
+            readOverLoad(response.overLoad, data, 7);
+            //  adc采样
+            for (int i=0;i<9;i++){
+                response.tempreture[i] = data[10+i*2] | (data[11+i*2]<<8);
+            }
+
         } else if (data[2] == 0x02){
 
         }
         return response;
     }
 
+
     @Override
     public byte getCommandId() {
-        return 0;
+        return COMMAND_BCM_REAR_LIGHT;
     }
 
     public static class Response extends BaseResponse {
 
-        public int[] openLoad;
+        public int[] openLoad; //   7       6           5           4           3           2            1          0
+                               //"U17_CH0"	"U13_CH0"	"U12_CH0"	"U10_CH0"	"U9_CH0"	"U8_CH0"	"U7_CH0"	"U5_CH0"
+                               //"U17_CH1"	"U13_CH1"	"U12_CH1"	"U10_CH1"	"U9_CH1"	"U8_CH1"	"U7_CH1"	"U5_CH0"
+                               //"U11_CH0"
         public int[] overLoad;
         public int[] tempreture;
 
@@ -84,9 +97,45 @@ public class CMDBCMRearLamp extends BaseCommand {
             overLoad = new int[17];
             tempreture = new int[9];
         }
+
+
     }
 
-    private void func(int[] dstArray, int startBit, byte srcByte){
-// TODO: 2017/8/29 拼接
+    private void readOpenLoad(int[] dstArray, final byte[] srcByte, final int startBit){
+        int num = 0;
+        int i=0;
+        byte tmp = srcByte[startBit + num];
+        for (; i < 8;i++) {
+            dstArray[i] = tmp & 0x01;
+            tmp = (byte) (tmp>>1);
+        }
+        num = num + 2;
+        tmp = srcByte[startBit + num];
+        for (; i < 16;i++) {
+            dstArray[i] = tmp & 0x01;
+            tmp = (byte) (tmp>>1);
+        }
+        num--;
+        tmp = srcByte[startBit + num];
+        dstArray[i] = tmp & 0x01;
+    }
+
+    private void readOverLoad(int[] dstArray, final byte[] srcByte, final int startBit){
+        int num = 1;
+        int i=0;
+        byte tmp = srcByte[startBit + num];
+        for (; i < 8;i++) {
+            dstArray[i] = tmp & 0x01;
+            tmp = (byte) (tmp>>1);
+        }
+        num++;
+        tmp = srcByte[startBit + num];
+        for (; i < 16;i++) {
+            dstArray[i] = tmp & 0x01;
+            tmp = (byte) (tmp>>1);
+        }
+        num=num-2;
+        tmp = srcByte[startBit + num];
+        dstArray[i] = tmp & 0x01;
     }
 }

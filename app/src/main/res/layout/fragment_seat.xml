@@ -138,7 +138,7 @@
         android:layout_toEndOf="@id/iv_seat_set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible">
+        >
         <include layout="@layout/seat_set_group"/>
     </RelativeLayout>
 

@@ -3,5 +3,6 @@ public class CMDPLGMTrunkDownOn extends CMDPLGM{
    public CMDPLGMTrunkDownOn(){
        super();
        payload[0] |= TrunkDown;
+       refreshDataPayload();
    }
 }

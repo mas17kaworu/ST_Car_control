@@ -3,5 +3,6 @@ public class CMDDoorMirrorXRightOn extends CMDDoor{
    public CMDDoorMirrorXRightOn(){
        super();
        payload[1] |= MirrorXRight;
+       refreshDataPayload();
    }
 }

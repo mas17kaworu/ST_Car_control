@@ -3,5 +3,6 @@ public class CMDDoorMirrorYupOn extends CMDDoor{
    public CMDDoorMirrorYupOn(){
        super();
        payload[1] |= MirrorYup;
+       refreshDataPayload();
    }
 }

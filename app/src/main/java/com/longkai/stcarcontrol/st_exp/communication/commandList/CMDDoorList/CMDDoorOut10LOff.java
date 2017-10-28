@@ -3,5 +3,6 @@ public class CMDDoorOut10LOff extends CMDDoor{
    public CMDDoorOut10LOff(){
        super();
        payload[3] &= ~(Out10L);
+       refreshDataPayload();
    }
 }
