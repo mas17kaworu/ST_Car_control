@@ -55,7 +55,10 @@ public class CoverWindView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-
+        canvas.save();
+        canvas.rotate(mAngle , 260, 350);
+        canvas.drawBitmap(dstbmp,220,350,mPaint);
+        canvas.restore();
 
         canvas.save();
         canvas.rotate(mAngle , 690, 350);

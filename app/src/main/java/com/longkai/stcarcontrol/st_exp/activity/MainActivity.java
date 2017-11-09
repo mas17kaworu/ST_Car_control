@@ -93,6 +93,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         byte test = (byte) 0xff;
         test &= (~UnlockR);
         Log.d("testLK", UnlockR + "  " + test);
+
+        int tmp = 500;
+//        float tmp2 = ((float)(5 * tmp) / 1024);
+//        Toast.makeText(getApplication()," "+tmp2,Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -286,7 +290,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         }
         transaction.commit();
-        // TODO: 2017/8/29 release fragment
     }
 
 

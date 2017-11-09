@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,10 @@ import android.view.animation.Animation;
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.MessageReceivedListener;
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDHVACList.CMDHVACBlowerCodeSet;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDHVACList.CMDHVACFlapCodeSet;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.AirconditionDiscView;
 import com.longkai.stcarcontrol.st_exp.customView.CoverWindView;
 
@@ -73,6 +78,8 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
             ConstantData.sCenterControlStatus[ConstantData.sCenterControlWindAngle] = progress;
             mCoverWindView.setVisibility(View.VISIBLE);
             setAnimation();
+            ServiceManager.getInstance().sendCommandToCar(new CMDHVACFlapCodeSet(progress*255/240), new CommandListenerAdapter());
+
         }
     };
 
@@ -85,6 +92,8 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
             ConstantData.sCenterControlStatus[ConstantData.sCenterControlWindPower] = progress;
             mCoverWindView.setVisibility(View.VISIBLE);
             setAnimation();
+//            0~240 to 0~255
+            ServiceManager.getInstance().sendCommandToCar(new CMDHVACBlowerCodeSet(progress*255/240), new CommandListenerAdapter());
         }
     };
 

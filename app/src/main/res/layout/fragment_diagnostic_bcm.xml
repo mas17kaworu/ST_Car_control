@@ -3,6 +3,24 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/ic_fragment_background">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DIAGNOSTIC"
+        android:textColor="#ffffff"
+        android:textSize="40sp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:id="@+id/tv_diagnostic_temp_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:text="can't receive"
+        android:textSize="20dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="200dp"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -11,7 +29,7 @@
         android:layout_centerInParent="true"/>
 
     <com.longkai.stcarcontrol.st_exp.customView.CoverHeatView
-        android:id="@+id/coverhomefff"
+        android:id="@+id/temperature_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

@@ -34,7 +34,6 @@ public class CoverHeatView extends View{
     private static final int YELLOW_COLOR = 0x99FFA500;
     private static final int WHITE_COLOR = 0xCCFFFFE0;
 
-    Path clipPath = new Path();
 
     private static final int[] mHeatPointPos = {
             130,200,
@@ -48,7 +47,7 @@ public class CoverHeatView extends View{
             560,560,
             };
 
-    private int[] mHeatPointTemp = {
+    private float[] mHeatPointTemp = {
             50,
             40,
             80,
@@ -68,6 +67,24 @@ public class CoverHeatView extends View{
         super(context, attrs);
 
         init(context);
+    }
+
+    public void setTempAndRefresh(float temperature[]){
+        //      0   1  2  3  4  5  6  7  8
+        //    U[5,  7, 8, 9,10,12,13,17,11] to
+        //      17 13 12  9 8  10 7  5  11
+
+        mHeatPointTemp[0] = temperature[7];
+        mHeatPointTemp[1] = temperature[6];
+        mHeatPointTemp[2] = temperature[5];
+        mHeatPointTemp[3] = temperature[3];
+        mHeatPointTemp[4] = temperature[2];
+        mHeatPointTemp[5] = temperature[4];
+        mHeatPointTemp[6] = temperature[1];
+        mHeatPointTemp[7] = temperature[0];
+        mHeatPointTemp[8] = temperature[8];
+
+        this.postInvalidate();
     }
 
     private void init(Context context){
