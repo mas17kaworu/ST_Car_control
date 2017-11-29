@@ -1,8 +1,13 @@
 package com.longkai.stcarcontrol.st_exp.activity;
 
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -15,6 +20,7 @@ import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.Utils.FileUtils;
 import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
 import com.longkai.stcarcontrol.st_exp.adapter.HorizontalListViewAdapter;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
@@ -36,6 +42,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
 
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,6 +66,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private HorizontalListViewAdapter hListViewAdapter;
 
     private ImageView ivConnectionState, ivWifiConnectionState;
+    private ImageView ivDiagram;
     public int mSelectedMode = 0;
 
     @Override
@@ -82,21 +90,53 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onInitComplete() {
                 ServiceManager.getInstance().setConnectionListener(mConnectionListener);
+            }
+        });
 
+        ivDiagram = (ImageView) findViewById(R.id.iv_mainactivity_diagram);
+        ivDiagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ivDiagram.setVisibility(View.INVISIBLE);
             }
         });
 
         initUI();
         setSelect(0);
 
-        byte UnlockR	= (byte) 0x80;
+        byte UnlockR = (byte) 0x80;
         byte test = (byte) 0xff;
         test &= (~UnlockR);
         Log.d("testLK", UnlockR + "  " + test);
 
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{android
+                .Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
+
+
         int tmp = 500;
 //        float tmp2 = ((float)(5 * tmp) / 1024);
 //        Toast.makeText(getApplication()," "+tmp2,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //创建文件夹
+                    /*if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                        File file = new File(Environment.getExternalStorageDirectory() + "/aa/bb/");
+                        if (!file.exists()) {
+                            Log.d("jim", "path1 create:" + file.mkdirs());
+                        }
+                    }*/
+
+
+                }
+                break;
+        }
     }
 
     @Override
@@ -149,45 +189,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     Timer timer;
 
+    private boolean hardwareConnected = false;
+    private ConnectionType connectedType;
+
     ConnectionListener mConnectionListener = new ConnectionListener() {
         @Override
         public void onConnected() {
 //            Toast.makeText(getApplicationContext(), "Bt Connected", Toast.LENGTH_SHORT).show();
+            hardwareConnected = true;
             if (null == timer){
                 timer = new Timer();
             }
+
+
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(),new CommandListenerAdapter(){
-                        @Override
-                        public void onSuccess(BaseResponse response) {
-                            super.onSuccess(response);
-                            //invisible View
-
-
-
-
-                            mVersion = ((CMDGetVersion.Response)response).getVersion();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ivConnectionState.setVisibility(View.INVISIBLE);
-                                    ivWifiConnectionState.setVisibility(View.INVISIBLE);
-                                    Toast.makeText(getApplicationContext(),
-                                            "version:" + mVersion ,Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            super.onTimeout();
-                        }
-                    });
+                    ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(), getVersionListener);
                 }
-            }, 2000);
+            }, 2000);//等两秒发送get version command
 
 
             /*new Handler().postDelayed(new Runnable() {
@@ -203,11 +223,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public void onDisconnected() {
             Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
+            hardwareConnected = false;
             ivConnectionState.setVisibility(View.VISIBLE);
         }
     };
 
     public void setSelect(int i) {
+        ivDiagram.setVisibility(View.INVISIBLE);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if (i > mLastflag) {
@@ -331,17 +353,44 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;*/
             case R.id.iv_mainactivity_lost_connect://bt connection
                 SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "BT");
-                ServiceManager.getInstance().connectToDevice(null, mConnectionListener, ConnectionType.BT);
-                ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(),new CommandListenerAdapter());
+                if (!hardwareConnected) {
+                    ServiceManager.getInstance().connectToDevice(null, mConnectionListener, ConnectionType.BT);
+                }
+                ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(), getVersionListener);
                 break;
             case R.id.iv_mainacivity_lost_wifi:
                 SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "WIFI");
-                ServiceManager.getInstance().connectToDevice(null, mConnectionListener, ConnectionType.Wifi);
-                ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(),new CommandListenerAdapter());
+                if (!hardwareConnected) {
+                    ServiceManager.getInstance().connectToDevice(null, mConnectionListener, ConnectionType.Wifi);
+                }
+                ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(), getVersionListener);
                 break;
         }
     }
 
+    private CommandListenerAdapter getVersionListener = new CommandListenerAdapter(){
+        @Override
+        public void onSuccess(BaseResponse response) {
+            super.onSuccess(response);
+            //invisible View
+            mVersion = ((CMDGetVersion.Response)response).getVersion();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ivConnectionState.setVisibility(View.INVISIBLE);
+                    ivWifiConnectionState.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getApplicationContext(),
+                            "version:" + mVersion ,Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+
+        @Override
+        public void onTimeout() {
+            super.onTimeout();
+        }
+    };
 
     private void releaseFragment(){
         mHomeFragment = null;
@@ -357,6 +406,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         System.gc();
 
     }
+    public void showDiagram(String diagramName){
+        FileUtils.copyDiagram2SDCard(this , diagramName);
 
+        String filepath = FileUtils.INTERNAL_PATH + FileUtils.DIAGRAM_PIC + File.separator + diagramName;
 
+        File file = new File(filepath);
+        if (file.exists()) {
+            Bitmap bm = BitmapFactory.decodeFile(filepath);
+            // 将图片显示到ImageView中
+            ivDiagram.setVisibility(View.VISIBLE);
+            ivDiagram.setImageBitmap(bm);
+        }
+    }
 }

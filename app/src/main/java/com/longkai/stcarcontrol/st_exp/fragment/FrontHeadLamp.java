@@ -65,6 +65,7 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
         ivLampRixingdeng = (ImageView) mView.findViewById(R.id.iv_lamp_rixingdeng_on);
         ivLampTurnLeft = (ImageView) mView.findViewById(R.id.iv_lamp_turnleft_on);
         ivLampTurnRight = (ImageView) mView.findViewById(R.id.iv_lamp_turnright_on);
+        mView.findViewById(R.id.tv_Head_Lamp_diagram).setOnClickListener(this);
         refreshUI();
         mBTServer = ((BaseActivity)getActivity()).mBtServer;
 
@@ -151,6 +152,9 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                     mHandler.sendEmptyMessageDelayed(1, 1000);
                 }
                 mHandler.sendEmptyMessage(0);
+                break;
+            case R.id.tv_Head_Lamp_diagram:
+                ((MainActivity)getActivity()).showDiagram(ConstantData.HL_DIAGRAM);
                 break;
         }
     }

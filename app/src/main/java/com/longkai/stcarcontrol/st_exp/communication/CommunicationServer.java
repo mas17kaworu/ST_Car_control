@@ -58,7 +58,6 @@ public class CommunicationServer extends Service {
         String type = (String) SharedPreferencesUtil.get(this, ConstantData.CONNECTION_TYPE, "BT");
 
         if (type.equalsIgnoreCase("BT")) {// use BTserver
-
             mConnection = new BTServer(BTManager.getInstance().getBtAdapter(), null, getApplicationContext());
             mConnection.open(null, mConnectionListener);
         } else {// UDP

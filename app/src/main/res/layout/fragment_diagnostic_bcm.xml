@@ -20,13 +20,15 @@
         android:text="can't receive"
         android:textSize="20dp"
         android:layout_marginTop="100dp"
-        android:layout_marginStart="200dp"/>
+        android:layout_marginStart="200dp"
+        android:visibility="invisible"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_dianluban"
-        android:layout_centerInParent="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="145dp"/>
 
     <com.longkai.stcarcontrol.st_exp.customView.CoverHeatView
         android:id="@+id/temperature_indicator"
@@ -43,4 +45,12 @@
         android:layout_marginStart="100dp"
         android:layout_marginTop="600dp"
         />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleY="2"
+        android:src="@mipmap/ic_sewentiao"
+        android:layout_marginStart="900dp"
+        android:layout_marginTop="270dp"/>
 </RelativeLayout>

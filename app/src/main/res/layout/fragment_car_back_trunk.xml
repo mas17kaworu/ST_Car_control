@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@mipmap/ic_fragment_background">
     <TextView
+        android:id="@+id/tv_trunk_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Trunk"
@@ -11,6 +12,18 @@
         android:textSize="40sp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:id="@+id/tv_trunk_diagram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Diagram"
+        android:textColor="#ffffff"
+        android:textSize="35sp"
+        android:layout_alignBottom="@id/tv_trunk_title"
+        android:layout_toEndOf="@id/tv_trunk_title"
+        android:layout_marginStart="30dp" />
+
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifv_car_trunk"
         android:layout_width="wrap_content"

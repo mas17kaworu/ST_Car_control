@@ -4,18 +4,21 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGMTrunkDownOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGMTrunkDownOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGMTrunkUpOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGMTrunkUpOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+import com.longkai.stcarcontrol.st_exp.customView.MenuViewItem;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -44,10 +47,53 @@ public class CarBackCoverFragment extends Fragment implements View.OnClickListen
         mView = inflater.inflate(R.layout.fragment_car_back_trunk, container, false);
         gif_view_back = (GifImageView) mView.findViewById(R.id.gifv_car_trunk);
         ivTrunkOpen = (ImageView) mView.findViewById(R.id.iv_carback_trunk_open);
-        ivTrunkOpen.setOnClickListener(this);
-        ivTrunkClose = (ImageView) mView.findViewById(R.id.iv_carback_trunk_close);
-        ivTrunkClose.setOnClickListener(this);
 
+        ivTrunkOpen.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        ivTrunkOpen.setImageResource(R.mipmap.ic_car_back_btn_trunk_open_green);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDPLGMTrunkUpOn(), new CommandListenerAdapter());
+                        loadGif(R.mipmap.gif_car_back_trunk_open);
+                        ConstantData.sTrunkStatus[ConstantData.sTrunkStatu] = 1;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ivTrunkOpen.setImageResource(R.mipmap.ic_car_back_btn_trunk_open_gray);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDPLGMTrunkUpOff(), new CommandListenerAdapter());
+                        setGif_Image(R.mipmap.ic_car_back_trunk_open);
+                        break;
+                }
+                return true;
+            }
+        });
+
+//        ivTrunkOpen.setOnClickListener(this);
+
+        ivTrunkClose = (ImageView) mView.findViewById(R.id.iv_carback_trunk_close);
+        ivTrunkClose.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        ivTrunkClose.setImageResource(R.mipmap.ic_car_back_btn_trunk_close_green);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDPLGMTrunkDownOn(), new CommandListenerAdapter());
+                        loadGif(R.mipmap.gif_car_back_trunk_close);
+                        ConstantData.sTrunkStatus[ConstantData.sTrunkStatu] = 0;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ivTrunkClose.setImageResource(R.mipmap.ic_car_back_btn_trunk_close_gray);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDPLGMTrunkDownOff(), new CommandListenerAdapter());
+                        setGif_Image(R.mipmap.ic_car_back_trunk_close);
+                        break;
+                }
+                return true;
+            }
+        });
+
+//        ivTrunkClose.setOnClickListener(this);
+
+        mView.findViewById(R.id.tv_trunk_diagram).setOnClickListener(this);
         refreshUI();
         return mView;
     }
@@ -94,6 +140,9 @@ public class CarBackCoverFragment extends Fragment implements View.OnClickListen
                         });
                     }
                 },2000);
+                break;
+            case R.id.tv_trunk_diagram:
+                ((MainActivity)getActivity()).showDiagram(ConstantData.PLCM_DIAGRAM);
                 break;
         }
     }

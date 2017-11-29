@@ -54,8 +54,30 @@ public class CMDDoor extends BaseCommand{
 
     protected static byte[] payload = {0x00,0x00,0x00,0x00,0x00,0x00};
 
+
     /**
      *  带dia位的
+     *
+     */
+    public CMDDoor(boolean diagnostic){
+        try{
+            data = new byte[8];
+            dataLength = 8;
+            data[0] = (byte) dataLength;
+            data[1] = (byte) 0x80 & COMMAND_DOOR;
+            data[2] = payload[0];
+            data[3] = payload[1];
+            data[4] = payload[2];
+            data[5] = payload[3];
+            data[6] = payload[4];
+            data[7] = payload[5];
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *  不带dia位的
      *
      */
     public CMDDoor(){
@@ -63,7 +85,7 @@ public class CMDDoor extends BaseCommand{
             data = new byte[8];
             dataLength = 8;
             data[0] = (byte) dataLength;
-            data[1] = (byte) 0x80 & COMMAND_DOOR;
+            data[1] = (byte) COMMAND_DOOR;
             data[2] = payload[0];
             data[3] = payload[1];
             data[4] = payload[2];

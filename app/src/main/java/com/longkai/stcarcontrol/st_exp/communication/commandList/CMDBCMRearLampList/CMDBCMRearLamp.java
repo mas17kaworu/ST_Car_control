@@ -62,12 +62,12 @@ public class CMDBCMRearLamp extends BaseCommand {
     @Override
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());
-        if (data[2] >= 0x1A){
+        if (data[2] >= 0x11){
             readOpenLoad(response.openLoad, data, 4);
             readOverLoad(response.overLoad, data, 7);
             //  adc采样
             for (int i=0;i<9;i++){
-                response.tempreture[i] = data[10+i*2] | (data[11+i*2]<<8);
+                response.tempreture[i] = (data[10+i] & 0xff) << 2; //低两位默认为0
             }
 
         } else if (data[2] == 0x02){

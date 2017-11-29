@@ -11,11 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.ImageView;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.MessageReceivedListener;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperFastOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperFastOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperSlowOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperSlowOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDHVACList.CMDHVACBlowerCodeSet;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDHVACList.CMDHVACFlapCodeSet;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
@@ -32,11 +38,28 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
     private CoverWindView mCoverWindView;
     private AlphaAnimation alphaAnimation;
 
+    private ImageView ivWiperState1,ivWiperState2;
+    private ImageView ivCenterLock;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_center_control, container, false);
         mCoverWindView = (CoverWindView) mView.findViewById(R.id.cover_wind_view);
+        //// TODO: 2017/11/15 send command
+        mView.findViewById(R.id.iv_center_control_yugua_gray).setOnClickListener(this);
+        ivWiperState1 = (ImageView) mView.findViewById(R.id.iv_center_control_wiper_stage_1);
+        ivWiperState2 = (ImageView) mView.findViewById(R.id.iv_center_control_wiper_stage_2);
+        ivCenterLock = (ImageView) mView.findViewById(R.id.iv_center_control_center_lock);
+
+        mView.findViewById(R.id.iv_center_control_center_lock).setOnClickListener(this);
+
+        mView.findViewById(R.id.iv_center_control_safe_belt_gray).setOnClickListener(this);
+
+        mView.findViewById(R.id.iv_center_control_sun_shade_gray).setOnClickListener(this);
+
+        ivCenterLock.setOnClickListener(this);
+        //....
 
         avWindAngle = (AirconditionDiscView) mView.findViewById(R.id.aircondition_angle);
         avWindPower = (AirconditionDiscView) mView.findViewById(R.id.aircondition_power);
@@ -64,12 +87,17 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
         mCoverWindView.setAnimation(alphaAnimation);
         alphaAnimation.setRepeatCount(Animation.ABSOLUTE);
         alphaAnimation.start();
+
+        mView.findViewById(R.id.tv_HVAC_diagram).setOnClickListener(this);
+
 //
         refreshUI();
 
         return mView;
     }
 
+    private int angleRecord, powerRecord;
+    private boolean sendAngleFlag = false, sendPowerFlag = false;
     AirconditionDiscView.ProgressChangeListener mAngleProgressChangeListener = new AirconditionDiscView.ProgressChangeListener(){
         @Override
         public void onProgressChangeListener(int progress) {
@@ -78,7 +106,12 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
             ConstantData.sCenterControlStatus[ConstantData.sCenterControlWindAngle] = progress;
             mCoverWindView.setVisibility(View.VISIBLE);
             setAnimation();
-            ServiceManager.getInstance().sendCommandToCar(new CMDHVACFlapCodeSet(progress*255/240), new CommandListenerAdapter());
+            //0~240 to 0~255
+            angleRecord = progress*255/240;
+            if (!sendAngleFlag){
+                sendAngleFlag = true;
+                mHandler.sendEmptyMessageDelayed(1, 500);
+            }
 
         }
     };
@@ -93,7 +126,27 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
             mCoverWindView.setVisibility(View.VISIBLE);
             setAnimation();
 //            0~240 to 0~255
-            ServiceManager.getInstance().sendCommandToCar(new CMDHVACBlowerCodeSet(progress*255/240), new CommandListenerAdapter());
+            powerRecord = progress*255/240;
+            if (!sendPowerFlag){
+                sendPowerFlag = true;
+                mHandler.sendEmptyMessageDelayed(2, 500);
+            }
+        }
+    };
+
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 1:
+                    ServiceManager.getInstance().sendCommandToCar(new CMDHVACFlapCodeSet(angleRecord), new CommandListenerAdapter());
+                    sendAngleFlag = false;
+                    break;
+                case 2:
+                    ServiceManager.getInstance().sendCommandToCar(new CMDHVACBlowerCodeSet(powerRecord), new CommandListenerAdapter());
+                    sendPowerFlag = false;
+                    break;
+            }
         }
     };
 
@@ -103,11 +156,61 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
         mCoverWindView.setAngle(avWindAngle.getProgress() *60 / 240 - 30);
         float scale = avWindPower.getProgress() / 480.0f + 0.5f;
         mCoverWindView.setPower(scale);
+
+        if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlWiper] == 0) {
+            ivWiperState1.setImageResource(R.mipmap.ic_seat_stage_gray);
+            ivWiperState2.setImageResource(R.mipmap.ic_seat_stage_gray);
+        } else if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlWiper] == 1){
+            ivWiperState1.setImageResource(R.mipmap.ic_seat_stage_green);
+            ivWiperState2.setImageResource(R.mipmap.ic_seat_stage_gray);
+            ConstantData.sCenterControlStatus[ConstantData.sCenterControlWiper] = 2;
+        } else if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlWiper] == 2){
+            ivWiperState1.setImageResource(R.mipmap.ic_seat_stage_green);
+            ivWiperState2.setImageResource(R.mipmap.ic_seat_stage_green);
+        }
+
     }
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.iv_center_control_yugua_gray:
+                if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlWiper] == 0) {
+                    ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterWiperSlowOn(), new CommandListenerAdapter());
+                    ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterWiperFastOff(), new CommandListenerAdapter());
+                    ivWiperState1.setImageResource(R.mipmap.ic_seat_stage_green);
+                    ivWiperState2.setImageResource(R.mipmap.ic_seat_stage_gray);
+                    ConstantData.sCenterControlStatus[ConstantData.sCenterControlWiper] = 1;
+                } else if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlWiper] == 1){
+                    ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterWiperSlowOff(), new CommandListenerAdapter());
+                    ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterWiperFastOn(), new CommandListenerAdapter());
+                    ivWiperState1.setImageResource(R.mipmap.ic_seat_stage_green);
+                    ivWiperState2.setImageResource(R.mipmap.ic_seat_stage_green);
+                    ConstantData.sCenterControlStatus[ConstantData.sCenterControlWiper] = 2;
+                } else if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlWiper] == 2){
+                    ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterWiperSlowOff(), new CommandListenerAdapter());
+                    ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterWiperFastOff(), new CommandListenerAdapter());
+                    ivWiperState1.setImageResource(R.mipmap.ic_seat_stage_gray);
+                    ivWiperState2.setImageResource(R.mipmap.ic_seat_stage_gray);
+                    ConstantData.sCenterControlStatus[ConstantData.sCenterControlWiper] = 0;
+                }
+                break;
 
+            case R.id.tv_HVAC_diagram:
+                ((MainActivity)getActivity()).showDiagram(ConstantData.HVAC_DIAGRAM);
+                break;
+            case R.id.iv_center_control_center_lock:
+                if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlCentralLock]==0) {
+                    ivCenterLock.setImageResource(R.mipmap.ic_center_control_center_lock_green);
+                    ConstantData.sCenterControlStatus[ConstantData.sCenterControlCentralLock]=1;
+//                    ServiceManager.getInstance().sendCommandToCar(new );
+                }else {
+                    ConstantData.sCenterControlStatus[ConstantData.sCenterControlCentralLock]=0;
+                    ivCenterLock.setImageResource(R.mipmap.ic_center_control_center_lock_gray);
+                }
+                break;
+
+        }
     }
     private void setAnimation(){
         alphaAnimation = new AlphaAnimation(1.0f,0.1f);

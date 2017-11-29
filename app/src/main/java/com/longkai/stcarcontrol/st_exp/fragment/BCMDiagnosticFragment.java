@@ -102,6 +102,7 @@ public class BCMDiagnosticFragment extends Fragment implements View.OnClickListe
     }
 
     private void caculateRealTemp(){
+        Log.d("Diagnostic", "tempreture[0] = " + tempretureArray[0]);
         realTempreturArray[0] = ((2.7051f - (float)(5 * tempretureArray[0])/1024)*1000.0f/5.5f+33.3f);//u5
         realTempreturArray[1] = ((2.0312f - (float)(5 * tempretureArray[1])/1024)*1000.0f/5.5f+33.3f);//u7
         realTempreturArray[2] = ((2.0654f - (float)(5 * tempretureArray[2])/1024)*1000.0f/5.5f+30.6f);//u8

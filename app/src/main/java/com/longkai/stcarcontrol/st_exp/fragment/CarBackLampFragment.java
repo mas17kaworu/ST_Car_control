@@ -11,30 +11,21 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
-import com.longkai.stcarcontrol.st_exp.activity.BaseActivity;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
-import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampBrake;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampPosition;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampReversing;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampTurnLeft;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampTurnRight;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampDRLLight;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampPosition;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGM;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
-
-import java.security.spec.ECField;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2017/8/19.
@@ -60,9 +51,7 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
         ivCarbackPositionLamp = (ImageView) mView.findViewById(R.id.iv_carback_reversing_light);
         ivCarbackTurnleftLamp = (ImageView) mView.findViewById(R.id.iv_carback_turnleft_light);
         ivCarbackTurnrightLamp = (ImageView) mView.findViewById(R.id.iv_carback_turnright_light);
-
-
-
+        mView.findViewById(R.id.tv_car_back_diagram).setOnClickListener(this);
 
 
 //        handler.postDelayed(runnable, 500);// 打开定时器，50ms后执行runnable
@@ -151,7 +140,7 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.iv_carback_reversing_click:
                 clickLamp(ConstantData.sCarBackPositionLampStatus, ivCarbackPositionLamp,
-                        new CMDBCMRearLampPosition());
+                        new CMDBCMRearLampReversing());
                 break;
             case R.id.iv_carback_turnleft_click:
                 clickLamp(ConstantData.sCarBackTurnLeftLampStatus, ivCarbackTurnleftLamp,
@@ -163,6 +152,9 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.tv_car_back_title:
                 ((MainActivity)getActivity()).setSelect(101);
+                break;
+            case R.id.tv_car_back_diagram:
+                ((MainActivity)getActivity()).showDiagram(ConstantData.BCM_DIAGRAM);
                 break;
         }
     }
@@ -237,6 +229,8 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
         view.setAnimation(alphaAnimation1);
         alphaAnimation1.start();
     }
+
+
 
     @Override
     public void onDestroy() {

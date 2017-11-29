@@ -12,11 +12,18 @@ import android.widget.RadioButton;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatBackrestForwardOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatBackrestForwardOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatHeatCodeSet;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatPositionKey1Off;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatPositionKey1On;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatPositionKey2Off;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatPositionKey2On;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatPositionKey3Off;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatPositionKey3On;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatPositionKeySetOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatPositionKeySetOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatSearFormerDownOff;
@@ -61,7 +68,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
 
     private View v_seat_wind_group,v_seat_set_group;
     private RadioButton rbtn_seat_wind_stage1,rbtn_seat_wind_stage2,rbtn_seat_wind_stage3;
-    private RadioButton rbtn_seat_set_stage1,rbtn_seat_set_stage2,rbtn_seat_set_stage3;
+    private ImageView rbtn_seat_set_stage1,rbtn_seat_set_stage2,rbtn_seat_set_stage3;
     private ImageView iv_seat_wind;
     private ImageView iv_seat_set;
 
@@ -162,7 +169,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
 
             @Override
             public void onUp() {
-                releaseLeftGifView();
+                onBtnUp(new CMDPowerSeatBackrestForwardOff());
             }
         });
         ((MenuViewItem)mView.findViewById( R.id.seat_back_forward)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
@@ -173,7 +180,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
 
             @Override
             public void onUp() {
-                releaseLeftGifView();
+                onBtnUp(new CMDPowerSeatBackrestForwardOff());
             }
         });
 
@@ -265,12 +272,51 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
                 return true;
             }
         });
-        rbtn_seat_set_stage1 =  (RadioButton) v_seat_set_group.findViewById(R.id.radiobtn_set_stage1);
-        rbtn_seat_set_stage1.setOnClickListener(this);
-        rbtn_seat_set_stage2 =  (RadioButton) v_seat_set_group.findViewById(R.id.radiobtn_set_stage2);
-        rbtn_seat_set_stage2.setOnClickListener(this);
-        rbtn_seat_set_stage3 =  (RadioButton) v_seat_set_group.findViewById(R.id.radiobtn_set_stage3);
-        rbtn_seat_set_stage3.setOnClickListener(this);
+//        rbtn_seat_set_stage1 =  (RadioButton) v_seat_set_group.findViewById(R.id.radiobtn_set_stage1);
+        rbtn_seat_set_stage1 =  (ImageView) mView.findViewById(R.id.radiobtn_set_stage1);
+        rbtn_seat_set_stage1.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    rbtn_seat_set_stage1.setImageResource(R.mipmap.ic_set_select);
+                    ServiceManager.getInstance().sendCommandToCar(new CMDPowerSeatPositionKey1On(),new CommandListenerAdapter());
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    rbtn_seat_set_stage1.setImageResource(R.mipmap.ic_set_select_placeholder);
+                    ServiceManager.getInstance().sendCommandToCar(new CMDPowerSeatPositionKey1Off(),new CommandListenerAdapter());
+                }
+                return true;
+            }
+        });
+
+        rbtn_seat_set_stage2 =  (ImageView) mView.findViewById(R.id.radiobtn_set_stage2);
+        rbtn_seat_set_stage2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    rbtn_seat_set_stage2.setImageResource(R.mipmap.ic_set_select);
+                    ServiceManager.getInstance().sendCommandToCar(new CMDPowerSeatPositionKey2On(),new CommandListenerAdapter());
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    rbtn_seat_set_stage2.setImageResource(R.mipmap.ic_set_select_placeholder);
+                    ServiceManager.getInstance().sendCommandToCar(new CMDPowerSeatPositionKey2Off(),new CommandListenerAdapter());
+                }
+                return true;
+            }
+        });
+        rbtn_seat_set_stage3 =  (ImageView) mView.findViewById(R.id.radiobtn_set_stage3);
+        rbtn_seat_set_stage3.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    rbtn_seat_set_stage3.setImageResource(R.mipmap.ic_set_select);
+                    ServiceManager.getInstance().sendCommandToCar(new CMDPowerSeatPositionKey3On(),new CommandListenerAdapter());
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    rbtn_seat_set_stage3.setImageResource(R.mipmap.ic_set_select_placeholder);
+                    ServiceManager.getInstance().sendCommandToCar(new CMDPowerSeatPositionKey3Off(),new CommandListenerAdapter());
+                }
+                return true;
+            }
+        });
+        mView.findViewById(R.id.tv_seat_diagram).setOnClickListener(this);
 
         initUI();
 
@@ -409,7 +455,11 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
                 ServiceManager.getInstance().sendCommandToCar(
                         new CMDPowerSeatVentilationLevelSet(3), new CommandListenerAdapter());
                 break;
-            //// TODO: 2017/9/4 send command 貌似是点下去on 松了发off
+
+            case R.id.tv_seat_diagram:
+                ((MainActivity)getActivity()).showDiagram(ConstantData.POWER_SEAT_DIAGRAM);
+                break;
+
             /*case R.id.radiobtn_set_stage1:
                 ServiceManager.getInstance().sendCommandToCar(
                         new CMDPowerSeatPositionKey1On(), new CommandListenerAdapter());
@@ -530,7 +580,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         if (ConstantData.mSeatSetStatus != 0){
             iv_seat_set.setImageResource(R.mipmap.ic_seat_set_white);
             v_seat_set_group.setVisibility(View.VISIBLE);
-            switch (ConstantData.mSeatSetStatus){
+            /*switch (ConstantData.mSeatSetStatus){
                 case 1:
                     rbtn_seat_set_stage1.toggle();
                     break;
@@ -540,7 +590,7 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
                 case 3:
                     rbtn_seat_set_stage3.toggle();
                     break;
-            }
+            }*/
 
         } else {
             v_seat_wind_group.setVisibility(View.INVISIBLE);
