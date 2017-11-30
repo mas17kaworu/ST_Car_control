@@ -7,7 +7,7 @@
         android:id="@+id/tv_car_front_lamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FRONT LAMP"
+        android:text="LED Head Lamp"
         android:textColor="#ffffff"
         android:textSize="40sp"
         android:layout_marginLeft="50dp"

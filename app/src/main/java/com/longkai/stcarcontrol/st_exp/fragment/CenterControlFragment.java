@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -18,6 +19,10 @@ import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.MessageReceivedListener;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterCentralUnlockOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterCentralUnlockOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterCentrallockOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterCentrallockOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperFastOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperFastOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperSlowOff;
@@ -39,7 +44,7 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
     private AlphaAnimation alphaAnimation;
 
     private ImageView ivWiperState1,ivWiperState2;
-    private ImageView ivCenterLock;
+    private ImageView ivCenterLock, ivCenterUnlock;
 
     @Nullable
     @Override
@@ -51,6 +56,7 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
         ivWiperState1 = (ImageView) mView.findViewById(R.id.iv_center_control_wiper_stage_1);
         ivWiperState2 = (ImageView) mView.findViewById(R.id.iv_center_control_wiper_stage_2);
         ivCenterLock = (ImageView) mView.findViewById(R.id.iv_center_control_center_lock);
+        ivCenterUnlock = (ImageView) mView.findViewById(R.id.iv_center_control_center_unlock);
 
         mView.findViewById(R.id.iv_center_control_center_lock).setOnClickListener(this);
 
@@ -58,7 +64,44 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
 
         mView.findViewById(R.id.iv_center_control_sun_shade_gray).setOnClickListener(this);
 
-        ivCenterLock.setOnClickListener(this);
+        ivCenterLock.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        ivCenterLock.setImageResource(R.mipmap.ic_center_control_center_lock_green);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterCentrallockOn(),
+                                new CommandListenerAdapter());
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ivCenterLock.setImageResource(R.mipmap.ic_center_control_center_lock_gray);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterCentrallockOff(),
+                                new CommandListenerAdapter());
+                        break;
+                }
+                return true;
+            }
+        });
+
+        ivCenterUnlock.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        ivCenterUnlock.setImageResource(R.mipmap.ic_center_control_center_lock_green);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterCentralUnlockOn(),
+                                new CommandListenerAdapter());
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ivCenterUnlock.setImageResource(R.mipmap.ic_center_control_center_lock_gray);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterCentralUnlockOff(),
+                                new CommandListenerAdapter());
+                        break;
+                }
+                return true;
+            }
+        });
+//        ivCenterLock.setOnClickListener(this);
         //....
 
         avWindAngle = (AirconditionDiscView) mView.findViewById(R.id.aircondition_angle);

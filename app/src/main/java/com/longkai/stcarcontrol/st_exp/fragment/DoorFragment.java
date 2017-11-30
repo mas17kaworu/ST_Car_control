@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,7 +19,6 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMD
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorDoorFoot_L_LightOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorDoorFoot_R_LightOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorECVVoltageCodeSet;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorLockLOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorBlind_L_LightOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorBlind_L_LightOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorBlind_R_LightOff;
@@ -169,9 +169,47 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
         ivMirrorSelect = (ImageView) mView.findViewById(R.id.iv_door_mirror_select);
         ivMirrorSelect.setOnClickListener(this);
         ivMirrorFold = (ImageView) mView.findViewById(R.id.iv_door_mirror_fold);
-        ivMirrorFold.setOnClickListener(this);
+        ivMirrorFold.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        ServiceManager.getInstance().sendCommandToCar(
+                                new CMDDoorMirrorFoldOn(), new CommandListenerAdapter());
+                        loadGif(R.mipmap.gif_door_mirror_fold);
+                        scheduleMirrorGifDelayTask();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ServiceManager.getInstance().sendCommandToCar(
+                                new CMDDoorMirrorFoldOff(), new CommandListenerAdapter()
+                        );
+                        break;
+                }
+                return true;
+            }
+        });
+//        ivMirrorFold.setOnClickListener(this);
         ivMirrorUnfold = (ImageView) mView.findViewById(R.id.iv_door_mirror_unfold);
-        ivMirrorUnfold.setOnClickListener(this);
+        ivMirrorUnfold.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        ServiceManager.getInstance().sendCommandToCar(
+                                new CMDDoorMirrorUnfoldOn(), new CommandListenerAdapter());
+                        loadGif(R.mipmap.gif_door_mirror_unfold);
+                        scheduleMirrorGifDelayTask();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ServiceManager.getInstance().sendCommandToCar(
+                                new CMDDoorMirrorUnfoldOff(), new CommandListenerAdapter()
+                        );
+                        break;
+                }
+                return true;
+            }
+        });
+//        ivMirrorUnfold.setOnClickListener(this);
 
         iv_fade_zone_lamp = (ImageView) mView.findViewById(R.id.iv_door_fade_zone_lamp);
         iv_fade_zone_lamp.setOnClickListener(this);
@@ -235,13 +273,13 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
                 ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOn(),new CommandListenerAdapter());
                 ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOff(),new CommandListenerAdapter());
                 loadGif(R.mipmap.gif_door_mirror_fold);
-                scheduleMirrorFoldDelayTask();
+                scheduleMirrorGifDelayTask();
                 break;
             case R.id.iv_door_mirror_unfold:
                 ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOff(),new CommandListenerAdapter());
                 ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOn(),new CommandListenerAdapter());
                 loadGif(R.mipmap.gif_door_mirror_unfold);
-                scheduleMirrorFoldDelayTask();
+                scheduleMirrorGifDelayTask();
                 break;
 
             case R.id.iv_door_fade_zone_lamp:
@@ -321,12 +359,12 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
 
     Timer timer = new Timer();
 
-    private void scheduleMirrorFoldDelayTask(){
+    private void scheduleMirrorGifDelayTask(){
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOff(),new CommandListenerAdapter());
-                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOff(),new CommandListenerAdapter());
+//                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOff(),new CommandListenerAdapter());
+//                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOff(),new CommandListenerAdapter());
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -335,7 +373,7 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
                 });
 
             }
-        }, 3000);
+        }, 2500);
     }
 
 

@@ -8,7 +8,7 @@
         android:id="@+id/tv_HVAC_diagram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HVAC Diagram"
+        android:text="Central Control and HVAC Diagram"
         android:textColor="#ffffff"
         android:layout_marginTop="10dp"
         android:textSize="30sp"
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_seat_stage_gray"
         android:layout_marginTop="527dp"
-        android:layout_marginStart="360dp"/>
+        android:layout_marginStart="415dp"/>
 
     <ImageView
         android:id="@+id/iv_center_control_wiper_stage_2"
@@ -114,6 +114,28 @@
             android:layout_width="20dp"
             android:layout_height="1dp"/>
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_center_control_center_unlock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_center_control_center_lock_gray"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_center_control_center_unlock"
+                android:layout_marginTop="5dp"
+                android:layout_centerHorizontal="true"
+                android:textColor="#ffffff"
+                android:text="Center Unlock"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="1dp"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"

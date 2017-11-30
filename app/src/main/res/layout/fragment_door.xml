@@ -7,7 +7,7 @@
         android:id="@+id/tv_door_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Door and Mirror"
+        android:text="Door Zone"
         android:textColor="#ffffff"
         android:textSize="40sp"
         android:layout_marginLeft="50dp"
