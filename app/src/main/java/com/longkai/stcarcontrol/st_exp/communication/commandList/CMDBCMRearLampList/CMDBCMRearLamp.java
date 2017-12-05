@@ -97,8 +97,6 @@ public class CMDBCMRearLamp extends BaseCommand {
             overLoad = new int[17];
             tempreture = new int[9];
         }
-
-
     }
 
     private void readOpenLoad(int[] dstArray, final byte[] srcByte, final int startBit){
@@ -128,13 +126,13 @@ public class CMDBCMRearLamp extends BaseCommand {
             dstArray[i] = tmp & 0x01;
             tmp = (byte) (tmp>>1);
         }
-        num++;
+        num=num+2;
         tmp = srcByte[startBit + num];
         for (; i < 16;i++) {
             dstArray[i] = tmp & 0x01;
             tmp = (byte) (tmp>>1);
         }
-        num=num-2;
+        num=num-1;
         tmp = srcByte[startBit + num];
         dstArray[i] = tmp & 0x01;
     }

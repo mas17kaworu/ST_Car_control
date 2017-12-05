@@ -15,6 +15,8 @@ import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatBackrestBackwardOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatBackrestBackwardOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatBackrestForwardOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatBackrestForwardOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPowerSeatList.CMDPowerSeatHeatCodeSet;
@@ -164,18 +166,18 @@ public class SeatFragment extends Fragment implements View.OnClickListener,View.
         ((MenuViewItem)mView.findViewById( R.id.seat_back_backward)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                onBtnDown(R.mipmap.gif_seat_back_backward, new CMDPowerSeatBackrestForwardOn());
+                onBtnDown(R.mipmap.gif_seat_back_backward, new CMDPowerSeatBackrestBackwardOn());
             }
 
             @Override
             public void onUp() {
-                onBtnUp(new CMDPowerSeatBackrestForwardOff());
+                onBtnUp(new CMDPowerSeatBackrestBackwardOff());
             }
         });
         ((MenuViewItem)mView.findViewById( R.id.seat_back_forward)).setOnNewTouchEventListener(new MenuViewItem.OnNewTouchEventListener() {
             @Override
             public void onDown() {
-                onBtnDown(R.mipmap.gif_seat_back_forward, new CMDPowerSeatSeatPitchUpOn());
+                onBtnDown(R.mipmap.gif_seat_back_forward, new CMDPowerSeatBackrestForwardOn());
             }
 
             @Override

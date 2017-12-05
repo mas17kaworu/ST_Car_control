@@ -23,6 +23,9 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCente
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterCentralUnlockOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterCentrallockOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterCentrallockOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterDomeLightOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterDomeLightOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterFuelTankUnlockOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperFastOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperFastOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperSlowOff;
@@ -39,12 +42,13 @@ import com.longkai.stcarcontrol.st_exp.customView.CoverWindView;
 
 public class CenterControlFragment extends Fragment implements View.OnClickListener{
     private View mView;
-    private AirconditionDiscView avWindPower,avWindAngle;
+    private AirconditionDiscView avWindPower, avWindAngle;
     private CoverWindView mCoverWindView;
     private AlphaAnimation alphaAnimation;
 
     private ImageView ivWiperState1,ivWiperState2;
     private ImageView ivCenterLock, ivCenterUnlock;
+    private ImageView ivFuelTank, ivDomeLight;
 
     @Nullable
     @Override
@@ -88,12 +92,12 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()){
                     case MotionEvent.ACTION_DOWN:
-                        ivCenterUnlock.setImageResource(R.mipmap.ic_center_control_center_lock_green);
+                        ivCenterUnlock.setImageResource(R.mipmap.ic_center_control_center_unlock_green);
                         ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterCentralUnlockOn(),
                                 new CommandListenerAdapter());
                         break;
                     case MotionEvent.ACTION_UP:
-                        ivCenterUnlock.setImageResource(R.mipmap.ic_center_control_center_lock_gray);
+                        ivCenterUnlock.setImageResource(R.mipmap.ic_center_control_center_unlock_gray);
                         ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterCentralUnlockOff(),
                                 new CommandListenerAdapter());
                         break;
@@ -102,6 +106,29 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
             }
         });
 //        ivCenterLock.setOnClickListener(this);
+
+        ivFuelTank = (ImageView)mView.findViewById(R.id.iv_center_control_youxiang_gray);
+        ivFuelTank.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        ivFuelTank.setImageResource(R.mipmap.ic_center_control_youxiang_green);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterFuelTankUnlockOn(),
+                                new CommandListenerAdapter());
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ivFuelTank.setImageResource(R.mipmap.ic_center_control_youxiang_gray);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterCentralUnlockOff(),
+                                new CommandListenerAdapter());
+                        break;
+                }
+                return true;
+            }
+        });
+
+        ivDomeLight = (ImageView) mView.findViewById(R.id.iv_center_control_dome_light);
+        ivDomeLight.setOnClickListener(this);
         //....
 
         avWindAngle = (AirconditionDiscView) mView.findViewById(R.id.aircondition_angle);
@@ -212,6 +239,12 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
             ivWiperState2.setImageResource(R.mipmap.ic_seat_stage_green);
         }
 
+        if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlDomeLight] == 0){
+            ivDomeLight.setImageResource(R.mipmap.ic_center_control_doom_light_gray);
+        } else if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlDomeLight] == 1){
+            ivDomeLight.setImageResource(R.mipmap.ic_center_control_doom_light_green);
+
+        }
     }
 
     @Override
@@ -242,7 +275,7 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
             case R.id.tv_HVAC_diagram:
                 ((MainActivity)getActivity()).showDiagram(ConstantData.HVAC_DIAGRAM);
                 break;
-            case R.id.iv_center_control_center_lock:
+            /*case R.id.iv_center_control_center_lock:
                 if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlCentralLock]==0) {
                     ivCenterLock.setImageResource(R.mipmap.ic_center_control_center_lock_green);
                     ConstantData.sCenterControlStatus[ConstantData.sCenterControlCentralLock]=1;
@@ -250,6 +283,19 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
                 }else {
                     ConstantData.sCenterControlStatus[ConstantData.sCenterControlCentralLock]=0;
                     ivCenterLock.setImageResource(R.mipmap.ic_center_control_center_lock_gray);
+                }
+                break;*/
+            case R.id.iv_center_control_dome_light:
+                if (ConstantData.sCenterControlStatus[ConstantData.sCenterControlDomeLight]==0) {
+                    ivDomeLight.setImageResource(R.mipmap.ic_center_control_doom_light_green);
+                    ConstantData.sCenterControlStatus[ConstantData.sCenterControlDomeLight]=1;
+                    ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterDomeLightOn(),
+                            new CommandListenerAdapter());
+                }else {
+                    ConstantData.sCenterControlStatus[ConstantData.sCenterControlDomeLight]=0;
+                    ivDomeLight.setImageResource(R.mipmap.ic_center_control_doom_light_gray);
+                    ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterDomeLightOff(),
+                            new CommandListenerAdapter());
                 }
                 break;
 

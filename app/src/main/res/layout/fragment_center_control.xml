@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_seat_stage_gray"
         android:layout_marginTop="527dp"
-        android:layout_marginStart="415dp"/>
+        android:layout_marginStart="370dp"/>
 
     <ImageView
         android:id="@+id/iv_center_control_wiper_stage_2"
@@ -121,7 +121,7 @@
                 android:id="@+id/iv_center_control_center_unlock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_center_control_center_lock_gray"
+                android:src="@mipmap/ic_center_control_center_unlock_gray"
                 android:layout_centerHorizontal="true"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -201,6 +201,29 @@
                 android:layout_centerHorizontal="true"
                 android:textColor="#ffffff"
                 android:text="Fuel Cap"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="1dp"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_center_control_dome_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_center_control_doom_light_gray"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_center_control_dome_light"
+                android:layout_marginTop="5dp"
+                android:layout_centerHorizontal="true"
+                android:textColor="#ffffff"
+                android:text="Dome Light"/>
         </RelativeLayout>
 
         <View

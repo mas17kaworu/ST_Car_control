@@ -73,7 +73,7 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
         };
         timer = new Timer();
         timer.schedule(diagnosticTask, 500);//开启定时器，*/
-
+        refreshUI();
 
         return mView;
     }
@@ -231,6 +231,35 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
     }
 
 
+    private void refreshUI(){
+        if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 0) {
+            ivCarbackBreakLamp.setVisibility(View.INVISIBLE);
+        } else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 1) {
+            ivCarbackBreakLamp.setImageResource(R.mipmap.ic_carback_position_light);
+            ivCarbackBreakLamp.setVisibility(View.VISIBLE);
+        } else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 2) {
+            ivCarbackBreakLamp.setImageResource(R.mipmap.ic_carback_break_light);
+            ivCarbackBreakLamp.setVisibility(View.VISIBLE);
+        }
+
+        if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackPositionLampStatus] == 0){
+            ivCarbackPositionLamp.setVisibility(View.INVISIBLE);
+        } else {
+            ivCarbackPositionLamp.setVisibility(View.VISIBLE);
+        }
+
+        if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackTurnLeftLampStatus] == 1){
+            setBlink(ivCarbackTurnleftLamp);
+        } else {
+            ivCarbackTurnleftLamp.setAnimation(null);
+        }
+
+        if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackTurnRightLampStatus] == 1){
+            setBlink(ivCarbackTurnrightLamp);
+        } else {
+            ivCarbackTurnrightLamp.setAnimation(null);
+        }
+    }
 
     @Override
     public void onDestroy() {

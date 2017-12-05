@@ -17,8 +17,13 @@ import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorDoorFoot_L_LightOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorDoorFoot_L_LightOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorDoorFoot_R_LightOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorDoorFoot_R_LightOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorECVVoltageCodeSet;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorLockLOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorLockLOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorLockROff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorLockROn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorBlind_L_LightOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorBlind_L_LightOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDDoorList.CMDDoorMirrorBlind_R_LightOff;
@@ -68,7 +73,7 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
 
     private ProgressBar pb_door_mirror;
 
-    private ImageView ivDoorLock, ivMirrorHeat, ivMirrorLight, ivMirrorFold, ivMirrorUnfold, ivMirrorSelect;
+    private ImageView ivDoorLock, ivDoorUnlock, ivMirrorHeat, ivMirrorLight, ivMirrorFold, ivMirrorUnfold, ivMirrorSelect;
 
     private ImageView iv_fade_zone_lamp, iv_ground_lamp, iv_foot_lamp;
 
@@ -160,7 +165,64 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
         mView.findViewById(R.id.iv_door_mirror_minus).setOnClickListener(this);
 
         ivDoorLock = (ImageView) mView.findViewById(R.id.iv_door_lock);
-        ivDoorLock.setOnClickListener(this);
+        ivDoorLock.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        ivDoorLock.setImageResource(R.mipmap.ic_door_lock_green);
+                        if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorMirrorSelect] == 0) {//左边
+                            ServiceManager.getInstance().sendCommandToCar(new CMDDoorLockLOn(),
+                                    new CommandListenerAdapter());
+                        } else {
+                            ServiceManager.getInstance().sendCommandToCar(new CMDDoorLockROn(),
+                                    new CommandListenerAdapter());
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ivDoorLock.setImageResource(R.mipmap.ic_door_lock_gray);
+                        if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorMirrorSelect] == 0) {//左边
+                            ServiceManager.getInstance().sendCommandToCar(new CMDDoorLockLOff(),
+                                    new CommandListenerAdapter());
+                        } else {
+                            ServiceManager.getInstance().sendCommandToCar(new CMDDoorLockROff(),
+                                    new CommandListenerAdapter());
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+        ivDoorUnlock = (ImageView) mView.findViewById(R.id.iv_door_unlock);
+        ivDoorUnlock.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        ivDoorUnlock.setImageResource(R.mipmap.ic_door_unlock_green);
+                        if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorMirrorSelect] == 0) {//左边
+                            ServiceManager.getInstance().sendCommandToCar(new CMDDoorUnlockLOn(),
+                                    new CommandListenerAdapter());
+                        } else {
+                            ServiceManager.getInstance().sendCommandToCar(new CMDDoorUnlockROn(),
+                                    new CommandListenerAdapter());
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ivDoorUnlock.setImageResource(R.mipmap.ic_door_unlock_gray);
+                        if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorMirrorSelect] == 0) {//左边
+                            ServiceManager.getInstance().sendCommandToCar(new CMDDoorUnlockLOff(),
+                                    new CommandListenerAdapter());
+                        } else {
+                            ServiceManager.getInstance().sendCommandToCar(new CMDDoorUnlockROff(),
+                                    new CommandListenerAdapter());
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+//        ivDoorLock.setOnClickListener(this);
         ivMirrorHeat = (ImageView) mView.findViewById(R.id.iv_door_mirror_heat);
         ivMirrorHeat.setOnClickListener(this);
         ivMirrorLight = (ImageView) mView.findViewById(R.id.iv_door_mirror_light);
@@ -238,21 +300,7 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
                 clickProgress(false);
                 break;
             case R.id.iv_door_lock:
-                if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorMirrorSelect] == 0) {//左边
-                    if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorLeftLock] == 0){//unlock 命令也要发送.临时加
-                        ServiceManager.getInstance().sendCommandToCar(new CMDDoorUnlockLOff(),new CommandListenerAdapter());
-                    } else {
-                        ServiceManager.getInstance().sendCommandToCar(new CMDDoorUnlockLOn(),new CommandListenerAdapter());
-                    }
-                    onBtnClick(ConstantData.sDoorLeftLock, ivDoorLock, "CMDDoorLockL");
-                } else {
-                    if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorLeftLock] == 0){//unlock 命令也要发送.临时加
-                        ServiceManager.getInstance().sendCommandToCar(new CMDDoorUnlockROff(),new CommandListenerAdapter());
-                    } else {
-                        ServiceManager.getInstance().sendCommandToCar(new CMDDoorUnlockROn(),new CommandListenerAdapter());
-                    }
-                    onBtnClick(ConstantData.sDoorRightLock, ivDoorLock, "CMDDoorLockR");
-                }
+
                 break;
             case R.id.iv_door_mirror_heat:
                 onBtnClick(ConstantData.sDoorMirrorHeat, ivMirrorHeat, "CMDDoorMirrorHeat");
@@ -346,7 +394,7 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
                         ConstantData.sDoorFragmentStatus[ConstantData.sDoorFootRightLamp] = 1;
                     } else if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorFootRightLamp] == 1) {
                         iv_foot_lamp.setImageResource(R.mipmap.ic_door_foot_lamp_gray);
-                        ServiceManager.getInstance().sendCommandToCar(new CMDDoorDoorFoot_R_LightOn(), new CommandListenerAdapter());
+                        ServiceManager.getInstance().sendCommandToCar(new CMDDoorDoorFoot_R_LightOff(), new CommandListenerAdapter());
                         ConstantData.sDoorFragmentStatus[ConstantData.sDoorFootRightLamp] = 0;
                     }
                 }
@@ -463,11 +511,11 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
             } else {
                 ivMirrorLight.setSelected(true);
             }
-            if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorLeftLock] == 0) {
+            /*if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorLeftLock] == 0) {
                 ivDoorLock.setSelected(false);
             } else {
                 ivDoorLock.setSelected(true);
-            }
+            }*/
             if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorFadeZoneLeftLamp] == 0) {
                 iv_fade_zone_lamp.setImageResource(R.mipmap.ic_door_fade_zone_lamp_gray);
             } else {
@@ -490,11 +538,11 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
             } else {
                 ivMirrorLight.setSelected(true);
             }
-            if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorRightLock] == 0) {
+            /*if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorRightLock] == 0) {
                 ivDoorLock.setSelected(false);
             } else {
                 ivDoorLock.setSelected(true);
-            }
+            }*/
             if (ConstantData.sDoorFragmentStatus[ConstantData.sDoorFadeZoneRightLamp] == 0) {
                 iv_fade_zone_lamp.setImageResource(R.mipmap.ic_door_fade_zone_lamp_gray);
             } else {

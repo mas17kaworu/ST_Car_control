@@ -43,9 +43,18 @@
         android:id="@+id/iv_door_lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/door_lock"
+        android:src="@mipmap/ic_door_lock_gray"
         android:layout_marginTop="540dp"
         android:layout_marginStart="80dp"/>
+
+    <ImageView
+        android:id="@+id/iv_door_unlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_door_unlock_gray"
+        android:layout_marginTop="540dp"
+        android:layout_marginStart="180dp"/>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
