@@ -24,7 +24,7 @@
         android:text="@string/homepage_seat"
         android:layout_marginStart="585dp"
         android:layout_marginTop="145dp"
-        android:textColor="#ffffff"/>
+        android:textColor="#FFC008"/>
 
     <ImageView
         android:id="@+id/iv_homepage_led"
@@ -40,7 +40,7 @@
         android:layout_below="@id/iv_homepage_led"
         android:layout_alignStart="@id/iv_homepage_led"
         android:layout_marginStart="7dp"
-        android:textColor="#ffffff" />
+        android:textColor="#FFC008" />
 
 <!--    <ImageView
         android:layout_width="wrap_content"
@@ -60,7 +60,21 @@
         android:text="door"
         android:layout_marginStart="615dp"
         android:layout_marginTop="555dp"
-        android:textColor="#ffffff" />
+        android:textColor="#FFC008" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_homepage_gateway"
+        android:layout_marginStart="385dp"
+        android:layout_marginTop="570dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gateway"
+        android:layout_marginStart="435dp"
+        android:layout_marginTop="580dp"
+        android:textColor="#FFC008" />
 
     <ImageView
         android:id="@+id/iv_homepage_front_box"
@@ -73,7 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Front box"
-        android:textColor="#ffffff"
+        android:textColor="#FFC008"
         android:layout_below="@+id/iv_homepage_front_box"
         android:layout_alignStart="@+id/iv_homepage_front_box" />
 
@@ -91,7 +105,23 @@
         android:layout_height="wrap_content"
         android:text="Reverse mirror"
         android:layout_marginTop="15dp"
-        android:textColor="#ffffff"/>
+        android:textColor="#FFC008"/>
+
+    <ImageView
+        android:id="@+id/iv_homepage_reverse_bcm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_homepage_bcm"
+        android:layout_marginStart="257dp"
+        android:layout_marginTop="140dp"/>
+    <TextView
+        android:layout_toRightOf="@id/iv_homepage_reverse_bcm"
+        android:layout_alignTop="@id/iv_homepage_reverse_bcm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BCM"
+        android:layout_marginTop="15dp"
+        android:textColor="#FFC008"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -107,15 +137,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Trunk"
-        android:textColor="#ffffff"
-        android:id="@+id/textView2" />
+        android:textColor="#FFC008" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ST China"
+        android:textSize="30sp"
+        android:textColor="#ffffff"
+        android:textStyle="italic"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"/>
     <ImageView
         android:id="@+id/iv_homepage_auto_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_auto_display_u"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="60dp"/>
+        android:layout_marginStart="850dp"
+        android:layout_marginTop="550dp"/>
 
 </RelativeLayout>

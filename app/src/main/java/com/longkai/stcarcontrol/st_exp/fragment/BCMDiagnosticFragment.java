@@ -40,23 +40,24 @@ public class BCMDiagnosticFragment extends Fragment implements View.OnClickListe
     public int[] tempretureArray = new int[9];
 
     private int[] resID = {
-            R.id.iv_diagnostic_led_error1,
-            R.id.iv_diagnostic_led_error2,
-            R.id.iv_diagnostic_led_error3,
+            R.id.iv_diagnostic_led_error_reverse, //iv_diagnostic_led_error1
+            R.id.iv_diagnostic_led_error_reverse,//iv_diagnostic_led_error2
+            R.id.iv_diagnostic_led_error_reverse,//iv_diagnostic_led_error3
             R.id.iv_diagnostic_led_error4,
             R.id.iv_diagnostic_led_error5,
             R.id.iv_diagnostic_led_error6,
-            R.id.iv_diagnostic_led_error7,
-            R.id.iv_diagnostic_led_error8,
+            R.id.iv_diagnostic_led_error_reverse,//iv_diagnostic_led_error7
+            R.id.iv_diagnostic_led_error_reverse,//iv_diagnostic_led_error8
             R.id.iv_diagnostic_led_error9,
-            R.id.iv_diagnostic_led_error10,
-            R.id.iv_diagnostic_led_error11,
+            R.id.iv_diagnostic_led_error_reverse,//iv_diagnostic_led_error10
+            R.id.iv_diagnostic_led_error_reverse,//iv_diagnostic_led_error11
             R.id.iv_diagnostic_led_error12,
             R.id.iv_diagnostic_led_error13,
-            R.id.iv_diagnostic_led_error14,
-            R.id.iv_diagnostic_led_error15,
-            R.id.iv_diagnostic_led_error16,
-            R.id.iv_diagnostic_led_error17};
+            R.id.iv_diagnostic_led_error_reverse,//iv_diagnostic_led_error14
+            R.id.iv_diagnostic_led_error_reverse,//iv_diagnostic_led_error15
+            R.id.iv_diagnostic_led_error_reverse,//iv_diagnostic_led_error16
+            R.id.iv_diagnostic_led_error_reverse//iv_diagnostic_led_error17
+    };
 
     private float[] realTempreturArray = new float[9];
 

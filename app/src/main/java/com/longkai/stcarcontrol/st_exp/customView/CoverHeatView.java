@@ -51,7 +51,7 @@ public class CoverHeatView extends View{
             560,560,
             };
 
-    private float[] mHeatPointTemp = {
+    private int[] mHeatPointTemp = {
             60,
             40,
             150,
@@ -79,15 +79,15 @@ public class CoverHeatView extends View{
         //    U[5,  7, 8, 9,10,12,13,17,11] to
         //      17 13 12  9 8  10 7  5  11
 
-        mHeatPointTemp[0] = temperature[7];
-        mHeatPointTemp[1] = temperature[6];
-        mHeatPointTemp[2] = temperature[5];
-        mHeatPointTemp[3] = temperature[3];
-        mHeatPointTemp[4] = temperature[2];
-        mHeatPointTemp[5] = temperature[4];
-        mHeatPointTemp[6] = temperature[1];
-        mHeatPointTemp[7] = temperature[0];
-        mHeatPointTemp[8] = temperature[8];
+        mHeatPointTemp[0] = (int)temperature[7];
+        mHeatPointTemp[1] = (int)temperature[6];
+        mHeatPointTemp[2] = (int)temperature[5];
+        mHeatPointTemp[3] = (int)temperature[3];
+        mHeatPointTemp[4] = (int)temperature[2];
+        mHeatPointTemp[5] = (int)temperature[4];
+        mHeatPointTemp[6] = (int)temperature[1];
+        mHeatPointTemp[7] = (int)temperature[0];
+        mHeatPointTemp[8] = (int)temperature[8];
 
         this.postInvalidate();
     }
@@ -122,11 +122,11 @@ public class CoverHeatView extends View{
         super.onDraw(canvas);
         canvas.drawBitmap(mCover,0,0,mPaint);
         int num = 0;
-        //u17
-        radialGradient = getRadialGradient(num);
+        //u17 暂时隐藏
+        /*radialGradient = getRadialGradient(num);
         mPaint.setShader(radialGradient);
         canvas.drawCircle(mHeatPointPos[num*2], mHeatPointPos[num*2+1], radio, mPaint);
-        canvas.drawText(mHeatPointTemp[num]+"",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
+        canvas.drawText(mHeatPointTemp[num]+"°C",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);*/
         num++;
 
         //u13
@@ -134,14 +134,14 @@ public class CoverHeatView extends View{
         mPaint.setShader(radialGradient);
         canvas.drawCircle(mHeatPointPos[num*2], mHeatPointPos[num*2+1], radio, mPaint);
         mPaint.setColor(Color.WHITE);
-        canvas.drawText(mHeatPointTemp[num]+"",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
+        canvas.drawText(mHeatPointTemp[num]+"°C",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
         num++;
 
         //u12
         radialGradient = getRadialGradient(num);
         mPaint.setShader(radialGradient);
         canvas.drawCircle(mHeatPointPos[num*2], mHeatPointPos[num*2+1], radio, mPaint);
-        canvas.drawText(mHeatPointTemp[num]+"",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
+        canvas.drawText(mHeatPointTemp[num]+"°C",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
         num++;
 
         //u9
@@ -152,42 +152,42 @@ public class CoverHeatView extends View{
         radialGradient = getRadialGradient(num);
         mPaint.setShader(radialGradient);
         canvas.drawCircle(mHeatPointPos[num*2], mHeatPointPos[num*2+1], radio, mPaint);
-        canvas.drawText(mHeatPointTemp[num]+"",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
+        canvas.drawText(mHeatPointTemp[num]+"°C",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
         num++;
 
         //u8
         radialGradient = getRadialGradient(num);
         mPaint.setShader(radialGradient);
         canvas.drawCircle(mHeatPointPos[num*2], mHeatPointPos[num*2+1], radio, mPaint);
-        canvas.drawText(mHeatPointTemp[num]+"",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
+        canvas.drawText(mHeatPointTemp[num]+"°C",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
         num++;
 
         //u10
         radialGradient = getRadialGradient(num);
         mPaint.setShader(radialGradient);
         canvas.drawCircle(mHeatPointPos[num*2], mHeatPointPos[num*2+1], radio, mPaint);
-        canvas.drawText(mHeatPointTemp[num]+"",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
+        canvas.drawText(mHeatPointTemp[num]+"°C",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
         num++;
 
         //u7
         radialGradient = getRadialGradient(num);
         mPaint.setShader(radialGradient);
         canvas.drawCircle(mHeatPointPos[num*2], mHeatPointPos[num*2+1], radio, mPaint);
-        canvas.drawText(mHeatPointTemp[num]+"",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
+        canvas.drawText(mHeatPointTemp[num]+"°C",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
         num++;
 
         //u5
         radialGradient = getRadialGradient(num);
         mPaint.setShader(radialGradient);
         canvas.drawCircle(mHeatPointPos[num*2], mHeatPointPos[num*2+1], radio, mPaint);
-        canvas.drawText(mHeatPointTemp[num]+"",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
+        canvas.drawText(mHeatPointTemp[num]+"°C",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
         num++;
 
         //u11
         radialGradient = getRadialGradient(num);
         mPaint.setShader(radialGradient);
         canvas.drawCircle(mHeatPointPos[num*2], mHeatPointPos[num*2+1], radio, mPaint);
-        canvas.drawText(mHeatPointTemp[num]+"",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
+        canvas.drawText(mHeatPointTemp[num]+"°C",mHeatPointPos[num*2],  mHeatPointPos[num*2+1], mTextPaint);
         num++;
         /*clipPath.reset();
         clipPath.addRect(240,0,450,mViewHeight, Path.Direction.CW);
@@ -246,6 +246,11 @@ public class CoverHeatView extends View{
     }
 
     private int position2Color(int y){
+        if (y <= 0){
+            y = 1;
+        }else if (y >= colorPool.getHeight()){
+            y = colorPool.getHeight()-1;
+        }
         int targetColor = colorPool.getPixel(colorPool.getWidth()/2, colorPool.getHeight() - y);
         targetColor = targetColor & 0x00ffffff | 0x9F000000;
         return targetColor;

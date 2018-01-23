@@ -17,11 +17,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Diagram"
-        android:textColor="#ffffff"
-        android:textSize="35sp"
-        android:layout_alignBottom="@id/tv_door_title"
-        android:layout_toEndOf="@id/tv_door_title"
-        android:layout_marginStart="50dp" />
+        android:textColor="#dddddd"
+        android:textStyle="italic"
+        android:textSize="30sp"
+        android:layout_below="@id/tv_door_title"
+        android:layout_alignStart="@id/tv_door_title" />
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifv_door"
@@ -217,7 +217,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="mirror light"
+                    android:text="turn light"
                     android:textColor="#ffffff"
                     android:textSize="15sp"
                     android:layout_below="@id/iv_door_mirror_light"

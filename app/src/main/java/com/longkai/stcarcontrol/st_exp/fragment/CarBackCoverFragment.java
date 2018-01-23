@@ -54,14 +54,27 @@ public class CarBackCoverFragment extends Fragment implements View.OnClickListen
                 switch (event.getAction()){
                     case MotionEvent.ACTION_DOWN:
                         ivTrunkOpen.setImageResource(R.mipmap.ic_car_back_btn_trunk_open_green);
-                        ServiceManager.getInstance().sendCommandToCar(new CMDPLGMTrunkUpOn(), new CommandListenerAdapter());
-                        loadGif(R.mipmap.gif_car_back_trunk_open);
-                        ConstantData.sTrunkStatus[ConstantData.sTrunkStatu] = 1;
+                        ServiceManager.getInstance().sendCommandToCar(new CMDPLGMTrunkUpOn(),
+                                new CommandListenerAdapter());
                         break;
                     case MotionEvent.ACTION_UP:
                         ivTrunkOpen.setImageResource(R.mipmap.ic_car_back_btn_trunk_open_gray);
-                        ServiceManager.getInstance().sendCommandToCar(new CMDPLGMTrunkUpOff(), new CommandListenerAdapter());
-                        setGif_Image(R.mipmap.ic_car_back_trunk_open);
+                        ServiceManager.getInstance().sendCommandToCar(new CMDPLGMTrunkUpOff(),
+                                new CommandListenerAdapter());
+                        ConstantData.sTrunkStatus[ConstantData.sTrunkStatu] = 1;
+                        loadGif(R.mipmap.gif_car_back_trunk_open);
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ivTrunkOpen.setImageResource(R.mipmap.ic_car_back_btn_trunk_open_gray);
+                                        setGif_Image(R.mipmap.ic_car_back_trunk_open);
+                                    }
+                                });
+                            }
+                        },2000);
                         break;
                 }
                 return true;
@@ -78,13 +91,24 @@ public class CarBackCoverFragment extends Fragment implements View.OnClickListen
                     case MotionEvent.ACTION_DOWN:
                         ivTrunkClose.setImageResource(R.mipmap.ic_car_back_btn_trunk_close_green);
                         ServiceManager.getInstance().sendCommandToCar(new CMDPLGMTrunkDownOn(), new CommandListenerAdapter());
-                        loadGif(R.mipmap.gif_car_back_trunk_close);
-                        ConstantData.sTrunkStatus[ConstantData.sTrunkStatu] = 0;
                         break;
                     case MotionEvent.ACTION_UP:
                         ivTrunkClose.setImageResource(R.mipmap.ic_car_back_btn_trunk_close_gray);
                         ServiceManager.getInstance().sendCommandToCar(new CMDPLGMTrunkDownOff(), new CommandListenerAdapter());
-                        setGif_Image(R.mipmap.ic_car_back_trunk_close);
+                        loadGif(R.mipmap.gif_car_back_trunk_close);
+                        ConstantData.sTrunkStatus[ConstantData.sTrunkStatu] = 0;
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ivTrunkClose.setImageResource(R.mipmap.ic_car_back_btn_trunk_close_gray);
+                                        setGif_Image(R.mipmap.ic_car_back_trunk_close);
+                                    }
+                                });
+                            }
+                        },2000);
                         break;
                 }
                 return true;

@@ -25,6 +25,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCente
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterCentrallockOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterDomeLightOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterDomeLightOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterFuelTankUnlockOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterFuelTankUnlockOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperFastOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDControlCenterList.CMDControlCenterWiperFastOn;
@@ -111,7 +112,7 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
         ivFuelTank.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
+                switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         ivFuelTank.setImageResource(R.mipmap.ic_center_control_youxiang_green);
                         ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterFuelTankUnlockOn(),
@@ -119,7 +120,7 @@ public class CenterControlFragment extends Fragment implements View.OnClickListe
                         break;
                     case MotionEvent.ACTION_UP:
                         ivFuelTank.setImageResource(R.mipmap.ic_center_control_youxiang_gray);
-                        ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterCentralUnlockOff(),
+                        ServiceManager.getInstance().sendCommandToCar(new CMDControlCenterFuelTankUnlockOff(),
                                 new CommandListenerAdapter());
                         break;
                 }

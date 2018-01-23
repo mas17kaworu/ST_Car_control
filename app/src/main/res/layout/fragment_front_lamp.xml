@@ -17,11 +17,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Diagram"
-        android:textColor="#ffffff"
-        android:textSize="35sp"
-        android:layout_alignBottom="@id/tv_car_front_lamp"
-        android:layout_toEndOf="@id/tv_car_front_lamp"
-        android:layout_marginStart="50dp" />
+        android:textColor="#dddddd"
+        android:textSize="30sp"
+        android:textStyle="italic"
+        android:layout_alignStart="@id/tv_car_front_lamp"
+        android:layout_below="@id/tv_car_front_lamp" />
 
     <RelativeLayout
         android:layout_width="wrap_content"

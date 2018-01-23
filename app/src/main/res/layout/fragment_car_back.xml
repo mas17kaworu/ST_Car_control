@@ -17,11 +17,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Diagram"
+        android:textColor="#dddddd"
+        android:textStyle="italic"
+        android:textSize="30sp"
+        android:layout_below="@id/tv_car_back_title"
+        android:layout_alignStart="@id/tv_car_back_title" />
+    <TextView
+        android:id="@+id/tv_car_back_diagnostic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Diagnostic"
+        android:textSize="30sp"
         android:textColor="#ffffff"
-        android:textSize="35sp"
-        android:layout_alignBottom="@id/tv_car_back_title"
-        android:layout_toEndOf="@id/tv_car_back_title"
-        android:layout_marginStart="50dp" />
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="800dp"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"

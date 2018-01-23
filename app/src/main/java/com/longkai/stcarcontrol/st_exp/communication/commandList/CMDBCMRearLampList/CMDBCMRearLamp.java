@@ -119,7 +119,7 @@ public class CMDBCMRearLamp extends BaseCommand {
     }
 
     private void readOverLoad(int[] dstArray, final byte[] srcByte, final int startBit){
-        int num = 1;
+        int num = 0;
         int i=0;
         byte tmp = srcByte[startBit + num];
         for (; i < 8;i++) {
