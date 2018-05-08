@@ -10,15 +10,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@mipmap/ic_set_1"/>
+    <ImageView
+        android:id="@+id/radiobtn_set_stage1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_set_select_placeholder"
+        android:layout_marginStart="24dp"
+        android:visibility="visible"/>
+
     <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@mipmap/ic_set_2"/>
+    <ImageView
+        android:id="@+id/radiobtn_set_stage2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_set_select_placeholder"
+        android:layout_marginStart="74dp"
+        android:visibility="visible"/>
+
     <com.longkai.stcarcontrol.st_exp.customView.MenuViewItem
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@mipmap/ic_set_3"/>
-    <RadioGroup
+    <ImageView
+        android:id="@+id/radiobtn_set_stage3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_set_select_placeholder"
+        android:layout_marginStart="124dp"
+        android:visibility="visible"/>
+
+    <!--<RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -42,6 +66,6 @@
             android:layout_height="50dp"
             android:button="@null"
             android:background="@drawable/set_group_cover"/>
-    </RadioGroup>
+    </RadioGroup>-->
 
 </RelativeLayout>

@@ -256,7 +256,7 @@ public class BTServer implements ConnectionInterface{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				sendmsg("first message");
+//				sendmsg("first message");
 			}
 			//receive ConstantData from bluetooth
 			if (mBtClientSocket != null) {

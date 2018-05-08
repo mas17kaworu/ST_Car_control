@@ -4,14 +4,35 @@
     android:layout_height="match_parent"
     android:background="@mipmap/ic_fragment_background">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DIAGNOSTIC"
+        android:textColor="#ffffff"
+        android:textSize="40sp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:id="@+id/tv_diagnostic_temp_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:text="can't receive"
+        android:textSize="20dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="200dp"
+        android:visibility="invisible"/>
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_dianluban"
-        android:layout_centerInParent="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="145dp"/>
 
     <com.longkai.stcarcontrol.st_exp.customView.CoverHeatView
-        android:id="@+id/coverhomefff"
+        android:id="@+id/temperature_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -25,4 +46,176 @@
         android:layout_marginStart="100dp"
         android:layout_marginTop="600dp"
         />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleY="2"
+        android:src="@mipmap/ic_sewentiao"
+        android:layout_marginStart="900dp"
+        android:layout_marginTop="270dp"/>
+
+
+    <!--左侧警告-->
+    <!--  4-positionLight  5-turnRightLight 6-FuelTankUnlock
+      9-BrakeLight  12-ReversingLight 13-turnLeftLight -->
+
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_4"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_5"
+        android:layout_below="@id/iv_diagnostic_led_error1"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_6"
+        android:layout_below="@id/iv_diagnostic_led_error2"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_9"
+        android:layout_below="@id/iv_diagnostic_led_error3"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_2"
+        android:layout_below="@id/iv_diagnostic_led_error4"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_fuel_door"
+        android:layout_below="@id/iv_diagnostic_led_error5"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_1"
+        android:layout_below="@id/iv_diagnostic_led_error6"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_2"
+        android:layout_below="@id/iv_diagnostic_led_error7"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_4"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_4"
+        android:layout_below="@id/iv_diagnostic_led_error9"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_4"
+        android:layout_below="@id/iv_diagnostic_led_error10"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_3"
+        android:layout_below="@id/iv_diagnostic_led_error11"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_1"
+        android:layout_below="@id/iv_diagnostic_led_error12"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_4"
+        android:layout_below="@id/iv_diagnostic_led_error13"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_4"
+        android:layout_below="@id/iv_diagnostic_led_error14"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_4"
+        android:layout_below="@id/iv_diagnostic_led_error15"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_error_4"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="100dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_diagnostic_led_error_reverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="190dp"
+        android:layout_marginTop="100dp"
+        android:visibility="invisible"/>
 </RelativeLayout>

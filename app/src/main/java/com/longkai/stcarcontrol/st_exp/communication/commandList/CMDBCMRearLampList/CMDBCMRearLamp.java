@@ -62,12 +62,12 @@ public class CMDBCMRearLamp extends BaseCommand {
     @Override
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());
-        if (data[2] >= 0x1A){
+        if (data[2] >= 0x11){
             readOpenLoad(response.openLoad, data, 4);
             readOverLoad(response.overLoad, data, 7);
             //  adc采样
             for (int i=0;i<9;i++){
-                response.tempreture[i] = data[10+i*2] | (data[11+i*2]<<8);
+                response.tempreture[i] = (data[10+i] & 0xff) << 2; //低两位默认为0
             }
 
         } else if (data[2] == 0x02){
@@ -97,8 +97,6 @@ public class CMDBCMRearLamp extends BaseCommand {
             overLoad = new int[17];
             tempreture = new int[9];
         }
-
-
     }
 
     private void readOpenLoad(int[] dstArray, final byte[] srcByte, final int startBit){
@@ -121,20 +119,20 @@ public class CMDBCMRearLamp extends BaseCommand {
     }
 
     private void readOverLoad(int[] dstArray, final byte[] srcByte, final int startBit){
-        int num = 1;
+        int num = 0;
         int i=0;
         byte tmp = srcByte[startBit + num];
         for (; i < 8;i++) {
             dstArray[i] = tmp & 0x01;
             tmp = (byte) (tmp>>1);
         }
-        num++;
+        num=num+2;
         tmp = srcByte[startBit + num];
         for (; i < 16;i++) {
             dstArray[i] = tmp & 0x01;
             tmp = (byte) (tmp>>1);
         }
-        num=num-2;
+        num=num-1;
         tmp = srcByte[startBit + num];
         dstArray[i] = tmp & 0x01;
     }

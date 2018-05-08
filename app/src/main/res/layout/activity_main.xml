@@ -19,6 +19,12 @@
         <include layout="@layout/activity_main_bottom_ratio_group_background"/>
 
         <ImageView
+            android:id="@+id/iv_mainactivity_diagram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
             android:id="@+id/iv_mainactivity_lost_connect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

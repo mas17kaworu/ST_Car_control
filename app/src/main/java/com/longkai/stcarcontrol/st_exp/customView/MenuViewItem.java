@@ -72,13 +72,15 @@ public class MenuViewItem extends FrameLayout {
 
         if(width == -1 || height == -1) {
 
-            Drawable drawable = ((StateListDrawable)getBackground()).getCurrent();
+            if (getBackground() instanceof StateListDrawable) {
+                Drawable drawable = ((StateListDrawable) getBackground()).getCurrent();
 
-            bitmap = ((BitmapDrawable)drawable).getBitmap();
+                bitmap = ((BitmapDrawable)drawable).getBitmap();
 
-            width = getWidth();
+                width = getWidth();
 
-            height = getHeight();
+                height = getHeight();
+            }
 
         }
 

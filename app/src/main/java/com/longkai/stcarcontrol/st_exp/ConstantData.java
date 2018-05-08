@@ -10,7 +10,7 @@ import java.util.Map;
 public class ConstantData {
     public static Map<Integer,Integer> sDataMap;
 
-    public static final String BluetoothName = "DemoCar";//HC-05
+    public static final String BluetoothName = "DemoCar";//HC-05  //DemoCar
 
     public static int[] sSeatFragmentStatus = new int[3];
     public static int mSeatHeatStatus = 0;
@@ -32,12 +32,21 @@ public class ConstantData {
     public static int sCarBackTurnLeftLampStatus = 2;
     public static int sCarBackTurnRightLampStatus = 3;
 
-    public static int[] sDoorFragmentStatus = new int[5];
+    public static int[] sDoorFragmentStatus = new int[13];
     public static int sDoorAntiGlare = 0;
-    public static int sDoorLock = 1;
-    public static int sDoorMirrorHeat = 2;
-    public static int sDoorMirrorLight = 3;
-    public static int sDoorMirrorSelect = 4;
+    public static int sDoorLeftLock = 1;
+    public static int sDoorRightLock = 2;
+    public static int sDoorMirrorHeat = 3;
+    public static int sDoorMirrorLeftLight = 4;
+    public static int sDoorMirrorRightLight = 5;
+    public static int sDoorMirrorSelect = 6; //默认0 左边；1代表右边
+    public static int sDoorFadeZoneLeftLamp = 7;
+    public static int sDoorFadeZoneRightLamp = 8;
+    public static int sDoorGroundLeftLamp = 9;
+    public static int sDoorGroundRightLamp = 10;
+    public static int sDoorFootLeftLamp = 11;
+    public static int sDoorFootRightLamp = 12;
+
 
     public static int[] sCenterControlStatus = new int[]{120,120,0,0,0,0,0};
     public static int sCenterControlWindAngle   = 0;
@@ -45,13 +54,20 @@ public class ConstantData {
     public static int sCenterControlDomeLight   = 2;
     public static int sCenterControlFuelTankLock = 3;
     public static int sCenterControlCentralLock = 4;
-    public static int sCenterControlWiper       = 5;//有档位？
+    public static int sCenterControlWiper       = 5;//0关 1低 2高
     public static int sCenterControlSafeBelt    = 6;
 
     public static int[] sTrunkStatus = new int[]{0};
     public static int sTrunkStatu   = 0;
 
     public static final String CONNECTION_TYPE = "connection_type";
+
+    public static final String BCM_DIAGRAM = "ic_Diagram_BCM.png";
+    public static final String DOOR_DIAGRAM = "ic_Diagram_Door.png";
+    public static final String HL_DIAGRAM = "ic_Diagram_HL.png";
+    public static final String HVAC_DIAGRAM = "ic_Diagram_HVAC.png";
+    public static final String PLCM_DIAGRAM = "ic_Diagram_PLCM.png";
+    public static final String POWER_SEAT_DIAGRAM = "ic_Diagram_Power_seat.png";
 
     public ConstantData(){
 /*        sDataMap = new HashMap<Integer,Integer>();

@@ -14,14 +14,26 @@
          />
 
     <TextView
+        android:id="@+id/tv_seat_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/homepage_seat"
-        android:layout_marginTop="45dp"
-        android:layout_marginLeft="60dp"
-        android:textColor="#cccccc"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="50dp"
+        android:textColor="#FFFFFF"
         android:textAllCaps="true"
-        android:textSize="50sp"/>
+        android:textSize="40sp"/>
+    <TextView
+        android:id="@+id/tv_seat_diagram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Diagram"
+        android:textColor="#dddddd"
+        android:textStyle="italic"
+        android:textSize="30sp"
+        android:layout_below="@id/tv_seat_title"
+        android:layout_alignStart="@id/tv_seat_title"/>
+
 
     <ImageView
         android:layout_width="wrap_content"
@@ -114,7 +126,8 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_seat_wind_gray"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="570dp"/>
+        android:layout_marginTop="570dp"
+        android:visibility="invisible"/>
     <RelativeLayout
         android:id="@+id/set_group_wind"
         android:layout_marginTop="570dp"

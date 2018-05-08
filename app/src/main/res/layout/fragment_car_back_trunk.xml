@@ -4,13 +4,26 @@
     android:layout_height="match_parent"
     android:background="@mipmap/ic_fragment_background">
     <TextView
+        android:id="@+id/tv_trunk_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Trunk"
+        android:text="Power Trunk"
         android:textColor="#ffffff"
         android:textSize="40sp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:id="@+id/tv_trunk_diagram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Diagram"
+        android:textColor="#dddddd"
+        android:textStyle="italic"
+        android:textSize="30sp"
+        android:layout_below="@id/tv_trunk_title"
+        android:layout_alignStart="@id/tv_trunk_title" />
+
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifv_car_trunk"
         android:layout_width="wrap_content"

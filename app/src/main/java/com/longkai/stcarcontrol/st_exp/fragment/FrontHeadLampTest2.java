@@ -6,11 +6,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
+import com.longkai.stcarcontrol.st_exp.communication.Command;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAutoRunSwitch;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampAutoCon;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHBLEDR1;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHBLEDR2;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHBLEDR3;
@@ -31,8 +35,9 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListener
 public class FrontHeadLampTest2 extends Fragment implements View.OnClickListener {
 
     private View mView;
+    private ImageView mAutoPlay;
     private int[] mLampStateRecord = new int[20];
-
+    private int status=0;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,6 +54,8 @@ public class FrontHeadLampTest2 extends Fragment implements View.OnClickListener
         mView.findViewById(R.id.iv_testlamp_front_jin2_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_testlamp_front_corner_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_front_lamp_test_back).setOnClickListener(this);
+        mAutoPlay =(ImageView) mView.findViewById(R.id.iv_testlamp_auto_display);
+        mAutoPlay.setOnClickListener(this);
         return mView;
     }
 
@@ -90,6 +97,20 @@ public class FrontHeadLampTest2 extends Fragment implements View.OnClickListener
                 break;
             case R.id.iv_front_lamp_test_back:
                 ((MainActivity)getActivity()).setSelect(1);
+                break;
+            case R.id.iv_testlamp_auto_display:
+                Command cmd = new CMDLEDHeadLampAutoCon();
+                if (status==0){
+                    status = 1;
+                    mAutoPlay.setImageResource(R.mipmap.ic_homepage_auto_display_c);
+                    ((CMDLEDHeadLampAutoCon)cmd).turnOn();
+                    ServiceManager.getInstance().sendCommandToCar(cmd, new CommandListenerAdapter());
+                }else {
+                    status = 0;
+                    mAutoPlay.setImageResource(R.mipmap.ic_homepage_auto_display_u);
+                    ((CMDLEDHeadLampAutoCon)cmd).turnOff();
+                    ServiceManager.getInstance().sendCommandToCar(cmd, new CommandListenerAdapter());
+                }
                 break;
         }
     }

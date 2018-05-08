@@ -11,30 +11,21 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
-import com.longkai.stcarcontrol.st_exp.activity.BaseActivity;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
-import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampBrake;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampPosition;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampReversing;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampTurnLeft;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampList.CMDBCMRearLampTurnRight;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampDRLLight;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampPosition;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGM;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
-
-import java.security.spec.ECField;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2017/8/19.
@@ -54,15 +45,13 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
         mView.findViewById(R.id.iv_carback_reversing_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_carback_turnleft_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_carback_turnright_click).setOnClickListener(this);
-        mView.findViewById(R.id.tv_car_back_title).setOnClickListener(this);
+        mView.findViewById(R.id.tv_car_back_diagnostic).setOnClickListener(this);
 
         ivCarbackBreakLamp = (ImageView) mView.findViewById(R.id.iv_carback_break_light);
         ivCarbackPositionLamp = (ImageView) mView.findViewById(R.id.iv_carback_reversing_light);
         ivCarbackTurnleftLamp = (ImageView) mView.findViewById(R.id.iv_carback_turnleft_light);
         ivCarbackTurnrightLamp = (ImageView) mView.findViewById(R.id.iv_carback_turnright_light);
-
-
-
+        mView.findViewById(R.id.tv_car_back_diagram).setOnClickListener(this);
 
 
 //        handler.postDelayed(runnable, 500);// 打开定时器，50ms后执行runnable
@@ -85,7 +74,7 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
         timer = new Timer();
         timer.schedule(diagnosticTask, 500);//开启定时器，*/
 
-
+        refreshUI();
         return mView;
     }
 
@@ -121,18 +110,18 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
             case R.id.iv_carback_break_click:
                 /*clickLamp(ConstantData.sCarBackBreakLampStatus, ivCarbackBreakLamp,
                         new CMDBCMRearLampBrake());*/
-                if (ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 0) {
+                if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 0) {
                     ivCarbackBreakLamp.setImageResource(R.mipmap.ic_carback_position_light);
                     ivCarbackBreakLamp.setVisibility(View.VISIBLE);
-                    ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] = 1;
+                    ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackBreakLampStatus] = 1;
 
                     BaseCommand commandtmp = new CMDBCMRearLampPosition();
                     commandtmp.turnOn();
                     ServiceManager.getInstance().sendCommandToCar(commandtmp, new CommandListenerAdapter());
-                }else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 1) {
+                }else if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 1) {
                     ivCarbackBreakLamp.setImageResource(R.mipmap.ic_carback_break_light);
                     ivCarbackBreakLamp.setVisibility(View.VISIBLE);
-                    ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] = 2;
+                    ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackBreakLampStatus] = 2;
                     BaseCommand commandtmp = new CMDBCMRearLampPosition();
                     commandtmp.turnOff();
                     ServiceManager.getInstance().sendCommandToCar(commandtmp, new CommandListenerAdapter());
@@ -140,9 +129,9 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
                     BaseCommand commandtmp2 = new CMDBCMRearLampBrake();
                     commandtmp2.turnOn();
                     ServiceManager.getInstance().sendCommandToCar(commandtmp2, new CommandListenerAdapter());
-                }else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 2) {
+                }else if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 2) {
                     ivCarbackBreakLamp.setVisibility(View.INVISIBLE);
-                    ConstantData.sFrontLampFragmentStatus[ConstantData.sCarBackBreakLampStatus] = 0;
+                    ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackBreakLampStatus] = 0;
                     BaseCommand commandtmp = new CMDBCMRearLampBrake();
                     commandtmp.turnOff();
                     ServiceManager.getInstance().sendCommandToCar(commandtmp, new CommandListenerAdapter());
@@ -151,7 +140,7 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.iv_carback_reversing_click:
                 clickLamp(ConstantData.sCarBackPositionLampStatus, ivCarbackPositionLamp,
-                        new CMDBCMRearLampPosition());
+                        new CMDBCMRearLampReversing());
                 break;
             case R.id.iv_carback_turnleft_click:
                 clickLamp(ConstantData.sCarBackTurnLeftLampStatus, ivCarbackTurnleftLamp,
@@ -161,8 +150,11 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
                 clickLamp(ConstantData.sCarBackTurnRightLampStatus, ivCarbackTurnrightLamp,
                         new CMDBCMRearLampTurnRight());
                 break;
-            case R.id.tv_car_back_title:
+            case R.id.tv_car_back_diagnostic:
                 ((MainActivity)getActivity()).setSelect(101);
+                break;
+            case R.id.tv_car_back_diagram:
+                ((MainActivity)getActivity()).showDiagram(ConstantData.BCM_DIAGRAM);
                 break;
         }
     }
@@ -236,6 +228,41 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
         alphaAnimation1.setRepeatMode(Animation.REVERSE);
         view.setAnimation(alphaAnimation1);
         alphaAnimation1.start();
+    }
+
+
+    private void refreshUI(){
+        if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 0) {
+            Log.i("Karl","sCarBackBreakLampStatus = 0");
+            ivCarbackBreakLamp.setVisibility(View.INVISIBLE);
+        } else if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 1) {
+            Log.i("Karl","sCarBackBreakLampStatus = 1");
+            ivCarbackBreakLamp.setVisibility(View.VISIBLE);
+            ivCarbackBreakLamp.setImageResource(R.mipmap.ic_carback_position_light);
+        } else if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackBreakLampStatus] == 2) {
+            Log.i("Karl","sCarBackBreakLampStatus = 2");
+            ivCarbackBreakLamp.setVisibility(View.VISIBLE);
+            ivCarbackBreakLamp.setImageResource(R.mipmap.ic_carback_break_light);
+
+        }
+
+        if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackPositionLampStatus] == 0){
+            ivCarbackPositionLamp.setVisibility(View.INVISIBLE);
+        } else {
+            ivCarbackPositionLamp.setVisibility(View.VISIBLE);
+        }
+
+        if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackTurnLeftLampStatus] == 1){
+            setBlink(ivCarbackTurnleftLamp);
+        } else {
+            ivCarbackTurnleftLamp.setAnimation(null);
+        }
+
+        if (ConstantData.sCarBackFragmentStatus[ConstantData.sCarBackTurnRightLampStatus] == 1){
+            setBlink(ivCarbackTurnrightLamp);
+        } else {
+            ivCarbackTurnrightLamp.setAnimation(null);
+        }
     }
 
     @Override

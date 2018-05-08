@@ -7,11 +7,22 @@
         android:id="@+id/tv_car_front_lamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FRONT LAMP"
+        android:text="LED Head Lamp"
         android:textColor="#ffffff"
         android:textSize="40sp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"/>
+    <TextView
+        android:id="@+id/tv_Head_Lamp_diagram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Diagram"
+        android:textColor="#dddddd"
+        android:textSize="30sp"
+        android:textStyle="italic"
+        android:layout_alignStart="@id/tv_car_front_lamp"
+        android:layout_below="@id/tv_car_front_lamp" />
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
