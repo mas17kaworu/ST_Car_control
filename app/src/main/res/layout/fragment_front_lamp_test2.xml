@@ -16,7 +16,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:id="@+id/relativeLayout">
         <include layout="@layout/testlamp_front_collection"/>
     </RelativeLayout>
 
@@ -28,4 +29,12 @@
         android:layout_marginStart="100dp"
         android:layout_marginTop="600dp"
         />
+    <ImageView
+        android:id="@+id/iv_testlamp_auto_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_homepage_auto_display_u"
+        android:layout_marginStart="27dp"
+        android:layout_alignBottom="@+id/iv_front_lamp_test_back"
+        android:layout_toEndOf="@+id/relativeLayout" />
 </RelativeLayout>

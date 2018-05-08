@@ -38,8 +38,7 @@
         android:layout_height="wrap_content"
         android:text="@string/homepage_front_lamp"
         android:layout_below="@id/iv_homepage_led"
-        android:layout_alignStart="@id/iv_homepage_led"
-        android:layout_marginStart="7dp"
+        android:layout_marginStart="50dp"
         android:textColor="#FFC008" />
 
 <!--    <ImageView
@@ -57,7 +56,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="door"
+        android:text="@string/homepage_door"
         android:layout_marginStart="615dp"
         android:layout_marginTop="555dp"
         android:textColor="#FFC008" />
@@ -80,13 +79,13 @@
         android:id="@+id/iv_homepage_front_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_qiangai"
+        android:src="@mipmap/ic_homepage_hvac"
         android:layout_marginTop="230dp"
         android:layout_marginStart="70dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Front box"
+        android:text="HVAC"
         android:textColor="#FFC008"
         android:layout_below="@+id/iv_homepage_front_box"
         android:layout_alignStart="@+id/iv_homepage_front_box" />
@@ -103,7 +102,7 @@
         android:layout_alignTop="@id/iv_homepage_reverse_mirror"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reverse mirror"
+        android:text="Power mirror"
         android:layout_marginTop="15dp"
         android:textColor="#FFC008"/>
 
@@ -136,7 +135,7 @@
         android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Trunk"
+        android:text="Power trunk"
         android:textColor="#FFC008" />
 
     <TextView
