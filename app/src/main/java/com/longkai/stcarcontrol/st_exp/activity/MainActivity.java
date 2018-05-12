@@ -329,28 +329,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            /*case R.id.rdoBtn_homepage_home:
-                setSelect(0);
-                *//*animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.btn_scale_up);
-                v.startAnimation(animation);*//*
-//                ((RadioButton)v).setBackgroundResource(R.mipmap.ic_navigationbar_homepage_chose);
-//                ((RadioButton)v).setButtonDrawable(R.color.transparent);
-//                ViewGroup.LayoutParams params = v.getLayoutParams();
-//                params.width*=1.5;
-//                v.setLayoutParams(params);
-                break;
-            case R.id.rdoBtn_homepage_control:
-                setSelect(4);
-                break;
-            case R.id.rdoBtn_homepage_door:
-                setSelect(3);
-                break;
-            case R.id.rdoBtn_homepage_front_lamp:
-                setSelect(1);
-                break;
-            case R.id.rdoBtn_homepage_seat:
-                setSelect(2);
-                break;*/
+
             case R.id.iv_mainactivity_lost_connect://bt connection
                 SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "BT");
                 if (!hardwareConnected) {
@@ -394,18 +373,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void releaseFragment(){
         mHomeFragment = null;
-          mFrontLampFragment = null;
-          mSeatFragment = null;
-          mHighBeamLight = null;
-          mDoorFragment = null;
-          mCenterControlFragment = null;
-          mCarBackFragment = null;
-          mCarBackCoverFragment = null;
-          mBCMDiagnosticFragment = null;
-          frontHeadLampTest = null;
+        mFrontLampFragment = null;
+        mSeatFragment = null;
+        mHighBeamLight = null;
+        mDoorFragment = null;
+        mCenterControlFragment = null;
+        mCarBackFragment = null;
+        mCarBackCoverFragment = null;
+        mBCMDiagnosticFragment = null;
+        frontHeadLampTest = null;
         System.gc();
-
     }
+
+
     public void showDiagram(String diagramName){
         FileUtils.copyDiagram2SDCard(this , diagramName);
 
