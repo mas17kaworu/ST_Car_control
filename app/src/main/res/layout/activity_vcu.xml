@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_main"
+    android:id="@+id/activity_vcu"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
@@ -13,19 +13,18 @@
             android:background="@drawable/homefragment_gray_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:id="@+id/main_fragment_content"/>
 
         <include layout="@layout/activity_main_bottom_ratio_group_background"/>
 
         <ImageView
-            android:id="@+id/iv_mainactivity_diagram"
+            android:id="@+id/iv_vcu_activity_diagram"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"/>
 
         <ImageView
-            android:id="@+id/iv_mainactivity_lost_connect"
+            android:id="@+id/iv_vcu_lost_connect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/homepage_lost_bt"
@@ -33,20 +32,20 @@
             android:layout_marginStart="860dp"/>
 
         <ImageView
-            android:id="@+id/iv_mainacivity_lost_wifi"
+            android:id="@+id/iv_vcu_lost_wifi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/homepage_lost_wifi"
             android:layout_marginLeft="30dp"
-            android:layout_toRightOf="@id/iv_mainactivity_lost_connect"
-            android:layout_alignTop="@id/iv_mainactivity_lost_connect"
+            android:layout_toRightOf="@id/iv_vcu_lost_connect"
+            android:layout_alignTop="@id/iv_vcu_lost_connect"
             android:layout_marginStart="18dp" />
 
         <!--<include layout="@layout/activity_main_bottom_ratio_group"/>-->
     </RelativeLayout>
 
     <com.longkai.stcarcontrol.st_exp.customView.HorizontalListView
-        android:id="@+id/horizon_listview"
+        android:id="@+id/vcu_horizon_listview"
         android:layout_width="750dp"
         android:layout_height="100dp"
         android:gravity="bottom"
