@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+        byte t = (byte) (0b101<<5 | 0x16);
+        assertEquals(t, (byte)0b10110110);
     }
 }
