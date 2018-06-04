@@ -5,10 +5,10 @@ android {
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.longkai.stcarcontrol.st_exp"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
-        versionName "1.1.6"
+        versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {

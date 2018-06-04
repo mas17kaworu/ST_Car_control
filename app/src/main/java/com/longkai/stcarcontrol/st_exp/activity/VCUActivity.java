@@ -1,7 +1,5 @@
 package com.longkai.stcarcontrol.st_exp.activity;
 
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -21,6 +19,13 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUChargeFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUGYHLSDFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUGYJCFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUHomeFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUTboxFragment;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,12 +38,19 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
 
     private int mLastflag = 10;
 
+    private VCUHomeFragment mVCUHomeFragment;
+    private VCUGYJCFragment mVCUGYJCFragment;
+    private VCUGYHLSDFragment mVCUGYHLSDFragment;
+    private VCUBMSFragment mVCUBMSFragment;
+    private VCUMCUFragment vcumcuFragment;
+    private VCUTboxFragment vcuTboxFragment;
+    private VCUChargeFragment vcuChargeFragment;
 
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
 
     private ImageView ivConnectionState, ivWifiConnectionState;
-    private ImageView ivDiagram;
+    private ImageView ivDiagram;//框图
     public int mSelectedMode = 0;
 
     @Override
@@ -54,6 +66,13 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                     }
                 });
         initUI();
+        setSelect(0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ServiceManager.getInstance().destroy();
     }
 
     private void initUI(){
@@ -62,15 +81,23 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         ivConnectionState.setOnClickListener(this);
         ivWifiConnectionState = (ImageView) findViewById(R.id.iv_vcu_lost_wifi);
         ivWifiConnectionState.setOnClickListener(this);
+        ivDiagram = (ImageView) findViewById(R.id.iv_vcu_activity_diagram);
+        ivDiagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ivDiagram.setVisibility(View.INVISIBLE);
+            }
+        });
 
         hListView = (HorizontalListView) findViewById(R.id.vcu_horizon_listview);
-        final int[] ids = {R.drawable.main_activity_bottom_hompage,
-                R.drawable.main_activity_bottom_lamp,
-                R.drawable.main_activity_bottom_seat,
-                R.drawable.main_activity_bottom_door,
-                R.drawable.main_activity_bottom_control,
-                R.drawable.main_activity_bottom_back_car,
-                R.drawable.main_activity_bottom_back_trunk};
+        final int[] ids = {R.drawable.vcu_activity_bottom_home,
+                R.drawable.vcu_activity_bottom_gyjc,
+                R.drawable.vcu_activity_bottom_gyhlsd,
+                R.drawable.vcu_activity_bottom_bms,
+                R.drawable.vcu_activity_bottom_mcu,
+                R.drawable.vcu_activity_bottom_tbox,
+                R.drawable.vcu_activity_bottom_gyhlxd,
+                R.drawable.vcu_activity_bottom_charge};
 
         hListViewAdapter = new HorizontalListViewAdapter(getApplicationContext(), ids);
         hListView.setAdapter(hListViewAdapter);
@@ -162,6 +189,52 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         releaseFragment();
         switch (i) {
             case 0:
+                if (mVCUHomeFragment == null) {
+                    mVCUHomeFragment = new VCUHomeFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, mVCUHomeFragment);
+                break;
+            case 1:
+                if (mVCUGYJCFragment == null){
+                    mVCUGYJCFragment = new VCUGYJCFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, mVCUGYJCFragment);
+                break;
+            case 2:
+                if (mVCUGYHLSDFragment == null){
+                    mVCUGYHLSDFragment = new VCUGYHLSDFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, mVCUGYHLSDFragment);
+                break;
+            case 3:
+                if (mVCUBMSFragment == null){
+                    mVCUBMSFragment = new VCUBMSFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, mVCUBMSFragment);
+                break;
+            case 4:
+                if (vcumcuFragment == null){
+                    vcumcuFragment = new VCUMCUFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, vcumcuFragment);
+                break;
+            case 5:
+                if (vcuTboxFragment == null){
+                    vcuTboxFragment = new VCUTboxFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, vcuTboxFragment);
+                break;
+            case 6:
+                if (mVCUGYHLSDFragment == null){
+                    mVCUGYHLSDFragment = new VCUGYHLSDFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, mVCUGYHLSDFragment);
+                break;
+            case 7:
+                if (vcuChargeFragment == null){
+                    vcuChargeFragment = new VCUChargeFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, vcuChargeFragment);
                 break;
             default:
                 break;
@@ -171,6 +244,8 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void releaseFragment(){
+        mVCUHomeFragment = null;
+        mVCUGYJCFragment = null;
         System.gc();
     }
 

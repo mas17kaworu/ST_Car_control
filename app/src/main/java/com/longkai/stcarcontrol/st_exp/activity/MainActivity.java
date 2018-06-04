@@ -142,7 +142,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        ServiceManager.getInstance().destroy();
     }
 
     private void initUI(){

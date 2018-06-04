@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <FrameLayout
-        android:background="@drawable/homefragment_gray_background"
+        android:background="@mipmap/ic_choose_page_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/main_fragment_content"/>
@@ -18,8 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <Button
+                android:background="@mipmap/ic_choose_page_democar"
                 android:id="@+id/btn_choose_function"
-                android:text="Function"
                 android:layout_width="300dp"
                 android:layout_height="200dp"
                 android:layout_centerInParent="true"/>
@@ -30,8 +30,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <Button
+                android:background="@mipmap/ic_choose_page_vcu"
                 android:id="@+id/btn_choose_VCU"
-                android:text="VCU"
                 android:layout_width="300dp"
                 android:layout_height="200dp"
                 android:layout_centerInParent="true"/>
