@@ -20,7 +20,7 @@
             <Button
                 android:background="@mipmap/ic_choose_page_democar"
                 android:id="@+id/btn_choose_function"
-                android:layout_width="300dp"
+                android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
@@ -32,12 +32,22 @@
             <Button
                 android:background="@mipmap/ic_choose_page_vcu"
                 android:id="@+id/btn_choose_VCU"
-                android:layout_width="300dp"
+                android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
 
-
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <Button
+                android:background="@mipmap/ic_choose_page_entertainment"
+                android:id="@+id/btn_choose_entertainment"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
     </LinearLayout>
 
 
