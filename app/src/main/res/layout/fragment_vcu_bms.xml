@@ -152,4 +152,11 @@
             />
     </RelativeLayout>
 
+
+    <com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar
+        android:id="@+id/vrb_vcu_bms_temperature1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
 </RelativeLayout>
