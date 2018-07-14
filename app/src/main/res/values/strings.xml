@@ -13,4 +13,10 @@
     <string name="high_beam_Parking">Parking Light</string>
     <string name="high_beam_Energy_saving">Energy-saving Light</string>
 
+
+    <string name="vcu_gysd_btn">高压回路上电</string>
+    <string name="vcu_gyxd_btn">高压回路下电</string>
+    <string name="vcu_niuju_jisuan_btn">扭矩计算</string>
+    <string name="vcu_charging_btn">充电枪</string>
+
 </resources>

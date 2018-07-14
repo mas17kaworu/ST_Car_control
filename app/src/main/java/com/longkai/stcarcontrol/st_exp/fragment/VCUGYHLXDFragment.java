@@ -20,7 +20,7 @@ public class VCUGYHLXDFragment extends Fragment implements View.OnClickListener 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_vcu_gyjc, container, false);
+        mView = inflater.inflate(R.layout.fragment_vcu_vcu, container, false);
         return mView;
     }
 

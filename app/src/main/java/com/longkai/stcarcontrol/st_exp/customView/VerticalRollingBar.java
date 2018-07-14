@@ -29,7 +29,7 @@ public class VerticalRollingBar extends View {
     private TextPaint mTextPaint;
     int backgroundWidth, backgroundheight;
     int zeroPoint;
-    int intervalDistance = 10;
+    int intervalDistance = 5;
     private float value = 30.0f;
     private float tmpfloat;
 

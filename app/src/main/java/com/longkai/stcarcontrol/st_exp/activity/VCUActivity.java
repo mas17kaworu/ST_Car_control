@@ -3,9 +3,12 @@ package com.longkai.stcarcontrol.st_exp.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
@@ -22,13 +25,16 @@ import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUChargeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUGYHLSDFragment;
-import com.longkai.stcarcontrol.st_exp.fragment.VCUGYJCFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUVCUCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUHomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUTboxFragment;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
+import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
 
 /**
  * Created by Administrator on 2018/5/12.
@@ -39,7 +45,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     private int mLastflag = 10;
 
     private VCUHomeFragment mVCUHomeFragment;
-    private VCUGYJCFragment mVCUGYJCFragment;
+    private VCUVCUCFragment mVCUVCUCFragment;
     private VCUGYHLSDFragment mVCUGYHLSDFragment;
     private VCUBMSFragment mVCUBMSFragment;
     private VCUMCUFragment vcumcuFragment;
@@ -49,9 +55,13 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
 
+    private ListView lvDrawerVCU;
+    private DrawerLayout drawerLayoutVCU;
+
     private ImageView ivConnectionState, ivWifiConnectionState;
     private ImageView ivDiagram;//框图
     public int mSelectedMode = 0;
+    public VCUState vcuState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +77,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 });
         initUI();
         setSelect(0);
+        vcuState = VCUState.HomeScreen;
     }
 
     @Override
@@ -91,13 +102,14 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
 
         hListView = (HorizontalListView) findViewById(R.id.vcu_horizon_listview);
         final int[] ids = {R.drawable.vcu_activity_bottom_home,
-                R.drawable.vcu_activity_bottom_gyjc,
-                R.drawable.vcu_activity_bottom_gyhlsd,
+                R.drawable.vcu_activity_bottom_vcu,
+//                R.drawable.vcu_activity_bottom_gyhlsd,
                 R.drawable.vcu_activity_bottom_bms,
                 R.drawable.vcu_activity_bottom_mcu,
                 R.drawable.vcu_activity_bottom_tbox,
-                R.drawable.vcu_activity_bottom_gyhlxd,
-                R.drawable.vcu_activity_bottom_charge};
+//                R.drawable.vcu_activity_bottom_gyhlxd,
+//                R.drawable.vcu_activity_bottom_charge
+        };
 
         hListViewAdapter = new HorizontalListViewAdapter(getApplicationContext(), ids);
         hListView.setAdapter(hListViewAdapter);
@@ -115,10 +127,90 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
             }
         });
 
+        drawerLayoutVCU = (DrawerLayout) findViewById(R.id.drawerLayout_vcu);
+        initDrawerLayout();
+//        lvDrawerVCU = (ListView) findViewById(R.id.lv_vcu_drawer);
+//        updateDrawerData();
+    }
+
+    private void updateDrawer(VCUState state){
+        vcuState = state;
+        switch (vcuState){
+            case MCU:
+            case BMS:
+            case HomeScreen:
+                drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
+                break;
+            case VCU:
+
+                drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
+                break;
+            case TBox:
+
+                drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
+                break;
+        }
+        /*final List<String> list = new ArrayList<String>();
+        list.add("网易");
+        list.add("腾讯");
+        list.add("新浪");
+        list.add("搜狐");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+        lvDrawerVCU.setAdapter(adapter);
+        lvDrawerVCU.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showDrawerLayout();
+            }
+        });*/
+
 
     }
 
+    private void initDrawerLayout(){
+        findViewById(R.id.btn_vcu_gysd).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //send command
+                setSelect(1);
+                showDrawerLayout();
+            }
+        });
 
+        findViewById(R.id.btn_vcu_gyxd).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSelect(1);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_vcu_niuju_jisuan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //change fragment
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_vcu_charging).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSelect(7);
+                showDrawerLayout();
+            }
+        });
+
+
+    }
+
+    private void showDrawerLayout() {
+        if (!drawerLayoutVCU.isDrawerOpen(Gravity.START)) {
+            drawerLayoutVCU.openDrawer(Gravity.START);
+        } else {
+            drawerLayoutVCU.closeDrawer(Gravity.START);
+        }
+    }
 
     private boolean hardwareConnected = false;
 
@@ -193,36 +285,41 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                     mVCUHomeFragment = new VCUHomeFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, mVCUHomeFragment);
+                updateDrawer(VCUState.HomeScreen);
                 break;
             case 1:
-                if (mVCUGYJCFragment == null){
-                    mVCUGYJCFragment = new VCUGYJCFragment();
+                if (mVCUVCUCFragment == null){
+                    mVCUVCUCFragment = new VCUVCUCFragment();
                 }
-                transaction.replace(R.id.vcu_main_fragment_content, mVCUGYJCFragment);
+                transaction.replace(R.id.vcu_main_fragment_content, mVCUVCUCFragment);
+                updateDrawer(VCUState.VCU);
                 break;
-            case 2:
+            case 200:
                 if (mVCUGYHLSDFragment == null){
                     mVCUGYHLSDFragment = new VCUGYHLSDFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, mVCUGYHLSDFragment);
                 break;
-            case 3:
+            case 2:
                 if (mVCUBMSFragment == null){
                     mVCUBMSFragment = new VCUBMSFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, mVCUBMSFragment);
+                updateDrawer(VCUState.BMS);
                 break;
-            case 4:
+            case 3:
                 if (vcumcuFragment == null){
                     vcumcuFragment = new VCUMCUFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcumcuFragment);
+                updateDrawer(VCUState.MCU);
                 break;
-            case 5:
+            case 4:
                 if (vcuTboxFragment == null){
                     vcuTboxFragment = new VCUTboxFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcuTboxFragment);
+                updateDrawer(VCUState.TBox);
                 break;
             case 6:
                 if (mVCUGYHLSDFragment == null){
@@ -245,7 +342,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
 
     private void releaseFragment(){
         mVCUHomeFragment = null;
-        mVCUGYJCFragment = null;
+        mVCUVCUCFragment = null;
         System.gc();
     }
 
@@ -268,5 +365,13 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 ServiceManager.getInstance().sendCommandToCar(new CMDGetVersion(), getVersionListener);
                 break;
         }
+    }
+
+    public enum VCUState{
+        HomeScreen,
+        VCU,
+        BMS,
+        MCU,
+        TBox
     }
 }

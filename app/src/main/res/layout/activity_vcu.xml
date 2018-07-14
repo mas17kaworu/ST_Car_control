@@ -1,54 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_vcu"
+    android:id="@+id/drawerLayout_vcu"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/activity_vcu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:background="@drawable/homefragment_gray_background"
+        android:layout_height="match_parent">
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/vcu_main_fragment_content"/>
+            android:orientation="vertical">
 
-        <include layout="@layout/activity_main_bottom_ratio_group_background"/>
+            <FrameLayout
+                android:background="@drawable/homefragment_gray_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/vcu_main_fragment_content"/>
 
-        <ImageView
-            android:id="@+id/iv_vcu_activity_diagram"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
+            <include layout="@layout/activity_main_bottom_ratio_group_background"/>
 
-        <ImageView
-            android:id="@+id/iv_vcu_lost_connect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/homepage_lost_bt"
-            android:layout_marginTop="60dp"
-            android:layout_marginStart="860dp"/>
+            <ImageView
+                android:id="@+id/iv_vcu_activity_diagram"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
 
-        <ImageView
-            android:id="@+id/iv_vcu_lost_wifi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/homepage_lost_wifi"
-            android:layout_marginLeft="30dp"
-            android:layout_toRightOf="@id/iv_vcu_lost_connect"
-            android:layout_alignTop="@id/iv_vcu_lost_connect"
-            android:layout_marginStart="18dp" />
+            <ImageView
+                android:id="@+id/iv_vcu_lost_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/homepage_lost_bt"
+                android:layout_marginTop="60dp"
+                android:layout_marginStart="860dp"/>
 
-        <!--<include layout="@layout/activity_main_bottom_ratio_group"/>-->
+            <ImageView
+                android:id="@+id/iv_vcu_lost_wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/homepage_lost_wifi"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@id/iv_vcu_lost_connect"
+                android:layout_alignTop="@id/iv_vcu_lost_connect"
+                android:layout_marginStart="18dp" />
+
+            <!--<include layout="@layout/activity_main_bottom_ratio_group"/>-->
+        </RelativeLayout>
+
+        <com.longkai.stcarcontrol.st_exp.customView.HorizontalListView
+            android:id="@+id/vcu_horizon_listview"
+            android:layout_width="750dp"
+            android:layout_height="100dp"
+            android:gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
-    <com.longkai.stcarcontrol.st_exp.customView.HorizontalListView
-        android:id="@+id/vcu_horizon_listview"
-        android:layout_width="750dp"
-        android:layout_height="100dp"
-        android:gravity="bottom"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-</RelativeLayout>
+    <!--<ListView
+
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:id="@+id/lv_vcu_drawer"
+        android:choiceMode="singleChoice"
+        android:background="@android:color/white" />-->
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:layout_gravity="start">
+        <Button
+            android:id="@+id/btn_vcu_gysd"
+            android:text="@string/vcu_gysd_btn"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="146dp" />
+
+        <Button
+            android:id="@+id/btn_vcu_niuju_jisuan"
+            android:text="@string/vcu_niuju_jisuan_btn"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="246dp" />
+
+        <Button
+            android:id="@+id/btn_vcu_gyxd"
+            android:text="@string/vcu_gyxd_btn"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="346dp" />
+
+        <Button
+            android:id="@+id/btn_vcu_charging"
+            android:text="@string/vcu_charging_btn"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="446dp" />
+    </RelativeLayout>
+</android.support.v4.widget.DrawerLayout>
