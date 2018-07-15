@@ -67,42 +67,159 @@
         android:choiceMode="singleChoice"
         android:background="@android:color/white" />-->
 
-
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
         android:layout_gravity="start">
-        <Button
-            android:id="@+id/btn_vcu_gysd"
-            android:text="@string/vcu_gysd_btn"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="146dp" />
+        <RelativeLayout
+            android:id="@+id/rl_drawer_vcu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            >
+            <Button
+                android:id="@+id/btn_vcu_gysd"
+                android:text="@string/vcu_gysd_btn"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="160dp" />
 
-        <Button
-            android:id="@+id/btn_vcu_niuju_jisuan"
-            android:text="@string/vcu_niuju_jisuan_btn"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="246dp" />
+            <Button
+                android:id="@+id/btn_vcu_niuju_jisuan"
+                android:text="@string/vcu_niuju_jisuan_btn"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="260dp" />
 
-        <Button
-            android:id="@+id/btn_vcu_gyxd"
-            android:text="@string/vcu_gyxd_btn"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="346dp" />
+            <Button
+                android:id="@+id/btn_vcu_gyxd"
+                android:text="@string/vcu_gyxd_btn"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="360dp" />
 
-        <Button
-            android:id="@+id/btn_vcu_charging"
-            android:text="@string/vcu_charging_btn"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="446dp" />
-    </RelativeLayout>
+            <Button
+                android:id="@+id/btn_vcu_charging"
+                android:text="@string/vcu_charging_btn"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="460dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_drawer_tbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            >
+            <Button
+                android:id="@+id/btn_tbox_date_time"
+                android:text="@string/tbox_date_time"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="50dp" />
+            <Button
+                android:id="@+id/btn_tbox_data_collect"
+                android:text="@string/tbox_data_collect"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="110dp" />
+            <Button
+                android:id="@+id/btn_tbox_data_store"
+                android:text="@string/tbox_data_store"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="170dp" />
+            <Button
+                android:id="@+id/btn_tbox_data_transpot"
+                android:text="@string/tbox_data_transport"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="230dp" />
+            <Button
+                android:id="@+id/btn_tbox_data_resend"
+                android:text="@string/tbox_data_resend"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="300dp" />
+            <Button
+                android:id="@+id/btn_tbox_individual"
+                android:text="@string/tbox_individual"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="360dp" />
+            <Button
+                android:id="@+id/btn_tbox_register"
+                android:text="@string/tbox_register"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="420dp" />
+
+            <Button
+                android:id="@+id/btn_remote_control"
+                android:text="@string/tbox_remote_control"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="480dp" />
+            <Button
+                android:id="@+id/btn_mail_and_phone"
+                android:text="@string/tbox_mail_and_phone"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextPress"
+                android:background="@drawable/vcu_drawer_btn_click"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="540dp" />
+
+        </RelativeLayout>
+    </FrameLayout>
 </android.support.v4.widget.DrawerLayout>

@@ -18,5 +18,14 @@
     <string name="vcu_gyxd_btn">高压回路下电</string>
     <string name="vcu_niuju_jisuan_btn">扭矩计算</string>
     <string name="vcu_charging_btn">充电枪</string>
-
+    
+    <string name="tbox_date_time">时间和日期</string>
+    <string name="tbox_data_collect">数据采集</string>
+    <string name="tbox_data_store">数据存贮</string>
+    <string name="tbox_data_transport">数据传输</string>
+    <string name="tbox_data_resend">数据补发</string>
+    <string name="tbox_individual">独立运行功能</string>
+    <string name="tbox_register">注册与激活</string>
+    <string name="tbox_remote_control">远程控制</string>
+    <string name="tbox_mail_and_phone">电话与短信功能</string>
 </resources>

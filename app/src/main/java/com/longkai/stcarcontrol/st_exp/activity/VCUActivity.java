@@ -1,6 +1,8 @@
 package com.longkai.stcarcontrol.st_exp.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -32,6 +34,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.VCUTboxFragment;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
@@ -128,9 +131,8 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         });
 
         drawerLayoutVCU = (DrawerLayout) findViewById(R.id.drawerLayout_vcu);
+        drawerLayoutVCU.setScrimColor(Color.TRANSPARENT);//去除阴影
         initDrawerLayout();
-//        lvDrawerVCU = (ListView) findViewById(R.id.lv_vcu_drawer);
-//        updateDrawerData();
     }
 
     private void updateDrawer(VCUState state){
@@ -142,11 +144,13 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
                 break;
             case VCU:
-
+                findViewById(R.id.rl_drawer_vcu).setVisibility(View.VISIBLE);
+                findViewById(R.id.rl_drawer_tbox).setVisibility(View.INVISIBLE);
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
                 break;
             case TBox:
-
+                findViewById(R.id.rl_drawer_vcu).setVisibility(View.INVISIBLE);
+                findViewById(R.id.rl_drawer_tbox).setVisibility(View.VISIBLE);
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
                 break;
         }
@@ -168,12 +172,30 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void initDrawerLayout(){
+
+        //vcu Drawer
         findViewById(R.id.btn_vcu_gysd).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //send command
                 setSelect(1);
                 showDrawerLayout();
+                //only for test
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mVCUVCUCFragment.getController().shangDianState2();
+                    }
+                }, 500);
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mVCUVCUCFragment.getController().shangDianState3();
+                    }
+                }, 2000);
+
             }
         });
 

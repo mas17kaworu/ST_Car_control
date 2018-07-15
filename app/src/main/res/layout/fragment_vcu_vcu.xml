@@ -117,4 +117,19 @@
         android:layout_alignBottom="@+id/internal_rl_gyjc2"
         android:layout_alignEnd="@+id/internal_rl_gyjc2"
         android:layout_marginEnd="62dp" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_vcu_chart"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_toRightOf="@+id/internal_rl_gyjc2"
+        android:layout_alignBottom="@+id/internal_rl_gyjc2" />
+
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_vcu_circle"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/internal_rl_gyjc1"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
