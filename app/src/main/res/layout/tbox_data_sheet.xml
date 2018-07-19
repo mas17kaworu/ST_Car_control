@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/tv_vcu_tbox_zhengche"
+        android:layout_marginStart="170dp"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="整车数据"
+        android:textColor="#ffffff"
+        android:textSize="20sp"/>
+    <TextView
+        android:id="@+id/tv_vcu_tbox_dianji"
+        android:layout_marginStart="270dp"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="驱动电机数据"
+        android:textColor="#ffffff"
+        android:textSize="20sp"/>
+
+    <ImageView
+        android:layout_width="600dp"
+        android:layout_height="300dp"
+        android:src="@mipmap/ic_vcu_tbox_form"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

@@ -24,12 +24,13 @@ public class CMDVCUMCU1 extends BaseCommand {
         Response response = new Response(getCommandId());
         if (data[2] == 0x0E){
             response.Current_of_MCU = (data[5] & 0xff)<<8 |(data[4] & 0xff);
-            response.Input_Voltage_of_MCU = (data[7] & 0xff)<<8 |(data[6] & 0xff);
-            response.Torch_of_Motor = (data[9] & 0xff)<<8 |(data[8] & 0xff);
-            response.Temp_of_MCU = (data[10] & 0xff);
-            response.Temp_of_Motor = (data[11] & 0xff);
-            response.Motor_Realtime_Speed = (data[13] & 0xff)<<8 |(data[12] & 0xff);
-            response.Motor_Current = (data[15] & 0xff)<<8 |(data[14] & 0xff);
+            response.Input_Voltage_of_MCU = (int)(((data[7] & 0xff)<<8 |(data[6] & 0xff)) * 0.1f);
+            response.Torch_of_Motor = ((data[9] & 0xff)<<8 |(data[8] & 0xff) - 20000) * 0.1f;
+            response.Temp_of_MCU = (data[10] & 0xff) - 40;
+            response.Temp_of_Motor = (data[11] & 0xff) - 40;
+            response.Motor_Realtime_Speed = ((data[13] & 0xff)<<8 |(data[12] & 0xff)) - 20000;
+            response.Motor_Current = (int)(((data[15] & 0xff)<<8 |(data[14] & 0xff) - 20000) * 0.05f);
+
         }
         return response;
     }
@@ -42,9 +43,9 @@ public class CMDVCUMCU1 extends BaseCommand {
     public static class Response extends BaseResponse {
         public	int	Motor_Current	;
         public	int	Motor_Realtime_Speed	;
-        public	int	Temp_of_Motor	;
+        public	int Temp_of_Motor	;
         public	int	Temp_of_MCU	;
-        public	int	Torch_of_Motor	;
+        public	float	Torch_of_Motor	;
         public	int	Input_Voltage_of_MCU	;
         public	int	Current_of_MCU	;
 
