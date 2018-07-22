@@ -200,7 +200,7 @@
                 android:layout_marginTop="420dp" />
 
             <Button
-                android:id="@+id/btn_remote_control"
+                android:id="@+id/btn_tbox_remote_control"
                 android:text="@string/tbox_remote_control"
                 android:textSize="15sp"
                 android:textColor="@color/colorTextPress"
@@ -210,7 +210,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="480dp" />
             <Button
-                android:id="@+id/btn_mail_and_phone"
+                android:id="@+id/btn_tbox_mail_and_phone"
                 android:text="@string/tbox_mail_and_phone"
                 android:textSize="15sp"
                 android:textColor="@color/colorTextPress"

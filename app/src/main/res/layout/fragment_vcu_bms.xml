@@ -17,7 +17,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:src="@mipmap/ic_vcu_bms_back"/>
+        android:src="@mipmap/ic_vcu_bms_back"
+        android:visibility="invisible" />
 
 
     <ImageView
@@ -148,15 +149,26 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_vcu_bms_batteryremain_percent"
-            />
+            android:id="@+id/tv_vcu_bms_batteryremain_percent"/>
     </RelativeLayout>
 
-
-    <com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar
-        android:id="@+id/vrb_vcu_bms_temperature1"
+    <!--cell part-->
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="350dp">
+        <include
+            layout="@layout/layout_bms_battery_group"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="500dp"
+        android:layout_marginTop="350dp">
+        <include
+            layout="@layout/layout_bms_battery_tempereture"/>
+    </FrameLayout>
 
 </RelativeLayout>

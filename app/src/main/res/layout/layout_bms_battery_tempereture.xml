@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar
+            android:id="@+id/vrb_vcu_bms_temperature_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:style="green"/>
+
+        <com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar
+            android:layout_marginStart="@dimen/bms_battery_temperature_bar_interval"
+            android:id="@+id/vrb_vcu_bms_temperature_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:style="blue"/>
+
+        <com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar
+            android:layout_marginStart="@dimen/bms_battery_temperature_bar_interval"
+            android:id="@+id/vrb_vcu_bms_temperature_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:style="green"/>
+
+        <com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar
+            android:layout_marginStart="@dimen/bms_battery_temperature_bar_interval"
+            android:id="@+id/vrb_vcu_bms_temperature_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:style="blue"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar
+            android:id="@+id/vrb_vcu_bms_temperature_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:style="green"/>
+
+        <com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar
+            android:layout_marginStart="@dimen/bms_battery_temperature_bar_interval"
+            android:id="@+id/vrb_vcu_bms_temperature_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:style="blue"/>
+
+        <com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar
+            android:layout_marginStart="@dimen/bms_battery_temperature_bar_interval"
+            android:id="@+id/vrb_vcu_bms_temperature_7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:style="green"/>
+    </LinearLayout>
+
+
+</LinearLayout>

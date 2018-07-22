@@ -31,6 +31,8 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
     private GifImageView gif_view_send;
     private TboxStateChange tboxStateChange;
 
+    private View dataSheetLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -39,7 +41,7 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
         tvZhengche = (TextView) mView.findViewById(R.id.tv_vcu_tbox_zhengche);
         tvDianji = (TextView) mView.findViewById(R.id.tv_vcu_tbox_dianji);
         gif_view_send = (GifImageView) mView.findViewById(R.id.gifv_tbox);
-
+        dataSheetLayout = mView.findViewById(R.id.layout_tbox_sheet);
         chooseTV(tvZhengche);
         return mView;
     }
@@ -73,29 +75,41 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
         switch (state){
             case DateTime:
             case DataCollect:
+                dataSheetLayout.setVisibility(View.VISIBLE);
+                releaseGifView();
                 break;
             case DataStore:
                 loadGifToMainView(R.mipmap.gif_tbox_data_store);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case DataTransport:
                 loadGifToMainView(R.mipmap.gif_tbox_data_transport);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case DataResend:
                 loadGifToMainView(R.mipmap.gif_tbox_resend);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case Register:
 
                 break;
             case Individual:
                 loadGifToMainView(R.mipmap.gif_tbox_individual);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case RemoteControl:
                 loadGifToMainView(R.mipmap.gif_tbox_data_remote);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case MailAndPhone:
                 loadGifToMainView(R.mipmap.gif_tbox_mail_phone);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
         }
+    }
+
+    public TboxStateChange getController(){
+        return tboxStateChange;
     }
 
     private void loadGifToMainView(int resID){
@@ -103,6 +117,14 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
             GifDrawable gifDrawable = new GifDrawable(getResources(), resID);
             gif_view_send.setImageDrawable(gifDrawable);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void releaseGifView(){
+        try {
+            gif_view_send.setImageDrawable(null);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -2,4 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="bms_cell_item_horizontal_interval">16dp</dimen>
+    <dimen name="bms_cell_item_vertical_interval">8dp</dimen>
+    <dimen name="bms_battery_temperature_bar_interval">20dp</dimen>
 </resources>
