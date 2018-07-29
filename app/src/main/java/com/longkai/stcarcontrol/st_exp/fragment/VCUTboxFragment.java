@@ -16,6 +16,9 @@ import com.longkai.stcarcontrol.st_exp.Interface.TboxStateChange;
 import com.longkai.stcarcontrol.st_exp.R;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -31,6 +34,7 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
     private GifImageView gif_view_send;
     private TboxStateChange tboxStateChange;
 
+    private HashSet<TextView> sheetTextViews = new HashSet<>();
     private View dataSheetLayout;
 
     @Nullable
@@ -39,9 +43,14 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_vcu_tbox, container, false);
         tvZhengche = (TextView) mView.findViewById(R.id.tv_vcu_tbox_zhengche);
+        tvZhengche.setOnClickListener(this);
         tvDianji = (TextView) mView.findViewById(R.id.tv_vcu_tbox_dianji);
+        tvDianji.setOnClickListener(this);
         gif_view_send = (GifImageView) mView.findViewById(R.id.gifv_tbox);
         dataSheetLayout = mView.findViewById(R.id.layout_tbox_sheet);
+        sheetTextViews.add(tvZhengche);
+        sheetTextViews.add(tvDianji);
+
         chooseTV(tvZhengche);
         return mView;
     }
@@ -54,14 +63,31 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()){
+            case R.id.tv_vcu_tbox_zhengche:
+                chooseTV((TextView) v);
+                break;
+            case R.id.tv_vcu_tbox_dianji:
+                chooseTV((TextView) v);
+                break;
+        }
     }
 
     private void chooseTV(TextView tv){
-        tv.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG);
-        tv.getPaint().setFakeBoldText(true);
-        tv.setTextColor(0xff5cacee);
-        tv.postInvalidate();
+        for (TextView textView : sheetTextViews){
+            if (textView.hashCode() == tv.hashCode()){
+                textView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+                textView.getPaint().setFakeBoldText(true);
+                textView.setTextColor(0xff5cacee);
+                textView.postInvalidate();
+            } else {
+                textView.getPaint().setFlags(0);
+                textView.getPaint().setFakeBoldText(false);
+                textView.setTextColor(0xffffffff);
+                textView.postInvalidate();
+            }
+        }
+
     }
 
     @Override

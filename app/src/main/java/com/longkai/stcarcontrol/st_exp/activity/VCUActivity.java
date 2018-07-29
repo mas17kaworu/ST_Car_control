@@ -140,18 +140,25 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         vcuState = state;
         switch (vcuState){
             case MCU:
-            case BMS:
             case HomeScreen:
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
+                break;
+            case BMS:
+                findViewById(R.id.rl_drawer_bms).setVisibility(View.VISIBLE);
+                findViewById(R.id.rl_drawer_vcu).setVisibility(View.INVISIBLE);
+                findViewById(R.id.rl_drawer_tbox).setVisibility(View.INVISIBLE);
+                drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
                 break;
             case VCU:
                 findViewById(R.id.rl_drawer_vcu).setVisibility(View.VISIBLE);
                 findViewById(R.id.rl_drawer_tbox).setVisibility(View.INVISIBLE);
+                findViewById(R.id.rl_drawer_bms).setVisibility(View.INVISIBLE);
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
                 break;
             case TBox:
                 findViewById(R.id.rl_drawer_vcu).setVisibility(View.INVISIBLE);
                 findViewById(R.id.rl_drawer_tbox).setVisibility(View.VISIBLE);
+                findViewById(R.id.rl_drawer_bms).setVisibility(View.INVISIBLE);
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
                 break;
         }
