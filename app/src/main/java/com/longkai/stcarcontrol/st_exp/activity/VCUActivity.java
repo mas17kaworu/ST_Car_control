@@ -28,6 +28,7 @@ import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUChargeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUGYHLSDFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUTorqueFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUVCUCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUHomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
@@ -55,6 +56,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     private VCUMCUFragment vcumcuFragment;
     private VCUTboxFragment vcuTboxFragment;
     private VCUChargeFragment vcuChargeFragment;
+    private VCUTorqueFragment vcuTorqueFragment;
 
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
@@ -234,7 +236,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         findViewById(R.id.btn_vcu_niuju_jisuan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //change fragment
+                setSelect(8);
                 showDrawerLayout();
             }
         });
@@ -449,6 +451,12 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                     vcuChargeFragment = new VCUChargeFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcuChargeFragment);
+                break;
+            case 8:
+                if (vcuTorqueFragment == null){
+                    vcuTorqueFragment = new VCUTorqueFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, vcuTorqueFragment);
                 break;
             default:
                 break;
