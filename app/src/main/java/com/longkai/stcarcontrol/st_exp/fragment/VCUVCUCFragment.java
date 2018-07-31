@@ -102,17 +102,35 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
 
     @Override
     public void xiaDianState1() {
+        try {
+            GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_high);
+            gifViewChart.setImageDrawable(gifDrawableChart);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void xiaDianState2() {
+        try {
+            GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_decline);
+            gifViewChart.setImageDrawable(gifDrawableChart);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void xiaDianState3() {
+        try {
+            GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_zero);
+            gifViewChart.setImageDrawable(gifDrawableChart);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 //    public void updateCircle

@@ -2,6 +2,7 @@ package com.longkai.stcarcontrol.st_exp.customView;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -39,7 +40,14 @@ public class VerticalRollingBar extends View {
 
     public VerticalRollingBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.VerticalRollingBar);
+        int style = array.getInteger(R.styleable.VerticalRollingBar_style, 0);
+
+        if (style == 0) {
+            init(context, colorStyle.green);
+        } else {
+            init(context, colorStyle.blue);
+        }
     }
 
     public synchronized void setValue(float value){
@@ -47,20 +55,29 @@ public class VerticalRollingBar extends View {
         this.invalidate();
     }
 
-    private void init(Context context){
+    private void init(Context context, colorStyle style){
         mPaint = new Paint();
         mRectPaint = new Paint();
         Resources resources = context.getResources();
+        switch (style){
+            case green:
+                mRectPaint.setColor(Color.GREEN);
+                pin = BitmapFactory.decodeResource(resources, R.mipmap.ic_verticalbar_green_pin);
+                break;
+            case blue:
+                mRectPaint.setColor(0xff44A6CD);
+                pin = BitmapFactory.decodeResource(resources, R.mipmap.ic_verticalbar_red_pin);
+                break;
+        }
         backBar = BitmapFactory.decodeResource(resources, R.mipmap.ic_verticalbar_back);
         scaleBar = BitmapFactory.decodeResource(resources, R.mipmap.ic_verticalbar_scale_down);
-        pin = BitmapFactory.decodeResource(resources, R.mipmap.ic_verticalbar_green_pin);
         mTextPaint = new TextPaint();
         mTextPaint.setTextSize(20);
-        mTextPaint.setColor(Color.GREEN);
+        mTextPaint.setColor(Color.WHITE);
         backgroundWidth = backBar.getWidth();
         backgroundheight = backBar.getHeight();
         zeroPoint = pin.getHeight()/2;
-        mRectPaint.setColor(Color.GREEN);
+
     }
 
     @Override
@@ -74,7 +91,10 @@ public class VerticalRollingBar extends View {
                 backgroundWidth + intervalDistance,
                 tmpfloat,
                 mPaint);
-        canvas.drawRect(0, tmpfloat + pin.getHeight() /2 , backgroundWidth, backgroundheight + pin.getHeight() /2, mRectPaint);
+        canvas.drawRect(0, tmpfloat + pin.getHeight() /2 ,
+                backgroundWidth,
+                backgroundheight + pin.getHeight() /2,
+                mRectPaint);
         //draw text
         canvas.drawText(String.valueOf(value),
                 backgroundWidth + intervalDistance + pin.getWidth(),
@@ -86,5 +106,10 @@ public class VerticalRollingBar extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(backgroundWidth + pin.getWidth() + intervalDistance + 70, backgroundheight + pin.getHeight() );
+    }
+
+    private enum colorStyle {
+        green,
+        blue
     }
 }

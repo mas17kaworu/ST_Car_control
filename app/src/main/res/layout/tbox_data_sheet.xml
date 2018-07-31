@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <TextView
         android:id="@+id/tv_vcu_tbox_zhengche"
         android:layout_marginStart="170dp"
@@ -21,8 +22,8 @@
         android:textSize="20sp"/>
 
     <ImageView
-        android:layout_width="600dp"
-        android:layout_height="300dp"
+        android:layout_width="800dp"
+        android:layout_height="400dp"
         android:src="@mipmap/ic_vcu_tbox_form"
         android:layout_centerInParent="true"/>
 </RelativeLayout>

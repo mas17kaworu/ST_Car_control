@@ -16,6 +16,9 @@ import com.longkai.stcarcontrol.st_exp.Interface.TboxStateChange;
 import com.longkai.stcarcontrol.st_exp.R;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -31,14 +34,22 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
     private GifImageView gif_view_send;
     private TboxStateChange tboxStateChange;
 
+    private HashSet<TextView> sheetTextViews = new HashSet<>();
+    private View dataSheetLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_vcu_tbox, container, false);
         tvZhengche = (TextView) mView.findViewById(R.id.tv_vcu_tbox_zhengche);
+        tvZhengche.setOnClickListener(this);
         tvDianji = (TextView) mView.findViewById(R.id.tv_vcu_tbox_dianji);
+        tvDianji.setOnClickListener(this);
         gif_view_send = (GifImageView) mView.findViewById(R.id.gifv_tbox);
+        dataSheetLayout = mView.findViewById(R.id.layout_tbox_sheet);
+        sheetTextViews.add(tvZhengche);
+        sheetTextViews.add(tvDianji);
 
         chooseTV(tvZhengche);
         return mView;
@@ -52,14 +63,31 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()){
+            case R.id.tv_vcu_tbox_zhengche:
+                chooseTV((TextView) v);
+                break;
+            case R.id.tv_vcu_tbox_dianji:
+                chooseTV((TextView) v);
+                break;
+        }
     }
 
     private void chooseTV(TextView tv){
-        tv.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG);
-        tv.getPaint().setFakeBoldText(true);
-        tv.setTextColor(0xff5cacee);
-        tv.postInvalidate();
+        for (TextView textView : sheetTextViews){
+            if (textView.hashCode() == tv.hashCode()){
+                textView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+                textView.getPaint().setFakeBoldText(true);
+                textView.setTextColor(0xff5cacee);
+                textView.postInvalidate();
+            } else {
+                textView.getPaint().setFlags(0);
+                textView.getPaint().setFakeBoldText(false);
+                textView.setTextColor(0xffffffff);
+                textView.postInvalidate();
+            }
+        }
+
     }
 
     @Override
@@ -73,29 +101,41 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
         switch (state){
             case DateTime:
             case DataCollect:
+                dataSheetLayout.setVisibility(View.VISIBLE);
+                releaseGifView();
                 break;
             case DataStore:
                 loadGifToMainView(R.mipmap.gif_tbox_data_store);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case DataTransport:
                 loadGifToMainView(R.mipmap.gif_tbox_data_transport);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case DataResend:
                 loadGifToMainView(R.mipmap.gif_tbox_resend);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case Register:
 
                 break;
             case Individual:
                 loadGifToMainView(R.mipmap.gif_tbox_individual);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case RemoteControl:
                 loadGifToMainView(R.mipmap.gif_tbox_data_remote);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case MailAndPhone:
                 loadGifToMainView(R.mipmap.gif_tbox_mail_phone);
+                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
         }
+    }
+
+    public TboxStateChange getController(){
+        return tboxStateChange;
     }
 
     private void loadGifToMainView(int resID){
@@ -103,6 +143,14 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
             GifDrawable gifDrawable = new GifDrawable(getResources(), resID);
             gif_view_send.setImageDrawable(gifDrawable);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void releaseGifView(){
+        try {
+            gif_view_send.setImageDrawable(null);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

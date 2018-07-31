@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
+import com.longkai.stcarcontrol.st_exp.Enum.TboxStateEnum;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
 import com.longkai.stcarcontrol.st_exp.adapter.HorizontalListViewAdapter;
@@ -139,18 +140,25 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         vcuState = state;
         switch (vcuState){
             case MCU:
-            case BMS:
             case HomeScreen:
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
+                break;
+            case BMS:
+                findViewById(R.id.rl_drawer_bms).setVisibility(View.VISIBLE);
+                findViewById(R.id.rl_drawer_vcu).setVisibility(View.INVISIBLE);
+                findViewById(R.id.rl_drawer_tbox).setVisibility(View.INVISIBLE);
+                drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
                 break;
             case VCU:
                 findViewById(R.id.rl_drawer_vcu).setVisibility(View.VISIBLE);
                 findViewById(R.id.rl_drawer_tbox).setVisibility(View.INVISIBLE);
+                findViewById(R.id.rl_drawer_bms).setVisibility(View.INVISIBLE);
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
                 break;
             case TBox:
                 findViewById(R.id.rl_drawer_vcu).setVisibility(View.INVISIBLE);
                 findViewById(R.id.rl_drawer_tbox).setVisibility(View.VISIBLE);
+                findViewById(R.id.rl_drawer_bms).setVisibility(View.INVISIBLE);
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
                 break;
         }
@@ -204,6 +212,22 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
             public void onClick(View v) {
                 setSelect(1);
                 showDrawerLayout();
+
+                //only for test
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mVCUVCUCFragment.getController().xiaDianState2();
+                    }
+                }, 500);
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mVCUVCUCFragment.getController().xiaDianState3();
+                    }
+                }, 2000);
             }
         });
 
@@ -224,6 +248,77 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         });
 
 
+        findViewById(R.id.btn_tbox_date_time).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vcuTboxFragment.getController().changeTo(TboxStateEnum.DateTime);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_tbox_data_collect).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vcuTboxFragment.getController().changeTo(TboxStateEnum.DataCollect);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_tbox_data_store).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vcuTboxFragment.getController().changeTo(TboxStateEnum.DataStore);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_tbox_data_transpot).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vcuTboxFragment.getController().changeTo(TboxStateEnum.DataTransport);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_tbox_data_resend).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vcuTboxFragment.getController().changeTo(TboxStateEnum.DataResend);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_tbox_individual).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vcuTboxFragment.getController().changeTo(TboxStateEnum.Individual);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_tbox_register).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vcuTboxFragment.getController().changeTo(TboxStateEnum.Register);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_tbox_remote_control).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vcuTboxFragment.getController().changeTo(TboxStateEnum.RemoteControl);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_tbox_mail_and_phone).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vcuTboxFragment.getController().changeTo(TboxStateEnum.MailAndPhone);
+                showDrawerLayout();
+            }
+        });
     }
 
     private void showDrawerLayout() {

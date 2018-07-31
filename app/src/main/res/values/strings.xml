@@ -28,4 +28,12 @@
     <string name="tbox_register">注册与激活</string>
     <string name="tbox_remote_control">远程控制</string>
     <string name="tbox_mail_and_phone">电话与短信功能</string>
+    
+    <string name="bms_battery">Battery</string>
+    <string name="bms_insulation_monitor">Insulation Monitor</string>
+    <string name="bms_connect_monitor">Connection detector</string>
+
+    <string name="bms_cell_no">No.</string>
+    <string name="bms_cell_voltage">Voltage</string>
+    <string name="bms_cell_balance">Balance</string>
 </resources>
