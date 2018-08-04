@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/homefragment_gray_background">
+    <TextView
+        android:id="@+id/tv_infot_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Engine Sound"
+        android:textSize="30sp"
+        android:textColor="#ffffff"
+        android:textStyle="italic"
+        app:layout_marginStartPercent="5%"
+        app:layout_marginTopPercent="5%"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/infortainment_change_engine_sound_dsc"
+        android:textSize="15sp"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/tv_infot_title"
+        android:layout_alignStart="@+id/tv_infot_title"
+        android:layout_marginTop="10dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_infot_engine_s_a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/infot_sound_click"
+                android:background="@mipmap/ic_infot_sound_a"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Engine Sound A"
+                android:textSize="15sp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_below="@+id/iv_infot_engine_s_a"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="@dimen/infot_sound_interval"
+            android:layout_height="match_parent"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_infot_engine_s_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/infot_sound_click"
+                android:background="@mipmap/ic_infot_sound_b"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Engine Sound B"
+                android:textSize="15sp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_below="@+id/iv_infot_engine_s_b"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="@dimen/infot_sound_interval"
+            android:layout_height="match_parent"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_infot_engine_s_c"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/infot_sound_click"
+                android:background="@mipmap/ic_infot_sound_c"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Engine Sound C"
+                android:textSize="15sp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_below="@+id/iv_infot_engine_s_c"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="@dimen/infot_sound_interval"
+            android:layout_height="match_parent"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_infot_engine_s_d"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/infot_sound_click"
+                android:background="@mipmap/ic_infot_sound_d"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Engine Sound D"
+                android:textSize="15sp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_below="@+id/iv_infot_engine_s_d"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    <SeekBar
+        android:id="@+id/seekBar_infot_sound"
+        android:thumb="@mipmap/ic_infot_sound_voice_thumb"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="72dp"
+        android:background="@mipmap/ic_infot_sound_voice_back" />
+
+</android.support.percent.PercentRelativeLayout>

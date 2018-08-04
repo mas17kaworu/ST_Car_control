@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/ic_fragment_background">
@@ -13,6 +15,57 @@
         android:textStyle="italic"
         android:layout_marginStart="50dp"
         android:layout_marginTop="20dp"/>
+    <LinearLayout
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <android.support.percent.PercentRelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/ic_torque_acc_back">
+            <com.longkai.stcarcontrol.st_exp.customView.TorqueVerticalbar
+                android:id="@+id/vrb_torque_acc"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                custom:layout_marginStartPercent="3%"
+                custom:layout_marginTopPercent="8%"
+                custom:style="blue"/>
+        </android.support.percent.PercentRelativeLayout>
 
+        <android.support.percent.PercentRelativeLayout
+            android:layout_marginStart="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/ic_torque_break_back">
+            <com.longkai.stcarcontrol.st_exp.customView.TorqueVerticalbar
+                android:id="@+id/vrb_torque_break"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                custom:layout_marginStartPercent="5%"
+                custom:layout_marginTopPercent="8%"
+                custom:style="blue"/>
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                custom:layout_marginStartPercent="17%"
+                custom:layout_marginTopPercent="23%"
+                android:src="@mipmap/ic_torque_break_light"/>
+        </android.support.percent.PercentRelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginStart="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_torque_torquirement"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_torque_requirement_back_o"/>
+        </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

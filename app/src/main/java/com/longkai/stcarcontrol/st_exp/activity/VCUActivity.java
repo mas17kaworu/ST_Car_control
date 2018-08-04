@@ -220,14 +220,18 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mVCUVCUCFragment.getController().xiaDianState2();
+                        if (mVCUVCUCFragment !=null){
+                            mVCUVCUCFragment.getController().xiaDianState2();
+                        }
                     }
                 }, 500);
 
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mVCUVCUCFragment.getController().xiaDianState3();
+                        if (mVCUVCUCFragment !=null){
+                            mVCUVCUCFragment.getController().xiaDianState3();
+                        }
                     }
                 }, 2000);
             }

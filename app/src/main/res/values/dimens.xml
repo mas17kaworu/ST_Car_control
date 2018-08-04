@@ -5,4 +5,5 @@
     <dimen name="bms_cell_item_horizontal_interval">16dp</dimen>
     <dimen name="bms_cell_item_vertical_interval">8dp</dimen>
     <dimen name="bms_battery_temperature_bar_interval">20dp</dimen>
+    <dimen name="infot_sound_interval">60dp</dimen>
 </resources>

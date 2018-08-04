@@ -21,16 +21,17 @@ import com.longkai.stcarcontrol.st_exp.R;
 
 public class VerticalRollingBar extends View {
 
-    private Bitmap backBar;
-    private Bitmap pin;
-    private Bitmap scaleBar;
-    private Paint mPaint;
-    private Paint mRectPaint;
+    protected Bitmap backBar;
+    protected Bitmap pin;
+    protected Bitmap scaleBar;
+    protected Paint mPaint;
+    protected Paint mRectPaint;
 
-    private TextPaint mTextPaint;
-    int backgroundWidth, backgroundheight;
-    int zeroPoint;
-    int intervalDistance = 5;
+    protected TextPaint mTextPaint;
+    protected int backgroundWidth, backgroundHeight;
+    protected int scaleWidth, scaleHeight;
+    protected int zeroPoint;
+    protected int intervalDistance = 5;
     private float value = 30.0f;
     private float tmpfloat;
 
@@ -55,7 +56,7 @@ public class VerticalRollingBar extends View {
         this.invalidate();
     }
 
-    private void init(Context context, colorStyle style){
+    protected void init(Context context, colorStyle style){
         mPaint = new Paint();
         mRectPaint = new Paint();
         Resources resources = context.getResources();
@@ -75,40 +76,58 @@ public class VerticalRollingBar extends View {
         mTextPaint.setTextSize(20);
         mTextPaint.setColor(Color.WHITE);
         backgroundWidth = backBar.getWidth();
-        backgroundheight = backBar.getHeight();
+        backgroundHeight = backBar.getHeight();
         zeroPoint = pin.getHeight()/2;
 
     }
 
+    //// TODO: 2018/8/4 torque need setPercent function
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawBitmap(backBar, 0, zeroPoint, mPaint);
-        canvas.drawBitmap(scaleBar, backgroundWidth + intervalDistance, zeroPoint, mPaint);
-        tmpfloat = backgroundheight - ((value - MIN_VALUE) * backgroundheight / (MAX_VALUE - MIN_VALUE));
+        if (this instanceof TorqueVerticalbar){
+            canvas.drawBitmap(scaleBar, 0, 0, mPaint);
+            canvas.drawBitmap(backBar, scaleWidth + intervalDistance, zeroPoint, mPaint);
+            tmpfloat = backgroundHeight - ((value - MIN_VALUE) * backgroundHeight / (MAX_VALUE - MIN_VALUE));
 
-        canvas.drawBitmap(pin,
-                backgroundWidth + intervalDistance,
-                tmpfloat,
-                mPaint);
-        canvas.drawRect(0, tmpfloat + pin.getHeight() /2 ,
-                backgroundWidth,
-                backgroundheight + pin.getHeight() /2,
-                mRectPaint);
-        //draw text
-        canvas.drawText(String.valueOf(value),
-                backgroundWidth + intervalDistance + pin.getWidth(),
-                tmpfloat + pin.getHeight(),
-                mTextPaint);
+
+            canvas.drawRect(scaleWidth + intervalDistance, tmpfloat,
+                    scaleWidth + backgroundWidth + intervalDistance,
+                    backgroundHeight + zeroPoint,
+                    mRectPaint);
+
+        }else {
+            canvas.drawBitmap(backBar, 0, zeroPoint, mPaint);
+            canvas.drawBitmap(scaleBar, backgroundWidth + intervalDistance, zeroPoint, mPaint);
+            tmpfloat = backgroundHeight - ((value - MIN_VALUE) * backgroundHeight / (MAX_VALUE - MIN_VALUE));
+
+            canvas.drawBitmap(pin,
+                    backgroundWidth + intervalDistance,
+                    tmpfloat,
+                    mPaint);
+            canvas.drawRect(0, tmpfloat + pin.getHeight() / 2,
+                    backgroundWidth,
+                    backgroundHeight + pin.getHeight() / 2,
+                    mRectPaint);
+            //draw text
+            canvas.drawText(String.valueOf(value),
+                    backgroundWidth + intervalDistance + pin.getWidth(),
+                    tmpfloat + pin.getHeight(),
+                    mTextPaint);
+        }
     }
 
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(backgroundWidth + pin.getWidth() + intervalDistance + 70, backgroundheight + pin.getHeight() );
+        if (this instanceof TorqueVerticalbar) {
+            setMeasuredDimension(scaleWidth + intervalDistance + backgroundWidth, scaleHeight);
+        } else {
+            setMeasuredDimension(backgroundWidth + pin.getWidth() + intervalDistance + 70, backgroundHeight + pin.getHeight());
+        }
     }
 
-    private enum colorStyle {
+    protected enum colorStyle {
         green,
         blue
     }

@@ -31,6 +31,7 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
     private void initUI(){
         findViewById(R.id.btn_choose_function).setOnClickListener(this);
         findViewById(R.id.btn_choose_VCU).setOnClickListener(this);
+        findViewById(R.id.btn_choose_entertainment).setOnClickListener(this);
     }
 
     @Override
@@ -43,6 +44,10 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
             case R.id.btn_choose_VCU:
                 Intent intent2 = new Intent(this, VCUActivity.class);
                 startActivity(intent2);
+                break;
+            case R.id.btn_choose_entertainment:
+                Intent intent3 = new Intent(this, InfotainmentActivity.class);
+                startActivity(intent3);
                 break;
         }
     }

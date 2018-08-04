@@ -43,6 +43,10 @@
             android:name=".activity.VCUActivity"
             android:screenOrientation="landscape">
         </activity>
+        <activity
+            android:name=".activity.InfotainmentActivity"
+            android:screenOrientation="landscape">
+        </activity>
         <service
             android:name=".communication.CommunicationServer"
             android:enabled="true">
