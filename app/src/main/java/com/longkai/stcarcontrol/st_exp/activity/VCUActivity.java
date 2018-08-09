@@ -134,7 +134,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         });
 
         drawerLayoutVCU = (DrawerLayout) findViewById(R.id.drawerLayout_vcu);
-        drawerLayoutVCU.setScrimColor(Color.TRANSPARENT);//去除阴影
+//        drawerLayoutVCU.setScrimColor(Color.TRANSPARENT);//去除阴影
         initDrawerLayout();
     }
 
@@ -164,21 +164,6 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
                 break;
         }
-        /*final List<String> list = new ArrayList<String>();
-        list.add("网易");
-        list.add("腾讯");
-        list.add("新浪");
-        list.add("搜狐");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
-        lvDrawerVCU.setAdapter(adapter);
-        lvDrawerVCU.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showDrawerLayout();
-            }
-        });*/
-
-
     }
 
     private void initDrawerLayout(){
@@ -502,5 +487,12 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         BMS,
         MCU,
         TBox
+    }
+
+    public void showDiagram(){
+        //homepage for now
+        ivDiagram.setImageResource(R.mipmap.ic_vcu_diagram_homepage);
+        ivDiagram.setVisibility(View.VISIBLE);
+        ivDiagram.postInvalidate();
     }
 }
