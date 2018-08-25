@@ -18,7 +18,7 @@
         android:layout_centerVertical="true"
         android:src="@mipmap/ic_vcu_mcu_car"
         android:layout_alignParentRight="true"/>
-    <com.longkai.stcarcontrol.st_exp.customView.DashboardView
+    <com.longkai.stcarcontrol.st_exp.customView.dashboard.DashboardView
         android:id="@+id/dashboard_mcu_speed"
         android:layout_marginStart="117dp"
         android:layout_marginTop="110dp"

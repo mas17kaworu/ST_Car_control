@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginTop="178dp">
-        <com.longkai.stcarcontrol.st_exp.customView.VoltageDashboard
+        <com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard
             android:id="@+id/dashboard_bms_main_jdq_front"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="228dp"
         android:layout_marginTop="178dp">
-        <com.longkai.stcarcontrol.st_exp.customView.VoltageDashboard
+        <com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard
             android:id="@+id/dashboard_bms_main_jdq_behind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="392dp"
         android:layout_marginTop="178dp">
-    <com.longkai.stcarcontrol.st_exp.customView.VoltageDashboard
+    <com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard
         android:id="@+id/dashboard_bms_minus_jdq_behind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -115,25 +115,44 @@
         android:layout_marginStart="-5dp"
         android:layout_alignTop="@+id/iv_vcu_bms_battery_voltage_dashboard_icon"
         android:layout_marginTop="15dp"
-        android:text="电池电压"/>
+        android:text="Battery"/>
     <RelativeLayout
         android:id="@+id/rl_dashboard_bms_battery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="602dp"
         android:layout_marginTop="178dp">
-        <com.longkai.stcarcontrol.st_exp.customView.VoltageDashboard
-            android:id="@+id/dashboard_bms_battery"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
+            android:layout_height="match_parent">
+            <com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard
+                android:id="@+id/dashboard_bms_battery_voltage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTextPress"
+                android:text="Total voltage"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/dashboard_bms_battery_voltage"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_marginStart="150dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorTextPress"
-            android:text="电池总电压"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/dashboard_bms_battery"
-            />
+            android:layout_height="wrap_content">
+            <com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard
+                android:id="@+id/dashboard_bms_battery_current"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTextPress"
+                android:text="Total current"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/dashboard_bms_battery_current"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <RelativeLayout

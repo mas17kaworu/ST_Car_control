@@ -146,8 +146,8 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
             @Override
             public void run() {
                 tvV1.setText(decimalFormat.format(48.f+randomV1) + "V");
-                tvV2.setText(decimalFormat.format(randomV1) + "V");
-                tvV3.setText(decimalFormat.format(5 + randomV1) + "V");
+                tvV2.setText(decimalFormat.format(randomV2) + "V");
+                tvV3.setText(decimalFormat.format(5 + randomV3) + "V");
                 tvRn.setText((50000 + randomRn) + "Ω");
                 tvRp.setText((50000 + randomRp) + "Ω");
             }

@@ -57,14 +57,9 @@
             android:layout_marginStart="50dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <ImageView
+            <com.longkai.stcarcontrol.st_exp.customView.dashboard.TorqueDashboard
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_torque_torquirement"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_torque_requirement_back_o"/>
+                android:layout_height="wrap_content"/>
         </RelativeLayout>
     </LinearLayout>
 

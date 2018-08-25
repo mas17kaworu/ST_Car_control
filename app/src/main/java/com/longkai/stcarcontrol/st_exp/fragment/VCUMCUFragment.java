@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.longkai.stcarcontrol.st_exp.R;
-import com.longkai.stcarcontrol.st_exp.customView.DashboardView;
+import com.longkai.stcarcontrol.st_exp.customView.dashboard.DashboardView;
 
 /**
  * Created by Administrator on 2018/5/20.

@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.customView;
+package com.longkai.stcarcontrol.st_exp.customView.dashboard;
 
 import android.content.Context;
 import android.content.res.Resources;
