@@ -1,24 +1,21 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.TextViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.longkai.stcarcontrol.st_exp.Enum.TboxStateEnum;
-import com.longkai.stcarcontrol.st_exp.Interface.TboxStateChange;
+import com.longkai.stcarcontrol.st_exp.Interface.StateChange;
 import com.longkai.stcarcontrol.st_exp.R;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -27,12 +24,12 @@ import pl.droidsonroids.gif.GifImageView;
  * Created by Administrator on 2018/5/20.
  */
 
-public class VCUTboxFragment extends Fragment implements View.OnClickListener, TboxStateChange {
+public class VCUTboxFragment extends Fragment implements View.OnClickListener, StateChange<TboxStateEnum> {
     private View mView;
-    private TextView tvZhengche, tvDianji;
+    private TextView tvZhengche, tvDianji, tvJizhi, tvGuzhang;
 
     private GifImageView gif_view_send;
-    private TboxStateChange tboxStateChange;
+    private StateChange tboxStateChange;
 
     private HashSet<TextView> sheetTextViews = new HashSet<>();
     private View dataSheetLayout;
@@ -46,11 +43,13 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
         tvZhengche.setOnClickListener(this);
         tvDianji = (TextView) mView.findViewById(R.id.tv_vcu_tbox_dianji);
         tvDianji.setOnClickListener(this);
+        tvJizhi = (TextView) mView.findViewById(R.id.tv_vcu_tbox_jizhi);
+        tvJizhi.setOnClickListener(this);
+        tvGuzhang = (TextView) mView.findViewById(R.id.tv_vcu_tbox_guzhangliebiao);
+        tvGuzhang.setOnClickListener(this);
         gif_view_send = (GifImageView) mView.findViewById(R.id.gifv_tbox);
         dataSheetLayout = mView.findViewById(R.id.layout_tbox_sheet);
-        sheetTextViews.add(tvZhengche);
-        sheetTextViews.add(tvDianji);
-
+        sheetTextViews.addAll(Arrays.asList(tvDianji, tvZhengche, tvJizhi, tvGuzhang));
         chooseTV(tvZhengche);
         return mView;
     }
@@ -65,9 +64,9 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_vcu_tbox_zhengche:
-                chooseTV((TextView) v);
-                break;
             case R.id.tv_vcu_tbox_dianji:
+            case R.id.tv_vcu_tbox_jizhi:
+            case R.id.tv_vcu_tbox_guzhangliebiao:
                 chooseTV((TextView) v);
                 break;
         }
@@ -134,7 +133,7 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, T
         }
     }
 
-    public TboxStateChange getController(){
+    public StateChange getController(){
         return tboxStateChange;
     }
 

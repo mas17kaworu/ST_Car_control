@@ -1,6 +1,5 @@
 package com.longkai.stcarcontrol.st_exp.activity;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
+import com.longkai.stcarcontrol.st_exp.Enum.BMSMonitorEnum;
 import com.longkai.stcarcontrol.st_exp.Enum.TboxStateEnum;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
@@ -26,6 +26,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSMonitorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUChargeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUGYHLSDFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUTorqueFragment;
@@ -36,7 +37,6 @@ import com.longkai.stcarcontrol.st_exp.fragment.VCUTboxFragment;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
@@ -57,6 +57,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     private VCUTboxFragment vcuTboxFragment;
     private VCUChargeFragment vcuChargeFragment;
     private VCUTorqueFragment vcuTorqueFragment;
+    private VCUBMSMonitorFragment vcubmsMonitorFragment;
 
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
@@ -234,6 +235,32 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 setSelect(7);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_drawer_bms_battery).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSelect(2);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_drawer_bms_connection_detector).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSelect(9);
+                vcubmsMonitorFragment.getController().changeTo(BMSMonitorEnum.Connection);
+                showDrawerLayout();
+            }
+        });
+
+        findViewById(R.id.btn_drawer_bms_insulation_monitor).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSelect(9);
+                vcubmsMonitorFragment.getController().changeTo(BMSMonitorEnum.Insulation);
                 showDrawerLayout();
             }
         });
@@ -447,6 +474,11 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcuTorqueFragment);
                 break;
+            case 9:
+                if (vcubmsMonitorFragment == null){
+                    vcubmsMonitorFragment = new VCUBMSMonitorFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, vcubmsMonitorFragment);
             default:
                 break;
 

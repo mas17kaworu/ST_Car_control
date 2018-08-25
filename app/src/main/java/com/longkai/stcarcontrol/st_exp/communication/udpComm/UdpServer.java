@@ -108,7 +108,7 @@ public class UdpServer implements ConnectionInterface {
                         Log.i(TAG,"Got UDP package length = "+ temp.length);
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
             }
         }
