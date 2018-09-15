@@ -20,6 +20,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,7 +41,7 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
     private int randomRp;
     private int randomRn;
     private DecimalFormat decimalFormat;
-    private final ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
 
     @Nullable
     @Override
@@ -53,6 +54,10 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
         tvV3 = (TextView) mView.findViewById(R.id.tv_bms_monitor_voltage3);
         tvRn = (TextView) mView.findViewById(R.id.tv_bms_monitor_rn);
         tvRp = (TextView) mView.findViewById(R.id.tv_bms_monitor_rp);
+        if (threadPool.isShutdown()) {
+            threadPool = Executors.newSingleThreadScheduledExecutor();
+        }
+        threadPool.scheduleAtFixedRate(randomGenerater, 0, 500, TimeUnit.MILLISECONDS);
         return mView;
     }
 
@@ -60,7 +65,7 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
     public void onResume() {
         super.onResume();
         ready = true;
-        threadPool.scheduleAtFixedRate(randomGenerater, 0, 500, TimeUnit.MILLISECONDS);
+
         decimalFormat=new DecimalFormat("0.00");
         changeTo(presentState); //must behind ready =true
 
@@ -70,8 +75,13 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
     @Override
     public void onPause() {
         super.onPause();
-        threadPool.shutdown();
         ready = false;
+    }
+
+    @Override
+    public void onDestroy() {
+        threadPool.shutdown();
+        super.onDestroy();
     }
 
     @Override

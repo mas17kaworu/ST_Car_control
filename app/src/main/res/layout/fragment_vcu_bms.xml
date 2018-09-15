@@ -141,10 +141,17 @@
             android:layout_marginStart="150dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard
                 android:id="@+id/dashboard_bms_battery_current"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_bms_dashboard_current_a"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="48dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

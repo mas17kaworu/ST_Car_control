@@ -10,6 +10,81 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 
+    <RelativeLayout
+        android:visibility="invisible"
+        android:layout_marginStart="500dp"
+        android:layout_marginTop="550dp"
+        android:id="@+id/rl_tbox_phone_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/ic_tbox_phone_number_editor"
+            android:textColor="@color/colorTextGreenSelected"
+            android:inputType="numberDecimal"/>
+
+        <ImageView
+            android:layout_marginStart="230dp"
+            android:id="@+id/iv_tbox_phone_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_tbox_phone_message"/>
+
+        <ImageView
+            android:id="@+id/iv_tbox_phone_call"
+            android:layout_toEndOf="@+id/iv_tbox_phone_message"
+            android:layout_marginStart="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_tbox_phone_call"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_tbox_remote_control_break"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="700dp"
+        android:layout_marginTop="550dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_tbox_remote_control_break"/>
+        <ImageView
+            android:layout_marginStart="100dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_tbox_remote_control_red"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
+            android:layout_marginStart="150dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_tbox_remote_control_gray"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        android:textSize="20sp"
+        android:textColor="#ffffff"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="50dp"/>
+    <TextView
+        android:id="@+id/tv_tbox_date_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2018.9.15 "
+        android:textSize="20sp"
+        android:textColor="#ffffff"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="70dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

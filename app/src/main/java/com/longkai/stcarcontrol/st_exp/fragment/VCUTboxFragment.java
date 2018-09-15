@@ -2,11 +2,14 @@ package com.longkai.stcarcontrol.st_exp.fragment;
 
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.longkai.stcarcontrol.st_exp.Enum.TboxStateEnum;
@@ -14,8 +17,13 @@ import com.longkai.stcarcontrol.st_exp.Interface.StateChange;
 import com.longkai.stcarcontrol.st_exp.R;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -26,13 +34,18 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class VCUTboxFragment extends Fragment implements View.OnClickListener, StateChange<TboxStateEnum> {
     private View mView;
-    private TextView tvZhengche, tvDianji, tvJizhi, tvGuzhang;
+    private TextView tvZhengche, tvDianji, tvJizhi, tvGuzhang, tvDateTime;
+
+    private RelativeLayout rlPhone, rlRemoteBreak;
 
     private GifImageView gif_view_send;
     private StateChange tboxStateChange;
 
     private HashSet<TextView> sheetTextViews = new HashSet<>();
     private View dataSheetLayout;
+
+    private ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
+    SimpleDateFormat simpleDateFormat;
 
     @Nullable
     @Override
@@ -47,17 +60,62 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, S
         tvJizhi.setOnClickListener(this);
         tvGuzhang = (TextView) mView.findViewById(R.id.tv_vcu_tbox_guzhangliebiao);
         tvGuzhang.setOnClickListener(this);
+
+        tvDateTime = (TextView) mView.findViewById(R.id.tv_tbox_date_time);
+
+        simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss");// HH:mm:ss
+
+
+
+        rlPhone = (RelativeLayout) mView.findViewById(R.id.rl_tbox_phone_message);
+        rlRemoteBreak = (RelativeLayout) mView.findViewById(R.id.rl_tbox_remote_control_break);
+
         gif_view_send = (GifImageView) mView.findViewById(R.id.gifv_tbox);
         dataSheetLayout = mView.findViewById(R.id.layout_tbox_sheet);
         sheetTextViews.addAll(Arrays.asList(tvDianji, tvZhengche, tvJizhi, tvGuzhang));
+
+        if (threadPool.isShutdown()){
+            threadPool = Executors.newSingleThreadScheduledExecutor();
+        }
+        threadPool.scheduleAtFixedRate(updateTimeThread, 0, 1000, TimeUnit.MILLISECONDS);
         chooseTV(tvZhengche);
+        changeTo(TboxStateEnum.DateTime);
         return mView;
     }
+
+    Date date = new Date(System.currentTimeMillis());
+    Thread updateTimeThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    date = new Date(System.currentTimeMillis());
+                    tvDateTime.setText(simpleDateFormat.format(date));
+                }
+            });
+
+        }
+    });
+
 
     @Override
     public void onResume() {
         super.onResume();
         tboxStateChange = this;
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        threadPool.shutdown();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
     }
 
     @Override
@@ -97,38 +155,35 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, S
 
     @Override
     public void changeTo(TboxStateEnum state) {
+        //clean
+        cleanWindow();
         switch (state){
             case DateTime:
             case DataCollect:
                 dataSheetLayout.setVisibility(View.VISIBLE);
-                releaseGifView();
                 break;
             case DataStore:
                 loadGifToMainView(R.mipmap.gif_tbox_data_store);
-                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case DataTransport:
                 loadGifToMainView(R.mipmap.gif_tbox_data_transport);
-                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case DataResend:
                 loadGifToMainView(R.mipmap.gif_tbox_resend);
-                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case Register:
-
+                loadGifToMainView(R.mipmap.gif_tbox_data_transport);
                 break;
             case Individual:
                 loadGifToMainView(R.mipmap.gif_tbox_individual);
-                dataSheetLayout.setVisibility(View.INVISIBLE);
                 break;
             case RemoteControl:
                 loadGifToMainView(R.mipmap.gif_tbox_data_remote);
-                dataSheetLayout.setVisibility(View.INVISIBLE);
+                rlRemoteBreak.setVisibility(View.VISIBLE);
                 break;
             case MailAndPhone:
                 loadGifToMainView(R.mipmap.gif_tbox_mail_phone);
-                dataSheetLayout.setVisibility(View.INVISIBLE);
+                rlPhone.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -152,5 +207,12 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, S
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void cleanWindow(){
+        rlPhone.setVisibility(View.INVISIBLE);
+        dataSheetLayout.setVisibility(View.INVISIBLE);
+        rlRemoteBreak.setVisibility(View.INVISIBLE);
+        releaseGifView();
     }
 }

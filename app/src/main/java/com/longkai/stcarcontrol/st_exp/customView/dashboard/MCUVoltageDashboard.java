@@ -11,39 +11,32 @@ import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.widget.RadioButton;
 
 import com.longkai.stcarcontrol.st_exp.R;
 
 import java.text.DecimalFormat;
 
 /**
- * Created by Administrator on 2018/8/25.
+ * Created by Administrator on 2018/8/26.
  */
 
-public class TorqueDashboard extends View {
-    private static final int FULL_ANGLE = 120;
+public class MCUVoltageDashboard extends View {
+    private static final int FULL_ANGLE = 300;
 
     private Bitmap background;
-    private Bitmap scaleBackGround;
     private Bitmap pin;
+    private Bitmap icon;
     private Paint mPaint;
     private TextPaint mTextPaint;
-    private float target_value_percent = 80; //0~100
+    private float target_value_percent = 0; //0~100
     private float present_value = 0;
     private View view;
     private DecimalFormat df;
 
-    private int leftStartPoint, radius;
-
-
     private static final float MIN_INTERVAL = 0.1f;
     private static final float MAX_VALUE = 32.0f;
     private static final float MIN_VALUE = 0f;
-
-
 
     private Thread refreshThread = new Thread(){
         @Override
@@ -68,7 +61,7 @@ public class TorqueDashboard extends View {
     int width;
     int height;
 
-    public TorqueDashboard(Context context, @Nullable AttributeSet attrs) {
+    public MCUVoltageDashboard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
@@ -76,9 +69,9 @@ public class TorqueDashboard extends View {
     private void init(Context context){
         mPaint = new Paint();
         Resources resources = context.getResources();
-        background = BitmapFactory.decodeResource(resources, R.mipmap.ic_torque_requirement_back_o);
-        pin = BitmapFactory.decodeResource(resources, R.mipmap.ic_torque_requirement_pin);
-        scaleBackGround = BitmapFactory.decodeResource(resources, R.mipmap.ic_torque_torquirement);
+        background = BitmapFactory.decodeResource(resources, R.mipmap.ic_mcu_voltage_dashboard_back);
+        pin = BitmapFactory.decodeResource(resources, R.mipmap.ic_mcu_voltage_dashboard_pin);
+        icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_mcu_voltage_dashboard_icon);
         width = background.getWidth();
         height = background.getHeight();
         matrix = new Matrix();
@@ -86,32 +79,25 @@ public class TorqueDashboard extends View {
         mTextPaint.setTextSize(30);
         mTextPaint.setColor(Color.GREEN);
 
-        radius = width/2;
-        leftStartPoint = (int)(radius - radius / 1.41421d);
-
         df=new DecimalFormat("0.0");
         view = this;
         refreshThread.start();
     }
 
-    public void setPercent(float value){
+    public void setValue(float value) {
         target_value_percent = value;
     }
 
-    double angle;
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawBitmap(scaleBackGround,0,0,mPaint);
-        angle = 135d - present_value / 10d * 9d;
-        angle = Math.toRadians(angle);
-//        Log.i("LK test", "test " + (radius * (Math.sin(angle) - Math.sin(Math.toRadians(45)))));
-        canvas.drawBitmap(pin, (int)(leftStartPoint + ((radius - leftStartPoint) + radius * Math.cos(angle)) - pin.getWidth()/2),
-                (int)(height - pin.getHeight() - (radius * (Math.sin(angle) - Math.sin(Math.toRadians(45))))),
-                mPaint);
         canvas.drawBitmap(background,0,0,mPaint);
-//        canvas.drawText(df.format( (int)((MAX_VALUE-MIN_VALUE) * present_value / 100)) + "v",
-//                width/2.f - 30, height/2.f + 60, mTextPaint);
+        matrix.postRotate((present_value * FULL_ANGLE / 100) - 150, pin.getWidth()/2, pin.getHeight());
+        matrix.postTranslate((width - pin.getWidth()) / 2, height/2-pin.getHeight());
+
+        canvas.drawBitmap(pin, matrix, mPaint);
+        matrix.reset();
+        canvas.drawBitmap(icon, (width - icon.getWidth()) / 2, (height - icon.getHeight()) / 2,mPaint );
     }
 
     @Override
