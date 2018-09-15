@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/ic_fragment_background">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="高压检测和绝缘检测"
+        android:textSize="30sp"
+        android:textColor="#ffffff"
+        android:textStyle="italic"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_vcu_gyjyjc_back"
+        android:layout_below="@+id/internal_rl_gyjc1"
+        android:layout_centerHorizontal="true" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_marginStart="403dp"
+        android:id="@+id/iv_vcu_gyjc_jdq1"
+        android:src="@mipmap/ic_vcu_dianlu_jdq_on" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="继电器1"
+        android:textColor="@color/colorTextPress"
+        android:layout_below="@+id/iv_vcu_gyjc_jdq1"
+        android:layout_alignEnd="@+id/iv_vcu_gyjc_jdq1" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="260dp"
+        android:layout_marginStart="403dp"
+        android:id="@+id/iv_vcu_gyjc_jdq2"
+        android:src="@mipmap/ic_vcu_dianlu_jdq_on" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="继电器2"
+        android:textColor="@color/colorTextPress"
+        android:layout_below="@+id/iv_vcu_gyjc_jdq2"
+        android:layout_alignEnd="@+id/iv_vcu_gyjc_jdq2" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="476dp"
+        android:layout_marginStart="403dp"
+        android:id="@+id/iv_vcu_gyjc_jdq3"
+        android:src="@mipmap/ic_vcu_dianlu_jdq_on" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="继电器3"
+        android:textColor="@color/colorTextPress"
+        android:layout_below="@+id/iv_vcu_gyjc_jdq3"
+        android:layout_alignEnd="@+id/iv_vcu_gyjc_jdq3" />
+
+    <RelativeLayout
+        android:id="@+id/internal_rl_gyjc1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="330dp"
+        android:layout_marginTop="150dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_vcu_gyjc_v_back"/>
+        <TextView
+            android:id="@+id/tv_gyjc1"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextGreenSelected"
+            android:text="0V"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextPress"
+        android:text="高压监测点1"
+        android:layout_alignBottom="@+id/internal_rl_gyjc1"
+        android:layout_alignEnd="@+id/internal_rl_gyjc1"
+        android:layout_marginEnd="62dp" />
+
+    <RelativeLayout
+        android:id="@+id/internal_rl_gyjc2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="670dp"
+        android:layout_marginTop="150dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_vcu_gyjc_v_back"/>
+        <TextView
+            android:id="@+id/tv_gyjc2"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextGreenSelected"
+            android:text="0V"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextPress"
+        android:text="高压监测点2"
+        android:layout_alignBottom="@+id/internal_rl_gyjc2"
+        android:layout_alignEnd="@+id/internal_rl_gyjc2"
+        android:layout_marginEnd="62dp" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_vcu_chart"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_toRightOf="@+id/internal_rl_gyjc2"
+        android:layout_alignBottom="@+id/internal_rl_gyjc2" />
+
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_vcu_circle"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/internal_rl_gyjc1"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

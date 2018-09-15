@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/ic_fragment_background">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BMS"
+        android:textSize="30sp"
+        android:textColor="#ffffff"
+        android:textStyle="italic"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"/>
+
+    <ImageView
+        android:id="@+id/iv_bms_monitor_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="130dp"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/ic_bms_monitor_insullation_1"/>
+
+
+
+    <RelativeLayout
+        android:id="@+id/internal_rl_monitor_voltage1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="250dp"
+        android:layout_marginTop="470dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_vcu_gyjc_v_back"/>
+        <TextView
+            android:id="@+id/tv_bms_monitor_voltage1"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextGreenSelected"
+            android:text="0V"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextPress"
+        android:text="Voltage"
+        android:layout_alignBottom="@+id/internal_rl_monitor_voltage1"
+        android:layout_alignEnd="@+id/internal_rl_monitor_voltage1"
+        android:layout_marginEnd="69dp" />
+
+    <RelativeLayout
+        android:id="@+id/internal_rl_monitor_rp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="250dp"
+        android:layout_marginTop="500dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_vcu_gyjc_v_back"/>
+        <TextView
+            android:id="@+id/tv_bms_monitor_rp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextGreenSelected"
+            android:text="0Ω"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextPress"
+        android:text="Rp"
+        android:layout_alignBottom="@+id/internal_rl_monitor_rp"
+        android:layout_alignEnd="@+id/internal_rl_monitor_rp"
+        android:layout_marginEnd="69dp" />
+
+    <RelativeLayout
+        android:id="@+id/internal_rl_monitor_rn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="250dp"
+        android:layout_marginTop="530dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_vcu_gyjc_v_back"/>
+        <TextView
+            android:id="@+id/tv_bms_monitor_rn"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextGreenSelected"
+            android:text="0Ω"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextPress"
+        android:text="Rn"
+        android:layout_alignBottom="@+id/internal_rl_monitor_rn"
+        android:layout_alignEnd="@+id/internal_rl_monitor_rn"
+        android:layout_marginEnd="69dp" />
+
+    <RelativeLayout
+        android:id="@+id/internal_rl_monitor_voltage2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="250dp"
+        android:layout_marginTop="560dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_vcu_gyjc_v_back"/>
+        <TextView
+            android:id="@+id/tv_bms_monitor_voltage2"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextGreenSelected"
+            android:text="0V"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextPress"
+        android:text="IN5 Voltage"
+        android:layout_alignBottom="@+id/internal_rl_monitor_voltage2"
+        android:layout_alignEnd="@+id/internal_rl_monitor_voltage2"
+        android:layout_marginEnd="69dp" />
+
+    <RelativeLayout
+        android:id="@+id/internal_rl_monitor_voltage3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="250dp"
+        android:layout_marginTop="590dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_vcu_gyjc_v_back"/>
+        <TextView
+            android:id="@+id/tv_bms_monitor_voltage3"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextGreenSelected"
+            android:text="0V"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextPress"
+        android:text="IN3 Voltage"
+        android:layout_alignBottom="@+id/internal_rl_monitor_voltage3"
+        android:layout_alignEnd="@+id/internal_rl_monitor_voltage3"
+        android:layout_marginEnd="69dp" />
+
+</RelativeLayout>

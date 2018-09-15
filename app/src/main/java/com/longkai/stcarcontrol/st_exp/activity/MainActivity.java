@@ -72,15 +72,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= 21) {
+        /*if (Build.VERSION.SDK_INT >= 21) {
             View decorView = getWindow().getDecorView();
             int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    /*| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION*/;
+                    *//*| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION*//*;
             decorView.setSystemUiVisibility(option);
             getWindow().setNavigationBarColor(Color.TRANSPARENT);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
+        }*/
         setContentView(R.layout.activity_main);
 
 
@@ -142,16 +142,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        ServiceManager.getInstance().destroy();
     }
 
     private void initUI(){
-        findViewById(R.id.rdoBtn_homepage_home).setOnClickListener(this);
-        findViewById(R.id.rdoBtn_homepage_control).setOnClickListener(this);
-        findViewById(R.id.rdoBtn_homepage_door).setOnClickListener(this);
-        findViewById(R.id.rdoBtn_homepage_front_lamp).setOnClickListener(this);
-        findViewById(R.id.rdoBtn_homepage_seat).setOnClickListener(this);
-
         ivConnectionState = (ImageView) findViewById(R.id.iv_mainactivity_lost_connect);
         ivConnectionState.setOnClickListener(this);
         ivWifiConnectionState = (ImageView) findViewById(R.id.iv_mainacivity_lost_wifi);
@@ -321,36 +315,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      */
 
     // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
+//    static {
+//        System.loadLibrary("native-lib");
+//    }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            /*case R.id.rdoBtn_homepage_home:
-                setSelect(0);
-                *//*animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.btn_scale_up);
-                v.startAnimation(animation);*//*
-//                ((RadioButton)v).setBackgroundResource(R.mipmap.ic_navigationbar_homepage_chose);
-//                ((RadioButton)v).setButtonDrawable(R.color.transparent);
-//                ViewGroup.LayoutParams params = v.getLayoutParams();
-//                params.width*=1.5;
-//                v.setLayoutParams(params);
-                break;
-            case R.id.rdoBtn_homepage_control:
-                setSelect(4);
-                break;
-            case R.id.rdoBtn_homepage_door:
-                setSelect(3);
-                break;
-            case R.id.rdoBtn_homepage_front_lamp:
-                setSelect(1);
-                break;
-            case R.id.rdoBtn_homepage_seat:
-                setSelect(2);
-                break;*/
+
             case R.id.iv_mainactivity_lost_connect://bt connection
                 SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "BT");
                 if (!hardwareConnected) {
@@ -394,18 +367,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void releaseFragment(){
         mHomeFragment = null;
-          mFrontLampFragment = null;
-          mSeatFragment = null;
-          mHighBeamLight = null;
-          mDoorFragment = null;
-          mCenterControlFragment = null;
-          mCarBackFragment = null;
-          mCarBackCoverFragment = null;
-          mBCMDiagnosticFragment = null;
-          frontHeadLampTest = null;
+        mFrontLampFragment = null;
+        mSeatFragment = null;
+        mHighBeamLight = null;
+        mDoorFragment = null;
+        mCenterControlFragment = null;
+        mCarBackFragment = null;
+        mCarBackCoverFragment = null;
+        mBCMDiagnosticFragment = null;
+        frontHeadLampTest = null;
         System.gc();
-
     }
+
+
     public void showDiagram(String diagramName){
         FileUtils.copyDiagram2SDCard(this , diagramName);
 

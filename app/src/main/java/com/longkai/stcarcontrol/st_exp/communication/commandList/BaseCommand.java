@@ -22,6 +22,25 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_PLGM            = 0x08;
     protected static final byte COMMAND_CENTRAL_CONTORL = 0x09;
 
+    protected static final byte COMMAND_VCU_CONTROL     = 0x0C;
+    protected static final byte COMMAND_VCU_CAR_MODE    = 0x0A;
+    protected static final byte COMMAND_VCU_FUN         = 0x0B;
+
+    protected static final byte COMMAND_VCU1            = 0x10;
+    protected static final byte COMMAND_VCU2            = 0x11;
+    protected static final byte COMMAND_VCU3            = 0x12;
+    protected static final byte COMMAND_VCU4            = 0x12;
+    protected static final byte COMMAND_VCU5            = 0x14;
+    protected static final byte COMMAND_VCU6            = 0x15;
+    protected static final byte COMMAND_VCU_BMS_1       = 0x16;
+    protected static final byte COMMAND_VCU_BMS_2       = 0x17;
+    protected static final byte COMMAND_VCU_BMS_3       = 0x18;
+    protected static final byte COMMAND_VCU_BMS_4       = 0x19;
+    protected static final byte COMMAND_VCU_BMS_5       = 0x1A;
+    protected static final byte COMMAND_VCU_BMS_6       = 0x1B;
+    protected static final byte COMMAND_VCU_MCU_1       = 0x1C;
+    protected static final byte COMMAND_VCU_MCU_2       = 0x1D;
+
     protected byte[] data;//payload
     protected int dataLength;
 
@@ -29,7 +48,6 @@ public abstract class BaseCommand implements Command {
     }
 
     public void turnOff(){
-
     }
 
 

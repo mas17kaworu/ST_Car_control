@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/ic_fragment_background">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ST China VCU Home"
+        android:textSize="30sp"
+        android:textColor="#ffffff"
+        android:textStyle="italic"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_vcu_gyhlsd_bcak"
+        android:layout_centerInParent="true"
+        android:id="@+id/imageView" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_vcu_gysj"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="200dp"
+        android:layout_centerVertical="true"/>
+
+    <Button
+        android:id="@+id/btn_vcu_gysd"
+        android:text="@string/vcu_gysd_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="146dp" />
+
+    <Button
+        android:id="@+id/btn_vcu_niuju_jisuan"
+        android:text="@string/vcu_niuju_jisuan_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="246dp" />
+
+    <Button
+        android:id="@+id/btn_vcu_gyxd"
+        android:text="@string/vcu_gyxd_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="346dp" />
+
+    <Button
+        android:id="@+id/btn_vcu_charging"
+        android:text="@string/vcu_charging_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="446dp" />
+
+</RelativeLayout>

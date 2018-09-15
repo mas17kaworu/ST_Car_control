@@ -5,10 +5,10 @@ android {
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.longkai.stcarcontrol.st_exp"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
-        versionName "1.1.6"
+        versionName "1.2.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
@@ -35,7 +35,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.7'
-
+    compile 'com.android.support:percent:23.1.1'
     compile 'com.android.support:appcompat-v7:23.1.1'
     testCompile 'junit:junit:4.12'
 }
