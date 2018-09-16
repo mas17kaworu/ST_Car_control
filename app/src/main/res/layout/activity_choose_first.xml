@@ -8,6 +8,24 @@
         android:layout_height="match_parent"
         android:id="@+id/main_fragment_content"/>
 
+    <ImageView
+        android:id="@+id/iv_chooseactivity_lost_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/homepage_lost_bt"
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="860dp"/>
+
+    <ImageView
+        android:id="@+id/iv_chooseactivity_lost_wifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/homepage_lost_wifi"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@id/iv_chooseactivity_lost_bluetooth"
+        android:layout_alignTop="@id/iv_chooseactivity_lost_bluetooth"
+        android:layout_marginStart="18dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

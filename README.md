@@ -13,10 +13,7 @@ demo/Actual difference
 todo
 communication test
 infortainment page communication
-mcu reLayout                        done?
-Tbox some small feature             done
 
 charge page?
 tbox 表格
-mcu wenduji
 bms bug

@@ -37,6 +37,7 @@ public class ServiceManager {
         return instance;
     }
 
+    //service connected listener
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             binder = (CommunicationServer.CommServerBinder) service;

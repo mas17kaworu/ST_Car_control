@@ -47,6 +47,16 @@
             android:layout_toEndOf="@id/tv_mcu_niuju"
             android:layout_marginStart="20dp"
             android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/tv_mcu_niuju_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="22sp"
+            android:layout_toEndOf="@id/tv_mcu_niuju"
+            android:layout_marginStart="22dp"
+            android:textColor="@color/colorTextGreenSelected"
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -68,6 +78,16 @@
             android:src="@mipmap/ic_vcu_mcu_textback"
             android:layout_toEndOf="@id/tv_mcu_dianliu"
             android:layout_marginStart="20dp"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/tv_mcu_dianliu_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="22sp"
+            android:layout_toEndOf="@id/tv_mcu_dianliu"
+            android:layout_marginStart="22dp"
+            android:textColor="@color/colorTextGreenSelected"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 

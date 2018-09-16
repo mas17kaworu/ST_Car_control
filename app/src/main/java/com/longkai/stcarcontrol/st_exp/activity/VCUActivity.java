@@ -75,13 +75,16 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vcu);
 
-        ServiceManager.getInstance().init(getApplicationContext(),
-                new ServiceManager.InitCompleteListener() {
-                    @Override
-                    public void onInitComplete() {
-                        ServiceManager.getInstance().setConnectionListener(mConnectionListener);
-                    }
-                });
+
+        ServiceManager.getInstance().setConnectionListener(mConnectionListener);
+        //Service will be init in choose activity, no need for here
+        /*ServiceManager.getInstance().init(getApplicationContext(), new ServiceManager.InitCompleteListener() {
+            @Override
+            public void onInitComplete() {
+                ServiceManager.getInstance().setConnectionListener(mConnectionListener);
+            }
+        });*/
+
         initUI();
         setSelect(0);
         vcuState = VCUState.HomeScreen;
@@ -90,7 +93,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ServiceManager.getInstance().destroy();
+//        ServiceManager.getInstance().destroy();
     }
 
     private void initUI(){
@@ -99,6 +102,11 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         ivConnectionState.setOnClickListener(this);
         ivWifiConnectionState = (ImageView) findViewById(R.id.iv_vcu_lost_wifi);
         ivWifiConnectionState.setOnClickListener(this);
+
+        if (communicationEstablished) {
+            ivWifiConnectionState.setVisibility(View.INVISIBLE);
+            ivConnectionState.setVisibility(View.INVISIBLE);
+        }
         ivDiagram = (ImageView) findViewById(R.id.iv_vcu_activity_diagram);
         ivDiagram.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,8 +355,6 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
-    private boolean hardwareConnected = false;
-
     public String mVersion;
 
     Timer timer;
@@ -374,7 +380,9 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         public void onDisconnected() {
             Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
             hardwareConnected = false;
+            communicationEstablished = false;
             ivConnectionState.setVisibility(View.VISIBLE);
+            ivWifiConnectionState.setVisibility(View.VISIBLE);
         }
     };
 
@@ -385,6 +393,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
             super.onSuccess(response);
             //invisible View
             mVersion = ((CMDGetVersion.Response)response).getVersion();
+            communicationEstablished = true;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

@@ -85,13 +85,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
 
-
-        ServiceManager.getInstance().init(getApplicationContext(), new ServiceManager.InitCompleteListener() {
+        ServiceManager.getInstance().setConnectionListener(mConnectionListener);
+        //Service will be init in choose activity, no need for here
+        /*ServiceManager.getInstance().init(getApplicationContext(), new ServiceManager.InitCompleteListener() {
             @Override
             public void onInitComplete() {
                 ServiceManager.getInstance().setConnectionListener(mConnectionListener);
             }
-        });
+        });*/
+
 
         ivDiagram = (ImageView) findViewById(R.id.iv_mainactivity_diagram);
         ivDiagram.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +144,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ServiceManager.getInstance().destroy();
     }
 
     private void initUI(){
@@ -150,6 +151,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         ivConnectionState.setOnClickListener(this);
         ivWifiConnectionState = (ImageView) findViewById(R.id.iv_mainacivity_lost_wifi);
         ivWifiConnectionState.setOnClickListener(this);
+
+        if (communicationEstablished) {
+            ivWifiConnectionState.setVisibility(View.INVISIBLE);
+            ivConnectionState.setVisibility(View.INVISIBLE);
+        }
 
         hListView = (HorizontalListView) findViewById(R.id.horizon_listview);
         final int[] ids = {R.drawable.main_activity_bottom_hompage,
@@ -183,7 +189,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     Timer timer;
 
-    private boolean hardwareConnected = false;
+
     private ConnectionType connectedType;
 
     ConnectionListener mConnectionListener = new ConnectionListener() {
@@ -218,7 +224,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         public void onDisconnected() {
             Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
             hardwareConnected = false;
+            communicationEstablished = false;
             ivConnectionState.setVisibility(View.VISIBLE);
+            ivWifiConnectionState.setVisibility(View.VISIBLE);
         }
     };
 
@@ -347,6 +355,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             super.onSuccess(response);
             //invisible View
             mVersion = ((CMDGetVersion.Response)response).getVersion();
+            communicationEstablished = true;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
