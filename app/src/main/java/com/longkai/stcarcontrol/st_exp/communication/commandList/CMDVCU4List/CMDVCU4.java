@@ -24,7 +24,7 @@ public class CMDVCU4 extends BaseCommand {
         Response response = new Response(getCommandId());
         if (data[2] == 0x06){
             response.Motor_Expected_Speed = (data[5] & 0xff)<<8 | (data[4] & 0xff);
-            response.Motor_Expected_Torch = (data[7] & 0xff)<<8 | (data[6] & 0xff);
+            response.Motor_Expected_Torch = (((data[7] & 0xff)<<8 | (data[6] & 0xff) - 2000) * 0.1f) ;
         }
         return response;
     }
@@ -36,7 +36,7 @@ public class CMDVCU4 extends BaseCommand {
 
     public static class Response extends BaseResponse {
 
-        public int Motor_Expected_Torch;
+        public float Motor_Expected_Torch;
         public int Motor_Expected_Speed;
 
         public Response(byte commandId) {

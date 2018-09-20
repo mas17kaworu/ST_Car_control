@@ -209,8 +209,17 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 setSelect(1);
                 showDrawerLayout();
 
-                //only for test
+
                 Handler handler = new Handler();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mVCUVCUCFragment !=null){
+                            mVCUVCUCFragment.getController().xiaDianState1();
+                        }
+                    }
+                });
+
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -218,7 +227,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                             mVCUVCUCFragment.getController().xiaDianState2();
                         }
                     }
-                }, 500);
+                }, 1000);
 
                 handler.postDelayed(new Runnable() {
                     @Override

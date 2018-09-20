@@ -16,6 +16,8 @@ import com.longkai.stcarcontrol.st_exp.R;
  */
 
 public class TorqueVerticalbar extends VerticalRollingBar {
+
+
     public TorqueVerticalbar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }

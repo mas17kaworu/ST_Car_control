@@ -42,6 +42,7 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
         tvCurrent = (TextView) mView.findViewById(R.id.tv_mcu_dianliu_number);
         tvNiuju = (TextView) mView.findViewById(R.id.tv_mcu_niuju_number);
 
+        handler.postDelayed(runnable, 500);// 打开定时器，500ms后执行runnable
         /*testThread = new Thread(){
             @Override
             public void run() {

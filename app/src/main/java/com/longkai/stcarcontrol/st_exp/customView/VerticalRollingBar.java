@@ -35,9 +35,9 @@ public class VerticalRollingBar extends View {
     private float value = 30.0f;
     private float tmpfloat;
 
-    private static final float MIN_INTERVAL = 0.1f;
-    private static final float MAX_VALUE = 100.0f;
-    private static final float MIN_VALUE = -10.0f;
+    protected float MIN_INTERVAL = 0.1f;
+    protected float maxValue = 100.0f;
+    protected float minValue = -10.0f;
 
     public VerticalRollingBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -49,6 +49,14 @@ public class VerticalRollingBar extends View {
         } else {
             init(context, colorStyle.blue);
         }
+    }
+
+    public synchronized void setMaxValue(float maxValue){
+        this.maxValue = maxValue;
+    }
+
+    public synchronized void setMinValue(float minValue){
+        this.minValue = minValue;
     }
 
     public synchronized void setValue(float value){
@@ -88,7 +96,7 @@ public class VerticalRollingBar extends View {
         if (this instanceof TorqueVerticalbar){
             canvas.drawBitmap(scaleBar, 0, 0, mPaint);
             canvas.drawBitmap(backBar, scaleWidth + intervalDistance, zeroPoint, mPaint);
-            tmpfloat = backgroundHeight - ((value - MIN_VALUE) * backgroundHeight / (MAX_VALUE - MIN_VALUE));
+            tmpfloat = backgroundHeight - ((value - minValue) * backgroundHeight / (maxValue - minValue));
 
 
             canvas.drawRect(scaleWidth + intervalDistance, tmpfloat,
@@ -99,7 +107,7 @@ public class VerticalRollingBar extends View {
         }else {
             canvas.drawBitmap(backBar, 0, zeroPoint, mPaint);
             canvas.drawBitmap(scaleBar, backgroundWidth + intervalDistance, zeroPoint, mPaint);
-            tmpfloat = backgroundHeight - ((value - MIN_VALUE) * backgroundHeight / (MAX_VALUE - MIN_VALUE));
+            tmpfloat = backgroundHeight - ((value - minValue) * backgroundHeight / (maxValue - minValue));
 
             canvas.drawBitmap(pin,
                     backgroundWidth + intervalDistance,

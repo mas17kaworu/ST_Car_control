@@ -110,7 +110,7 @@ public class TorqueDashboard extends View {
                 (int)(height - pin.getHeight() - (radius * (Math.sin(angle) - Math.sin(Math.toRadians(45))))),
                 mPaint);
         canvas.drawBitmap(background,0,0,mPaint);
-//        canvas.drawText(df.format( (int)((MAX_VALUE-MIN_VALUE) * present_value / 100)) + "v",
+//        canvas.drawText(df.format( (int)((maxValue-minValue) * present_value / 100)) + "v",
 //                width/2.f - 30, height/2.f + 60, mTextPaint);
     }
 

@@ -23,7 +23,7 @@ public class CMDVCU3 extends BaseCommand {
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());
         if (data[2] == 0x09){
-            response.Speed_Car = (data[5] & 0xff)<<8 | (data[4] & 0xff);
+            response.Speed_Car = (int)(((data[5] & 0xff)<<8 | (data[4] & 0xff)) * 0.1);
             response.Shift_level = (data[6] & 0xff);
             response.Brake_Status = (data[8] & 0xff)<<8 | (data[7] & 0xff);
             response.Pedal_Status = (data[10] & 0xff)<<8 | (data[9] & 0xff);

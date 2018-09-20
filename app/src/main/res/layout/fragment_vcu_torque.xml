@@ -58,6 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <com.longkai.stcarcontrol.st_exp.customView.dashboard.TorqueDashboard
+                android:id="@+id/dashboard_vcu_torch_expected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </RelativeLayout>
