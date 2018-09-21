@@ -22,9 +22,14 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_PLGM            = 0x08;
     protected static final byte COMMAND_CENTRAL_CONTORL = 0x09;
 
-    protected static final byte COMMAND_VCU_CONTROL     = 0x0C;
+
     protected static final byte COMMAND_VCU_CAR_MODE    = 0x0A;
     protected static final byte COMMAND_VCU_FUN         = 0x0B;
+    protected static final byte COMMAND_VCU_HV_Power_ON = 0x0C;
+    protected static final byte COMMAND_VCU_HV_Power_OFF= 0x0D;
+    protected static final byte COMMAND_VCU_HV_LOOP_DEMO= 0x0E;
+    protected static final byte COMMAND_VCU_HV_LOOP_FUNC= 0x0F;
+
 
     protected static final byte COMMAND_VCU1            = 0x10;
     protected static final byte COMMAND_VCU2            = 0x11;

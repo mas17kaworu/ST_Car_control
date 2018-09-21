@@ -10,6 +10,10 @@ import android.widget.ImageView;
 
 import com.longkai.stcarcontrol.st_exp.Interface.VCUCircleStateChange;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUGUIList.CMDVCUHVOff;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUGUIList.CMDVCUHVOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 import java.io.IOException;
 
@@ -67,6 +71,9 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
         try{
             GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_zero);
             gifViewChart.setImageDrawable(gifDrawableChart);
+
+            ServiceManager.getInstance().sendCommandToCar(new CMDVCUHVOn(true), new CommandListenerAdapter());
+            ServiceManager.getInstance().sendCommandToCar(new CMDVCUHVOff(false), new CommandListenerAdapter());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -106,6 +113,8 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
             GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_high);
             gifViewChart.setImageDrawable(gifDrawableChart);
 
+            ServiceManager.getInstance().sendCommandToCar(new CMDVCUHVOn(false), new CommandListenerAdapter());
+            ServiceManager.getInstance().sendCommandToCar(new CMDVCUHVOff(true), new CommandListenerAdapter());
         } catch (IOException e) {
             e.printStackTrace();
         }
