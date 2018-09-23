@@ -243,7 +243,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         findViewById(R.id.btn_vcu_niuju_jisuan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelect(8);
+                setSelect(8);//8
                 showDrawerLayout();
             }
         });

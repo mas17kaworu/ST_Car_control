@@ -14,9 +14,27 @@
         android:layout_marginTop="20dp"/>
 
     <ImageView
+        android:id="@+id/iv_vcu_charge_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_vcu_charge_back"
         android:layout_centerInParent="true"/>
 
+    <ImageView
+        android:id="@+id/iv_vcu_charge_charge_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_vcu_charge_unplug"
+        android:layout_toStartOf="@id/iv_vcu_charge_back"
+        android:layout_alignTop="@id/iv_vcu_charge_back"
+        android:layout_marginTop="45dp"/>
+
+    <ImageView
+        android:id="@+id/iv_vcu_charge_lock_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_vcu_charge_carunlock"
+        android:layout_below="@+id/iv_vcu_charge_back"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>
