@@ -3,10 +3,17 @@ package com.longkai.stcarcontrol.st_exp.activity;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinment.CMDInfoteinmentEngineVoice;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinment.CMDInfoteinmentVoiceVolume;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +22,10 @@ import java.util.List;
  * Created by Administrator on 2018/8/4.
  */
 
-//// TODO: 2018/8/4 通信问题: VCU 和 Infotainment 可能需要公用一个连接 目前想法是VCU activity ondestroy 不去disconnect
 public class InfotainmentActivity extends BaseActivity implements View.OnClickListener {
 
     private ImageView ivSoundA, ivSoundB, ivSoundC, ivSoundD;
+    private SeekBar sbVolume;
     private List<ImageView> soundBtnList = new ArrayList<>();
 
     @Override
@@ -39,24 +46,53 @@ public class InfotainmentActivity extends BaseActivity implements View.OnClickLi
         soundBtnList.add(ivSoundB);
         soundBtnList.add(ivSoundC);
         soundBtnList.add(ivSoundD);
+
+        sbVolume = (SeekBar) findViewById(R.id.seekBar_infot_sound);
+        sbVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                Log.i("longkai");
+                CMDInfoteinmentVoiceVolume cmd = new CMDInfoteinmentVoiceVolume();
+                cmd.setVolume(progress);
+                ServiceManager.getInstance().sendCommandToCar(cmd, new CommandListenerAdapter());
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
+        CMDInfoteinmentEngineVoice command = new CMDInfoteinmentEngineVoice();
         switch (v.getId()){
             case R.id.iv_infot_engine_s_a:
+                command.changeVoiceTo(1);
                 clickSoundBtn((ImageView)v);
                 break;
             case R.id.iv_infot_engine_s_b:
+                command.changeVoiceTo(2);
                 clickSoundBtn((ImageView)v);
                 break;
             case R.id.iv_infot_engine_s_c:
+                command.changeVoiceTo(3);
                 clickSoundBtn((ImageView)v);
                 break;
             case R.id.iv_infot_engine_s_d:
+                command.changeVoiceTo(4);
                 clickSoundBtn((ImageView)v);
                 break;
         }
+        ServiceManager.getInstance().sendCommandToCar(command, new CommandListenerAdapter());
+
     }
 
     private void clickSoundBtn(ImageView targetIV){

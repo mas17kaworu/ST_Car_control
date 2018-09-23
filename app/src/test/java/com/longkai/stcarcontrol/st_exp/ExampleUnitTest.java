@@ -18,4 +18,12 @@ public class ExampleUnitTest {
         int tmp = (int)(((data[1] & 0xff)<<8 |(data[0] & 0xff) - 1) * 1.0f);
         assertEquals(tmp, 0x0100);
     }
+
+    @Test
+    public void final_test() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("test");
+        builder.append("lll");
+        System.out.println(builder.toString());
+    }
 }
