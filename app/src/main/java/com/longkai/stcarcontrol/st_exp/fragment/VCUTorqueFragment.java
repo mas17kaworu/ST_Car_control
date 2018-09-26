@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.Utils.Logger;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU3List.CMDVCU3;
@@ -54,7 +55,9 @@ public class VCUTorqueFragment extends Fragment {
         @Override
         public void run() {
             final StringBuilder builder = new StringBuilder();
-
+            final StringBuilder builder2 = new StringBuilder();
+            builder2.append("test ");
+            builder.append("\nTest");
             ServiceManager.getInstance().sendCommandToCar(new CMDVCU3(), new CommandListenerAdapter(){
                 @Override
                 public void onSuccess(BaseResponse response) {
@@ -66,6 +69,14 @@ public class VCUTorqueFragment extends Fragment {
                     builder.append("Pedal_Status:" + ((CMDVCU3.Response)response).Pedal_Status + " ");
                 }
             });
+
+            builder2.append(Logger.getLogger().Logger1ToString());
+            builder2.append(Logger.getLogger().Logger2ToString());
+            builder2.append(Logger.getLogger().Logger3ToString());
+
+
+
+
             ServiceManager.getInstance().sendCommandToCar(new CMDVCU4(), new CommandListenerAdapter(){
                 @Override
                 public void onSuccess(BaseResponse response) {
@@ -76,7 +87,7 @@ public class VCUTorqueFragment extends Fragment {
                 }
             });
 
-            tvTestText.setText(builder.toString());
+            tvTestText.setText(builder2.toString() + builder.toString());
             handler.removeCallbacks(this); //移除定时任务
             handler.postDelayed(runnable, 1000);
 

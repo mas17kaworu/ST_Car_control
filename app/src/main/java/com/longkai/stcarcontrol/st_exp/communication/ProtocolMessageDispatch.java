@@ -3,6 +3,7 @@ package com.longkai.stcarcontrol.st_exp.communication;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.longkai.stcarcontrol.st_exp.Utils.Logger;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
@@ -81,11 +82,12 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
      */
     @Override
     public void onReceive(byte[] data, int offset, int length) {
-
+        Logger.getLogger().writeToLogger1("received udp data");
         if (data[0] == BaseCommand.COMMAND_HEAD0 && data[1] == BaseCommand.COMMAND_HEAD1){
             byte[] raw = new byte[128];
             System.arraycopy(data, 0, raw, 0, length);//接收的时候checksum包含头
             if (data[length-1] == CheckSumBit.checkSum(raw, length-1) ){//检查完毕
+                Logger.getLogger().writeToLogger2("raw data check finished");
                 int commandId = raw[3] & 0x1f;
                 Log.i("Command","Got package commandId = " + commandId);
                 Command command;
@@ -113,6 +115,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
                         return;
                     }
                     if (response != null) {
+                        Logger.getLogger().writeToLogger3("onSuccess");
                         listener.onSuccess(response);
                     }
                 }
