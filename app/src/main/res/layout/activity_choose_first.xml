@@ -68,6 +68,13 @@
         </RelativeLayout>
     </LinearLayout>
 
-
+    <TextView
+        android:id="@+id/tv_choose_activity_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:layout_alignParentBottom="true"
+        android:textSize="10sp"
+        android:text="version:"/>
 
 </RelativeLayout>

@@ -21,9 +21,10 @@ public class ExampleUnitTest {
 
     @Test
     public void final_test() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("test");
-        builder.append("lll");
-        System.out.println(builder.toString());
+        byte[] data = {(byte)0x88,(byte)0xa5};
+        int Pedal_Status = (data[0] & 0xff)<<8 | (data[1] & 0xff);
+        System.out.println("longkai Pedal_Status = " + (float)Pedal_Status);
     }
+
+
 }

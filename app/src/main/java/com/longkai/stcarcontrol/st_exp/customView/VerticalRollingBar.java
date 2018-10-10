@@ -60,8 +60,14 @@ public class VerticalRollingBar extends View {
     }
 
     public synchronized void setValue(float value){
+        if (value > maxValue){
+            value = maxValue;
+        }
+        if (value < minValue){
+            value = minValue;
+        }
         this.value = value;
-        this.invalidate();
+        this.postInvalidate();
     }
 
     protected void init(Context context, colorStyle style){

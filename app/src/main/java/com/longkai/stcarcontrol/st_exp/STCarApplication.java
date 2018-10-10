@@ -15,6 +15,6 @@ public class STCarApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        CrashHandler.getsInstance().init(this);
+        CrashHandler.getsInstance().init(this);
     }
 }

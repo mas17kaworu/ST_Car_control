@@ -18,7 +18,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_vcu_charge_back"
-        android:layout_centerInParent="true"/>
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="130dp"/>
 
     <ImageView
         android:id="@+id/iv_vcu_charge_charge_status"
@@ -35,6 +37,6 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_vcu_charge_carunlock"
         android:layout_below="@+id/iv_vcu_charge_back"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="60dp"
         android:layout_centerHorizontal="true"/>
 </RelativeLayout>

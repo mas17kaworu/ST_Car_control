@@ -17,7 +17,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
 
     private SparseArray<Command> mSentCommandList;
     private SparseArray<CommandListener> mCommandListenerList;
-    private Object listLock = new Object();
+    private final Object listLock = new Object();
 
     private ConnectionInterface mConnection;
 
@@ -115,7 +115,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
                         return;
                     }
                     if (response != null) {
-                        Logger.getLogger().writeToLogger3("onSuccess");
+                        Logger.getLogger().writeToLogger3("onSuccess commandID = " + commandId);
                         listener.onSuccess(response);
                     }
                 }

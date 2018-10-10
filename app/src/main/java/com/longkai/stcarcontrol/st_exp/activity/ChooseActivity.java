@@ -1,11 +1,13 @@
 package com.longkai.stcarcontrol.st_exp.activity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
@@ -43,6 +45,14 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
         super.onStart();
         initUI();
 
+        String verName = "version";
+        try {
+            verName = getApplicationContext().getPackageManager().
+                    getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        ((TextView)findViewById(R.id.tv_choose_activity_version)).setText(verName);
         ServiceManager.getInstance().init(getApplicationContext(), new ServiceManager.InitCompleteListener() {
             @Override
             public void onInitComplete() {

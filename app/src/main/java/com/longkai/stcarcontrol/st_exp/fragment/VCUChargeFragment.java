@@ -44,17 +44,24 @@ public class VCUChargeFragment extends Fragment implements View.OnClickListener 
                 @Override
                 public void onSuccess(BaseResponse response) {
                     super.onSuccess(response);
-                    if (((CMDVCU6.Response) response).Charger_Status == 0) {
-                        ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_unplug);
-                    } else {
-                        ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_plugin);
-                    }
+                    final BaseResponse r = response;
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (((CMDVCU6.Response) r).Charger_Status == 0) {
+                                ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_unplug);
+                            } else {
+                                ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_plugin);
+                            }
 
-                    if (((CMDVCU6.Response) response).Locker_Status == 0) {
-                        ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carunlock);
-                    } else {
-                        ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carlocked);
-                    }
+                            if (((CMDVCU6.Response) r).Locker_Status == 0) {
+                                ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carunlock);
+                            } else {
+                                ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carlocked);
+                            }
+                        }
+                    });
+
                 }
             });
 
