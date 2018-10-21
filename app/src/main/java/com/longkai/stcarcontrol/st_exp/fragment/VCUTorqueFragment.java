@@ -74,7 +74,7 @@ public class VCUTorqueFragment extends Fragment {
                     brakeBar.setValue((float)((CMDVCU7.Response)response).break_status);
                     pedalBar.setValue((float)((CMDVCU7.Response)response).pedal_status);
 
-                    torchRequire.setPercent( ((CMDVCU7.Response) response).torch_expired * 100 / 5000);
+                    torchRequire.setPercent( ((CMDVCU7.Response) response).torch_expired * 100 / 6000);
                 }
             });
 

@@ -23,8 +23,8 @@ import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 
 public class BaseActivity extends AppCompatActivity {
     public BTServer mBtServer;
-    protected boolean hardwareConnected = false;
-    protected boolean communicationEstablished = false;
+    protected static boolean hardwareConnected = false;
+    protected static boolean communicationEstablished = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

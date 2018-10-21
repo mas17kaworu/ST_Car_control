@@ -10,6 +10,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
@@ -71,6 +72,7 @@ public class CommunicationServer extends Service {
 
     @Override
     public void onDestroy() {
+        Log.i("CommunicationServer", "onDestroy: CommunicationServer");
         instance = null;
         doBackgroundHandler.removeCallbacksAndMessages(null);
         doBackgroundHandler.getLooper().quit();

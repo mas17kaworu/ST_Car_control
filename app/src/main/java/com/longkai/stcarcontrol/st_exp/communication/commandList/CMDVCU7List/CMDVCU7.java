@@ -25,7 +25,7 @@ public class CMDVCU7 extends BaseCommand {
         if (data[2] == 0x08){
             response.pedal_status = (data[4] & 0xff);
             response.break_status = (data[5] & 0xff);
-            response.torch_expired = ((data[6] & 0xff)<<8 | (data[7] & 0xff) / 10);
+            response.torch_expired = (((data[6] & 0xff)<<8 | (data[7] & 0xff)) / 10);
             response.gaoya_jidianqi_status = (data[8] & 0xff);
             response.charging_status = (data[9] & 0xff);
         }

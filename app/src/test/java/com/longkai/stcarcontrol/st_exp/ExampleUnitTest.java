@@ -21,8 +21,8 @@ public class ExampleUnitTest {
 
     @Test
     public void final_test() {
-        byte[] data = {(byte)0x88,(byte)0xa5};
-        int Pedal_Status = (data[0] & 0xff)<<8 | (data[1] & 0xff);
+        byte[] data = {(byte)0x01,(byte)0x10};
+        int Pedal_Status = ((data[0] & 0xff)<<8 | (data[1] & 0xff)) /10;
         System.out.println("longkai Pedal_Status = " + (float)Pedal_Status);
     }
 
