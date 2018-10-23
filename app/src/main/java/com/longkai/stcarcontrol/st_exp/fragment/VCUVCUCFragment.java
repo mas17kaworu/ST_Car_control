@@ -3,6 +3,7 @@ package com.longkai.stcarcontrol.st_exp.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,7 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
     public void onResume() {
         super.onResume();
         mVCUCircleStateChange = this;
-        mVCUCircleStateChange.shangDianState1();
+//        mVCUCircleStateChange.shangDianState1();
     }
 
     public VCUCircleStateChange getController(){
@@ -69,11 +70,11 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
     @Override
     public void shangDianState1() {
         try{
+            Log.i("LK test", "shangDianState1");
             GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_zero);
             gifViewChart.setImageDrawable(gifDrawableChart);
-
-            ServiceManager.getInstance().sendCommandToCar(new CMDVCUHVOn(true), new CommandListenerAdapter());
             ServiceManager.getInstance().sendCommandToCar(new CMDVCUHVOff(false), new CommandListenerAdapter());
+            ServiceManager.getInstance().sendCommandToCar(new CMDVCUHVOn(true), new CommandListenerAdapter());
         } catch (IOException e) {
             e.printStackTrace();
         }

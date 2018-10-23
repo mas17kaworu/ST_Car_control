@@ -81,6 +81,8 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
     @Override
     public void onDestroy() {
         threadPool.shutdown();
+        handler.removeCallbacks(connectionRunnerable);
+
         super.onDestroy();
     }
 
@@ -101,6 +103,7 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
         if (ready) {
             switch (state) {
                 case Insulation:
+                    handler.removeCallbacks(connectionRunnerable);
                     ivBack.setImageResource(R.mipmap.ic_bms_monitor_insullation_1);
                     tvV2.setVisibility(View.INVISIBLE);
                     tvV3.setVisibility(View.INVISIBLE);
@@ -130,11 +133,14 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
                 case Connection:
                     tvV2.setVisibility(View.VISIBLE);
                     tvV3.setVisibility(View.VISIBLE);
-                    ivBack.setImageResource(R.mipmap.ic_bms_monitor_connection_1);
+
+                    handler.post(connectionRunnerable);
+                    /*ivBack.setImageResource(R.mipmap.ic_bms_monitor_connection_1);
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             ivBack.setImageResource(R.mipmap.ic_bms_monitor_connection_2);
+                            handler.removeCallbacks(this);
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -142,7 +148,7 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
                                 }
                             }, 1000);
                         }
-                    }, 1000);
+                    }, 1000);*/
 
                     break;
                 default:
@@ -150,6 +156,21 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
             }
         }
     }
+
+    int count = 0;
+    Runnable connectionRunnerable = new Runnable() {
+        @Override
+        public void run() {
+            if (count % 2 == 0){
+                ivBack.setImageResource(R.mipmap.ic_bms_monitor_connection_1);
+            } else {
+                ivBack.setImageResource(R.mipmap.ic_bms_monitor_connection_2);
+            }
+            count++;
+            handler.removeCallbacks(this);
+            handler.postDelayed(connectionRunnerable,1000);
+        }
+    };
 
     private void UpdateTV(){
         getActivity().runOnUiThread(new Runnable() {
@@ -177,4 +198,5 @@ public class VCUBMSMonitorFragment extends Fragment implements View.OnClickListe
             }
         }
     });
+
 }

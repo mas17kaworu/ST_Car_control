@@ -186,6 +186,15 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 showDrawerLayout();
                 //only for test
                 Handler handler = new Handler();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mVCUVCUCFragment != null) {
+                            mVCUVCUCFragment.getController().shangDianState1();
+                        }
+                    }
+                });
+
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -193,7 +202,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                             mVCUVCUCFragment.getController().shangDianState2();
                         }
                     }
-                }, 500);
+                }, 1000);
 
                 handler.postDelayed(new Runnable() {
                     @Override
