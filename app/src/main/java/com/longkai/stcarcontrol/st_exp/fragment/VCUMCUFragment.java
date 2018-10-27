@@ -7,13 +7,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUMCU1List.CMDVCUMCU1;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+import com.longkai.stcarcontrol.st_exp.customView.Thermometer;
 import com.longkai.stcarcontrol.st_exp.customView.dashboard.DashboardView;
 import com.longkai.stcarcontrol.st_exp.customView.dashboard.MCUVoltageDashboard;
 
@@ -25,6 +28,9 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
     private View mView;
     private DashboardView engineSpeedDashboard;
     private MCUVoltageDashboard mcuVoltageDashboard;
+    private Thermometer mcuTmpView;
+    private Thermometer engineTmpView;
+
 
     private TextView tvNiuju, tvCurrent;
 
@@ -42,6 +48,8 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
         tvCurrent = (TextView) mView.findViewById(R.id.tv_mcu_dianliu_number);
         tvNiuju = (TextView) mView.findViewById(R.id.tv_mcu_niuju_number);
 
+        mcuTmpView = (Thermometer) mView.findViewById(R.id.thermometer_mcu_mcu);
+        engineTmpView = (Thermometer) mView.findViewById(R.id.thermometer_mcu_engine);
         handler.postDelayed(runnable, 500);// 打开定时器，500ms后执行runnable
         /*testThread = new Thread(){
             @Override
@@ -58,7 +66,8 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
             }
         };*/
         //testThread.start();
-
+//        mcuTmpView.setValue(0);
+//        engineTmpView.setValue(60);
         return mView;
     }
 
@@ -85,7 +94,8 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
                             tvCurrent.setText(Integer.toString(motorCurrent));
                         }
                     });
-
+                    mcuTmpView.setValue(((CMDVCUMCU1.Response)response).Temp_of_MCU);
+                    engineTmpView.setValue(((CMDVCUMCU1.Response)response).Temp_of_Motor);
                 }
             });
             handler.removeCallbacks(this); //移除定时任务
@@ -104,4 +114,5 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
         testThread = null;
         handler.removeCallbacks(runnable);
     }
+
 }

@@ -57,6 +57,9 @@ public class ConstantData {
     public static int sCenterControlWiper       = 5;//0关 1低 2高
     public static int sCenterControlSafeBelt    = 6;
 
+
+    public static boolean sVCUJDQ1State,sVCUJDQ2State,sVCUJDQ3State;
+
     public static int[] sTrunkStatus = new int[]{0};
     public static int sTrunkStatu   = 0;
 

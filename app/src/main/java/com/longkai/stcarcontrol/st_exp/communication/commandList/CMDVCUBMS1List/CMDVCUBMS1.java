@@ -25,9 +25,9 @@ public class CMDVCUBMS1 extends BaseCommand {
         if (data[2] == 0x0C){
             response.R_Isolation_Minus = (data[5] & 0xff)<<8 | (data[4] & 0xff);
             response.R_Isolation_Plus = (data[7] & 0xff)<<8 | (data[6] & 0xff);
-            response.U_HighVoltage_3 = (data[9] & 0xff)<<8 | (data[8] & 0xff);
-            response.U_HighVoltage_2 = (data[11] & 0xff)<<8 | (data[10] & 0xff);
-            response.U_HighVoltage_1 = (data[13] & 0xff)<<8 | (data[12] & 0xff);
+            response.U_HighVoltage_3 = ((data[9] & 0xff)<<8 | (data[8] & 0xff)) *0.1f;
+            response.U_HighVoltage_2 = ((data[11] & 0xff)<<8 | (data[10] & 0xff)) *0.1f;
+            response.U_HighVoltage_1 = ((data[13] & 0xff)<<8 | (data[12] & 0xff)) *0.1f;
         }
         return response;
     }
@@ -39,9 +39,9 @@ public class CMDVCUBMS1 extends BaseCommand {
 
     public static class Response extends BaseResponse {
 
-        public  int	U_HighVoltage_1	;
-        public	int	U_HighVoltage_2	;
-        public	int	U_HighVoltage_3	;
+        public  float	U_HighVoltage_1	;
+        public	float	U_HighVoltage_2	;
+        public	float	U_HighVoltage_3	;
         public	int	R_Isolation_Plus	;
         public	int	R_Isolation_Minus	;
 

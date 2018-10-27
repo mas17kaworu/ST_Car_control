@@ -46,15 +46,15 @@ public class Thermometer extends View {
         init(context);
     }
 
-    /*public synchronized void setValue(float value){
+    public synchronized void setValue(float value){
         this.value = value;
-        this.invalidate();
-    }*/
+        setPercentValue((value - MIN_VALUE) * 100 / (MAX_VALUE - MIN_VALUE));
+    }
 
     public synchronized void setPercentValue(float percentValue){
         this.percentValue = percentValue;
         pillarHeight = (int) ((bottom - top) * percentValue / 100);
-
+        this.invalidate();
     }
     protected void init(Context context){
         mPaint = new Paint();

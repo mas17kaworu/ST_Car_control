@@ -23,13 +23,13 @@ public class CMDVCUMCU1 extends BaseCommand {
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());
         if (data[2] == 0x0E){
-            response.Current_of_MCU = (data[5] & 0xff)<<8 |(data[4] & 0xff);
+            response.Current_of_MCU = (int)(((data[5] & 0xff)<<8 | (data[4] & 0xff)) * 0.1f) - 1000;
             response.Input_Voltage_of_MCU = (int)(((data[7] & 0xff)<<8 |(data[6] & 0xff)) * 0.1f);
-            response.Torch_of_Motor = ((data[9] & 0xff)<<8 |(data[8] & 0xff) - 20000) * 0.1f;
+            response.Torch_of_Motor = (((data[9] & 0xff)<<8 |(data[8] & 0xff)) *0.1f - 2000);
             response.Temp_of_MCU = (data[10] & 0xff) - 40;
             response.Temp_of_Motor = (data[11] & 0xff) - 40;
-            response.Motor_Realtime_Speed = ((data[13] & 0xff)<<8 |(data[12] & 0xff)) - 20000;
-            response.Motor_Current = (int)(((data[15] & 0xff)<<8 |(data[14] & 0xff) - 20000) * 0.05f);
+            response.Motor_Realtime_Speed = ((data[13] & 0xff)<<8 |(data[12] & 0xff));
+            response.Motor_Current = (int)(((data[15] & 0xff)<<8 |(data[14] & 0xff)) * 0.1f);
 
         }
         return response;

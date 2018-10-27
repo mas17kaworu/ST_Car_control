@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.Interface.VCUCircleStateChange;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
@@ -29,6 +31,7 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
     private View mView;
 
     private ImageView iv_jdq1, iv_jdq2, iv_jdq3;
+    private TextView tv_gyjc1, tv_gyjc2;
 
     GifImageView gifViewCircle, gifViewChart;
 
@@ -45,7 +48,8 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
         iv_jdq1 = (ImageView) mView.findViewById(R.id.iv_vcu_gyjc_jdq1);
         iv_jdq2 = (ImageView) mView.findViewById(R.id.iv_vcu_gyjc_jdq2);
         iv_jdq3 = (ImageView) mView.findViewById(R.id.iv_vcu_gyjc_jdq3);
-
+        tv_gyjc1 = (TextView) mView.findViewById(R.id.tv_gyjc1);
+        tv_gyjc2 = (TextView) mView.findViewById(R.id.tv_gyjc2);
 
         return mView;
     }
@@ -54,6 +58,7 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
     public void onResume() {
         super.onResume();
         mVCUCircleStateChange = this;
+        updateJDQ();
 //        mVCUCircleStateChange.shangDianState1();
     }
 
@@ -75,6 +80,7 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
             gifViewChart.setImageDrawable(gifDrawableChart);
             ServiceManager.getInstance().sendCommandToCar(new CMDVCUHVOff(false), new CommandListenerAdapter());
             ServiceManager.getInstance().sendCommandToCar(new CMDVCUHVOn(true), new CommandListenerAdapter());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,6 +94,13 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
 
             GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_rise);
             gifViewChart.setImageDrawable(gifDrawableChart);
+//            tv_gyjc1.setText("50V");
+            tv_gyjc2.setText("0V");
+
+            ConstantData.sVCUJDQ1State = false;
+            ConstantData.sVCUJDQ2State = true;
+            ConstantData.sVCUJDQ3State = true;
+            updateJDQ();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -103,6 +116,12 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
             GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_high);
             gifViewChart.setImageDrawable(gifDrawableChart);
 
+            tv_gyjc2.setText("50V");
+
+            ConstantData.sVCUJDQ1State = true;
+            ConstantData.sVCUJDQ2State = false;
+            ConstantData.sVCUJDQ3State = true;
+            updateJDQ();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -127,6 +146,10 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
             GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_decline);
             gifViewChart.setImageDrawable(gifDrawableChart);
 
+            ConstantData.sVCUJDQ1State = false;
+            ConstantData.sVCUJDQ2State = true;
+            ConstantData.sVCUJDQ3State = true;
+            updateJDQ();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -138,10 +161,33 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
             GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_zero);
             gifViewChart.setImageDrawable(gifDrawableChart);
 
+            tv_gyjc2.setText("0V");
+            ConstantData.sVCUJDQ1State = false;
+            ConstantData.sVCUJDQ2State = false;
+            ConstantData.sVCUJDQ3State = false;
+            updateJDQ();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 //    public void updateCircle
+
+    private void updateJDQ(){
+        if (ConstantData.sVCUJDQ1State)
+            iv_jdq1.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
+        else
+            iv_jdq1.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
+
+        if (ConstantData.sVCUJDQ2State)
+            iv_jdq2.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
+        else
+            iv_jdq2.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
+
+        if (ConstantData.sVCUJDQ3State)
+            iv_jdq3.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
+        else
+            iv_jdq3.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
+
+    }
 }
