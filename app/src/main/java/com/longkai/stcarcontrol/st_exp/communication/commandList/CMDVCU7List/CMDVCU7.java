@@ -8,15 +8,34 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
  */
 
 public class CMDVCU7 extends BaseCommand {
+    protected static byte[] payload = {0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+
     public CMDVCU7(){
         try{
-            data = new byte[2];
-            dataLength = 2;
-            data[0] = 0x02;
+            data = new byte[9];
+            dataLength = 9;
+            data[0] = 0x09;
             data[1] = (byte) (0b101<<5 | COMMAND_VCU7);
+            data[2] = payload[0];
+            data[3] = payload[1];
+            data[4] = payload[2];
+            data[5] = payload[3];
+            data[6] = payload[4];
+            data[7] = payload[5];
+            data[8] = payload[6];
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    protected void refreshDataPayload(){
+        data[2] = payload[0];
+        data[3] = payload[1];
+        data[4] = payload[2];
+        data[5] = payload[3];
+        data[6] = payload[4];
+        data[7] = payload[5];
+        data[8] = payload[6];
     }
 
     @Override

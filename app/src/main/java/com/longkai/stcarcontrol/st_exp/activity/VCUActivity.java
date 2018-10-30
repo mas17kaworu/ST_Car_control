@@ -29,6 +29,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSMonitorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUChargeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUGYHLSDFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUOBCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUTorqueFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUVCUCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUHomeFragment;
@@ -40,6 +41,7 @@ import java.util.TimerTask;
 
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_OBC;
 
 /**
  * Created by Administrator on 2018/5/12.
@@ -58,6 +60,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     private VCUChargeFragment vcuChargeFragment;
     private VCUTorqueFragment vcuTorqueFragment;
     private VCUBMSMonitorFragment vcubmsMonitorFragment;
+    private VCUOBCFragment vcuobcFragment;
 
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
@@ -269,6 +272,15 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
             }
         });
 
+        findViewById(R.id.btn_vcu_obc).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSelect(FRAGMENT_TRANSACTION_OBC);
+                showDrawerLayout();
+            }
+        });
+
+        //bms
         findViewById(R.id.btn_drawer_bms_battery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -510,6 +522,13 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                     vcubmsMonitorFragment = new VCUBMSMonitorFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcubmsMonitorFragment);
+                break;
+            case FRAGMENT_TRANSACTION_OBC:
+                if (vcuobcFragment == null){
+                    vcuobcFragment = new VCUOBCFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, vcuobcFragment);
+                break;
             default:
                 break;
 

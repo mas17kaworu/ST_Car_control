@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="start">
 
-    <!--checker drawer-->
+    <!--checker vcu drawer-->
     <RelativeLayout
         android:id="@+id/rl_drawer_vcu"
         android:layout_width="wrap_content"
@@ -54,6 +54,17 @@
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_marginTop="460dp" />
+
+        <Button
+            android:id="@+id/btn_vcu_obc"
+            android:text="@string/vcu_obc_btn"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextPress"
+            android:background="@drawable/vcu_drawer_btn_click"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="560dp" />
     </RelativeLayout>
 
     <!--tbox drawer-->

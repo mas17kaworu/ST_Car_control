@@ -15,5 +15,6 @@ public class CMDInfoteinmentEngineVoice extends CMDInfoteinment {
      */
     public void changeVoiceTo(int num) {
         payload[3] = (byte) num;
+        refreshDataPayload();
     }
 }

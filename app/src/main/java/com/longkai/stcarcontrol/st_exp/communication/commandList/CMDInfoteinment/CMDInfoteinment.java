@@ -14,9 +14,9 @@ public class CMDInfoteinment extends BaseCommand {
 
     public CMDInfoteinment(){
         try{
-            data = new byte[2];
-            dataLength = 2;
-            data[0] = 0x02;
+            data = new byte[6];
+            dataLength = 6;
+            data[0] = 0x06;
             data[1] = (byte) (0b101<<5 | COMMAND_VCU_INFOTEINMENT);
             data[2] = payload[0];
             data[3] = payload[1];

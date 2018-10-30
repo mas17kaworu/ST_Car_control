@@ -3,9 +3,6 @@ package com.longkai.stcarcontrol.st_exp.activity;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -36,7 +32,6 @@ import com.longkai.stcarcontrol.st_exp.fragment.CarBackLampFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.DoorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
-import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLampTest;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLampTest2;
 import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
@@ -60,6 +55,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private CarBackCoverFragment mCarBackCoverFragment;
     private BCMDiagnosticFragment mBCMDiagnosticFragment;
     private FrontHeadLampTest2 frontHeadLampTest;
+
 
 
     private HorizontalListView hListView;

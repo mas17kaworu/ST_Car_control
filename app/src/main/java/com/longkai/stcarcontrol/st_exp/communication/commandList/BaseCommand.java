@@ -47,6 +47,8 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_VCU_MCU_1       = 0x1C;
     protected static final byte COMMAND_VCU_MCU_2       = 0x1D;
 
+    protected static final byte COMMAND_GUI7           = 0x1E;
+
     protected static final byte COMMAND_VCU_INFOTEINMENT= 0x00;
 
     protected byte[] data;//payload

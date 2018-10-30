@@ -12,9 +12,7 @@ import android.widget.ImageView;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU3List.CMDVCU3;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU4List.CMDVCU4;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU6List.CMDVCU6;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU7List.CMDVCU7;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 /**
@@ -40,7 +38,7 @@ public class VCUChargeFragment extends Fragment implements View.OnClickListener 
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            ServiceManager.getInstance().sendCommandToCar(new CMDVCU6(), new CommandListenerAdapter(){
+            ServiceManager.getInstance().sendCommandToCar(new CMDVCU7(), new CommandListenerAdapter(){
                 @Override
                 public void onSuccess(BaseResponse response) {
                     super.onSuccess(response);
@@ -48,13 +46,13 @@ public class VCUChargeFragment extends Fragment implements View.OnClickListener 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (((CMDVCU6.Response) r).Charger_Status == 0) {
+                            if ( (((CMDVCU7.Response) r).charging_status & 0x01)== 0) {
                                 ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_unplug);
                             } else {
                                 ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_plugin);
                             }
 
-                            if (((CMDVCU6.Response) r).Locker_Status == 0) {
+                            if ( (((CMDVCU7.Response) r).charging_status &0x10) == 0) {
                                 ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carunlock);
                             } else {
                                 ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carlocked);
@@ -66,7 +64,7 @@ public class VCUChargeFragment extends Fragment implements View.OnClickListener 
             });
 
             handler.removeCallbacks(this); //移除定时任务
-            handler.postDelayed(runnable, 1000);
+            handler.postDelayed(runnable, 500);
 
         }
     };
