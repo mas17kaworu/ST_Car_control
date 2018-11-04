@@ -7,13 +7,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
-import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUCarModeList.CMDVCUCarMode;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUMCU1List.CMDVCUMCU1;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.Thermometer;
@@ -30,7 +31,7 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
     private MCUVoltageDashboard mcuVoltageDashboard;
     private Thermometer mcuTmpView;
     private Thermometer engineTmpView;
-
+    private Switch swDemo;
 
     private TextView tvNiuju, tvCurrent;
 
@@ -47,6 +48,20 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
         mcuVoltageDashboard = (MCUVoltageDashboard) mView.findViewById(R.id.dashboard_mcu_voltage);
         tvCurrent = (TextView) mView.findViewById(R.id.tv_mcu_dianliu_number);
         tvNiuju = (TextView) mView.findViewById(R.id.tv_mcu_niuju_number);
+        swDemo = (Switch) mView.findViewById(R.id.sw_vcu_mcu_demo_actual);
+        swDemo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                CMDVCUCarMode cmdvcuCarMode = new CMDVCUCarMode();
+                if (isChecked){
+                    cmdvcuCarMode.change2Driving();
+                    ServiceManager.getInstance().sendCommandToCar(cmdvcuCarMode, new CommandListenerAdapter());
+                } else {
+                    cmdvcuCarMode.change2Static();
+                    ServiceManager.getInstance().sendCommandToCar(cmdvcuCarMode, new CommandListenerAdapter());
+                }
+            }
+        });
 
         mcuTmpView = (Thermometer) mView.findViewById(R.id.thermometer_mcu_mcu);
         engineTmpView = (Thermometer) mView.findViewById(R.id.thermometer_mcu_engine);
@@ -85,15 +100,17 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
                     motorTemp = ((CMDVCUMCU1.Response)response).Temp_of_Motor;
                     mcuTemp = ((CMDVCUMCU1.Response)response).Temp_of_MCU;
                     mcuInputVoltage = ((CMDVCUMCU1.Response)response).Input_Voltage_of_MCU;
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            engineSpeedDashboard.setValue(motorRealTimeSpeed);
-                            mcuVoltageDashboard.setValue(mcuInputVoltage);
-                            tvNiuju.setText(Float.toString(motorTorch));
-                            tvCurrent.setText(Integer.toString(motorCurrent));
-                        }
-                    });
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                engineSpeedDashboard.setValue(motorRealTimeSpeed);
+                                mcuVoltageDashboard.setValue(mcuInputVoltage);
+                                tvNiuju.setText(Float.toString(motorTorch));
+                                tvCurrent.setText(Integer.toString(motorCurrent));
+                            }
+                        });
+                    }
                     mcuTmpView.setValue(((CMDVCUMCU1.Response)response).Temp_of_MCU);
                     engineTmpView.setValue(((CMDVCUMCU1.Response)response).Temp_of_Motor);
                 }

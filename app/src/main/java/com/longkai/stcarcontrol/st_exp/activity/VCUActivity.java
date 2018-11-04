@@ -198,7 +198,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                     }
                 });
 
-                handler.postDelayed(new Runnable() {
+                /*handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if (mVCUVCUCFragment !=null) {
@@ -214,7 +214,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                             mVCUVCUCFragment.getController().shangDianState3();
                         }
                     }
-                }, 2000);
+                }, 2000);*/
 
             }
         });
@@ -236,7 +236,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                     }
                 });
 
-                handler.postDelayed(new Runnable() {
+                /*handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if (mVCUVCUCFragment !=null){
@@ -252,7 +252,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                             mVCUVCUCFragment.getController().xiaDianState3();
                         }
                     }
-                }, 2000);
+                }, 2000);*/
             }
         });
 

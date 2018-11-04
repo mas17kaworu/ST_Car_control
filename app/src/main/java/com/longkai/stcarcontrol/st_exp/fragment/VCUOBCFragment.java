@@ -13,9 +13,7 @@ import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU7List.CMDVCU7;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU7List.CMDVCU7DCDC;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU7List.CMDVCU7OBCOff;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU7List.CMDVCU7OBCOn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUGUI7List.CMDVCUGUI7;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 /**
@@ -85,31 +83,29 @@ public class VCUOBCFragment extends Fragment implements View.OnClickListener{
         }
     };
 
+    CMDVCUGUI7 cmdvcugui7 = new CMDVCUGUI7();
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_vcu_obc_dcdc_switch:
-                CMDVCU7DCDC cmdvcu7DCDC = new CMDVCU7DCDC();
-                if (cmdvcu7DCDC.getValue() == 0) {
-                    cmdvcu7DCDC.on();
-                    btnDCDC.setImageResource(R.mipmap.ic_vcu_obc_on);
-                } else {
-                    cmdvcu7DCDC.off();
+                if (cmdvcugui7.isDCDCOn()) {
+                    cmdvcugui7.DCDCOff();
                     btnDCDC.setImageResource(R.mipmap.ic_vcu_obc_off);
+                } else {
+                    cmdvcugui7.DCDCOn();
+                    btnDCDC.setImageResource(R.mipmap.ic_vcu_obc_on);
                 }
+                ServiceManager.getInstance().sendCommandToCar(cmdvcugui7, new CommandListenerAdapter());
                 break;
             case R.id.iv_vcu_obc_obc_switch:
-                CMDVCU7OBCOn cmdvcu7OBCOn = new CMDVCU7OBCOn();
-                CMDVCU7OBCOff cmdvcu7OBCOff = new CMDVCU7OBCOff();
-                if (cmdvcu7OBCOn.getValue() == 0) {
-                    cmdvcu7OBCOff.off();
-                    cmdvcu7OBCOn.on();
-                    btnOBC.setImageResource(R.mipmap.ic_vcu_obc_on);
-                } else {
-                    cmdvcu7OBCOn.off();
-                    cmdvcu7OBCOff.on();
+                if (cmdvcugui7.isOBCOn()) {
+                    cmdvcugui7.OBCOff();
                     btnOBC.setImageResource(R.mipmap.ic_vcu_obc_off);
+                } else {
+                    cmdvcugui7.OBCOn();
+                    btnOBC.setImageResource(R.mipmap.ic_vcu_obc_on);
                 }
+                ServiceManager.getInstance().sendCommandToCar(cmdvcugui7, new CommandListenerAdapter());
                 break;
         }
 

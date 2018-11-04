@@ -43,22 +43,24 @@ public class VCUChargeFragment extends Fragment implements View.OnClickListener 
                 public void onSuccess(BaseResponse response) {
                     super.onSuccess(response);
                     final BaseResponse r = response;
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if ( (((CMDVCU7.Response) r).charging_status & 0x01)== 0) {
-                                ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_unplug);
-                            } else {
-                                ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_plugin);
-                            }
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if ((((CMDVCU7.Response) r).charging_status & 0x01) == 0) {
+                                    ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_unplug);
+                                } else {
+                                    ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_plugin);
+                                }
 
-                            if ( (((CMDVCU7.Response) r).charging_status &0x10) == 0) {
-                                ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carunlock);
-                            } else {
-                                ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carlocked);
+                                if ((((CMDVCU7.Response) r).charging_status & 0x10) == 0) {
+                                    ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carunlock);
+                                } else {
+                                    ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carlocked);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
 
                 }
             });

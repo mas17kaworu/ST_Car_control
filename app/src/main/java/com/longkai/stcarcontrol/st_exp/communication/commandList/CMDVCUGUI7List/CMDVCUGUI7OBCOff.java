@@ -1,11 +1,11 @@
-package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU7List;
+package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUGUI7List;
 
 /**
  * Created by Administrator on 2018/10/29.
  */
 
-public class CMDVCU7OBCOff extends CMDVCU7 {
-    public CMDVCU7OBCOff(){
+public class CMDVCUGUI7OBCOff extends CMDVCUGUI7 {
+    public CMDVCUGUI7OBCOff(){
         super();
     }
 

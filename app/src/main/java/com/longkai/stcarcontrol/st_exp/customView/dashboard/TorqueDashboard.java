@@ -95,7 +95,13 @@ public class TorqueDashboard extends View {
     }
 
     public void setPercent(float value){
-        target_value_percent = value;
+        if (value > 100) {
+            target_value_percent = 100;
+        } else if (value < 0){
+            target_value_percent = 0;
+        } else {
+            target_value_percent = value;
+        }
     }
 
     double angle;

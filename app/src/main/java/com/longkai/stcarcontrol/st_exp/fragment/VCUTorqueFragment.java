@@ -95,7 +95,7 @@ public class VCUTorqueFragment extends Fragment {
 
 
             handler.removeCallbacks(this); //移除定时任务
-            handler.postDelayed(runnable, 500);
+            handler.postDelayed(runnable, 200);
 
         }
     };

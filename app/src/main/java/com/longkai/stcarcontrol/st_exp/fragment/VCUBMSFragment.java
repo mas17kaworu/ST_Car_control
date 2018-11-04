@@ -55,13 +55,14 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
                 public void onSuccess(BaseResponse response) {
                     super.onSuccess(response);
                     final BaseResponse r = response;
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
 
-                            dashboardMainPlusBefore.setValue(((CMDVCUBMS1.Response) r).U_HighVoltage_1);
-                            dashboardMainPlusAfter.setValue(((CMDVCUBMS1.Response) r).U_HighVoltage_2);
-                            dashboardMainMinusAfter.setValue(((CMDVCUBMS1.Response) r).U_HighVoltage_3);
+                                dashboardMainPlusBefore.setValue(((CMDVCUBMS1.Response) r).U_HighVoltage_1);
+                                dashboardMainPlusAfter.setValue(((CMDVCUBMS1.Response) r).U_HighVoltage_2);
+                                dashboardMainMinusAfter.setValue(((CMDVCUBMS1.Response) r).U_HighVoltage_3);
                             /*if (((CMDVCUBMS1.Response) r).Charger_Status == 0) {
                                 ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_unplug);
                             } else {
@@ -73,8 +74,9 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
                             } else {
                                 ivCarLockState.setImageResource(R.mipmap.ic_vcu_charge_carlocked);
                             }*/
-                        }
-                    });
+                            }
+                        });
+                    }
 
                 }
             });
