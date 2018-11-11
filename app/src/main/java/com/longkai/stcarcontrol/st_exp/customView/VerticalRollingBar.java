@@ -37,7 +37,7 @@ public class VerticalRollingBar extends View {
 
     protected float MIN_INTERVAL = 0.1f;
     protected float maxValue = 100.0f;
-    protected float minValue = -10.0f;
+    protected float minValue = 0.0f;
 
     public VerticalRollingBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
