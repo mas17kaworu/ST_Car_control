@@ -63,7 +63,7 @@ public class CMDVCUCarMode extends BaseCommand {
     }
 
     public void change2Driving(){
-        payload[1] = 2;
+        payload[0] = 2;
         refreshDataPayload();
     }
 }

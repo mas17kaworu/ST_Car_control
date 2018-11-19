@@ -2,6 +2,7 @@ package com.longkai.stcarcontrol.st_exp.customView.dashboard;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -63,14 +64,16 @@ public class VoltageDashboard extends View{
 
     public VoltageDashboard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.VoltageDashboard);
+        int resID = array.getInteger(R.styleable.VoltageDashboard_backpicture, R.mipmap.ic_vcu_dashboard_voltage_back);
+        init(context, resID);
     }
 
-    private void init(Context context){
+    private void init(Context context, int backgroundResId){
         mPaint = new Paint();
         Resources resources = context.getResources();
-        background = BitmapFactory.decodeResource(resources, R.mipmap.ic_dashboard_voltage_back);
-        pin = BitmapFactory.decodeResource(resources, R.mipmap.ic_dashboard_voltage_pin);
+        background = BitmapFactory.decodeResource(resources, backgroundResId);
+        pin = BitmapFactory.decodeResource(resources, backgroundResId);
         width = background.getWidth();
         height = background.getHeight();
         matrix = new Matrix();
