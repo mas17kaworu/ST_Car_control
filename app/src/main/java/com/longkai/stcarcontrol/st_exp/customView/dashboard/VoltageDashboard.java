@@ -31,21 +31,21 @@ public class VoltageDashboard extends View{
     private TextPaint mTextPaint;
     private float target_value_percent = 0; //0~100
     private float target_value = 0;
-    private float present_value = 0;
+    private float present_value_percent = 0;
     private View view;
     private DecimalFormat df;
 
     private static final float MIN_INTERVAL = 0.1f;
-    private static final float MAX_VALUE = 80.0f;
-    private static final float MIN_VALUE = 0f;
+    private static float MAX_VALUE = 80.0f;
+    private static float MIN_VALUE = 0f;
 
     private Thread refreshThread = new Thread(){
         @Override
         public void run() {
             super.run();
             while (true) {
-                if (Math.abs(present_value - target_value_percent)> MIN_INTERVAL) {
-                    present_value += caculateInterval(target_value_percent, present_value);
+                if (Math.abs(present_value_percent - target_value_percent)> MIN_INTERVAL) {
+                    present_value_percent += caculateInterval(target_value_percent, present_value_percent);
                 }
                 view.postInvalidate();
                 try {
@@ -62,11 +62,24 @@ public class VoltageDashboard extends View{
     int width;
     int height;
 
+    private String unit = "";
+
     public VoltageDashboard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.VoltageDashboard);
-        int resID = array.getInteger(R.styleable.VoltageDashboard_backpicture, R.mipmap.ic_vcu_dashboard_voltage_back);
+        int resID = array.getInteger(R.styleable.VoltageDashboard_backpicture, 0);
+        unit = resID==0? "V" : "A";
+        resID = resID==0? R.mipmap.ic_vcu_dashboard_voltage_back : R.mipmap.ic_vcu_dashboard_current_back;
+
         init(context, resID);
+    }
+
+    public void setMaxValue(float maxValue){
+        MAX_VALUE = maxValue;
+    }
+
+    public void setMinValue(float minValue){
+        MIN_VALUE = minValue;
     }
 
     private void init(Context context, int backgroundResId){
@@ -87,8 +100,14 @@ public class VoltageDashboard extends View{
     }
 
     public void setValue(float value){
-        target_value = value;
-        target_value_percent = (int)((MAX_VALUE-MIN_VALUE) * value / 100);
+        if (value > MAX_VALUE){
+            target_value = MAX_VALUE;
+        } else if (value < MIN_VALUE){
+            target_value = MIN_VALUE;
+        } else {
+            target_value = value;
+        }
+        target_value_percent = (int)((MAX_VALUE-MIN_VALUE) * target_value / 100);
     }
 
 
@@ -96,12 +115,12 @@ public class VoltageDashboard extends View{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawBitmap(background,0,0,mPaint);
-        matrix.setRotate(present_value * FULL_ANGLE / 100, width/2, height/2);
+        matrix.setRotate(present_value_percent * FULL_ANGLE / 100, width/2, height/2);
         canvas.drawBitmap(pin, matrix, mPaint);
-        /*canvas.drawText(df.format( (int)((MAX_VALUE-MIN_VALUE) * present_value / 100)) + "v",
+        /*canvas.drawText(df.format( (int)((MAX_VALUE-MIN_VALUE) * present_value_percent / 100)) + "v",
                 width/2.f - 30, height/2.f + 60, mTextPaint);*/
 
-        canvas.drawText(df.format( target_value) + "v",
+        canvas.drawText(df.format( target_value) + unit,
                 width/2.f - 30, height/2.f + 60, mTextPaint);
     }
 

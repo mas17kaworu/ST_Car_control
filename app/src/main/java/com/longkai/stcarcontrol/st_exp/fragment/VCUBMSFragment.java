@@ -30,6 +30,7 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
     private View mView;
 
     private VoltageDashboard dashboardMainPlusBefore, dashboardMainPlusAfter, dashboardMainMinusAfter;
+    private VoltageDashboard dashboardPackageVoltage, dashboardPackageCurrent;
     private VerticalRollingBar Module_Temperature_1, Module_Temperature_2, Module_Temperature_3
             ,Module_Temperature_4, Module_Temperature_5, Module_Temperature_6, Module_Temperature_7;
 
@@ -42,6 +43,11 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
         dashboardMainPlusBefore = (VoltageDashboard) mView.findViewById(R.id.dashboard_bms_main_jdq_front);
         dashboardMainPlusAfter=(VoltageDashboard) mView.findViewById(R.id.dashboard_bms_main_jdq_behind);
         dashboardMainMinusAfter=(VoltageDashboard) mView.findViewById(R.id.dashboard_bms_minus_jdq_behind);
+
+        dashboardPackageVoltage = (VoltageDashboard) mView.findViewById(R.id.dashboard_bms_battery_voltage);
+        dashboardPackageCurrent = (VoltageDashboard) mView.findViewById(R.id.dashboard_bms_battery_current);
+        dashboardPackageCurrent.setMaxValue(60.f);
+
         Module_Temperature_1 = (VerticalRollingBar) mView.findViewById(R.id.vrb_vcu_bms_temperature_1);
         Module_Temperature_2 = (VerticalRollingBar) mView.findViewById(R.id.vrb_vcu_bms_temperature_2);
         Module_Temperature_3 = (VerticalRollingBar) mView.findViewById(R.id.vrb_vcu_bms_temperature_3);
@@ -151,6 +157,9 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
                     Module_Temperature_5.setValue(((CMDVCUBMS4.Response) response).Module_Temperature_5);
                     Module_Temperature_6.setValue(((CMDVCUBMS4.Response) response).Module_Temperature_6);
                     Module_Temperature_7.setValue(((CMDVCUBMS4.Response) response).Module_Temperature_7);
+
+                    dashboardPackageVoltage.setValue(((CMDVCUBMS4.Response) response).Pack_Voltage);
+                    dashboardPackageCurrent.setValue(((CMDVCUBMS4.Response) response).Pack_Current);
                 }
             });
 

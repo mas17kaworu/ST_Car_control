@@ -9,7 +9,8 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUGUIList.C
  */
 
 public class CMDVCUGUI7 extends BaseCommand {
-    //D0 D1 D2 D3 D4 OBCOn D5 OBCOff D6 DCDC
+    //D0 D1 D2 D3 D4   D5     D6    D7
+    //           OBCOn OBCOff DCDC
     protected static byte[] payload = {0x00,0x00,0x00,0x00,0x00,0x01,0x00,0x00};
 
     public CMDVCUGUI7(){
@@ -86,9 +87,9 @@ public class CMDVCUGUI7 extends BaseCommand {
     }
 
     public boolean isDCDCOn(){
-        if (payload[6] == 0){
+        if (payload[6] == 0)
             return false;
-        } else
+        else
             return true;
     }
 

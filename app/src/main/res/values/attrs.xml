@@ -8,6 +8,10 @@
 
     </declare-styleable>
     <declare-styleable name="VoltageDashboard">
-        <attr name="backpicture" format="integer"/>
+        <attr name="backpicture" format="enum">
+            <enum name="voltage" value="0"/>
+            <enum name="current" value="1"/>
+        </attr>
+
     </declare-styleable>
 </resources>

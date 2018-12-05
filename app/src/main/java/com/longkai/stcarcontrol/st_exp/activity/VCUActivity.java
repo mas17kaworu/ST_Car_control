@@ -197,25 +197,6 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                         }
                     }
                 });
-
-                /*handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mVCUVCUCFragment !=null) {
-                            mVCUVCUCFragment.getController().shangDianState2();
-                        }
-                    }
-                }, 1000);
-
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mVCUVCUCFragment !=null) {
-                            mVCUVCUCFragment.getController().shangDianState3();
-                        }
-                    }
-                }, 2000);*/
-
             }
         });
 

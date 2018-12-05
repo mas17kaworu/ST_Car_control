@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.Enum.VCUStateEnum;
@@ -106,7 +107,7 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
                                     ConstantData.sVCUJDQ2State = false;
                                     iv_jdq_yuchong.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
                                 } else {
-                                    ConstantData.sVCUJDQ2State = false;
+                                    ConstantData.sVCUJDQ2State = true;
                                     iv_jdq_yuchong.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
                                 }
                                 updateStatus();
@@ -131,7 +132,7 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
     @Override
     public void shangDianState1() {
         try{
-            Log.i("LK test", "shangDianState1");
+            Toast.makeText(this.getContext(), "SDState1", Toast.LENGTH_SHORT).show();
             GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_zero);
             gifViewChart.setImageDrawable(gifDrawableChart);
             presentState = VCUStateEnum.SD1;
@@ -180,6 +181,7 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
     @Override
     public void xiaDianState1() {
         try {
+            Toast.makeText(this.getContext(), "XDState1", Toast.LENGTH_SHORT).show();
             GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_high);
             gifViewChart.setImageDrawable(gifDrawableChart);
             presentState = VCUStateEnum.XD1;
@@ -250,7 +252,7 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
 
         if ( (presentState.equals(VCUStateEnum.SD2) || presentState.equals(VCUStateEnum.IDLE))
                 && ConstantData.sVCUJDQ1State && ConstantData.sVCUJDQ3State){
-            presentState = VCUStateEnum.SD2;
+            presentState = VCUStateEnum.SD3;
             this.shangDianState3();
         }
 
