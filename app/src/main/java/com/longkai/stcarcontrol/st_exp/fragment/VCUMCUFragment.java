@@ -54,10 +54,10 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 CMDVCUCarMode cmdvcuCarMode = new CMDVCUCarMode();
                 if (isChecked){
-                    cmdvcuCarMode.change2Driving();
+                    cmdvcuCarMode.change2Static();
                     ServiceManager.getInstance().sendCommandToCar(cmdvcuCarMode, new CommandListenerAdapter());
                 } else {
-                    cmdvcuCarMode.change2Static();
+                    cmdvcuCarMode.change2Driving();
                     ServiceManager.getInstance().sendCommandToCar(cmdvcuCarMode, new CommandListenerAdapter());
                 }
             }

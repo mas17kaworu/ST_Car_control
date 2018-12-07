@@ -83,6 +83,7 @@ public class VCUOBCFragment extends Fragment implements View.OnClickListener{
         }
     };
 
+    //// TODO: 2018/12/5 restore from static memery 
     CMDVCUGUI7 cmdvcugui7 = new CMDVCUGUI7();
     @Override
     public void onClick(View v) {

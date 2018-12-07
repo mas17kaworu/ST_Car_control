@@ -110,20 +110,20 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_1)).setText(r.Cell_1_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_2)).setText(r.Cell_2_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_3)).setText(r.Cell_3_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_4)).setText(r.Cell_4_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_5)).setText(r.Cell_5_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_6)).setText(r.Cell_6_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_7)).setText(r.Cell_7_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_8)).setText(r.Cell_8_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_9)).setText(r.Cell_9_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_10)).setText(r.Cell_10_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_11)).setText(r.Cell_11_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_12)).setText(r.Cell_12_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_13)).setText(r.Cell_13_Voltage);
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_14)).setText(r.Cell_14_Voltage);
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_1)).setText(r.Cell_1_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_2)).setText(r.Cell_2_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_3)).setText(r.Cell_3_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_4)).setText(r.Cell_4_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_5)).setText(r.Cell_5_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_6)).setText(r.Cell_6_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_7)).setText(r.Cell_7_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_8)).setText(r.Cell_8_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_9)).setText(r.Cell_9_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_10)).setText(r.Cell_10_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_11)).setText(r.Cell_11_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_12)).setText(r.Cell_12_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_13)).setText(r.Cell_13_Voltage + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_14)).setText(r.Cell_14_Voltage + "V");
 
                                 updateCellBalance(r.CellBalance_Status_1, R.id.iv_bms_cell_balance_1);
                                 updateCellBalance(r.CellBalance_Status_2, R.id.iv_bms_cell_balance_2);
