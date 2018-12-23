@@ -209,6 +209,14 @@ public class CommunicationServer extends Service {
             mConnectionListenerList.add(listener);
         }
 
+        /**
+         * For test
+         *
+         */
+        public ProtocolMessageDispatch getMessageHandler(){
+            return mMessageHandler;
+        }
+
     }
 
 

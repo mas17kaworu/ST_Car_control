@@ -70,19 +70,19 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            ServiceManager.getInstance().sendCommandToCar(new CMDVCUBMS1(), new CommandListenerAdapter(){
+            ServiceManager.getInstance().sendCommandToCar(new CMDVCUBMS1(), new CommandListenerAdapter<CMDVCUBMS1.Response>(){
                 @Override
-                public void onSuccess(BaseResponse response) {
+                public void onSuccess(CMDVCUBMS1.Response response) {
                     super.onSuccess(response);
-                    final BaseResponse r = response;
+                    final CMDVCUBMS1.Response r = response;
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
 
-                                dashboardMainPlusBefore.setValue(((CMDVCUBMS1.Response) r).U_HighVoltage_1);
-                                dashboardMainPlusAfter.setValue(((CMDVCUBMS1.Response) r).U_HighVoltage_2);
-                                dashboardMainMinusAfter.setValue(((CMDVCUBMS1.Response) r).U_HighVoltage_3);
+                                dashboardMainPlusBefore.setValue( r.U_HighVoltage_1);
+                                dashboardMainPlusAfter.setValue( r.U_HighVoltage_2);
+                                dashboardMainMinusAfter.setValue( r.U_HighVoltage_3);
                             /*if (((CMDVCUBMS1.Response) r).Charger_Status == 0) {
                                 ivChargeState.setImageResource(R.mipmap.ic_vcu_charge_unplug);
                             } else {
@@ -146,17 +146,18 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
                 }
             });
 
-            ServiceManager.getInstance().sendCommandToCar(new CMDVCUBMS4(), new CommandListenerAdapter(){
+            ServiceManager.getInstance().sendCommandToCar(new CMDVCUBMS4(), new CommandListenerAdapter<CMDVCUBMS4.Response>(){
                 @Override
-                public void onSuccess(final BaseResponse response) {
+                public void onSuccess(final CMDVCUBMS4.Response response) {
                     super.onSuccess(response);
-                    Module_Temperature_1.setValue(((CMDVCUBMS4.Response) response).Module_Temperature_1);
-                    Module_Temperature_2.setValue(((CMDVCUBMS4.Response) response).Module_Temperature_2);
-                    Module_Temperature_3.setValue(((CMDVCUBMS4.Response) response).Module_Temperature_3);
-                    Module_Temperature_4.setValue(((CMDVCUBMS4.Response) response).Module_Temperature_4);
-                    Module_Temperature_5.setValue(((CMDVCUBMS4.Response) response).Module_Temperature_5);
-                    Module_Temperature_6.setValue(((CMDVCUBMS4.Response) response).Module_Temperature_6);
-                    Module_Temperature_7.setValue(((CMDVCUBMS4.Response) response).Module_Temperature_7);
+
+                    Module_Temperature_1.setValue(response.Module_Temperature_1);
+                    Module_Temperature_2.setValue(response.Module_Temperature_2);
+                    Module_Temperature_3.setValue(response.Module_Temperature_3);
+                    Module_Temperature_4.setValue(response.Module_Temperature_4);
+                    Module_Temperature_5.setValue(response.Module_Temperature_5);
+                    Module_Temperature_6.setValue(response.Module_Temperature_6);
+                    Module_Temperature_7.setValue(response.Module_Temperature_7);
 
                     dashboardPackageVoltage.setValue(((CMDVCUBMS4.Response) response).Pack_Voltage);
                     dashboardPackageCurrent.setValue(((CMDVCUBMS4.Response) response).Pack_Current);

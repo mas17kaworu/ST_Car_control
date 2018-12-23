@@ -11,7 +11,7 @@ import com.longkai.stcarcontrol.st_exp.communication.CommandListener;
  * @version 1.0
  * @see CommandListener
  */
-public class CommandListenerAdapter implements CommandListener {
+public class CommandListenerAdapter<T extends BaseResponse> implements CommandListener<T> {
     private long sendTimeStamp;
 
     /**
@@ -34,13 +34,14 @@ public class CommandListenerAdapter implements CommandListener {
         return sendTimeStamp;
     }
 
+
     /**
      * Called when command execute success.
      *
      * @param response the response of command.
      */
     @Override
-    public void onSuccess(BaseResponse response) {
+    public void onSuccess(T response) {
     }
 
     /**

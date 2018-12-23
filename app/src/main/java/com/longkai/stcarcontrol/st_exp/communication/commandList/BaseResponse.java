@@ -16,6 +16,14 @@ public class BaseResponse {
 
     protected byte commandId;
 
+    public BaseResponse(){
+
+    }
+
+    protected void setCommandId(byte commandId){
+        this.commandId = commandId;
+    }
+
     public BaseResponse(byte commandId) {
         this.commandId=commandId;
     }

@@ -20,6 +20,8 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListener
 import com.longkai.stcarcontrol.st_exp.customView.Thermometer;
 import com.longkai.stcarcontrol.st_exp.customView.dashboard.DashboardView;
 import com.longkai.stcarcontrol.st_exp.customView.dashboard.MCUVoltageDashboard;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageService;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl;
 
 /**
  * Created by Administrator on 2018/5/20.
@@ -66,6 +68,9 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
         mcuTmpView = (Thermometer) mView.findViewById(R.id.thermometer_mcu_mcu);
         engineTmpView = (Thermometer) mView.findViewById(R.id.thermometer_mcu_engine);
         handler.postDelayed(runnable, 500);// 打开定时器，500ms后执行runnable
+
+        //start test
+//        MockMessageServiceImpl.getService().StartService(VCUMCUFragment.class.toString());
         /*testThread = new Thread(){
             @Override
             public void run() {
@@ -90,16 +95,16 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
     Runnable runnable = new Runnable(){
         @Override
         public void run() {
-            ServiceManager.getInstance().sendCommandToCar(new CMDVCUMCU1(),new CommandListenerAdapter(){
+            ServiceManager.getInstance().sendCommandToCar(new CMDVCUMCU1(),new CommandListenerAdapter<CMDVCUMCU1.Response>(){
                 @Override
-                public void onSuccess(BaseResponse response) {
+                public void onSuccess(CMDVCUMCU1.Response response) {
                     super.onSuccess(response);
-                    motorRealTimeSpeed = ((CMDVCUMCU1.Response)response).Motor_Realtime_Speed;
-                    motorTorch = ((CMDVCUMCU1.Response)response).Torch_of_Motor;
-                    motorCurrent = ((CMDVCUMCU1.Response)response).Motor_Current;
-                    motorTemp = ((CMDVCUMCU1.Response)response).Temp_of_Motor;
-                    mcuTemp = ((CMDVCUMCU1.Response)response).Temp_of_MCU;
-                    mcuInputVoltage = ((CMDVCUMCU1.Response)response).Input_Voltage_of_MCU;
+                    motorRealTimeSpeed = response.Motor_Realtime_Speed;
+                    motorTorch = response.Torch_of_Motor;
+                    motorCurrent = response.Motor_Current;
+                    motorTemp = response.Temp_of_Motor;
+                    mcuTemp = response.Temp_of_MCU;
+                    mcuInputVoltage = response.Input_Voltage_of_MCU;
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -111,8 +116,8 @@ public class VCUMCUFragment extends Fragment implements View.OnClickListener {
                             }
                         });
                     }
-                    mcuTmpView.setValue(((CMDVCUMCU1.Response)response).Temp_of_MCU);
-                    engineTmpView.setValue(((CMDVCUMCU1.Response)response).Temp_of_Motor);
+                    mcuTmpView.setValue(response.Temp_of_MCU);
+                    engineTmpView.setValue(response.Temp_of_Motor);
                 }
             });
             handler.removeCallbacks(this); //移除定时任务

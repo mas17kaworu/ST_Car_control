@@ -1,6 +1,10 @@
 package com.longkai.stcarcontrol.st_exp;
 
+import com.android.internal.util.Predicate;
+
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -26,5 +30,15 @@ public class ExampleUnitTest {
         System.out.println("longkai Pedal_Status = " + (float)Pedal_Status);
     }
 
+    class Person {
+        private int age;
+        private String name;
+    }
+
+    @Test
+    public void java8Test(){
+        //Stream
+//        List<Person> people = Stream.
+    }
 
 }

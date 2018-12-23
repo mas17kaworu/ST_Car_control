@@ -81,7 +81,11 @@ public class DashboardView extends View {
     }
 
     public void setValue(float value){
-        target_value_percent = value;
+        target_value_percent = (value - MIN_VALUE) / (MAX_VALUE - MIN_VALUE);
+    }
+
+    public void setPercent(float percent){
+        target_value_percent = percent;
     }
 
     @Override

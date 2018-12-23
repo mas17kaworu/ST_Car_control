@@ -108,4 +108,12 @@ public class ServiceManager {
             binder.ConnectToDevice(bundle, listener, type);
         }
     }
+
+    public ProtocolMessageDispatch getMessageDispatcher(){
+        if (null != binder) {
+            return binder.getMessageHandler();
+        } else {
+            return null;
+        }
+    }
 }
