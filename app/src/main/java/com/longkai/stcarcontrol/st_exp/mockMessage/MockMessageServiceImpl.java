@@ -3,7 +3,9 @@ package com.longkai.stcarcontrol.st_exp.mockMessage;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUBMSFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUMCUFragmentMock;
 
 /**
@@ -35,6 +37,8 @@ public class MockMessageServiceImpl implements MockMessageService {
         Runnable runnable = null;
         if (fragmentClass.equalsIgnoreCase(VCUMCUFragment.class.toString())){
             runnable = new VCUMCUFragmentMock(doBackgroundHandler);
+        } else if (fragmentClass.equalsIgnoreCase(VCUBMSFragment.class.toString())){
+            runnable = new VCUBMSFragmentMock(doBackgroundHandler);
         }
         doBackgroundHandler.post(runnable);
     }

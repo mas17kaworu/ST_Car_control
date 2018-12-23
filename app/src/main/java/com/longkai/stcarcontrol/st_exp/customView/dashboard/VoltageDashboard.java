@@ -36,8 +36,8 @@ public class VoltageDashboard extends View{
     private DecimalFormat df;
 
     private static final float MIN_INTERVAL = 0.1f;
-    private static float MAX_VALUE = 80.0f;
-    private static float MIN_VALUE = 0f;
+    private float MAX_VALUE = 80.0f;
+    private float MIN_VALUE = 0f;
 
     private Thread refreshThread = new Thread(){
         @Override
@@ -86,7 +86,7 @@ public class VoltageDashboard extends View{
         mPaint = new Paint();
         Resources resources = context.getResources();
         background = BitmapFactory.decodeResource(resources, backgroundResId);
-        pin = BitmapFactory.decodeResource(resources, backgroundResId);
+        pin = BitmapFactory.decodeResource(resources, R.mipmap.ic_dashboard_voltage_pin);
         width = background.getWidth();
         height = background.getHeight();
         matrix = new Matrix();
@@ -107,7 +107,7 @@ public class VoltageDashboard extends View{
         } else {
             target_value = value;
         }
-        target_value_percent = (int)((MAX_VALUE-MIN_VALUE) * target_value / 100);
+        target_value_percent = (int)(target_value * 100 / (MAX_VALUE-MIN_VALUE));
     }
 
 
@@ -115,7 +115,7 @@ public class VoltageDashboard extends View{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawBitmap(background,0,0,mPaint);
-        matrix.setRotate(present_value_percent * FULL_ANGLE / 100, width/2, height/2);
+        matrix.setRotate(present_value_percent * FULL_ANGLE / 100, pin.getWidth()/2+4, pin.getHeight()/2 + 4);
         canvas.drawBitmap(pin, matrix, mPaint);
         /*canvas.drawText(df.format( (int)((MAX_VALUE-MIN_VALUE) * present_value_percent / 100)) + "v",
                 width/2.f - 30, height/2.f + 60, mTextPaint);*/

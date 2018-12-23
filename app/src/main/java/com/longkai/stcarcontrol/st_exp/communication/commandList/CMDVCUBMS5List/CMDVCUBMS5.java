@@ -25,7 +25,7 @@ public class CMDVCUBMS5 extends BaseCommand {
         if (data[2] == 0x04){
             response.BMS_Fault_2 = (data[4] & 0x01);
             response.BMS_Fault_1 = (data[4] & 0x02)>>1;
-            response.SOC = (data[5] & 0xff);
+            response.SOC = (data[5] & 0xff) * 0.392f;
         }
         return response;
     }
@@ -36,11 +36,9 @@ public class CMDVCUBMS5 extends BaseCommand {
     }
 
     public static class Response extends BaseResponse {
-        public	int	SOC	;
+        public	float	SOC	; // 0~100
         public	int	BMS_Fault_1; //Pack_Fault
         public	int	BMS_Fault_2; //Cell_Fualt
-
-
 
         public Response(byte commandId) {
             super(commandId);

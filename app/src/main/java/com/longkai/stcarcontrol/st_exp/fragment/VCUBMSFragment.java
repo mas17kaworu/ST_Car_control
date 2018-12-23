@@ -17,10 +17,14 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU6List.CMD
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUBMS1List.CMDVCUBMS1;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUBMS3List.CMDVCUBMS3;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUBMS4List.CMDVCUBMS4;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUBMS5List.CMDVCUBMS5;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar;
 import com.longkai.stcarcontrol.st_exp.customView.dashboard.DashboardView;
 import com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl;
+
+import java.text.DecimalFormat;
 
 /**
  * Created by Administrator on 2018/5/20.
@@ -41,10 +45,14 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
         mView = inflater.inflate(R.layout.fragment_vcu_bms, container, false);
 
         dashboardMainPlusBefore = (VoltageDashboard) mView.findViewById(R.id.dashboard_bms_main_jdq_front);
+        dashboardMainPlusBefore.setMaxValue(80.f);
         dashboardMainPlusAfter=(VoltageDashboard) mView.findViewById(R.id.dashboard_bms_main_jdq_behind);
+        dashboardMainPlusAfter.setMaxValue(80.f);
         dashboardMainMinusAfter=(VoltageDashboard) mView.findViewById(R.id.dashboard_bms_minus_jdq_behind);
+        dashboardMainMinusAfter.setMaxValue(80.f);
 
         dashboardPackageVoltage = (VoltageDashboard) mView.findViewById(R.id.dashboard_bms_battery_voltage);
+        dashboardPackageVoltage.setMaxValue(80.f);
         dashboardPackageCurrent = (VoltageDashboard) mView.findViewById(R.id.dashboard_bms_battery_current);
         dashboardPackageCurrent.setMaxValue(60.f);
 
@@ -58,6 +66,10 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
 
 //        dashboardMainPlusBefore.setValue(20f);
         handler.postDelayed(runnable, 500);// 打开定时器，500ms后执行runnable
+
+        //test
+//        MockMessageServiceImpl.getService().StartService(VCUBMSFragment.class.toString());
+
         return mView;
     }
 
@@ -110,20 +122,21 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_1)).setText(r.Cell_1_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_2)).setText(r.Cell_2_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_3)).setText(r.Cell_3_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_4)).setText(r.Cell_4_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_5)).setText(r.Cell_5_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_6)).setText(r.Cell_6_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_7)).setText(r.Cell_7_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_8)).setText(r.Cell_8_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_9)).setText(r.Cell_9_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_10)).setText(r.Cell_10_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_11)).setText(r.Cell_11_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_12)).setText(r.Cell_12_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_13)).setText(r.Cell_13_Voltage + "V");
-                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_14)).setText(r.Cell_14_Voltage + "V");
+                                DecimalFormat fnum = new DecimalFormat("##0.0");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_1)).setText(fnum.format(r.Cell_1_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_2)).setText(fnum.format(r.Cell_2_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_3)).setText(fnum.format(r.Cell_3_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_4)).setText(fnum.format(r.Cell_4_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_5)).setText(fnum.format(r.Cell_5_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_6)).setText(fnum.format(r.Cell_6_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_7)).setText(fnum.format(r.Cell_7_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_8)).setText(fnum.format(r.Cell_8_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_9)).setText(fnum.format(r.Cell_9_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_10)).setText(fnum.format(r.Cell_10_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_11)).setText(fnum.format(r.Cell_11_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_12)).setText(fnum.format(r.Cell_12_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_13)).setText(fnum.format(r.Cell_13_Voltage / 1000.f) + "V");
+                                ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_14)).setText(fnum.format(r.Cell_14_Voltage / 1000.f) + "V");
 
                                 updateCellBalance(r.CellBalance_Status_1, R.id.iv_bms_cell_balance_1);
                                 updateCellBalance(r.CellBalance_Status_2, R.id.iv_bms_cell_balance_2);
@@ -159,8 +172,18 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
                     Module_Temperature_6.setValue(response.Module_Temperature_6);
                     Module_Temperature_7.setValue(response.Module_Temperature_7);
 
-                    dashboardPackageVoltage.setValue(((CMDVCUBMS4.Response) response).Pack_Voltage);
-                    dashboardPackageCurrent.setValue(((CMDVCUBMS4.Response) response).Pack_Current);
+                    dashboardPackageVoltage.setValue(response.Pack_Voltage);
+                    dashboardPackageCurrent.setValue(response.Pack_Current);
+                }
+            });
+
+            ServiceManager.getInstance().sendCommandToCar(new CMDVCUBMS5(), new CommandListenerAdapter<CMDVCUBMS5.Response>(){
+                @Override
+                public void onSuccess(CMDVCUBMS5.Response response) {
+                    super.onSuccess(response);
+
+                    ((TextView) mView.findViewById(R.id.tv_vcu_bms_batteryremain_percent))
+                            .setText((int)(response.SOC) + "%");
                 }
             });
 

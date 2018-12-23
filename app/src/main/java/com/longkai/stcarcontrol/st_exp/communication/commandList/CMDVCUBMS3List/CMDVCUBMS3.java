@@ -53,6 +53,7 @@ public class CMDVCUBMS3 extends BaseCommand {
             response.CellBalanceArray[1] = (data[5] & 0x10)>>4;
             response.CellBalanceArray[0] = (data[5] & 0x20)>>5;
 
+            //cell voltage 单位mV
             response.Cell_14_Voltage = (data[7] & 0xff)<<8 |(data[6] & 0xff);
             response.Cell_13_Voltage = (data[9] & 0xff)<<8 |(data[8] & 0xff);
             response.Cell_12_Voltage = (data[11] & 0xff)<<8 |(data[10] & 0xff);
