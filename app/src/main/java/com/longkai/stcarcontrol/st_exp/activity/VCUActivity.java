@@ -31,6 +31,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.VCUChargeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUGYHLSDFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUOBCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUTorqueFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUVCUCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUHomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
@@ -42,6 +43,7 @@ import java.util.TimerTask;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_OBC;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
 
 /**
  * Created by Administrator on 2018/5/12.
@@ -61,6 +63,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     private VCUTorqueFragment vcuTorqueFragment;
     private VCUBMSMonitorFragment vcubmsMonitorFragment;
     private VCUOBCFragment vcuobcFragment;
+    private VCUUpdateFirmwareFragment vcuUpdateFirmwareFragment;
 
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
@@ -360,6 +363,14 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 showDrawerLayout();
             }
         });
+
+        findViewById(R.id.btn_tbox_update_firmware).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vcuTboxFragment.getController().changeTo(TboxStateEnum.UpdateFirmware);
+                showDrawerLayout();
+            }
+        });
     }
 
     private void showDrawerLayout() {
@@ -509,6 +520,12 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                     vcuobcFragment = new VCUOBCFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcuobcFragment);
+                break;
+            case FRAGMENT_TRANSACTION_UPDATE_FIRMWARE:
+                if (vcuUpdateFirmwareFragment == null){
+                    vcuUpdateFirmwareFragment = new VCUUpdateFirmwareFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, vcuUpdateFirmwareFragment);
                 break;
             default:
                 break;

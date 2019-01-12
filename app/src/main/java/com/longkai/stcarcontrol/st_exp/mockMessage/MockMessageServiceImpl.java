@@ -8,6 +8,8 @@ import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUBMSFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUMCUFragmentMock;
 
+import static com.longkai.stcarcontrol.st_exp.STCarApplication.inUIDebugMode;
+
 /**
  * Created by Administrator on 2018/12/15.
  */
@@ -34,13 +36,15 @@ public class MockMessageServiceImpl implements MockMessageService {
 
     @Override
     public void StartService(String fragmentClass) {
-        Runnable runnable = null;
-        if (fragmentClass.equalsIgnoreCase(VCUMCUFragment.class.toString())){
-            runnable = new VCUMCUFragmentMock(doBackgroundHandler);
-        } else if (fragmentClass.equalsIgnoreCase(VCUBMSFragment.class.toString())){
-            runnable = new VCUBMSFragmentMock(doBackgroundHandler);
+        if (inUIDebugMode) {
+            Runnable runnable = null;
+            if (fragmentClass.equalsIgnoreCase(VCUMCUFragment.class.toString())) {
+                runnable = new VCUMCUFragmentMock(doBackgroundHandler);
+            } else if (fragmentClass.equalsIgnoreCase(VCUBMSFragment.class.toString())) {
+                runnable = new VCUBMSFragmentMock(doBackgroundHandler);
+            }
+            doBackgroundHandler.post(runnable);
         }
-        doBackgroundHandler.post(runnable);
     }
 
     @Override

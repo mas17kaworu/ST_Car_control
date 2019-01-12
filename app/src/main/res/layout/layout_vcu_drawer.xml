@@ -165,6 +165,16 @@
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
             android:layout_marginTop="540dp" />
+        <Button
+            android:id="@+id/btn_tbox_update_firmware"
+            android:text="@string/tbox_update_firmware"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextPress"
+            android:background="@drawable/vcu_drawer_btn_click"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="600dp"/>
 
     </RelativeLayout>
 

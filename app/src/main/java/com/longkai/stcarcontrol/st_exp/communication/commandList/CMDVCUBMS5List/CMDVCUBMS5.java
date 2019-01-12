@@ -2,6 +2,8 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUBMS5List
 
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
+import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
 
 /**
  * Created by Administrator on 2018/5/13.
@@ -40,8 +42,28 @@ public class CMDVCUBMS5 extends BaseCommand {
         public	int	BMS_Fault_1; //Pack_Fault
         public	int	BMS_Fault_2; //Cell_Fualt
 
+        public Response(){
+            setCommandId(COMMAND_VCU_BMS_5);
+        }
+
         public Response(byte commandId) {
             super(commandId);
+        }
+
+        @Override
+        public byte[] mockResponse() {
+            byte[] array = new byte[0x07];
+            array[0] = BaseCommand.COMMAND_HEAD0;
+            array[1] = BaseCommand.COMMAND_HEAD1;
+            array[2] = 0x04;
+            array[3] = (byte)getCommandId();
+
+            float tmpfloat = (this.SOC);
+            array[5] = (byte) (((int)(tmpfloat / 0.392)) & 0xff);
+
+
+            array[array.length - 1] = CheckSumBit.checkSum(array, array.length - 1);
+            return array;
         }
     }
 }

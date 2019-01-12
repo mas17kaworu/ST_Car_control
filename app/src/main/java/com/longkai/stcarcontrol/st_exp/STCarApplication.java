@@ -12,6 +12,9 @@ import static android.content.ContentValues.TAG;
  */
 
 public class STCarApplication extends Application {
+
+    public static final boolean inUIDebugMode = false;
+
     @Override
     public void onCreate() {
         super.onCreate();

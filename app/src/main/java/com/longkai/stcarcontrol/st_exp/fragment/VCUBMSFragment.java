@@ -68,7 +68,7 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
         handler.postDelayed(runnable, 500);// 打开定时器，500ms后执行runnable
 
         //test
-//        MockMessageServiceImpl.getService().StartService(VCUBMSFragment.class.toString());
+        MockMessageServiceImpl.getService().StartService(VCUBMSFragment.class.toString());
 
         return mView;
     }
@@ -181,9 +181,15 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onSuccess(CMDVCUBMS5.Response response) {
                     super.onSuccess(response);
+                    final CMDVCUBMS5.Response r = response;
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((TextView) mView.findViewById(R.id.tv_vcu_bms_batteryremain_percent))
+                                    .setText((int)(r.SOC) + "%");
+                        }
+                    });
 
-                    ((TextView) mView.findViewById(R.id.tv_vcu_bms_batteryremain_percent))
-                            .setText((int)(response.SOC) + "%");
                 }
             });
 

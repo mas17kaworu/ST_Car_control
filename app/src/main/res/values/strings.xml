@@ -29,6 +29,7 @@
     <string name="tbox_register">注册与激活</string>
     <string name="tbox_remote_control">远程控制</string>
     <string name="tbox_mail_and_phone">电话与短信功能</string>
+    <string name="tbox_update_firmware">固件升级</string>
     
     <string name="bms_battery">Battery</string>
     <string name="bms_insulation_monitor">Insulation Monitor</string>

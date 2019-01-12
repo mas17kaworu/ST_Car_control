@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.longkai.stcarcontrol.st_exp.Enum.TboxStateEnum;
 import com.longkai.stcarcontrol.st_exp.Interface.StateChange;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.activity.VCUActivity;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -27,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
+
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
 
 /**
  * Created by Administrator on 2018/5/20.
@@ -184,6 +187,9 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, S
             case MailAndPhone:
                 loadGifToMainView(R.mipmap.gif_tbox_mail_phone);
                 rlPhone.setVisibility(View.VISIBLE);
+                break;
+            case UpdateFirmware:
+                ((VCUActivity)getActivity()).setSelect(FRAGMENT_TRANSACTION_UPDATE_FIRMWARE);
                 break;
         }
     }

@@ -73,6 +73,7 @@ public class ConstantData {
     public static final String POWER_SEAT_DIAGRAM = "ic_Diagram_Power_seat.png";
 
     public static final int FRAGMENT_TRANSACTION_OBC = 10;
+    public static final int FRAGMENT_TRANSACTION_UPDATE_FIRMWARE = 100;
 
     public ConstantData(){
 /*        sDataMap = new HashMap<Integer,Integer>();

@@ -13,5 +13,6 @@ public enum TboxStateEnum {
     Individual,
     Register,
     RemoteControl,
-    MailAndPhone
+    MailAndPhone,
+    UpdateFirmware
 }
