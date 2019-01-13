@@ -40,4 +40,19 @@
     <string name="bms_cell_balance">Balance</string>
 
     <string name="infortainment_change_engine_sound_dsc">EESS模块通过CAN bus 实时获取控制信息和发动机转速、油门、车速等信息，\n将这些信息转换成模拟的发动机声音</string>
+
+    <string name="running_on_selected_section">当前软件在该区运行，请选择更新其他区域</string>
+    <string name="update_refuse">更新请求被拒绝</string>
+    <string name="update_idle">-----</string>
+    <string name="updating_A">A区更新中</string>
+    <string name="updating_B">B区更新中</string>
+    <string name="uploading">软件上传中</string>
+    <string name="upload_failed">软件上传中断</string>
+    <string name="upload_finish">软件上传完成</string>
+    <string name="update_flashing_firmware">固件升级中</string>
+    <string name="update_flash_failed">固件升级失败</string>
+    <string name="update_flashing_finished">固件升级成功</string>
+
+
+
 </resources>

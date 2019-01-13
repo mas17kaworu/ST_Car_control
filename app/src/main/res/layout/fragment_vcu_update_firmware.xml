@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Update status: "
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textColor="#ffffff"
         app:layout_constraintLeft_toLeftOf="@+id/iv_vcu_update_a_icon"
         app:layout_constraintTop_toTopOf="parent"
@@ -78,19 +78,20 @@
 
     <TextView
         android:id="@+id/tv_vcu_update_status_level_1"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textColor="#ffffff"
         android:text="-----"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         app:layout_constraintLeft_toRightOf="@+id/tv_vcu_update_status_prefix"
-        app:layout_constraintTop_toTopOf="@+id/tv_vcu_update_status_prefix"/>
+        app:layout_constraintTop_toTopOf="@+id/tv_vcu_update_status_prefix"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_vcu_update_status_prefix"/>
 
     <TextView
         android:visibility="invisible"
         android:id="@+id/tv_vcu_update_status_level_2"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textColor="@color/colorTextGreenSelected"
         android:text="-----"
         android:layout_width="wrap_content"
@@ -105,6 +106,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_vcu_update_status_level_2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.7"/>
+        app:layout_constraintBottom_toBottomOf="@+id/tv_vcu_update_status_level_2"
+        app:layout_constraintHorizontal_bias="0.8"/>
 
 </android.support.constraint.ConstraintLayout>

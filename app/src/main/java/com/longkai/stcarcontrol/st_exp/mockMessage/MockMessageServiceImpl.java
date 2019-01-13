@@ -5,8 +5,10 @@ import android.os.HandlerThread;
 
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUBMSFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUMCUFragmentMock;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUUpdateFragmentMock;
 
 import static com.longkai.stcarcontrol.st_exp.STCarApplication.inUIDebugMode;
 
@@ -42,6 +44,8 @@ public class MockMessageServiceImpl implements MockMessageService {
                 runnable = new VCUMCUFragmentMock(doBackgroundHandler);
             } else if (fragmentClass.equalsIgnoreCase(VCUBMSFragment.class.toString())) {
                 runnable = new VCUBMSFragmentMock(doBackgroundHandler);
+            } else if (fragmentClass.equalsIgnoreCase(VCUUpdateFirmwareFragment.class.toString())){
+                runnable = new VCUUpdateFragmentMock(doBackgroundHandler);
             }
             doBackgroundHandler.post(runnable);
         }

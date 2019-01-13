@@ -21,8 +21,16 @@ public class CMDFOTADATA extends BaseCommand {
 
     private int LAST_PKG = 0;
     private int DEVICE_NUM = 0;
-    private int PKG_NUM_OR_LENGTH = 0;
+    private int PKG_NUM = 0;
+    private int PKG_LENGTH = 0;
 
+    /**
+     *
+     * @param pkgNum
+     * @param pkgLength
+     * @param lastPKG
+     * @param payloadArray
+     */
     public CMDFOTADATA(int pkgNum, int pkgLength, int lastPKG, byte[] payloadArray){
         try {
             data = new byte[pkgLength + 4];
@@ -36,6 +44,10 @@ public class CMDFOTADATA extends BaseCommand {
                 data[2] = (byte) ((lastPKG << 7) | (DEVICE_NUM << 3) | ((pkgNum & 0x70) >> 8) );
                 data[3] = (byte) (pkgNum & 0xff);
             }
+
+            this.PKG_NUM = pkgNum;
+            this.PKG_LENGTH = pkgLength;
+            this.LAST_PKG = lastPKG;
             System.arraycopy(payloadArray, 0, data, 2, pkgLength);
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,8 +69,22 @@ public class CMDFOTADATA extends BaseCommand {
             response.PKG_Received = (data[6] & 0x01);
             response.PKG_Aborted = (data[6] & 0x02) >> 1;
             response.PKG_NUM = ((data[5] & 0xff) | ((data[4] & 0x07) << 8));
+            response.isLastPackage = (data[4] & 0x80) != 0;
         }
         return response;
+    }
+
+
+    public int getPKG_NUM(){
+        return PKG_NUM;
+    }
+
+    public int getPKG_LENGTH(){
+        return PKG_LENGTH;
+    }
+
+    public int getLAST_PKG(){
+        return LAST_PKG;
     }
 
     @Override
@@ -71,6 +97,7 @@ public class CMDFOTADATA extends BaseCommand {
         public	int	PKG_Received	;
         public	int	PKG_Aborted	;
         public  int PKG_NUM ;
+        public  boolean isLastPackage;
 
         public Response() {
             setCommandId(COMMAND_FOTA_DATA);
@@ -85,28 +112,18 @@ public class CMDFOTADATA extends BaseCommand {
             byte[] array = new byte[0x08];
             array[0] = BaseCommand.COMMAND_HEAD0;
             array[1] = BaseCommand.COMMAND_HEAD1;
-            array[2] = 0x0C;
+            array[2] = 0x05;
             array[3] = (byte)getCommandId();
 
+            array[4] = this.isLastPackage ? (byte)0x80 : (byte)0x00;
+            array[4] = (byte) (array[4] | ((byte)((this.PKG_NUM & 0x700) >> 8)));
+
+            array[5] = (byte) (this.PKG_NUM & 0xff);
+            array[6] = (byte) (this.PKG_Aborted << 1 | this.PKG_Received);
             /*int tmpInt = (this.R_Isolation_Minus);
             array[4] = (byte)(((tmpInt) & 0xff));
             array[5] = (byte)(((tmpInt) & 0xff00) >> 8);
-
-            tmpInt = (this.R_Isolation_Plus);
-            array[6] = (byte)(((tmpInt) & 0xff));
-            array[7] = (byte)(((tmpInt) & 0xff00) >> 8);
-
-            tmpInt = (int)(this.U_HighVoltage_3) * 10;
-            array[8] = (byte)(((tmpInt) & 0xff));
-            array[9] = (byte)(((tmpInt) & 0xff00) >> 8);
-
-            tmpInt = (int)(this.U_HighVoltage_2) * 10;
-            array[10] = (byte)(((tmpInt) & 0xff));
-            array[11] = (byte)(((tmpInt) & 0xff00) >> 8);
-
-            tmpInt = (int)(this.U_HighVoltage_1) * 10;
-            array[12] = (byte)(((tmpInt) & 0xff));
-            array[13] = (byte)(((tmpInt) & 0xff00) >> 8);*/
+            */
 
             array[array.length - 1] = CheckSumBit.checkSum(array, array.length - 1);
             return array;

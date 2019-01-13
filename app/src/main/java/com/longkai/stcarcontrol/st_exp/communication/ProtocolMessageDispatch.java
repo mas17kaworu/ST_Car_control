@@ -1,5 +1,6 @@
 package com.longkai.stcarcontrol.st_exp.communication;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -36,6 +37,15 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
      * @param listener Report command execute result.
      */
     public void sendCommand(Command command, CommandListener listener) {
+        registerCommandOnce(command, listener);
+        byte[] sendData = command.toRawData();
+        int writeNum = mConnection.writeDataBlock(sendData);
+        if (writeNum > 0) {
+            //send success
+        }
+    }
+
+    public void registerCommandOnce(Command command, CommandListener listener) {
         if (listener != null) {
             listener.setSendTimeStamp(System.currentTimeMillis());
             synchronized (listLock) {
@@ -43,11 +53,6 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
                 mCommandListenerList.put(command.getCommandId(), listener);
                 Log.i("Command","Send package commandID = " + command.getCommandId());
             }
-        }
-        byte[] sendData = command.toRawData();
-        int writeNum = mConnection.writeDataBlock(sendData);
-        if (writeNum > 0) {
-            //send success
         }
     }
 
@@ -88,7 +93,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
             System.arraycopy(data, 0, raw, 0, length);//接收的时候checksum包含头
             if (data[length-1] == CheckSumBit.checkSum(raw, length-1) ){//检查完毕
                 Logger.getLogger().writeToLogger2("raw data check finished");
-                int commandId = raw[3] & 0x1f;
+                int commandId = raw[3] & 0x7f;
                 Log.i("Command","Got package commandId = " + commandId);
                 Command command;
                 CommandListener listener;
@@ -121,5 +126,9 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
                 }
             }
         }
+    }
+
+    public SparseArray<Command> getSentCommandList(){
+        return mSentCommandList;
     }
 }

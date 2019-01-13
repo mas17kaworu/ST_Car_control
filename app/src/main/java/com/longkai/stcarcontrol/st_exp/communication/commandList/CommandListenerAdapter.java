@@ -3,6 +3,8 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList;
 
 import com.longkai.stcarcontrol.st_exp.communication.CommandListener;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * When a command be sending,a listener correspond to it.
  * The success and fail methods define into the listener.
@@ -13,6 +15,14 @@ import com.longkai.stcarcontrol.st_exp.communication.CommandListener;
  */
 public class CommandListenerAdapter<T extends BaseResponse> implements CommandListener<T> {
     private long sendTimeStamp;
+
+    private AtomicInteger timeout = new AtomicInteger(1000);
+
+    public CommandListenerAdapter(){}
+
+    public CommandListenerAdapter(int timeout){
+        this.timeout.set(timeout);
+    }
 
     /**
      * Set the timestamp of send this command.
@@ -64,6 +74,11 @@ public class CommandListenerAdapter<T extends BaseResponse> implements CommandLi
 
     @Override
     public int getTimeout() {
-        return 1000;
+        return timeout.get();
+    }
+
+    @Override
+    public void setTimeout(int timeout) {
+        this.timeout.set(timeout);
     }
 }

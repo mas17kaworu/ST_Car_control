@@ -181,7 +181,7 @@ public class VCUVCUCFragment extends Fragment implements View.OnClickListener, V
     @Override
     public void xiaDianState1() {
         try {
-            Toast.makeText(this.getContext(), "XDState1", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this.getContext(), "XDState1", Toast.LENGTH_SHORT).show();
             GifDrawable gifDrawableChart = new GifDrawable(getResources(), R.mipmap.gif_vcu_circle_high);
             gifViewChart.setImageDrawable(gifDrawableChart);
             presentState = VCUStateEnum.XD1;

@@ -97,6 +97,13 @@ public class ServiceManager {
         }
     }
 
+    public void registerCommandOnce(Command command, CommandListener listener) {
+        if (binder != null) {
+            binder.asyncRegisterCommandOnce(command, listener);
+        }
+
+    }
+
     public void setConnectionListener(ConnectionListener connectionListener) {
         if (connectionListener != null) {
             binder.registerConnectionListener(connectionListener);

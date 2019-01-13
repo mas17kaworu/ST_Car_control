@@ -42,6 +42,9 @@ public class CMDFOTADIAG extends BaseCommand {
         }
     }
 
+    public int getDIAG_CMD(){
+        return DIAG_CMD;
+    }
     public void setDIAG_CMD(int diag_cmd){
         DIAG_CMD = diag_cmd;
         data[2] = (byte)(DIAG_CMD | (DEVICE_NUM << 5));
@@ -64,8 +67,31 @@ public class CMDFOTADIAG extends BaseCommand {
 
     public static class Response extends BaseResponse {
 
+        /**
+         *
+         * 收到更新请求回复：DIAG_CMD = {0:0:1 }, 允许更新A区;
+         * DIAG_CMD = {0:1:0 },允许更新B区;
+         * DIAG_CMD = {0:1:1 },拒绝更新请求或通讯取消;
+         * DIAG_CMD = {0:0:0 },当前软件在该区运行，请选择其他
+         *
+         *
+         *
+         * DIAG_CMD = {1:0:0 },固件更新中；
+         * DIAG_CMD = {1:1:1 },固件更新完成；
+         * DIAG_CMD = {0:1:1 },通讯取消或通讯失败；（其他指令为无效指令，PAD继续等待超时）
+         *
+         */
         public	int	DIAG_CMD_RESPONSE	;
         public	int	DEVICE_NUM	;
+
+        public static final int A_READY_TO_UPDATE = 0x01;
+        public static final int B_READY_TO_UPDATE = 0x02;
+        public static final int REQUEST_DENY = 0x03;
+        public static final int RUNNING = 0x00;
+
+        public static final int FLASHING = 0x04;
+        public static final int FLASH_FINISHED = 0x07;
+        public static final int FLASH_ABORT = 0x03;
 
         public Response() {
             setCommandId(COMMAND_FOTA_DIAG);
@@ -82,6 +108,9 @@ public class CMDFOTADIAG extends BaseCommand {
             array[1] = BaseCommand.COMMAND_HEAD1;
             array[2] = 0x03;
             array[3] = (byte)getCommandId();
+
+            int tmpInt = this.DIAG_CMD_RESPONSE;
+            array[4] = (byte)( tmpInt );
 
             /*int tmpInt = (this.R_Isolation_Minus);
             array[4] = (byte)(((tmpInt) & 0xff));

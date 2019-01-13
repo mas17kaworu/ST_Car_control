@@ -37,5 +37,7 @@ public interface CommandListener<T extends BaseResponse> {
      */
     void onError(int errorCode);
 
-    public int getTimeout();
+    int getTimeout();
+
+    void setTimeout(int timeout);
 }

@@ -188,6 +188,15 @@ public class CommunicationServer extends Service {
             });
         }
 
+        public void asyncRegisterCommandOnce(final Command command, final CommandListener listener) {
+            doBackgroundHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mMessageHandler.registerCommandOnce(command, listener);
+                }
+            });
+        }
+
         public void registerConnectionListener(ConnectionListener listener) {
             mConnectionListenerList.add(listener);
         }
@@ -209,9 +218,12 @@ public class CommunicationServer extends Service {
             mConnectionListenerList.add(listener);
         }
 
+
+
         /**
          * For test
          *
+         * Get dispatcher and mock a response to dispatcher.
          */
         public ProtocolMessageDispatch getMessageHandler(){
             return mMessageHandler;
