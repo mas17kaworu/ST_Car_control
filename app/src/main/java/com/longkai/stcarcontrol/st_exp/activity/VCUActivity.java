@@ -43,6 +43,7 @@ import java.util.TimerTask;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_OBC;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_TBOX;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
 
 /**
@@ -157,6 +158,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         vcuState = state;
         switch (vcuState){
             case MCU:
+            case UPDATE:
             case HomeScreen:
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
                 break;
@@ -367,7 +369,8 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         findViewById(R.id.btn_tbox_update_firmware).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                vcuTboxFragment.getController().changeTo(TboxStateEnum.UpdateFirmware);
+                setSelect(FRAGMENT_TRANSACTION_UPDATE_FIRMWARE);
+//                vcuTboxFragment.getController().changeTo(TboxStateEnum.UpdateFirmware);
                 showDrawerLayout();
             }
         });
@@ -484,7 +487,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 transaction.replace(R.id.vcu_main_fragment_content, vcumcuFragment);
                 updateDrawer(VCUState.MCU);
                 break;
-            case 4:
+            case FRAGMENT_TRANSACTION_TBOX:
                 if (vcuTboxFragment == null){
                     vcuTboxFragment = new VCUTboxFragment();
                 }
@@ -526,6 +529,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                     vcuUpdateFirmwareFragment = new VCUUpdateFirmwareFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcuUpdateFirmwareFragment);
+                updateDrawer(VCUState.UPDATE);
                 break;
             default:
                 break;
@@ -566,7 +570,8 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         VCU,
         BMS,
         MCU,
-        TBox
+        TBox,
+        UPDATE
     }
 
     public void showDiagram(){

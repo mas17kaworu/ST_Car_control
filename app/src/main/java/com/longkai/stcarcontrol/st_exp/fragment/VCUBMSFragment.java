@@ -38,11 +38,15 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
     private VerticalRollingBar Module_Temperature_1, Module_Temperature_2, Module_Temperature_3
             ,Module_Temperature_4, Module_Temperature_5, Module_Temperature_6, Module_Temperature_7;
 
+    private ImageView ivPowerRemain;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_vcu_bms, container, false);
+
+        ivPowerRemain = (ImageView) mView.findViewById (R.id.iv_vcu_bms_power_remain);
 
         dashboardMainPlusBefore = (VoltageDashboard) mView.findViewById(R.id.dashboard_bms_main_jdq_front);
         dashboardMainPlusBefore.setMaxValue(80.f);
@@ -187,6 +191,20 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
                         public void run() {
                             ((TextView) mView.findViewById(R.id.tv_vcu_bms_batteryremain_percent))
                                     .setText((int)(r.SOC) + "%");
+                            if (r.SOC > 80) {
+                                ivPowerRemain.setImageResource(R.mipmap.ic_bms_power_remain_100);
+                            } else if (r.SOC > 60){
+                                ivPowerRemain.setImageResource(R.mipmap.ic_bms_power_remain_80);
+                            } else if (r.SOC > 40) {
+                                ivPowerRemain.setImageResource(R.mipmap.ic_bms_power_remain_60);
+                            } else if (r.SOC > 20) {
+                                ivPowerRemain.setImageResource(R.mipmap.ic_bms_power_remain_40);
+                            } else if (r.SOC > 10) {
+                                ivPowerRemain.setImageResource(R.mipmap.ic_bms_power_remain_20);
+                            } else {
+                                ivPowerRemain.setImageResource(R.mipmap.ic_bms_power_remain_0);
+                            }
+
                         }
                     });
 

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.activity.VCUActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFOTAList.CMDFOTADATA;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFOTAList.CMDFOTADIAG;
@@ -25,6 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
+
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_TBOX;
 
 /**
  * Created by Administrator on 2019/1/10.
@@ -62,6 +65,8 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
         ivUpdateAControl.setOnClickListener(this);
         ivUpdateBControl = (ImageView) mView.findViewById(R.id.iv_vcu_update_b_control_btn);
         ivUpdateBControl.setOnClickListener(this);
+
+        mView.findViewById(R.id.iv_back_to_tbox).setOnClickListener(this);
 
         tvStatusLevel1 = (TextView) mView.findViewById(R.id.tv_vcu_update_status_level_1);
         tvStatusLevel2 = (TextView) mView.findViewById(R.id.tv_vcu_update_status_level_2);
@@ -162,6 +167,9 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
                 } else {
                     ServiceManager.getInstance().sendCommandToCar(new CMDFOTADIAG(0x02), diagHandler);
                 }
+                break;
+            case R.id.iv_back_to_tbox:
+                ((VCUActivity)getActivity()).setSelect(FRAGMENT_TRANSACTION_TBOX);
                 break;
         }
     }

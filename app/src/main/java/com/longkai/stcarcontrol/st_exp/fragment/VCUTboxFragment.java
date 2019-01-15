@@ -189,7 +189,7 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, S
                 rlPhone.setVisibility(View.VISIBLE);
                 break;
             case UpdateFirmware:
-                ((VCUActivity)getActivity()).setSelect(FRAGMENT_TRANSACTION_UPDATE_FIRMWARE);
+
                 break;
         }
     }
