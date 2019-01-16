@@ -126,7 +126,7 @@ public class VCUBMSFragment extends Fragment implements View.OnClickListener {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                DecimalFormat fnum = new DecimalFormat("##0.0");
+                                DecimalFormat fnum = new DecimalFormat("##0.000");
                                 ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_1)).setText(fnum.format(r.Cell_1_Voltage / 1000.f) + "V");
                                 ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_2)).setText(fnum.format(r.Cell_2_Voltage / 1000.f) + "V");
                                 ((TextView)mView.findViewById(R.id.tv_bms_cell_voltage_3)).setText(fnum.format(r.Cell_3_Voltage / 1000.f) + "V");

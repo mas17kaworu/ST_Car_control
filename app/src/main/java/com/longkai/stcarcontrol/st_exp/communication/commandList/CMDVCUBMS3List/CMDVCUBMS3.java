@@ -54,20 +54,20 @@ public class CMDVCUBMS3 extends BaseCommand {
             response.CellBalanceArray[0] = (data[5] & 0x20)>>5;
 
             //cell voltage 单位mV
-            response.Cell_14_Voltage = (data[7] & 0xff)<<8 |(data[6] & 0xff);
-            response.Cell_13_Voltage = (data[9] & 0xff)<<8 |(data[8] & 0xff);
-            response.Cell_12_Voltage = (data[11] & 0xff)<<8 |(data[10] & 0xff);
-            response.Cell_11_Voltage = (data[13] & 0xff)<<8 |(data[12] & 0xff);
-            response.Cell_10_Voltage = (data[15] & 0xff)<<8 |(data[14] & 0xff);
-            response.Cell_9_Voltage = (data[17] & 0xff)<<8 |(data[16] & 0xff);
-            response.Cell_8_Voltage = (data[19] & 0xff)<<8 |(data[18] & 0xff);
-            response.Cell_7_Voltage = (data[21] & 0xff)<<8 |(data[20] & 0xff);
-            response.Cell_6_Voltage = (data[23] & 0xff)<<8 |(data[22] & 0xff);
-            response.Cell_5_Voltage = (data[25] & 0xff)<<8 |(data[24] & 0xff);
-            response.Cell_4_Voltage = (data[27] & 0xff)<<8 |(data[26] & 0xff);
-            response.Cell_3_Voltage = (data[29] & 0xff)<<8 |(data[28] & 0xff);
-            response.Cell_2_Voltage = (data[31] & 0xff)<<8 |(data[30] & 0xff);
-            response.Cell_1_Voltage = (data[33] & 0xff)<<8 |(data[32] & 0xff);
+            response.Cell_14_Voltage = (int)(((data[7] & 0xff)<<8 |(data[6] & 0xff)) * 0.1f);
+            response.Cell_13_Voltage = (int)(((data[9] & 0xff)<<8 |(data[8] & 0xff)) * 0.1f);
+            response.Cell_12_Voltage = (int)(((data[11] & 0xff)<<8 |(data[10] & 0xff)) * 0.1f);
+            response.Cell_11_Voltage = (int)(((data[13] & 0xff)<<8 |(data[12] & 0xff)) * 0.1f);
+            response.Cell_10_Voltage = (int)(((data[15] & 0xff)<<8 |(data[14] & 0xff)) * 0.1f);
+            response.Cell_9_Voltage = (int)(((data[17] & 0xff)<<8 |(data[16] & 0xff)) * 0.1f);
+            response.Cell_8_Voltage = (int)(((data[19] & 0xff)<<8 |(data[18] & 0xff)) * 0.1f);
+            response.Cell_7_Voltage = (int)(((data[21] & 0xff)<<8 |(data[20] & 0xff)) * 0.1f);
+            response.Cell_6_Voltage = (int)(((data[23] & 0xff)<<8 |(data[22] & 0xff)) * 0.1f);
+            response.Cell_5_Voltage = (int)(((data[25] & 0xff)<<8 |(data[24] & 0xff)) * 0.1f);
+            response.Cell_4_Voltage = (int)(((data[27] & 0xff)<<8 |(data[26] & 0xff)) * 0.1f);
+            response.Cell_3_Voltage = (int)(((data[29] & 0xff)<<8 |(data[28] & 0xff)) * 0.1f);
+            response.Cell_2_Voltage = (int)(((data[31] & 0xff)<<8 |(data[30] & 0xff)) * 0.1f);
+            response.Cell_1_Voltage = (int)(((data[33] & 0xff)<<8 |(data[32] & 0xff)) * 0.1f);
 
             response.CellVoltageArray[13] = (data[7] & 0xff)<<8 |(data[6] & 0xff);
             response.CellVoltageArray[12] = (data[9] & 0xff)<<8 |(data[8] & 0xff);

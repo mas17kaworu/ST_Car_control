@@ -4,16 +4,16 @@ package com.longkai.stcarcontrol.st_exp.Utils;
  * Created by Administrator on 2018/9/26.
  */
 
-public class Logger {
-    private static Logger instance;
+public class LoggerTemp {
+    private static LoggerTemp instance;
     private Object lock1 = new Object();
     private Object lock2 = new Object();
     private Object lock3 = new Object();
     private String log1 = "failed",log2= "failed",log3= "failed";
 
-    public static Logger getLogger(){
+    public static LoggerTemp getLogger(){
         if (instance == null){
-            instance = new Logger();
+            instance = new LoggerTemp();
         }
         return instance;
     }
@@ -53,4 +53,5 @@ public class Logger {
             return " step 3 " + log3;
         }
     }
+
 }

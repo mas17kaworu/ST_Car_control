@@ -1,11 +1,14 @@
 package com.longkai.stcarcontrol.st_exp;
 
 import android.app.Application;
+import android.os.Environment;
 import android.util.Log;
 
 import com.longkai.stcarcontrol.st_exp.Utils.CrashHandler;
 
 import org.apache.log4j.Level;
+
+import java.io.File;
 
 import de.mindpipe.android.logging.log4j.LogConfigurator;
 
@@ -17,17 +20,20 @@ import static android.content.ContentValues.TAG;
 
 public class STCarApplication extends Application {
 
-    public static final boolean inUIDebugMode = false;
+    public static final boolean inUIDebugMode = true;
 
     @Override
     public void onCreate() {
         super.onCreate();
         CrashHandler.getsInstance().init(this);
+        logConfig();
     }
 
     private void logConfig(){
         final LogConfigurator logConfigurator = new LogConfigurator();
-        logConfigurator.setFileName("");
+        logConfigurator.setFileName(Environment.getExternalStorageDirectory()
+                        + File.separator + "ST_DEMO_CAR" + File.separator + "logs"
+                        + File.separator + "communication.txt");
         logConfigurator.setRootLevel(Level.ALL);
         logConfigurator.setLevel("org.apache", Level.ALL);
         logConfigurator.setFilePattern("%d %-5p [%c{2}]-[%L] %m%n");

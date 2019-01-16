@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.longkai.stcarcontrol.st_exp.R;
-import com.longkai.stcarcontrol.st_exp.Utils.Logger;
+import com.longkai.stcarcontrol.st_exp.Utils.LoggerTemp;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU7List.CMDVCU7;
@@ -78,9 +78,9 @@ public class VCUTorqueFragment extends Fragment {
                 }
             });
 
-            builder2.append(Logger.getLogger().Logger1ToString());
-            builder2.append(Logger.getLogger().Logger2ToString());
-            builder2.append(Logger.getLogger().Logger3ToString());
+            builder2.append(LoggerTemp.getLogger().Logger1ToString());
+            builder2.append(LoggerTemp.getLogger().Logger2ToString());
+            builder2.append(LoggerTemp.getLogger().Logger3ToString());
 
             tvTestText2.setText(builder2.toString());
 

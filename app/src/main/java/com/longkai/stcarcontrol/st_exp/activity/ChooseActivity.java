@@ -3,8 +3,6 @@ package com.longkai.stcarcontrol.st_exp.activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +11,6 @@ import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
-import com.longkai.stcarcontrol.st_exp.Utils.Logger;
 import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionType;

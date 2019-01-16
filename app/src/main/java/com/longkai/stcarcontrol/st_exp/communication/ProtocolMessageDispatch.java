@@ -1,21 +1,24 @@
 package com.longkai.stcarcontrol.st_exp.communication;
 
-import android.provider.Settings;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.longkai.stcarcontrol.st_exp.Utils.Logger;
+import com.longkai.stcarcontrol.st_exp.Utils.LoggerTemp;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
 
-import static com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand.COMMAND_HEAD0;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.longkai.stcarcontrol.st_exp.Utils.ByteUtils.bytes2hex;
 
 /**
  * Created by lk.sun on 3/8/2016.
  */
 public class ProtocolMessageDispatch implements MessageReceivedListener{
 
+    private static final Logger logger = LoggerFactory.getLogger(ProtocolMessageDispatch.class);
     private SparseArray<Command> mSentCommandList;
     private SparseArray<CommandListener> mCommandListenerList;
     private final Object listLock = new Object();
@@ -39,6 +42,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
     public void sendCommand(Command command, CommandListener listener) {
         registerCommandOnce(command, listener);
         byte[] sendData = command.toRawData();
+        logger.info(">>>> ouput >>>> " + bytes2hex(sendData));
         int writeNum = mConnection.writeDataBlock(sendData);
         if (writeNum > 0) {
             //send success
@@ -87,12 +91,13 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
      */
     @Override
     public void onReceive(byte[] data, int offset, int length) {
-        Logger.getLogger().writeToLogger1("received udp data");
+        LoggerTemp.getLogger().writeToLogger1("received udp data");
         if (data[0] == BaseCommand.COMMAND_HEAD0 && data[1] == BaseCommand.COMMAND_HEAD1){
             byte[] raw = new byte[128];
             System.arraycopy(data, 0, raw, 0, length);//接收的时候checksum包含头
             if (data[length-1] == CheckSumBit.checkSum(raw, length-1) ){//检查完毕
-                Logger.getLogger().writeToLogger2("raw data check finished");
+//                LoggerTemp.getLogger().writeToLogger2("raw data check finished");
+                logger.info("<<<< input <<<< " + bytes2hex(data));
                 int commandId = raw[3] & 0x7f;
                 Log.i("Command","Got package commandId = " + commandId);
                 Command command;
@@ -120,7 +125,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
                         return;
                     }
                     if (response != null) {
-                        Logger.getLogger().writeToLogger3("onSuccess commandID = " + commandId);
+                        LoggerTemp.getLogger().writeToLogger3("onSuccess commandID = " + commandId);
                         listener.onSuccess(response);
                     }
                 }
