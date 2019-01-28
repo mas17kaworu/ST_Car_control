@@ -22,6 +22,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListener
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 /**
  *
  * Created by Administrator on 2018/5/12.
@@ -37,7 +38,9 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
 
         setContentView(R.layout.activity_choose_first);
 
+
     }
+
 
     @Override
     protected void onStart() {

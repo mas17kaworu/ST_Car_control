@@ -48,7 +48,7 @@ public class CMDFOTADATA extends BaseCommand {
             this.PKG_NUM = pkgNum;
             this.PKG_LENGTH = pkgLength;
             this.LAST_PKG = lastPKG;
-            System.arraycopy(payloadArray, 0, data, 2, pkgLength);
+            System.arraycopy(payloadArray, 0, data, 4, pkgLength);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -40,6 +40,7 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
 
     private ImageView ivUpdateAIcon, ivUpdateBIcon;
     private ImageView ivUpdateAControl, ivUpdateBControl;
+    private ImageView ivBackBtn;
 
     private TextView tvStatusLevel1, tvStatusLevel2;
 
@@ -66,7 +67,9 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
         ivUpdateBControl = (ImageView) mView.findViewById(R.id.iv_vcu_update_b_control_btn);
         ivUpdateBControl.setOnClickListener(this);
 
-        mView.findViewById(R.id.iv_back_to_tbox).setOnClickListener(this);
+
+        ivBackBtn = (ImageView) mView.findViewById(R.id.iv_back_to_tbox);
+        ivBackBtn.setOnClickListener(this);
 
         tvStatusLevel1 = (TextView) mView.findViewById(R.id.tv_vcu_update_status_level_1);
         tvStatusLevel2 = (TextView) mView.findViewById(R.id.tv_vcu_update_status_level_2);
@@ -91,6 +94,7 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
                         case 0x01://允许更新A区
                             ivUpdateAControl.setImageResource(R.mipmap.ic_vcu_update_cancel);
                             AinUpdating.set(true);
+                            inUpgrading();
                             ivUpdateBIcon.setImageResource(R.mipmap.ic_vcu_update_b_forbidden);
                             tvStatusLevel1.setText(R.string.updating_A);
                             tvStatusLevel2.setVisibility(View.VISIBLE);
@@ -102,6 +106,7 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
                         case 0x02://允许更新B区
                             ivUpdateBControl.setImageResource(R.mipmap.ic_vcu_update_cancel);
                             BinUpdating.set(true);
+                            inUpgrading();
                             ivUpdateAIcon.setImageResource(R.mipmap.ic_vcu_update_a_forbidden);
                             tvStatusLevel1.setText(R.string.updating_B);
                             tvStatusLevel2.setVisibility(View.VISIBLE);
@@ -203,6 +208,13 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
         tvStatusLevel2.setText("");
 
         gifLoadingView.setVisibility(View.INVISIBLE);
+        ivBackBtn.setClickable(true);
+        ((VCUActivity)getActivity()).enableSwitchFragment();
+    }
+
+    private void inUpgrading(){
+        ivBackBtn.setClickable(false);
+        ((VCUActivity)getActivity()).disableSwitchFragment();
     }
 
     private void showUploadingProgress(){

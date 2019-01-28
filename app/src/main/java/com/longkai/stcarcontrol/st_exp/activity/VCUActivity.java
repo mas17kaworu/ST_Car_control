@@ -39,6 +39,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.VCUTboxFragment;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
@@ -76,6 +77,8 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     private ImageView ivDiagram;//框图
     public int mSelectedMode = 0;
     public VCUState vcuState;
+
+    private AtomicBoolean disableSwitchFragment = new AtomicBoolean(false);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,6 +145,9 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Log.i("MainActivity", "position = " + position);
+                if (disableSwitchFragment.get()){
+                    return;
+                }
                 mSelectedMode = position;
                 hListViewAdapter.setSelectIndex(position);
                 hListViewAdapter.notifyDataSetChanged();
@@ -442,6 +448,9 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     };
 
     public void setSelect(int i) {
+        if (disableSwitchFragment.get()){
+            return;
+        }
         ivDiagram.setVisibility(View.INVISIBLE);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -579,5 +588,13 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         ivDiagram.setImageResource(R.mipmap.ic_vcu_diagram_homepage);
         ivDiagram.setVisibility(View.VISIBLE);
         ivDiagram.postInvalidate();
+    }
+
+    public void enableSwitchFragment(){
+        disableSwitchFragment.set(false);
+    }
+
+    public void disableSwitchFragment(){
+        disableSwitchFragment.set(true);
     }
 }

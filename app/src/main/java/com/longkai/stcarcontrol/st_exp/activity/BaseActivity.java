@@ -1,19 +1,33 @@
 package com.longkai.stcarcontrol.st_exp.activity;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.longkai.stcarcontrol.st_exp.Utils.FileUtils;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
+
+import org.apache.log4j.Level;
+
+import java.io.File;
+
+import de.mindpipe.android.logging.log4j.LogConfigurator;
+
+import static com.longkai.stcarcontrol.st_exp.Utils.FileUtils.INTERNAL_PATH;
 
 /**
  * 用于与底层蓝牙通信
@@ -44,6 +58,7 @@ public class BaseActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
+        verifyStoragePermissions(this);
 
         /*mBtServer = new BTServer(BTManager.getInstance().getBtAdapter(),
                 mBTDetectedHandler,
@@ -79,6 +94,59 @@ public class BaseActivity extends AppCompatActivity {
         }
         else {
             Log.d("BT LK", "con't start fc thread.");
+        }
+    }
+
+    private void logConfig(){
+        final LogConfigurator logConfigurator = new LogConfigurator();
+        logConfigurator.setFileName(INTERNAL_PATH
+                + "ST_DEMO_CAR" + File.separator + "logs"
+                + File.separator + "communication.txt");
+        logConfigurator.setRootLevel(Level.ALL);
+        logConfigurator.setLevel("org.apache", Level.ALL);
+        logConfigurator.setFilePattern("%d %-5p [%c{2}]-[%L] %m%n");
+        logConfigurator.setMaxFileSize(1024 * 1024 * 5);
+        logConfigurator.setImmediateFlush(true);
+        logConfigurator.configure();
+
+    }
+    private static String[] PERMISSIONS_STORAGE = {
+            "android.permission.READ_EXTERNAL_STORAGE",
+            "android.permission.WRITE_EXTERNAL_STORAGE" };
+
+    private void verifyStoragePermissions(Activity activity) {
+
+        try {
+            int permission = ActivityCompat.checkSelfPermission(activity,
+                    "android.permission.WRITE_EXTERNAL_STORAGE");
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, 1);
+            } else {
+//                Toast.makeText(this, "permitted", Toast.LENGTH_SHORT).show();
+//                logConfig();
+//                FileUtils.createSDDir(INTERNAL_PATH + "testlk");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 1:
+                switch (permissions[0]){
+                    case Manifest.permission.WRITE_EXTERNAL_STORAGE://权限1
+                        if (grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                            Toast.makeText(this, "permitted", Toast.LENGTH_SHORT).show();
+//                            logConfig();
+                        }else {
+                            Toast.makeText(this, "You denied the permission", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+                break;
+            default:
         }
     }
 
