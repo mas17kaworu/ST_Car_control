@@ -179,6 +179,12 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
         }
     }
 
+    @Override
+    public void onDestroy() {
+        unregisterDIAGListener();
+        super.onDestroy();
+    }
+
     private void sendFirmwareData(UpdateSection section){
         File file = null;
         if (section == UpdateSection.A){
@@ -315,11 +321,12 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
                 public void run() {
                     if (rs.DIAG_CMD_RESPONSE == CMDFOTADIAG.Response.FLASHING) {
                         tvStatusLevel2.setText(R.string.update_flashing_firmware);
-                        registerDIAGListener();
                     } else if (rs.DIAG_CMD_RESPONSE == CMDFOTADIAG.Response.FLASH_ABORT) {
+                        unregisterDIAGListener();
                         resetStatus();
                         tvStatusLevel1.setText(R.string.update_flash_failed);
                     } else if (rs.DIAG_CMD_RESPONSE == CMDFOTADIAG.Response.FLASH_FINISHED) {
+                        unregisterDIAGListener();
                         resetStatus();
                         tvStatusLevel1.setText(R.string.update_flashing_finished);
                     }
@@ -341,9 +348,13 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
     };
 
     private void registerDIAGListener() {
-        ServiceManager.getInstance().registerCommandOnce(
+        ServiceManager.getInstance().registerRegularlyCommand(
                 new CMDFOTADIAG(0x00),
                 DIAGFeedBack
         );
+    }
+
+    private void unregisterDIAGListener() {
+        ServiceManager.getInstance().unregisterRegularlyCommand(new CMDFOTADIAG(0x00));
     }
 }

@@ -11,16 +11,19 @@ import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import static com.longkai.stcarcontrol.st_exp.Utils.ByteUtils.bytes2hex;
 
 /**
- * Created by lk.sun on 3/8/2016.
+ * Created by lk on 3/8/2016.
  */
 public class ProtocolMessageDispatch implements MessageReceivedListener{
 
     private static final Logger logger = LoggerFactory.getLogger(ProtocolMessageDispatch.class);
     private SparseArray<Command> mSentCommandList;
     private SparseArray<CommandListener> mCommandListenerList;
+    private ConcurrentLinkedQueue<Integer> mRegularCommandIdList;
     private final Object listLock = new Object();
 
     private ConnectionInterface mConnection;
@@ -31,6 +34,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
 
         mSentCommandList = new SparseArray();
         mCommandListenerList = new SparseArray();
+        mRegularCommandIdList = new ConcurrentLinkedQueue<>();
     }
 
     /**
@@ -60,6 +64,21 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
         }
     }
 
+    public void registerRegularCommand(Command command, CommandListener listener) {
+        registerCommandOnce(command, listener);
+        mRegularCommandIdList.add(command.getCommandId() & 0xff);
+
+    }
+
+    public void unregisterRegularCommand(Command command) {
+        int commandId = command.getCommandId() & 0xff;
+        mRegularCommandIdList.remove(commandId);
+        synchronized (listLock){
+            mSentCommandList.remove(commandId);
+            mCommandListenerList.remove(commandId);
+        }
+    }
+
     /**
      * Check all sent commands timeout, if waiting time over timeout, the
      * command will be responsed timeout error, and removed form command check
@@ -69,6 +88,11 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
         synchronized (listLock) {
             for (int i = 0; i < mCommandListenerList.size(); i++) {
                 int commandId = mCommandListenerList.keyAt(i);
+
+                if (isCMDInRegularList(commandId)){
+                    return;
+                }
+
                 CommandListener listener = mCommandListenerList.get(commandId);
                 if (listener != null && (System.currentTimeMillis() - listener.getSendTimestamp() > listener.getTimeout())) {
 
@@ -105,8 +129,11 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
                 synchronized (listLock) {
                     command = mSentCommandList.get(commandId);
                     listener = mCommandListenerList.get(commandId);
-                    mSentCommandList.remove(commandId);
-                    mCommandListenerList.remove(commandId);
+
+                    if (!isCMDInRegularList(commandId)) {
+                        mSentCommandList.remove(commandId);
+                        mCommandListenerList.remove(commandId);
+                    }
                 }
                 Log.i("Command","Got package command = " + command);
                 if (command == null || listener == null) {
@@ -136,4 +163,18 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
     public SparseArray<Command> getSentCommandList(){
         return mSentCommandList;
     }
+
+    /**
+     * check if commandID is in regularCMDList
+     */
+    private boolean isCMDInRegularList(int commandId){
+        for (Integer j:
+                mRegularCommandIdList) {
+            if (j == commandId){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

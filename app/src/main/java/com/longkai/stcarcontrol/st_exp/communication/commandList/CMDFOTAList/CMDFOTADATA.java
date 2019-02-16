@@ -38,10 +38,10 @@ public class CMDFOTADATA extends BaseCommand {
             data[0] = (byte) 0xff; //Fixed
             data[1] = COMMAND_FOTA_DATA;
             if (lastPKG == 1) {
-                data[2] = (byte) ((lastPKG << 7) | (DEVICE_NUM << 3) | ((pkgLength & 0x70) >> 8) );
+                data[2] = (byte) ((lastPKG << 7) | (DEVICE_NUM << 3) | ((pkgLength & 0x700) >> 8) );
                 data[3] = (byte) (pkgLength & 0xff);
             } else if (lastPKG == 0){
-                data[2] = (byte) ((lastPKG << 7) | (DEVICE_NUM << 3) | ((pkgNum & 0x70) >> 8) );
+                data[2] = (byte) ((lastPKG << 7) | (DEVICE_NUM << 3) | ((pkgNum & 0x700) >> 8) );
                 data[3] = (byte) (pkgNum & 0xff);
             }
 

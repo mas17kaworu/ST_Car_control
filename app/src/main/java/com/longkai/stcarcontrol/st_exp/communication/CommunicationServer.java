@@ -197,6 +197,24 @@ public class CommunicationServer extends Service {
             });
         }
 
+        public void asyncRegisterRegularCommand(final Command command, final CommandListener listener){
+            doBackgroundHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mMessageHandler.registerRegularCommand(command, listener);
+                }
+            });
+        }
+
+        public void asyncUnregisterRegularCommand(final Command command){
+            doBackgroundHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mMessageHandler.unregisterRegularCommand(command);
+                }
+            });
+        }
+
         public void registerConnectionListener(ConnectionListener listener) {
             mConnectionListenerList.add(listener);
         }

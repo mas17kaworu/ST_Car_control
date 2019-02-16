@@ -104,6 +104,18 @@ public class ServiceManager {
 
     }
 
+    public void registerRegularlyCommand(Command command, CommandListener listener){
+        if (binder != null) {
+            binder.asyncRegisterRegularCommand(command, listener);
+        }
+    }
+
+    public void unregisterRegularlyCommand(Command command){
+        if (binder != null) {
+            binder.asyncUnregisterRegularCommand(command);
+        }
+    }
+
     public void setConnectionListener(ConnectionListener connectionListener) {
         if (connectionListener != null) {
             binder.registerConnectionListener(connectionListener);
