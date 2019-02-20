@@ -144,6 +144,8 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
                 ivUpdateAControl.setVisibility(View.VISIBLE);
                 ivUpdateAControl.setImageResource(R.mipmap.ic_vcu_update_start_update);
                 ivUpdateBControl.setVisibility(View.INVISIBLE);
+                tvStatusLevel1.setText(R.string.update_idle);
+                tvStatusLevel2.setText("");
                 break;
             case R.id.iv_vcu_update_b_icon:
                 if (AinUpdating.get() || BinUpdating.get()){
@@ -155,6 +157,8 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
                 ivUpdateBControl.setVisibility(View.VISIBLE);
                 ivUpdateBControl.setImageResource(R.mipmap.ic_vcu_update_start_update);
                 ivUpdateAControl.setVisibility(View.INVISIBLE);
+                tvStatusLevel1.setText(R.string.update_idle);
+                tvStatusLevel2.setText("");
                 break;
 
             case R.id.iv_vcu_update_a_control_btn:

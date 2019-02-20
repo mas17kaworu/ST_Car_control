@@ -52,6 +52,8 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_FOTA_DIAG      = 0x21;
 
     protected static final byte COMMAND_VCU_INFOTEINMENT= 0x00;
+    protected static final byte COMMAND_INFOTEINMENT_NEW= 0x22;
+    protected static final byte COMMAND_ECALL           = 0x23;
 
     protected byte[] data;//payload
     protected int dataLength;
