@@ -18,8 +18,8 @@ public class CMDECall extends BaseCommand {
             data[0] = 0x0A;
             data[1] = (COMMAND_ECALL);
             for (int i = 0; i <5; i++){
-                data[i+2] =(byte) (number / 10^(9-i*2));
-                number = number%10^(9-i*2);
+                data[i+2] =(byte) (number / Math.pow(10, (9-i*2)));
+                number = (long) (number % Math.pow(10, (9-i*2)));
             }
             data[7] = (byte)number;
             data[8] = (byte) 255;

@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinment;
+package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList;
 
 /**
  * Created by Administrator on 2018/9/23.

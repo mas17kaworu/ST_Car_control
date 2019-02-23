@@ -1,18 +1,14 @@
 package com.longkai.stcarcontrol.st_exp.activity;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinment.CMDInfoteinmentEngineVoice;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinment.CMDInfoteinmentVoiceVolume;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDInfoteinmentEngineVoice;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDInfoteinmentVoiceVolume;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 import java.util.ArrayList;

@@ -1,8 +1,7 @@
-package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinment;
+package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList;
 
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDHVACList.CMDHVAC;
 
 /**
  * Created by Administrator on 2018/9/23.
