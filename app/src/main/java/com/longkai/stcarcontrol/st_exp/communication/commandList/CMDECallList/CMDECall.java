@@ -9,46 +9,44 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 
 public class CMDECall extends BaseCommand {
 
-    protected static byte[] payload = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
-    public CMDECall(){
+    public CMDECall(String phoneNum, Type type){
         try{
+            long number = Long.valueOf(phoneNum);
             data = new byte[0x0A];
             dataLength = 10;
             data[0] = 0x0A;
-            data[1] = (COMMAND_INFOTEINMENT_NEW);
-            data[2] = payload[0];
-            data[3] = payload[1];
-            data[4] = payload[2];
-            data[5] = payload[3];
-            data[6] = payload[4];
-            data[7] = payload[5];
-            data[8] = payload[6];
-            data[9] = payload[7];
+            data[1] = (COMMAND_ECALL);
+            for (int i = 0; i <5; i++){
+                data[i+2] =(byte) (number / 10^(9-i*2));
+                number = number%10^(9-i*2);
+            }
+            data[7] = (byte)number;
+            data[8] = (byte) 255;
+            if (Type.call.equals(type)) {
+                data[9] = 2;
+            } else if (Type.set.equals(type)) {
+                data[9] = 1;
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    protected void refreshDataPayload(){
-        data[2] = payload[0];
-        data[3] = payload[1];
-        data[4] = payload[2];
-        data[5] = payload[3];
-        data[6] = payload[4];
-        data[7] = payload[5];
-        data[8] = payload[6];
-        data[9] = payload[7];
+    public enum  Type{
+        set,
+        call
     }
 
     @Override
     public BaseResponse toResponse(byte[] data) throws Exception {
-        return new Response(COMMAND_INFOTEINMENT_NEW);
+        return new Response(COMMAND_ECALL);
     }
 
     @Override
     public byte getCommandId() {
-        return COMMAND_INFOTEINMENT_NEW;
+        return COMMAND_ECALL;
     }
 
     public static class Response extends BaseResponse {
