@@ -9,6 +9,7 @@ import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDInfoteinmentEngineVoice;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDInfoteinmentVoiceVolume;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDNewInfoteinmentEngineVoice;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 import java.util.ArrayList;
@@ -47,28 +48,23 @@ public class InfotainmentActivity extends BaseActivity implements View.OnClickLi
         sbVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                Log.i("longkai");
                 CMDInfoteinmentVoiceVolume cmd = new CMDInfoteinmentVoiceVolume();
                 cmd.setVolume(progress);
                 ServiceManager.getInstance().sendCommandToCar(cmd, new CommandListenerAdapter());
 
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
     }
 
     @Override
     public void onClick(View v) {
-        CMDInfoteinmentEngineVoice command = new CMDInfoteinmentEngineVoice();
+        CMDNewInfoteinmentEngineVoice command = new CMDNewInfoteinmentEngineVoice();
         switch (v.getId()){
             case R.id.iv_infot_engine_s_a:
                 command.changeVoiceTo(1);

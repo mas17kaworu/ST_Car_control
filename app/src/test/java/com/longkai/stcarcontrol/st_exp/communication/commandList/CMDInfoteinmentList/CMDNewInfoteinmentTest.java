@@ -27,6 +27,7 @@ public class CMDNewInfoteinmentTest {
         }
         System.out.println();
         Assert.assertEquals(raw[4], 1);
+        Assert.assertEquals(raw[5], 3);
         Assert.assertEquals(raw[6], 1);
 
         volumeDecrease = new CMDNewInfoteinmentVolumeDecrease();
@@ -36,6 +37,7 @@ public class CMDNewInfoteinmentTest {
         }
         System.out.println();
         Assert.assertEquals(raw[4], 1);
+        Assert.assertEquals(raw[5], 3);
         Assert.assertEquals(raw[6], 2);
     }
 
