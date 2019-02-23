@@ -119,6 +119,20 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_IFTM_voice_down"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_IFTM_voice_up"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="600dp"
         android:layout_alignParentBottom="true"
