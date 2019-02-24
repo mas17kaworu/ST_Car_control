@@ -52,6 +52,8 @@
     <string name="update_flashing_firmware">固件升级中</string>
     <string name="update_flash_failed">固件升级失败</string>
     <string name="update_flashing_finished">固件升级成功</string>
+    
+    <string name="warning_phone_number_format_error">电话号码格式错误，必须为11位数字</string>
 
 
 

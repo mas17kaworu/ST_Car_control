@@ -6,10 +6,14 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.communication.Command;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDInfoteinmentEngineVoice;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDInfoteinmentVoiceVolume;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDNewInfoteinment;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDNewInfoteinmentEngineVoice;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDNewInfoteinmentVolumeDecrease;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDInfoteinmentList.CMDNewInfoteinmentVolumeIncrease;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 import java.util.ArrayList;
@@ -60,31 +64,44 @@ public class InfotainmentActivity extends BaseActivity implements View.OnClickLi
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
+        findViewById(R.id.iv_infot_volume_up).setOnClickListener(this);
+        findViewById(R.id.iv_infot_volume_down).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        CMDNewInfoteinmentEngineVoice command = new CMDNewInfoteinmentEngineVoice();
         switch (v.getId()){
             case R.id.iv_infot_engine_s_a:
-                command.changeVoiceTo(1);
+                sendEngineVoiceChooseCMD(1);
                 clickSoundBtn((ImageView)v);
                 break;
             case R.id.iv_infot_engine_s_b:
-                command.changeVoiceTo(2);
+                sendEngineVoiceChooseCMD(2);
                 clickSoundBtn((ImageView)v);
                 break;
             case R.id.iv_infot_engine_s_c:
-                command.changeVoiceTo(3);
+                sendEngineVoiceChooseCMD(3);
                 clickSoundBtn((ImageView)v);
                 break;
             case R.id.iv_infot_engine_s_d:
-                command.changeVoiceTo(4);
+                sendEngineVoiceChooseCMD(4);
                 clickSoundBtn((ImageView)v);
                 break;
+            case R.id.iv_infot_volume_down:
+                sendEngineVolumeCMD(new CMDNewInfoteinmentVolumeDecrease());
+                break;
+            case R.id.iv_infot_volume_up:
+                sendEngineVolumeCMD(new CMDNewInfoteinmentVolumeIncrease());
+                break;
         }
-        ServiceManager.getInstance().sendCommandToCar(command, new CommandListenerAdapter());
 
+    }
+
+    private void sendEngineVoiceChooseCMD(int voiceNumber){
+        CMDNewInfoteinmentEngineVoice command = new CMDNewInfoteinmentEngineVoice();
+        command.changeVoiceTo(voiceNumber);
+        ServiceManager.getInstance().sendCommandToCar(command, new CommandListenerAdapter());
     }
 
     private void clickSoundBtn(ImageView targetIV){
@@ -95,5 +112,9 @@ public class InfotainmentActivity extends BaseActivity implements View.OnClickLi
                 iv.setSelected(false);
             }
         }
+    }
+
+    private void sendEngineVolumeCMD(Command cmd){
+        ServiceManager.getInstance().sendCommandToCar(cmd, new CommandListenerAdapter());
     }
 }
