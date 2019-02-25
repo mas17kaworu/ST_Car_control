@@ -9,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAutoRunSwitch;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
 
 /**
  * Created by Administrator on 2017/7/10.
@@ -28,6 +31,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         mView = inflater.inflate(R.layout.fragment_homepage, container, false);
         mAutoDisplay = (ImageView) mView.findViewById(R.id.iv_homepage_auto_display);
         mAutoDisplay.setOnClickListener(this);
+        mView.findViewById(R.id.iv_homepage_upgrade_firmware).setOnClickListener(this);
         return mView;
     }
 
@@ -46,6 +50,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                     mAutoDisplay.setImageResource(R.mipmap.ic_homepage_auto_display_u);
                     ServiceManager.getInstance().sendCommandToCar(new CMDAutoRunSwitch(false), new CommandListenerAdapter());
                 }
+                break;
+            case R.id.iv_homepage_upgrade_firmware:
+                ((MainActivity) getActivity()).setSelect(FRAGMENT_TRANSACTION_UPDATE_FIRMWARE);
                 break;
         }
     }

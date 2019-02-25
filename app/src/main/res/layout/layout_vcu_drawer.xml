@@ -166,6 +166,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="540dp" />
         <Button
+            android:visibility="gone"
             android:id="@+id/btn_tbox_update_firmware"
             android:text="@string/tbox_update_firmware"
             android:textSize="15sp"

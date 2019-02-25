@@ -152,7 +152,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_auto_display_u"
-        android:layout_marginStart="850dp"
+        android:layout_marginStart="800dp"
         android:layout_marginTop="550dp"/>
+
+    <ImageView
+        android:id="@+id/iv_homepage_upgrade_firmware"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/upgrade_firmware_btn"
+        android:layout_marginStart="900dp"
+        android:layout_marginTop="550dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/upgrade"
+        android:layout_marginStart="905dp"
+        android:layout_marginTop="610dp"
+        android:textColor="#ffffff"/>
 
 </RelativeLayout>

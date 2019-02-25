@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.activity.VCUActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFOTAList.CMDFOTADATA;
@@ -27,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_BMS_HOME;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_TBOX;
 
 /**
@@ -178,7 +180,7 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
                 }
                 break;
             case R.id.iv_back_to_tbox:
-                ((VCUActivity)getActivity()).setSelect(FRAGMENT_TRANSACTION_TBOX);
+                ((MainActivity)getActivity()).setSelect(FRAGMENT_TRANSACTION_BMS_HOME);
                 break;
         }
     }
@@ -219,12 +221,12 @@ public class VCUUpdateFirmwareFragment extends Fragment implements View.OnClickL
 
         gifLoadingView.setVisibility(View.INVISIBLE);
         ivBackBtn.setClickable(true);
-        ((VCUActivity)getActivity()).enableSwitchFragment();
+        ((MainActivity)getActivity()).enableSwitchFragment();
     }
 
     private void inUpgrading(){
         ivBackBtn.setClickable(false);
-        ((VCUActivity)getActivity()).disableSwitchFragment();
+        ((MainActivity)getActivity()).disableSwitchFragment();
     }
 
     private void showUploadingProgress(){

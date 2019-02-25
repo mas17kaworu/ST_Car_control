@@ -36,10 +36,15 @@ import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLampTest2;
 import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
 
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_BMS_HOME;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -56,7 +61,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private BCMDiagnosticFragment mBCMDiagnosticFragment;
     private FrontHeadLampTest2 frontHeadLampTest;
 
-
+    private VCUUpdateFirmwareFragment updateFirmwareFragment;
 
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
@@ -65,6 +70,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ImageView ivDiagram;
     public int mSelectedMode = 0;
 
+    private AtomicBoolean disableSwitchFragment = new AtomicBoolean(false);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,6 +177,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Log.i("MainActivity", "position = " + position);
+                if (disableSwitchFragment.get()){
+                    return;
+                }
                 mSelectedMode = position;
                 hListViewAdapter.setSelectIndex(position);
                 hListViewAdapter.notifyDataSetChanged();
@@ -227,6 +236,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     };
 
     public void setSelect(int i) {
+        if (disableSwitchFragment.get()){
+            return;
+        }
         ivDiagram.setVisibility(View.INVISIBLE);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -238,7 +250,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mLastflag = i;
         releaseFragment();
         switch (i) {
-            case 0:
+            case FRAGMENT_TRANSACTION_BMS_HOME:
                 if (mHomeFragment == null) {
                     mHomeFragment = new HomeFragment();
 //                    transaction.add(R.id.main_fragment_content, mHomeFragment);
@@ -304,6 +316,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     frontHeadLampTest = new FrontHeadLampTest2();
                 }
                 transaction.replace(R.id.main_fragment_content, frontHeadLampTest);
+                break;
+            case FRAGMENT_TRANSACTION_UPDATE_FIRMWARE:
+                if (updateFirmwareFragment == null) {
+                    updateFirmwareFragment = new VCUUpdateFirmwareFragment();
+                }
+                transaction.replace(R.id.main_fragment_content, updateFirmwareFragment);
                 break;
             default:
                 break;
@@ -397,5 +415,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             ivDiagram.setVisibility(View.VISIBLE);
             ivDiagram.setImageBitmap(bm);
         }
+    }
+
+    public void enableSwitchFragment(){
+        disableSwitchFragment.set(false);
+    }
+
+    public void disableSwitchFragment(){
+        disableSwitchFragment.set(true);
     }
 }

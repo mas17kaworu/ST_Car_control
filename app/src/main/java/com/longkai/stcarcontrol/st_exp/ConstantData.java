@@ -72,9 +72,12 @@ public class ConstantData {
     public static final String PLCM_DIAGRAM = "ic_Diagram_PLCM.png";
     public static final String POWER_SEAT_DIAGRAM = "ic_Diagram_Power_seat.png";
 
+    //BMS
+    public static final int FRAGMENT_TRANSACTION_BMS_HOME = 0;
+    //VCU
     public static final int FRAGMENT_TRANSACTION_TBOX = 4;
     public static final int FRAGMENT_TRANSACTION_OBC = 10;
-    public static final int FRAGMENT_TRANSACTION_UPDATE_FIRMWARE = 100;
+    public static final int FRAGMENT_TRANSACTION_UPDATE_FIRMWARE = 104;
 
     public ConstantData(){
 /*        sDataMap = new HashMap<Integer,Integer>();

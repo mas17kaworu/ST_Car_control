@@ -55,6 +55,6 @@
     
     <string name="warning_phone_number_format_error">电话号码格式错误，必须为11位数字</string>
 
-
+    <string name="upgrade">upgrade</string>
 
 </resources>
