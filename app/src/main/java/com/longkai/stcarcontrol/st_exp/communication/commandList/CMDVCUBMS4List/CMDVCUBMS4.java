@@ -13,7 +13,7 @@ public class CMDVCUBMS4 extends BaseCommand {
             data = new byte[2];
             dataLength = 2;
             data[0] = 0x02;
-            data[1] = (byte) (0b101<<5 | COMMAND_VCU_BMS_4);
+            data[1] = (byte) (0b000<<5 | COMMAND_VCU_BMS_4);
         }catch (Exception e){
             e.printStackTrace();
         }

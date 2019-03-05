@@ -30,12 +30,12 @@ public class MCUVoltageDashboard extends View {
     private Paint mPaint;
     private TextPaint mTextPaint;
     private float target_value_percent = 0; //0~100
-    private float present_value = 0;
+    private float present_value_percent = 0;
     private View view;
     private DecimalFormat df;
 
     private static final float MIN_INTERVAL = 0.1f;
-    private static final float MAX_VALUE = 32.0f;
+    private static final float MAX_VALUE = 6000f;
     private static final float MIN_VALUE = 0f;
 
     private Thread refreshThread = new Thread(){
@@ -43,8 +43,10 @@ public class MCUVoltageDashboard extends View {
         public void run() {
             super.run();
             while (true) {
-                if (Math.abs(present_value - target_value_percent)> MIN_INTERVAL) {
-                    present_value += caculateInterval(target_value_percent, present_value);
+                if (Math.abs(present_value_percent - target_value_percent)> MIN_INTERVAL) {
+                    present_value_percent += caculateInterval(target_value_percent, present_value_percent);
+                } else {
+                    present_value_percent = target_value_percent;
                 }
                 view.postInvalidate();
                 try {
@@ -84,7 +86,11 @@ public class MCUVoltageDashboard extends View {
         refreshThread.start();
     }
 
-    public void setValue(float value) {
+    public void setValue(float value){
+        target_value_percent = (value - MIN_VALUE) / (MAX_VALUE - MIN_VALUE) * 100;
+    }
+
+    public void setPercentage(float value) {
         target_value_percent = value;
     }
 
@@ -92,7 +98,7 @@ public class MCUVoltageDashboard extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawBitmap(background,0,0,mPaint);
-        matrix.postRotate((present_value * FULL_ANGLE / 100) - 150, pin.getWidth()/2, pin.getHeight());
+        matrix.postRotate((present_value_percent * FULL_ANGLE / 100) - 150, pin.getWidth()/2, pin.getHeight());
         matrix.postTranslate((width - pin.getWidth()) / 2, height/2-pin.getHeight());
 
         canvas.drawBitmap(pin, matrix, mPaint);

@@ -15,7 +15,7 @@ public class CMDVCUCarMode extends BaseCommand {
             data = new byte[10];
             dataLength = 10;
             data[0] = 0x0A;
-            data[1] = (byte) (0b101<<5 | COMMAND_VCU_CAR_MODE);
+            data[1] = (byte) (0b000<<5 | COMMAND_VCU_CAR_MODE);
             data[2] = payload[0];
             data[3] = payload[1];
             data[4] = payload[2];

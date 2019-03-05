@@ -15,7 +15,7 @@ public class CMDVCUBMS5 extends BaseCommand {
             data = new byte[2];
             dataLength = 2;
             data[0] = 0x02;
-            data[1] = (byte) (0b101<<5 | COMMAND_VCU_BMS_5);
+            data[1] = (byte) (0b000<<5 | COMMAND_VCU_BMS_5);
         }catch (Exception e){
             e.printStackTrace();
         }
