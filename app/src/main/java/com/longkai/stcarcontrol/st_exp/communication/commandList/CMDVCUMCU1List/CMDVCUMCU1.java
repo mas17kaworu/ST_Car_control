@@ -26,7 +26,7 @@ public class CMDVCUMCU1 extends BaseCommand {
         if (data[2] == 0x0E){
             response.Current_of_MCU = (int)(((data[5] & 0xff)<<8 | (data[4] & 0xff)) * 0.1f) - 1000;
             response.Input_Voltage_of_MCU = (int)(((data[7] & 0xff)<<8 |(data[6] & 0xff)) * 0.1f);
-            response.Torch_of_Motor = (((data[9] & 0xff)<<8 | (data[8] & 0xff)) *0.1f - 2000);
+            response.Torch_of_Motor = (((data[9] & 0xff)<<8 | (data[8] & 0xff)) *0.1f);
             response.Temp_of_MCU = (data[10] & 0xff) - 40;
             response.Temp_of_Motor = (data[11] & 0xff) - 40;
             response.Motor_Realtime_Speed = ((data[13] & 0xff)<<8 |(data[12] & 0xff));
@@ -74,7 +74,7 @@ public class CMDVCUMCU1 extends BaseCommand {
             array[6] = (byte)(((tmpInt) & 0xff));
             array[7] = (byte)(((tmpInt) & 0xff00) >> 8);
 
-            tmpInt = (int)(this.Torch_of_Motor + 2000) * 10;
+            tmpInt = (int)(this.Torch_of_Motor) * 10;
             array[8] = (byte)(((tmpInt) & 0xff));
             array[9] = (byte)(((tmpInt) & 0xff00) >> 8);
 
