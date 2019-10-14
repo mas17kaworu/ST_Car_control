@@ -11,9 +11,11 @@ demo/Actual difference
 电流dashboard
 
 todo
-communication test
-infortainment page communication
+bms J
+vcu J
+bcm
+plgm
+mcu J
+tbox J
+发动机音效 J
 
-charge page?
-tbox 表格
-bms bug

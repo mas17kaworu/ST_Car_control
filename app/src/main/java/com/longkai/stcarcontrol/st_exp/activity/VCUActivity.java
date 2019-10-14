@@ -43,9 +43,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_BMS;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_HOME;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_MCU;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_OBC;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_TBOX;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_VCUVCU;
 
 /**
  * Created by Administrator on 2018/5/12.
@@ -96,7 +100,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         });*/
 
         initUI();
-        setSelect(0);
+        setSelect(FRAGMENT_TRANSACTION_HOME);
         vcuState = VCUState.HomeScreen;
     }
 
@@ -196,7 +200,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 //send command
-                setSelect(1);
+                setSelect(FRAGMENT_TRANSACTION_VCUVCU);
                 showDrawerLayout();
                 //only for test
                 Handler handler = new Handler();
@@ -214,7 +218,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         findViewById(R.id.btn_vcu_gyxd).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelect(1);
+                setSelect(FRAGMENT_TRANSACTION_VCUVCU);
                 showDrawerLayout();
 
 
@@ -276,7 +280,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         findViewById(R.id.btn_drawer_bms_battery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelect(2);
+                setSelect(FRAGMENT_TRANSACTION_BMS);
                 showDrawerLayout();
             }
         });
@@ -462,14 +466,14 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         mLastflag = i;
         releaseFragment();
         switch (i) {
-            case 0:
+            case FRAGMENT_TRANSACTION_HOME:
                 if (mVCUHomeFragment == null) {
                     mVCUHomeFragment = new VCUHomeFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, mVCUHomeFragment);
                 updateDrawer(VCUState.HomeScreen);
                 break;
-            case 1:
+            case FRAGMENT_TRANSACTION_VCUVCU:
                 if (mVCUVCUCFragment == null){
                     mVCUVCUCFragment = new VCUVCUCFragment();
                 }
@@ -482,14 +486,14 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, mVCUGYHLSDFragment);
                 break;
-            case 2:
+            case FRAGMENT_TRANSACTION_BMS:
                 if (mVCUBMSFragment == null){
                     mVCUBMSFragment = new VCUBMSFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, mVCUBMSFragment);
                 updateDrawer(VCUState.BMS);
                 break;
-            case 3:
+            case FRAGMENT_TRANSACTION_MCU:
                 if (vcumcuFragment == null){
                     vcumcuFragment = new VCUMCUFragment();
                 }
