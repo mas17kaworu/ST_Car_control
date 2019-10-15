@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="start">
 
     <!--checker vcu drawer-->
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/rl_drawer_vcu"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/transparent"
         >
         <Button
@@ -20,7 +21,9 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="160dp" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread"
+            app:layout_constraintBottom_toTopOf="@+id/btn_vcu_niuju_jisuan"/>
 
         <Button
             android:id="@+id/btn_vcu_niuju_jisuan"
@@ -31,7 +34,8 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="260dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_vcu_gysd"
+            app:layout_constraintBottom_toTopOf="@+id/btn_vcu_gyxd"/>
 
         <Button
             android:id="@+id/btn_vcu_gyxd"
@@ -42,7 +46,8 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="360dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_vcu_niuju_jisuan"
+            app:layout_constraintBottom_toTopOf="@+id/btn_vcu_charging" />
 
         <Button
             android:id="@+id/btn_vcu_charging"
@@ -53,7 +58,8 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="460dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_vcu_gyxd"
+            app:layout_constraintBottom_toTopOf="@+id/btn_vcu_obc"/>
 
         <Button
             android:id="@+id/btn_vcu_obc"
@@ -64,14 +70,15 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="560dp" />
-    </RelativeLayout>
+            app:layout_constraintTop_toBottomOf="@+id/btn_vcu_charging"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
 
     <!--tbox drawer-->
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/rl_drawer_tbox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/transparent"
         >
         <Button
@@ -83,7 +90,8 @@
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="50dp" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btn_tbox_data_collect"/>
         <Button
             android:id="@+id/btn_tbox_data_collect"
             android:text="@string/tbox_data_collect"
@@ -93,7 +101,8 @@
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="110dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_tbox_date_time"
+            app:layout_constraintBottom_toTopOf="@+id/btn_tbox_data_store"/>
         <Button
             android:id="@+id/btn_tbox_data_store"
             android:text="@string/tbox_data_store"
@@ -103,7 +112,8 @@
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="170dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_tbox_data_collect"
+            app:layout_constraintBottom_toTopOf="@+id/btn_tbox_data_transpot"/>
         <Button
             android:id="@+id/btn_tbox_data_transpot"
             android:text="@string/tbox_data_transport"
@@ -113,7 +123,8 @@
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="230dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_tbox_data_store"
+            app:layout_constraintBottom_toTopOf="@+id/btn_tbox_data_resend"/>
         <Button
             android:id="@+id/btn_tbox_data_resend"
             android:text="@string/tbox_data_resend"
@@ -123,7 +134,8 @@
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="300dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_tbox_data_transpot"
+            app:layout_constraintBottom_toTopOf="@+id/btn_tbox_individual"/>
         <Button
             android:id="@+id/btn_tbox_individual"
             android:text="@string/tbox_individual"
@@ -133,7 +145,8 @@
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="360dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_tbox_data_resend"
+            app:layout_constraintBottom_toTopOf="@+id/btn_tbox_register"/>
         <Button
             android:id="@+id/btn_tbox_register"
             android:text="@string/tbox_register"
@@ -143,7 +156,8 @@
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="420dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_tbox_individual"
+            app:layout_constraintBottom_toTopOf="@+id/btn_tbox_remote_control"/>
 
         <Button
             android:id="@+id/btn_tbox_remote_control"
@@ -154,7 +168,8 @@
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="480dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_tbox_register"
+            app:layout_constraintBottom_toTopOf="@+id/btn_tbox_mail_and_phone"/>
         <Button
             android:id="@+id/btn_tbox_mail_and_phone"
             android:text="@string/tbox_mail_and_phone"
@@ -164,7 +179,8 @@
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="540dp" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_tbox_remote_control"
+            app:layout_constraintBottom_toBottomOf="parent" />
         <Button
             android:visibility="gone"
             android:id="@+id/btn_tbox_update_firmware"
@@ -177,12 +193,12 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="600dp"/>
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/rl_drawer_bms"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/transparent">
         <Button
             android:id="@+id/btn_drawer_bms_battery"
@@ -193,7 +209,9 @@
             android:layout_width="230dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="200dp" />
+            app:layout_constraintVertical_bias="0.35"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
         <Button
             android:id="@+id/btn_drawer_bms_insulation_monitor"
             android:text="@string/bms_insulation_monitor"
@@ -203,7 +221,8 @@
             android:layout_width="230dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="300dp" />
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="parent"/>
         <Button
             android:id="@+id/btn_drawer_bms_connection_detector"
             android:text="@string/bms_connect_monitor"
@@ -213,6 +232,8 @@
             android:layout_width="230dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="400dp" />
-    </RelativeLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.65"/>
+    </android.support.constraint.ConstraintLayout>
 </FrameLayout>
