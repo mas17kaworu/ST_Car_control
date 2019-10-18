@@ -1,8 +1,10 @@
 package com.longkai.stcarcontrol.st_exp.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.STCarApplication;
 import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionType;
@@ -35,12 +38,23 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_choose_first);
-
-
+        STCarApplication.verifyStoragePermissions(this);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 1:
+                for (String permission:
+                     permissions) {
+                    if (permission.equalsIgnoreCase(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                        STCarApplication.logConfig();
+                    }
+                }
+                break;
+        }
+    }
 
     @Override
     protected void onStart() {
