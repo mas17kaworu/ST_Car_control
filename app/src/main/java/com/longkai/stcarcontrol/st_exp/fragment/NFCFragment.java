@@ -8,10 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDNFCList.CMDNFCReturn;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+import java.lang.ref.WeakReference;
 
 public class NFCFragment extends Fragment {
 
   private TextView tvKeyInfo, tvFilterInfo;
+
+  private CMDNFCReturn command = new CMDNFCReturn();
 
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -20,14 +26,32 @@ public class NFCFragment extends Fragment {
     tvKeyInfo = (TextView) mView.findViewById(R.id.tv_nfc_key_info);
     tvFilterInfo = (TextView) mView.findViewById(R.id.tv_nfc_filter_info);
 
-    //todo register cmd listener
-
+    ServiceManager.getInstance().registerRegularlyCommand(command, new NFCCMDListener(this));
     return mView;
   }
 
-  @Override public void onDestroy() {
-    super.onDestroy();
-    //todo unregister Listener
+  private static class NFCCMDListener extends CommandListenerAdapter<CMDNFCReturn.Response> {
+    WeakReference<Fragment> fragment;
 
+    public NFCCMDListener(Fragment fragment){
+      this.fragment = new WeakReference<>(fragment);
+    }
+
+    @Override public void onSuccess(CMDNFCReturn.Response response) {
+      if (fragment.get() != null){
+        fragment.get().getActivity().runOnUiThread(new Runnable() {
+          @Override public void run() {
+            //todo update UI and text
+
+
+          }
+        });
+      }
+    }
+  }
+
+  @Override public void onDestroy() {
+    ServiceManager.getInstance().unregisterRegularlyCommand(command);
+    super.onDestroy();
   }
 }
