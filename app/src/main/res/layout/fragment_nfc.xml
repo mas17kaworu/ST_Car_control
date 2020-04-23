@@ -32,14 +32,14 @@
         android:id="@+id/tv_nfc_key_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="line1"
+        android:text="@string/nfc_key_not_available"
         android:textColor="#ffffff"
         android:textSize="30sp"/>
     <TextView
         android:id="@+id/tv_nfc_filter_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="line2"
+        android:text="@string/filter_not_available"
         android:textColor="#ffffff"
         android:textSize="30sp"/>
   </LinearLayout>

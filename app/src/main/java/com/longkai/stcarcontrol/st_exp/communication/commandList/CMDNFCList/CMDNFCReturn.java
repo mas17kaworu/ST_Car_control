@@ -9,7 +9,7 @@ public class CMDNFCReturn extends BaseCommand {
     try {
       data = new byte[2];
       dataLength = 2;
-      data[0] = 0x03;
+      data[0] = 0x02;
       data[1] = COMMAND_NFC_RETURN;
     } catch (Exception e) {
       e.printStackTrace();
@@ -19,8 +19,8 @@ public class CMDNFCReturn extends BaseCommand {
   @Override public BaseResponse toResponse(byte[] data) throws Exception {
     Response response = new Response(getCommandId());
     if (data[2] == 0x03) {
-      response.key_info = (data[4]& 0xff) | ((data [5] & 0xff)<<1) ;
-      response.filter_info = (data[6]& 0xff);
+      response.key_info = (data[4] & 0x03);
+      response.filter_info = (data[4] & 0x04);
     }
     return response;
   }

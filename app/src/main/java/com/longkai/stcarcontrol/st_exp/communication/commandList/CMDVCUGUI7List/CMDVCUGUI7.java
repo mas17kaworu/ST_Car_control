@@ -99,4 +99,14 @@ public class CMDVCUGUI7 extends BaseCommand {
         else
             return true;
     }
+
+    public void OBCDemoOn(){
+      payload[7] = 1;
+      refreshDataPayload();
+    }
+
+    public void OBCDemoOff(){
+      payload[7] = 0;
+      refreshDataPayload();
+    }
 }

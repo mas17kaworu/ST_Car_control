@@ -30,20 +30,52 @@ public class NFCFragment extends Fragment {
     return mView;
   }
 
-  private static class NFCCMDListener extends CommandListenerAdapter<CMDNFCReturn.Response> {
-    WeakReference<Fragment> fragment;
+  public void setTvKeyInfo(String text) {
+    tvKeyInfo.setText(text);
+  }
 
-    public NFCCMDListener(Fragment fragment){
+  public void setTvFilterInfo(String text) {
+    tvFilterInfo.setText(text);
+  }
+
+  private static class NFCCMDListener extends CommandListenerAdapter<CMDNFCReturn.Response> {
+    WeakReference<NFCFragment> fragment;
+
+    public NFCCMDListener(NFCFragment fragment) {
       this.fragment = new WeakReference<>(fragment);
     }
 
-    @Override public void onSuccess(CMDNFCReturn.Response response) {
-      if (fragment.get() != null){
+    @Override public void onSuccess(final CMDNFCReturn.Response response) {
+      if (fragment.get() != null) {
         fragment.get().getActivity().runOnUiThread(new Runnable() {
           @Override public void run() {
             //todo update UI and text
-
-
+            switch (response.key_info) {
+              case 0:
+                fragment.get()
+                    .setTvKeyInfo(
+                        fragment.get().getContext().getString(R.string.nfc_key_not_available));
+                break;
+              case 1:
+                fragment.get()
+                    .setTvKeyInfo(fragment.get().getContext().getString(R.string.nfc_valid_key));
+                break;
+              case 2:
+                fragment.get()
+                    .setTvKeyInfo(fragment.get().getContext().getString(R.string.nfc_invalid_key));
+                break;
+            }
+            switch (response.filter_info) {
+              case 0:
+                fragment.get()
+                    .setTvFilterInfo(
+                        fragment.get().getContext().getString(R.string.filter_not_available));
+                break;
+              case 1:
+                fragment.get()
+                    .setTvFilterInfo(fragment.get().getContext().getString(R.string.valid_filter));
+                break;
+            }
           }
         });
       }

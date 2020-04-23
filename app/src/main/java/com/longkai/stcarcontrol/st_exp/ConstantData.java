@@ -73,17 +73,32 @@ public class ConstantData {
     public static final String POWER_SEAT_DIAGRAM = "ic_Diagram_Power_seat.png";
 
     //BMS
-    public static final int FRAGMENT_TRANSACTION_BMS_HOME = 0;
 
+    public static final int FRAGMENT_TRANSACTION_BMS_HOME = 0;
 
     //VCU
     public static final int FRAGMENT_TRANSACTION_HOME = 0;
     public static final int FRAGMENT_TRANSACTION_VCUVCU = 1;
-    public static final int FRAGMENT_TRANSACTION_BMS = 2;
-    public static final int FRAGMENT_TRANSACTION_MCU = 3;
-    public static final int FRAGMENT_TRANSACTION_TBOX = 4;
+    public static final int FRAGMENT_TRANSACTION_OBC_DEMO = 2;
+    public static final int FRAGMENT_TRANSACTION_BMS = 3;
+    public static final int FRAGMENT_TRANSACTION_MCU = 4;
+    public static final int FRAGMENT_TRANSACTION_TBOX = 5;
+
+    public static final int FRAGMENT_TRANSACTION_GYHLSD = 6;
+    public static final int FRAGMENT_TRANSACTION_CHARGE = 7;
+    public static final int FRAGMENT_TRANSACTION_TORQUE = 8;
+    public static final int FRAGMENT_TRANSACTION_MONITOR = 9;
+
+
     public static final int FRAGMENT_TRANSACTION_OBC = 10;
+
     public static final int FRAGMENT_TRANSACTION_UPDATE_FIRMWARE = 104;
+
+    public static class MainFragment{
+      public static final int FRAGMENT_TRANSACTION_NFC = 5;
+      public static final int FRAGMENT_TRANSACTION_CAR_BACK = 6;
+      public static final int FRAGMENT_TRANSACTION_CAR_BACK_COVER = 7;
+    }
 
     public ConstantData(){
 /*        sDataMap = new HashMap<Integer,Integer>();

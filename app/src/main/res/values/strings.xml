@@ -57,4 +57,10 @@
 
     <string name="upgrade">upgrade</string>
 
+  <string name="nfc_key_not_available">Key not available</string>
+  <string name="nfc_valid_key">Valid key detected</string>
+  <string name="nfc_invalid_key">Invalid key detected</string>
+  <string name="filter_not_available">Filter not available or invalid filter. </string>
+  <string name="valid_filter">Valid filter detected, 90% remain</string>
+
 </resources>

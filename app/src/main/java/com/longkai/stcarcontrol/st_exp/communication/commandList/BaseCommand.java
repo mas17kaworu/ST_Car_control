@@ -69,7 +69,23 @@ public abstract class BaseCommand implements Command {
     public void turnOff(){
     }
 
-
+  /**
+   *
+   *   - Header:   For synchronization purpose
+   *   - Length:   The data length (byte) of communication Length, command & content
+   *   - Command:  The command of protocol
+   *   - Content:  The content of relevant command
+   *   - Checksum: The checksum of the Length, Command & Content.
+   * example
+   *
+   * Header	0x3C5A (先发送0x5A，再0x3C)
+   * Length	0x3
+   * Command	"B[7]: Reserved"	"B[0:7]: 0x27 (NFC CMD)"
+   * Content  xxx
+   *
+   * Checksum	0x--
+   *
+   */
     public byte[] toRawData() {
         byte[] raw;
         if (data == null || data.length == 2) {
