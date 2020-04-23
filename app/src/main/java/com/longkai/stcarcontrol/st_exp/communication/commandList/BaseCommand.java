@@ -58,6 +58,8 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_NFC_RETURN      = 0x27;
     protected static final byte COMMAND_OBC_RETURN      = 0x26;
 
+    protected static final byte COMMAND_OLED_BACK       = 0x28;
+
 
 
     protected byte[] data;//payload
