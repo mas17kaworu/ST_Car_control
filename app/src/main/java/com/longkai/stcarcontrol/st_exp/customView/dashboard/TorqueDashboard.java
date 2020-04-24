@@ -27,7 +27,8 @@ public class TorqueDashboard extends View {
     private static final int FULL_ANGLE = 120;
 
     private Bitmap background;
-    private Bitmap scaleBackGround;
+
+    private Bitmap scaleBackGround; //调整为可变
     private Bitmap pin;
     private Paint mPaint;
     private TextPaint mTextPaint;
@@ -40,8 +41,8 @@ public class TorqueDashboard extends View {
 
 
     private static final float MIN_INTERVAL = 0.1f;
-    private static final float MAX_VALUE = 32.0f;
-    private static final float MIN_VALUE = 0f;
+    private static final float MAX_VALUE = 32.0f; //可变
+    private static final float MIN_VALUE = 0f; //可变
 
 
 

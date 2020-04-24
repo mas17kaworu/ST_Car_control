@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
@@ -15,7 +16,9 @@ import java.lang.ref.WeakReference;
 
 public class NFCFragment extends Fragment {
 
-  private TextView tvKeyInfo, tvFilterInfo;
+  public TextView tvKeyInfo, tvFilterInfo, tvDoorInfo;
+
+  public ImageView ivKey, ivFilter, ivDoor;
 
   private CMDNFCReturn command = new CMDNFCReturn();
 
@@ -25,6 +28,11 @@ public class NFCFragment extends Fragment {
     View mView = inflater.inflate(R.layout.fragment_nfc, container, false);
     tvKeyInfo = (TextView) mView.findViewById(R.id.tv_nfc_key_info);
     tvFilterInfo = (TextView) mView.findViewById(R.id.tv_nfc_filter_info);
+    tvDoorInfo = (TextView) mView.findViewById(R.id.tv_nfc_door_info);
+
+    ivKey = (ImageView) mView.findViewById(R.id.iv_nfc_key_status);
+    ivFilter = (ImageView) mView.findViewById(R.id.iv_nfc_filter_status);
+    ivDoor = (ImageView) mView.findViewById(R.id.iv_nfc_door_status);
 
     ServiceManager.getInstance().registerRegularlyCommand(command, new NFCCMDListener(this));
     return mView;
@@ -34,9 +42,27 @@ public class NFCFragment extends Fragment {
     tvKeyInfo.setText(text);
   }
 
+  public void setIvKey(int resID) {
+    ivKey.setImageResource(resID);
+  }
+
   public void setTvFilterInfo(String text) {
     tvFilterInfo.setText(text);
   }
+
+  public void setIvFilter(int resID) {
+    ivFilter.setImageResource(resID);
+  }
+
+  public void setTvDoorInfo(String text) {
+    tvDoorInfo.setText(text);
+  }
+
+  public void setIvDoor(int resID) {
+    ivDoor.setImageResource(resID);
+  }
+
+
 
   private static class NFCCMDListener extends CommandListenerAdapter<CMDNFCReturn.Response> {
     WeakReference<NFCFragment> fragment;
@@ -49,33 +75,77 @@ public class NFCFragment extends Fragment {
       if (fragment.get() != null) {
         fragment.get().getActivity().runOnUiThread(new Runnable() {
           @Override public void run() {
-            //todo update UI and text
+            //todo show dialog
+            //compare with
+
             switch (response.key_info) {
               case 0:
                 fragment.get()
                     .setTvKeyInfo(
                         fragment.get().getContext().getString(R.string.nfc_key_not_available));
+                fragment.get()
+                    .setIvKey(R.mipmap.ic_nfc_key_not_available);
                 break;
               case 1:
                 fragment.get()
                     .setTvKeyInfo(fragment.get().getContext().getString(R.string.nfc_valid_key));
+                fragment.get()
+                    .setIvKey(R.mipmap.ic_nfc_key_available);
                 break;
               case 2:
                 fragment.get()
                     .setTvKeyInfo(fragment.get().getContext().getString(R.string.nfc_invalid_key));
+                fragment.get()
+                    .setIvKey(R.mipmap.ic_nfc_key_invalid);
                 break;
             }
+            //filter
             switch (response.filter_info) {
               case 0:
                 fragment.get()
                     .setTvFilterInfo(
                         fragment.get().getContext().getString(R.string.filter_not_available));
+                fragment.get()
+                    .setIvFilter(R.mipmap.ic_nfc_filter_invalid);
                 break;
               case 1:
                 fragment.get()
                     .setTvFilterInfo(fragment.get().getContext().getString(R.string.valid_filter));
+                fragment.get()
+                    .setIvFilter(R.mipmap.ic_nfc_filter_available);
                 break;
             }
+            //door
+            switch (response.door_info) {
+              case 1:
+                fragment.get()
+                    .tvDoorInfo.setVisibility(View.VISIBLE);
+                fragment.get()
+                    .ivDoor.setVisibility(View.VISIBLE);
+                fragment.get()
+                    .setTvDoorInfo(
+                        fragment.get().getContext().getString(R.string.nfc_lock_door));
+                fragment.get()
+                    .setIvDoor(R.mipmap.ic_nfc_door_lock);
+                break;
+              case 2:
+                fragment.get()
+                    .tvDoorInfo.setVisibility(View.VISIBLE);
+                fragment.get()
+                    .ivDoor.setVisibility(View.VISIBLE);
+                fragment.get()
+                    .setTvDoorInfo(fragment.get().getContext().getString(R.string.nfc_unlock_door));
+                fragment.get()
+                    .setIvDoor(R.mipmap.ic_nfc_door_unlock);
+                break;
+              default:
+                fragment.get()
+                    .tvDoorInfo.setVisibility(View.INVISIBLE);
+                fragment.get()
+                    .ivDoor.setVisibility(View.INVISIBLE);
+                break;
+            }
+
           }
         });
       }
