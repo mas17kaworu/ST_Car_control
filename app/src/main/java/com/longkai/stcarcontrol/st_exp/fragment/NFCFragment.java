@@ -134,7 +134,8 @@ public class NFCFragment extends Fragment {
                 fragment.get()
                     .ivDoor.setVisibility(View.VISIBLE);
                 fragment.get()
-                    .setTvDoorInfo(fragment.get().getContext().getString(R.string.nfc_unlock_door));
+                    .setTvDoorInfo(fragment.get().getContext()
+                        .getString(R.string.nfc_unlock_door));
                 fragment.get()
                     .setIvDoor(R.mipmap.ic_nfc_door_unlock);
                 break;

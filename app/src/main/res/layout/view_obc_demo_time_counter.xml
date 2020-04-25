@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+  <ImageView
+      android:id="@+id/obc_demo_counter_back"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@mipmap/ic_obc_demo_counter_back"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      />
+
+  <ImageView
+      android:id="@+id/iv_obc_demo_switch"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@mipmap/ic_obc_demo_switch_on"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      android:layout_marginTop="10dp"/>
+
+  <TextView
+      android:id="@+id/tv_obc_demo_control"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/obc_control"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/iv_obc_demo_switch"
+      android:layout_marginTop="4dp"
+      android:textSize="15sp"
+      android:textColor="#ffffff"
+      />
+
+  <TextView
+      android:id="@+id/tv_obc_demo_time"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="00:00:00"
+      android:textSize="22sp"
+      android:textColor="@color/colorTextGreenSelected"
+      android:background="#111111"
+      android:gravity="center"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/tv_obc_demo_control"
+      android:layout_marginTop="15dp"
+      />
+
+  <TextView
+      android:id="@+id/tv_obc_demo_charging_time_info"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/charging_time"
+      android:textSize="18sp"
+      android:textColor="#ffffff"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/tv_obc_demo_time"
+      android:layout_marginTop="6dp"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/obc_charging_info"
+      android:textColor="#ffffff"
+      android:textSize="8sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/tv_obc_demo_charging_time_info"
+      android:layout_marginTop="5dp"
+      />
+
+
+</android.support.constraint.ConstraintLayout>

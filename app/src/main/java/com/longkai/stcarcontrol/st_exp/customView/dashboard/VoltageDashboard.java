@@ -72,6 +72,7 @@ public class VoltageDashboard extends View{
         resID = resID==0? R.mipmap.ic_vcu_dashboard_voltage_back : R.mipmap.ic_vcu_dashboard_current_back;
 
         init(context, resID);
+      array.recycle();
     }
 
     public void setMaxValue(float maxValue){

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,53 +23,84 @@
         app:layout_constraintVertical_bias="0.02"/>
 
 
+  <FrameLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintHorizontal_bias="0.2"
+      app:layout_constraintVertical_bias="0.2">
+    <include
+        layout="@layout/view_obc_demo_time_counter"/>
+  </FrameLayout>
 
+  <pl.droidsonroids.gif.GifImageView
+      android:id="@+id/gifv_vcu_obc_demo_charging"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintHorizontal_bias="0.23"
+      app:layout_constraintVertical_bias="0.7"/>
 
+  <com.longkai.stcarcontrol.st_exp.customView.dashboard.OBCDemoDashboard
+      android:id="@+id/dashboard_obc_demo_vbac"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      custom:scaleBackgroundPicture = "@mipmap/ic_obc_demo_vbac_background"
+      custom:maxValue = "500.0"
+      custom:minValue = "-500.0"
+      custom:DanWei = "voltage"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintHorizontal_bias="0.55"
+      app:layout_constraintVertical_bias="0.2"
+      />
 
-    <ImageView
-        android:id="@+id/iv_vcu_obc_obc_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_vcu_obc_off"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintVertical_bias="0.2"
-        app:layout_constraintHorizontal_bias="0.75"/>
+  <com.longkai.stcarcontrol.st_exp.customView.dashboard.OBCDemoDashboard
+      android:id="@+id/dashboard_obc_demo_vbus"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      custom:scaleBackgroundPicture = "@mipmap/ic_obc_demo_vbus_background"
+      custom:maxValue = "450.0"
+      custom:minValue = "0.0"
+      custom:DanWei = "voltage"
+      app:layout_constraintTop_toTopOf="@+id/dashboard_obc_demo_vbac"
+      app:layout_constraintLeft_toRightOf="@+id/dashboard_obc_demo_vbac"
+      android:layout_marginStart="20dp"
+      />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OBC switch"
-        android:textSize="20sp"
-        android:textColor="#ffffff"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@id/iv_vcu_obc_obc_switch"
-        app:layout_constraintRight_toRightOf="@id/iv_vcu_obc_obc_switch"
-        app:layout_constraintLeft_toLeftOf="@id/iv_vcu_obc_obc_switch"/>
+  <com.longkai.stcarcontrol.st_exp.customView.dashboard.OBCDemoDashboard
+      android:id="@+id/dashboard_obc_demo_vbat"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      custom:scaleBackgroundPicture = "@mipmap/ic_obc_demo_vbat_background"
+      custom:maxValue = "500.0"
+      custom:minValue = "0.0"
+      custom:DanWei = "voltage"
+      app:layout_constraintTop_toBottomOf="@+id/dashboard_obc_demo_vbac"
+      app:layout_constraintStart_toStartOf="@+id/dashboard_obc_demo_vbac"
+      android:layout_marginTop="20dp"
+      />
 
-    <ImageView
-        android:id="@+id/iv_vcu_obc_dcdc_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_vcu_obc_off"
-        app:layout_constraintTop_toTopOf="@id/iv_vcu_obc_obc_switch"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"/>
+  <com.longkai.stcarcontrol.st_exp.customView.dashboard.OBCDemoDashboard
+      android:id="@+id/dashboard_obc_demo_Ibat"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      custom:scaleBackgroundPicture = "@mipmap/ic_obc_demo_ibat_background"
+      custom:maxValue = "50.0"
+      custom:minValue = "0.0"
+      custom:DanWei = "current"
+      app:layout_constraintTop_toTopOf="@+id/dashboard_obc_demo_vbat"
+      app:layout_constraintStart_toEndOf="@+id/dashboard_obc_demo_vbat"
+      android:layout_marginStart="20dp"
+      />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DCDC switch"
-        android:textSize="20sp"
-        android:textColor="#ffffff"
-        android:layout_below="@id/iv_vcu_obc_dcdc_switch"
-        android:layout_alignStart="@+id/iv_vcu_obc_dcdc_switch"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@id/iv_vcu_obc_dcdc_switch"
-        app:layout_constraintRight_toRightOf="@id/iv_vcu_obc_dcdc_switch"
-        app:layout_constraintLeft_toLeftOf="@id/iv_vcu_obc_dcdc_switch"/>
 
 </android.support.constraint.ConstraintLayout>

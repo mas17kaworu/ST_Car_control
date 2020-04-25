@@ -8,108 +8,97 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import com.longkai.stcarcontrol.st_exp.R;
-import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU7List.CMDVCU7;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUGUI7List.CMDVCUGUI7;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+import java.text.SimpleDateFormat;
+import java.util.concurrent.atomic.AtomicBoolean;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by Administrator on 2018/10/29.
  */
 
-public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener{
-    private View mView;
-    private ImageView ivDcdcJDQ, ivOBCPJDQ, ivOBCMJDQ;
-    private ImageView btnOBC, btnDCDC;
+public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener {
+  private View mView;
 
-    @Nullable
+  private ImageView ivSwitch;
+  private TextView tvTimeCounting;
+  private GifImageView gifVCharging;
+  private AtomicBoolean charging = new AtomicBoolean(false);
+
+  private static long ZERO = -28800000L;
+  private long time = ZERO;
+
+  @Nullable
+  @Override
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
+    mView = inflater.inflate(R.layout.fragment_vcu_obc_demo, container, false);
+
+    ivSwitch = (ImageView) mView.findViewById(R.id.iv_obc_demo_switch);
+    ivSwitch.setOnClickListener(this);
+
+    tvTimeCounting = (TextView) mView.findViewById(R.id.tv_obc_demo_time);
+
+    gifVCharging = (GifImageView) mView.findViewById(R.id.gifv_vcu_obc_demo_charging);
+
+    //todo register obc demo return
+
+    //handler.postDelayed(runnable, 1000);// 打开定时器，500ms后执行runnable
+    return mView;
+  }
+  SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+
+  Handler handler = new Handler();
+  Runnable runnable = new Runnable() {
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_vcu_obc_demo, container, false);
-        btnDCDC = (ImageView) mView.findViewById(R.id.iv_vcu_obc_dcdc_switch);
-        btnDCDC.setOnClickListener(this);
-        btnOBC = (ImageView) mView.findViewById(R.id.iv_vcu_obc_obc_switch);
-        btnOBC.setOnClickListener(this);
-
-        handler.postDelayed(runnable, 500);// 打开定时器，500ms后执行runnable
-        return mView;
+    public void run() {
+      if (charging.get()) {
+        time += 1000;
+        String date = df.format(time);
+        tvTimeCounting.setText(date);
+        handler.postDelayed(runnable, 1000);
+      }
     }
+  };
 
-    Handler handler = new Handler();
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            ServiceManager.getInstance().sendCommandToCar(new CMDVCU7(), new CommandListenerAdapter(){
-                @Override
-                public void onSuccess(BaseResponse response) {
-                    super.onSuccess(response);
-                    final BaseResponse r = response;
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if ( (((CMDVCU7.Response) r).gaoya_jidianqi_status & 0x08) == 0) {
-                                ivOBCPJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
-                            } else {
-                                ivOBCPJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
-                            }
-
-                            if ( (((CMDVCU7.Response) r).gaoya_jidianqi_status & 0x10) == 0) {
-                                ivOBCMJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
-                            } else {
-                                ivOBCMJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
-                            }
-
-                            if ( (((CMDVCU7.Response) r).gaoya_jidianqi_status & 0x20) == 0) {
-                                ivDcdcJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
-                            } else {
-                                ivDcdcJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
-                            }
-                        }
-                    });
-
-                }
-            });
-
-            handler.removeCallbacks(this); //移除定时任务
-            handler.postDelayed(runnable, 500);
-
+  @Override
+  public void onClick(View v) {
+    switch (v.getId()) {
+      case R.id.iv_obc_demo_switch:
+        if (charging.get()){ //关闭
+          charging.set(false);
+          ivSwitch.setImageResource(R.mipmap.ic_obc_demo_switch_on);
+          //gifVCharging.setFreezesAnimation(true);
+          gifVCharging.setVisibility(View.INVISIBLE);
+        } else { //开启
+          time =  ZERO;
+          String date = df.format(time);
+          tvTimeCounting.setText(date);
+          charging.set(true);
+          handler.postDelayed(runnable, 1000);
+          ivSwitch.setImageResource(R.mipmap.ic_obc_demo_switch_off);
+          showChargingGif();
+          //gifVCharging.setFreezesAnimation(false);
         }
-    };
-
-    //// TODO: 2018/12/5 restore from static memery 
-    CMDVCUGUI7 cmdvcugui7 = new CMDVCUGUI7();
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.iv_vcu_obc_dcdc_switch:
-                if (cmdvcugui7.isDCDCOn()) {
-                    cmdvcugui7.DCDCOff();
-                    btnDCDC.setImageResource(R.mipmap.ic_vcu_obc_off);
-                } else {
-                    cmdvcugui7.DCDCOn();
-                    btnDCDC.setImageResource(R.mipmap.ic_vcu_obc_on);
-                }
-                ServiceManager.getInstance().sendCommandToCar(cmdvcugui7, new CommandListenerAdapter());
-                break;
-            case R.id.iv_vcu_obc_obc_switch:
-                if (cmdvcugui7.isOBCOn()) {
-                    cmdvcugui7.OBCOff();
-                    btnOBC.setImageResource(R.mipmap.ic_vcu_obc_off);
-                } else {
-                    cmdvcugui7.OBCOn();
-                    btnOBC.setImageResource(R.mipmap.ic_vcu_obc_on);
-                }
-                ServiceManager.getInstance().sendCommandToCar(cmdvcugui7, new CommandListenerAdapter());
-                break;
-        }
-
+        break;
     }
+  }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        handler.removeCallbacks(runnable);
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    handler.removeCallbacks(runnable);
+  }
+
+  private void showChargingGif(){
+    try {
+      GifDrawable gifDrawable = new GifDrawable(getResources(), R.mipmap.gif_obc_demo_charging);
+      gifVCharging.setVisibility(View.VISIBLE);
+      gifVCharging.setImageDrawable(gifDrawable);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
+  }
 }

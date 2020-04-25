@@ -14,4 +14,14 @@
         </attr>
 
     </declare-styleable>
+
+  <declare-styleable name="OBCDemoBaseDashboard">
+    <attr name="scaleBackgroundPicture" format="reference"/>
+    <attr name="maxValue" format="float"/>
+    <attr name="minValue" format="float"/>
+    <attr name="DanWei" format="enum">
+      <enum name="voltage" value="0"/>
+      <enum name="current" value="1"/>
+    </attr>
+  </declare-styleable>
 </resources>

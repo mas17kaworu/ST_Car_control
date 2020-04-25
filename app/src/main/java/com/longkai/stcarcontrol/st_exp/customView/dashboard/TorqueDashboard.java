@@ -28,7 +28,7 @@ public class TorqueDashboard extends View {
 
     private Bitmap background;
 
-    private Bitmap scaleBackGround; //调整为可变
+    private Bitmap scaleBackGround;
     private Bitmap pin;
     private Paint mPaint;
     private TextPaint mTextPaint;
@@ -40,9 +40,9 @@ public class TorqueDashboard extends View {
     private int leftStartPoint, radius;
 
 
-    private static final float MIN_INTERVAL = 0.1f;
-    private static final float MAX_VALUE = 32.0f; //可变
-    private static final float MIN_VALUE = 0f; //可变
+    protected   float MIN_INTERVAL = 0.1f;
+    protected   float MAX_VALUE = 32.0f; //可变
+    protected   float MIN_VALUE = 0f; //可变
 
 
 
@@ -69,17 +69,21 @@ public class TorqueDashboard extends View {
     int width;
     int height;
 
+    protected int resIdScaleBackGround;
+
     public TorqueDashboard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+      resIdScaleBackGround = R.mipmap.ic_torque_torquirement;
         init(context);
     }
 
-    private void init(Context context){
+
+    protected void init(Context context){
         mPaint = new Paint();
         Resources resources = context.getResources();
         background = BitmapFactory.decodeResource(resources, R.mipmap.ic_torque_requirement_back_o);
         pin = BitmapFactory.decodeResource(resources, R.mipmap.ic_torque_requirement_pin);
-        scaleBackGround = BitmapFactory.decodeResource(resources, R.mipmap.ic_torque_torquirement);
+        scaleBackGround = BitmapFactory.decodeResource(resources, resIdScaleBackGround);
         width = background.getWidth();
         height = background.getHeight();
         matrix = new Matrix();
@@ -95,6 +99,8 @@ public class TorqueDashboard extends View {
         refreshThread.start();
     }
 
+
+
     public void setPercent(float value){
         if (value > 100) {
             target_value_percent = 100;
@@ -103,6 +109,12 @@ public class TorqueDashboard extends View {
         } else {
             target_value_percent = value;
         }
+    }
+
+    public void setValue(float value){
+      if (value > MAX_VALUE) value = MAX_VALUE;
+      if (value < MIN_VALUE) value = MIN_VALUE;
+      setPercent((value - MIN_VALUE) * 100 / (MAX_VALUE-MIN_VALUE));
     }
 
     double angle;
