@@ -70,17 +70,18 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
         if (charging.get()){ //关闭
           charging.set(false);
           ivSwitch.setImageResource(R.mipmap.ic_obc_demo_switch_on);
-          //gifVCharging.setFreezesAnimation(true);
           gifVCharging.setVisibility(View.INVISIBLE);
+          //todo send cmd
         } else { //开启
           time =  ZERO;
           String date = df.format(time);
           tvTimeCounting.setText(date);
           charging.set(true);
+          handler.removeCallbacks(runnable);
           handler.postDelayed(runnable, 1000);
           ivSwitch.setImageResource(R.mipmap.ic_obc_demo_switch_off);
           showChargingGif();
-          //gifVCharging.setFreezesAnimation(false);
+          //todo send cmd
         }
         break;
     }
