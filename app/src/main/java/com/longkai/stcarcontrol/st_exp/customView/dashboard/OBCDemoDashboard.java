@@ -33,7 +33,7 @@ public class OBCDemoDashboard extends View {
   private Bitmap pin;
   private Paint mPaint;
   private TextPaint mTextPaint;
-  private float target_value_percent = 80; //0~100
+  private float target_value_percent = 80.f; //0~100
   private float present_value = 0;
   private View view;
   private DecimalFormat df;
@@ -140,7 +140,7 @@ public class OBCDemoDashboard extends View {
   public void setValue(float value){
     if (value > MAX_VALUE) value = MAX_VALUE;
     if (value < MIN_VALUE) value = MIN_VALUE;
-    setPercent((value - MIN_VALUE) * 100 / (MAX_VALUE-MIN_VALUE));
+    setPercent((value - MIN_VALUE) * 100.0f / (MAX_VALUE-MIN_VALUE));
   }
 
   double angle;

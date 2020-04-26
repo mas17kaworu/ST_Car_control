@@ -9,6 +9,8 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUGUIList.C
  */
 
 public class CMDVCUGUI7 extends BaseCommand {
+
+  public static CMDVCUGUI7 instance = new CMDVCUGUI7();
     //D0 D1 D2 D3 D4   D5     D6    D7
     //           OBCOn OBCOff DCDC
     protected static byte[] payload = {0x00,0x00,0x00,0x00,0x00,0x01,0x00,0x00};

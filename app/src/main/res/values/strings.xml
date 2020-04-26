@@ -1,61 +1,61 @@
 <resources>
-    <string name="app_name">ST_Exp</string>
-    <string name="homepage_home">home page</string>
-    <string name="homepage_front_lamp">LED HeadLamp</string>
-    <string name="homepage_seat">Power seat</string>
-    <string name="homepage_door">Door zone</string>
-    <string name="homepage_control_center">control center</string>
-    
-    <string name="high_beam_Urban">Urban Light</string>
-    <string name="high_beam_Highway">Highway Light</string>
-    <string name="high_beam_Country">Country Light</string>
-    <string name="high_beam_Curve">Curve Light</string>
-    <string name="high_beam_Parking">Parking Light</string>
-    <string name="high_beam_Energy_saving">Energy-saving Light</string>
+  <string name="app_name">ST_Exp</string>
+  <string name="homepage_home">home page</string>
+  <string name="homepage_front_lamp">LED HeadLamp</string>
+  <string name="homepage_seat">Power seat</string>
+  <string name="homepage_door">Door zone</string>
+  <string name="homepage_control_center">control center</string>
+
+  <string name="high_beam_Urban">Urban Light</string>
+  <string name="high_beam_Highway">Highway Light</string>
+  <string name="high_beam_Country">Country Light</string>
+  <string name="high_beam_Curve">Curve Light</string>
+  <string name="high_beam_Parking">Parking Light</string>
+  <string name="high_beam_Energy_saving">Energy-saving Light</string>
 
 
-    <string name="vcu_gysd_btn">高压回路上电</string>
-    <string name="vcu_gyxd_btn">高压回路下电</string>
-    <string name="vcu_niuju_jisuan_btn">扭矩计算</string>
-    <string name="vcu_charging_btn">充电枪</string>
-    <string name="vcu_obc_btn">OBC</string>
+  <string name="vcu_gysd_btn">高压回路上电</string>
+  <string name="vcu_gyxd_btn">高压回路下电</string>
+  <string name="vcu_niuju_jisuan_btn">扭矩计算</string>
+  <string name="vcu_charging_btn">充电枪</string>
+  <string name="vcu_obc_btn">OBC</string>
 
-    <string name="tbox_date_time">时间和日期</string>
-    <string name="tbox_data_collect">数据采集</string>
-    <string name="tbox_data_store">数据存贮</string>
-    <string name="tbox_data_transport">数据传输</string>
-    <string name="tbox_data_resend">数据补发</string>
-    <string name="tbox_individual">独立运行功能</string>
-    <string name="tbox_register">注册与激活</string>
-    <string name="tbox_remote_control">远程控制</string>
-    <string name="tbox_mail_and_phone">电话与短信功能</string>
-    <string name="tbox_update_firmware">固件升级</string>
-    
-    <string name="bms_battery">Battery</string>
-    <string name="bms_insulation_monitor">Insulation Monitor</string>
-    <string name="bms_connect_monitor">Connection detector</string>
+  <string name="tbox_date_time">时间和日期</string>
+  <string name="tbox_data_collect">数据采集</string>
+  <string name="tbox_data_store">数据存贮</string>
+  <string name="tbox_data_transport">数据传输</string>
+  <string name="tbox_data_resend">数据补发</string>
+  <string name="tbox_individual">独立运行功能</string>
+  <string name="tbox_register">注册与激活</string>
+  <string name="tbox_remote_control">远程控制</string>
+  <string name="tbox_mail_and_phone">电话与短信功能</string>
+  <string name="tbox_update_firmware">固件升级</string>
 
-    <string name="bms_cell_no">No.</string>
-    <string name="bms_cell_voltage">Voltage</string>
-    <string name="bms_cell_balance">Balance</string>
+  <string name="bms_battery">Battery</string>
+  <string name="bms_insulation_monitor">Insulation Monitor</string>
+  <string name="bms_connect_monitor">Connection detector</string>
 
-    <string name="infortainment_change_engine_sound_dsc">EESS模块通过CAN bus 实时获取控制信息和发动机转速、油门、车速等信息，\n将这些信息转换成模拟的发动机声音</string>
+  <string name="bms_cell_no">No.</string>
+  <string name="bms_cell_voltage">Voltage</string>
+  <string name="bms_cell_balance">Balance</string>
 
-    <string name="running_on_selected_section">当前软件在该区运行，请选择更新其他区域</string>
-    <string name="update_refuse">更新请求被拒绝</string>
-    <string name="update_idle">-----</string>
-    <string name="updating_A">A区更新中</string>
-    <string name="updating_B">B区更新中</string>
-    <string name="uploading">软件上传中</string>
-    <string name="upload_failed">软件上传中断</string>
-    <string name="upload_finish">软件上传完成</string>
-    <string name="update_flashing_firmware">固件升级中</string>
-    <string name="update_flash_failed">固件升级失败</string>
-    <string name="update_flashing_finished">固件升级成功</string>
-    
-    <string name="warning_phone_number_format_error">电话号码格式错误，必须为11位数字</string>
+  <string name="infortainment_change_engine_sound_dsc">EESS模块通过CAN bus 实时获取控制信息和发动机转速、油门、车速等信息，\n将这些信息转换成模拟的发动机声音</string>
 
-    <string name="upgrade">upgrade</string>
+  <string name="running_on_selected_section">当前软件在该区运行，请选择更新其他区域</string>
+  <string name="update_refuse">更新请求被拒绝</string>
+  <string name="update_idle">-----</string>
+  <string name="updating_A">A区更新中</string>
+  <string name="updating_B">B区更新中</string>
+  <string name="uploading">软件上传中</string>
+  <string name="upload_failed">软件上传中断</string>
+  <string name="upload_finish">软件上传完成</string>
+  <string name="update_flashing_firmware">固件升级中</string>
+  <string name="update_flash_failed">固件升级失败</string>
+  <string name="update_flashing_finished">固件升级成功</string>
+
+  <string name="warning_phone_number_format_error">电话号码格式错误，必须为11位数字</string>
+
+  <string name="upgrade">upgrade</string>
 
   <string name="nfc_key_not_available">Key not \navailable</string>
   <string name="nfc_valid_key">Valid key \ndetected</string>
@@ -64,8 +64,33 @@
   <string name="valid_filter">Valid filter detected,\n 90% remain</string>
   <string name="nfc_unlock_door">NFC Unlock Door</string>
   <string name="nfc_lock_door">NFC lock Door</string>
-  
+
   <string name="obc_control">OBC control</string>
   <string name="charging_time">充电时长</string>
   <string name="obc_charging_info">8-10h Single-phase 230Volt </string>
+
+  <string-array name="pfc_state">
+    <item>IDLE</item>
+    <item>INIT</item>
+    <item>START</item>
+    <item>RUN</item>
+    <item>STOP</item>
+    <item>FAULT</item>
+    <item>WAIT</item>
+    <item>BURST</item>
+  </string-array>
+
+  <string-array name="llc_state">
+    <item>IDLE</item>
+    <item>G_PRE_CHARGE</item>
+    <item>OPEN LOOP</item>
+    <item>SOFT START</item>
+    <item>HEAVY LOAD</item>
+    <item>NORMAL</item>
+    <item>Light_Load_SHUT</item>
+    <item>Light_Load_FIX_F</item>
+    <item>FAULT</item>
+  </string-array>
+
+
 </resources>

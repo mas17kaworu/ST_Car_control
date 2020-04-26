@@ -102,5 +102,33 @@
       android:layout_marginStart="20dp"
       />
 
+  <TextView
+      android:id="@+id/tv_obc_demo_pfc"
+      android:layout_width="260dp"
+      android:layout_height="wrap_content"
+      android:text="PFC_STATE"
+      android:background="#92a2b6"
+      app:layout_constraintTop_toBottomOf="@+id/dashboard_obc_demo_vbat"
+      app:layout_constraintStart_toStartOf="@+id/dashboard_obc_demo_vbat"
+      app:layout_constraintEnd_toEndOf="@+id/dashboard_obc_demo_vbat"
+      android:layout_marginTop="30dp"
+      android:textSize="20sp"
+      android:textColor="#ffffff"
+    />
+
+  <TextView
+      android:id="@+id/tv_obc_demo_llc"
+      android:layout_width="260dp"
+      android:layout_height="wrap_content"
+      android:text="LLC_STATE"
+      android:background="#7892b2"
+      app:layout_constraintTop_toBottomOf="@+id/dashboard_obc_demo_Ibat"
+      app:layout_constraintStart_toStartOf="@+id/dashboard_obc_demo_Ibat"
+      app:layout_constraintEnd_toEndOf="@+id/dashboard_obc_demo_Ibat"
+      android:layout_marginTop="30dp"
+      android:textSize="20sp"
+      android:textColor="#ffffff"
+      />
+
 
 </android.support.constraint.ConstraintLayout>
