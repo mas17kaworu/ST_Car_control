@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CommandListenerAdapter<T extends BaseResponse> implements CommandListener<T> {
     private long sendTimeStamp;
 
-    private AtomicInteger timeout = new AtomicInteger(1000);
+    protected AtomicInteger timeout = new AtomicInteger(1000);
 
     public CommandListenerAdapter(){}
 

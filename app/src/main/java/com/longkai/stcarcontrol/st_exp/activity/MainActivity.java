@@ -29,6 +29,7 @@ import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
 import com.longkai.stcarcontrol.st_exp.fragment.BCMDiagnosticFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CarBackCoverFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CarBackLampFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.CarBackOLEDFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.DoorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
@@ -46,6 +47,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_BMS_HOME;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.MainFragment.FRAGMENT_TRANSACTION_CAR_BACK_OLED;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -62,6 +64,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
   private BCMDiagnosticFragment mBCMDiagnosticFragment;
   private FrontHeadLampTest2 frontHeadLampTest;
   private NFCFragment nfcFragment;
+  private CarBackOLEDFragment carBackOLEDFragment;
 
   private VCUUpdateFirmwareFragment updateFirmwareFragment;
 
@@ -327,6 +330,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
           updateFirmwareFragment = new VCUUpdateFirmwareFragment();
         }
         transaction.replace(R.id.main_fragment_content, updateFirmwareFragment);
+        break;
+      case FRAGMENT_TRANSACTION_CAR_BACK_OLED:
+        if (carBackOLEDFragment == null) {
+          carBackOLEDFragment = new CarBackOLEDFragment();
+        }
+        transaction.replace(R.id.main_fragment_content, carBackOLEDFragment);
         break;
       default:
         break;

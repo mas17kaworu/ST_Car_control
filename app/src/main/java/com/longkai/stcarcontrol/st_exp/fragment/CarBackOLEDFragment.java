@@ -13,22 +13,16 @@ public class CarBackOLEDFragment extends Fragment implements View.OnClickListene
 
   private View mView;
 
-
-
   private ImageView ivReversing, ivBrake, ivPosition, ivTurnLeft, ivTurnRight, ivAuto1, ivAuto2, ivAuto3;
 
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     mView = inflater.inflate(R.layout.fragment_car_back_oled, container, false);
-
-
     return mView;
   }
 
   @Override public void onClick(View view) {
 
   }
-
-
 }

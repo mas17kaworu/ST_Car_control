@@ -66,6 +66,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
 
     public void registerRegularCommand(Command command, CommandListener listener) {
         registerCommandOnce(command, listener);
+      listener.setTimeout(Integer.MAX_VALUE);
         mRegularCommandIdList.add(command.getCommandId() & 0xff);
 
     }

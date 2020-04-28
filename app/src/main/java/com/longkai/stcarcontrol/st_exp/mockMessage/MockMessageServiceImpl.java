@@ -3,9 +3,11 @@ package com.longkai.stcarcontrol.st_exp.mockMessage;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import com.longkai.stcarcontrol.st_exp.fragment.NFCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.NFCFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUBMSFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUMCUFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUUpdateFragmentMock;
@@ -46,6 +48,8 @@ public class MockMessageServiceImpl implements MockMessageService {
                 runnable = new VCUBMSFragmentMock(doBackgroundHandler);
             } else if (fragmentClass.equalsIgnoreCase(VCUUpdateFirmwareFragment.class.toString())){
                 runnable = new VCUUpdateFragmentMock(doBackgroundHandler);
+            } else if (fragmentClass.equalsIgnoreCase(NFCFragment.class.toString())){
+                runnable = new NFCFragmentMock(doBackgroundHandler);
             }
             doBackgroundHandler.post(runnable);
         }

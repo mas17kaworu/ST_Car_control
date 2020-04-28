@@ -12,6 +12,7 @@ import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDNFCList.CMDNFCReturn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl;
 import java.lang.ref.WeakReference;
 
 public class NFCFragment extends Fragment {
@@ -35,6 +36,10 @@ public class NFCFragment extends Fragment {
     ivDoor = (ImageView) mView.findViewById(R.id.iv_nfc_door_status);
 
     ServiceManager.getInstance().registerRegularlyCommand(command, new NFCCMDListener(this));
+
+    //test
+    MockMessageServiceImpl.getService().StartService(NFCFragment.class.toString());
+
     return mView;
   }
 

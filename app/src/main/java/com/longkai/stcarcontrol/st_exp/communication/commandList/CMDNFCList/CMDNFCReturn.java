@@ -2,6 +2,7 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDNFCList;
 
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
+import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit;
 
 public class CMDNFCReturn extends BaseCommand {
 
@@ -63,6 +64,26 @@ public class CMDNFCReturn extends BaseCommand {
 
     public Response(byte commandId) {
       super(commandId);
+    }
+
+    @Override public byte[] mockResponse() {
+      byte[] array = new byte[6];
+      array[0] = BaseCommand.COMMAND_HEAD0;
+      array[1] = BaseCommand.COMMAND_HEAD1;
+      array[2] = 0x03;
+      array[3] = (byte)getCommandId();
+
+      int tmpInt = (this.key_info);
+      array[4] = (byte)(((tmpInt) & 0xff) | array[4]) ;
+
+      tmpInt = (this.filter_info) << 2;
+      array[4] = (byte)(((tmpInt) & 0xff) | array[4]);
+
+      tmpInt = (this.door_info) << 3;
+      array[4] = (byte)(((tmpInt) & 0xff) | array[4]);
+
+      array[5] = CheckSumBit.checkSum(array, array.length - 1);
+      return array;
     }
   }
 }

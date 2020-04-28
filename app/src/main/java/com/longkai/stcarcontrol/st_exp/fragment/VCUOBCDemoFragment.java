@@ -72,6 +72,8 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
     dashboardVac.setValue(0);
     dashboardVbus.setValue(0);
     dashboardVbat.setValue(0);
+
+    ServiceManager.getInstance().registerRegularlyCommand(cmdobcReturn, commandListener);
     return mView;
   }
   SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
@@ -100,7 +102,7 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
           gifVCharging.setVisibility(View.INVISIBLE);
           CMDVCUGUI7.instance.OBCDemoOff();
           ServiceManager.getInstance().sendCommandToCar(CMDVCUGUI7.instance,new CommandListenerAdapter());
-          ServiceManager.getInstance().unregisterRegularlyCommand(cmdobcReturn);
+
 
         } else { //开启
           time =  ZERO;
@@ -114,7 +116,6 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
           CMDVCUGUI7.instance.OBCDemoOn();
           ServiceManager.getInstance().sendCommandToCar(CMDVCUGUI7.instance,new CommandListenerAdapter());
 
-          ServiceManager.getInstance().registerRegularlyCommand(cmdobcReturn, commandListener);
         }
         break;
     }
