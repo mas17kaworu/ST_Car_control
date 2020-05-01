@@ -7,16 +7,15 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 
 public class CMDOLEDBase extends BaseCommand {
 
+    public static final byte TurnLeft = (byte)0x10;
+    public static final byte TurnRight = (byte)0x08;
+    public static final byte Position = (byte)0x04;
+    public static final byte Brake    = (byte)0x02;
+    public static final byte Reversing = (byte)0x01;
 
-    protected static final byte TurnLeft = (byte)0x10;
-    protected static final byte TurnRight = (byte)0x08;
-    protected static final byte Position = (byte)0x04;
-    protected static final byte Brake    = (byte)0x02;
-    protected static final byte Reversing = (byte)0x01;
-
-    protected static final byte AutoRun1 = (byte)0x20;
-    protected static final byte AutoRun2 = (byte)0x40;
-    protected static final byte AutoRun3 = (byte)0x80;
+    public static final byte AutoRun1 = (byte)0x20;
+    public static final byte AutoRun2 = (byte)0x40;
+    public static final byte AutoRun3 = (byte)0x80;
 
     protected static byte[] payload = {0x00};
 
@@ -42,8 +41,8 @@ public class CMDOLEDBase extends BaseCommand {
         return response;
     }
 
-    public byte getPayload(){
-      return payload[0];
+    public static byte[] getPayload(){
+      return payload;
     }
 
 

@@ -1,7 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList;
 
 public class CMDOLEDBrake extends CMDOLEDBase {
-  CMDOLEDBrake(){
+  public CMDOLEDBrake(){
     super();
   }
 
