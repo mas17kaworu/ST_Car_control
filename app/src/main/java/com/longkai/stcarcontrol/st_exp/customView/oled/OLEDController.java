@@ -9,7 +9,9 @@ import java.lang.ref.WeakReference;
 public class OLEDController {
   WeakReference<Fragment>  fragmentRF;
 
-  ImageView reversingIV, breakIV, positionIV;
+  ImageView reversingIV, breakIV, positionIV; //memory leak
+
+  OLEDLeftRightController oledLeftRightController;
 
   public OLEDController(
       Fragment fragment,
@@ -21,6 +23,7 @@ public class OLEDController {
     this.reversingIV = reversingIV;
     this.breakIV = breakIV;
     this.positionIV = positionIV;
+    oledLeftRightController = new OLEDLeftRightController(fragment);
   }
 
   public void updateState(OLEDState state){
@@ -40,6 +43,18 @@ public class OLEDController {
         positionIV.setVisibility(View.VISIBLE);
       else
         positionIV.setVisibility(View.INVISIBLE);
+
+      if (state.turnRightState){
+        oledLeftRightController.turnOnRight();
+      } else {
+        oledLeftRightController.turnOffRight();
+      }
+
+      if (state.turnLeftState){
+        oledLeftRightController.turnOnLeft();
+      } else {
+        oledLeftRightController.turnOffLeft();
+      }
     }
   }
 

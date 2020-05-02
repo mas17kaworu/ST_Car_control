@@ -63,6 +63,13 @@ public class CarBackOLEDFragment extends Fragment implements View.OnClickListene
     ivAuto3 = (ImageView) mView.findViewById(R.id.btn_back_oled_a3);
     ivAuto3.setOnClickListener(this);
 
+
+
+    return mView;
+  }
+
+  @Override public void onStart() {
+    super.onStart();
     oledController = new OLEDController(
         this,
         (ImageView)mView.findViewById(R.id.iv_oled_reverse),
@@ -70,9 +77,8 @@ public class CarBackOLEDFragment extends Fragment implements View.OnClickListene
         (ImageView)mView.findViewById(R.id.iv_oled_position)
     );
 
-    return mView;
+    refreshUI();
   }
-
 
   @Override public void onClick(View view) {
     switch (view.getId()){

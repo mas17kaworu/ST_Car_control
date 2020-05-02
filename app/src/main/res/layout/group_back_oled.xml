@@ -46,5 +46,11 @@
       app:layout_constraintStart_toStartOf="parent"
       />
 
+  <include
+      layout="@layout/group_back_oled_left_right"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      />
+
 
 </android.support.constraint.ConstraintLayout>
