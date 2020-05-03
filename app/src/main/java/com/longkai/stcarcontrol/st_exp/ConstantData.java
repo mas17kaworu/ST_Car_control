@@ -67,7 +67,6 @@ public class ConstantData {
     public static int sBackOLEDAuto2 = 6;
     public static int sBackOLEDAuto3 = 7;
 
-
     public static boolean sVCUJDQ1State,sVCUJDQ2State,sVCUJDQ3State;
 
     public static int[] sTrunkStatus = new int[]{0};

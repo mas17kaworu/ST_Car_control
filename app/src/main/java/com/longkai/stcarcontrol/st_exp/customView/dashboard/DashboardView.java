@@ -61,6 +61,11 @@ public class DashboardView extends View {
     int width;
     int height;
 
+  public DashboardView(Context context){
+    super(context);
+    init(context);
+  }
+
     public DashboardView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);

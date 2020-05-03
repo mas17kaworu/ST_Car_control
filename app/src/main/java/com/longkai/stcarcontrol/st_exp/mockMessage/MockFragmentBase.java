@@ -21,6 +21,13 @@ public abstract class MockFragmentBase implements Runnable {
         dispatcher = ServiceManager.getInstance().getMessageDispatcher();
     }
 
+  /**
+   * 获取发送列表。
+   * 后续根据发送列表里的CMD 回复对应的mock Response
+   *
+   * @param cls
+   * @return
+   */
     protected Command getExactCmd(Class<?> cls){
         SparseArray<Command> sentList = dispatcher.getSentCommandList();
         Command cmdReturn = null;

@@ -64,6 +64,7 @@
   <string name="valid_filter">Valid filter detected,\n 90% remain</string>
   <string name="nfc_unlock_door">NFC Unlock Door</string>
   <string name="nfc_lock_door">NFC lock Door</string>
+  <string name="nfc_states_change">States Changed</string>
 
   <string name="obc_control">OBC control</string>
   <string name="charging_time">充电时长</string>

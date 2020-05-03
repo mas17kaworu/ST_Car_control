@@ -14,14 +14,28 @@ public class NFCFragmentMock extends MockFragmentBase {
 
   }
 
+  private int responseCount = 0;
+
   @Override public void run() {
-    Log.i("NFCFragmentMock", "NFCFragmentMock is running");
-    response1.door_info = 1;
-    response1.filter_info = 1;
-    response1.key_info = 1;
-    byte[] mockByte = response1.mockResponse();
-    dispatcher.onReceive(mockByte, 0, mockByte.length);
+    case1();
     handler.removeCallbacksAndMessages(null);//remove all
-    handler.postDelayed(this, 500);
+    handler.postDelayed(this, 500); //500ms 循环
+  }
+
+  private void case1() {
+    Log.i("NFCFragmentMock", "NFCFragmentMock is running");
+    byte[] mockByte;
+    if (responseCount < 10) {
+      response1.door_info = 1;
+      response1.filter_info = 1;
+      response1.key_info = 1;
+    } else if (responseCount < 20){
+      response1.door_info = 2;
+      response1.filter_info = 0;
+      response1.key_info = 2;
+    }
+    mockByte = response1.mockResponse();
+    responseCount++;
+    dispatcher.onReceive(mockByte, 0, mockByte.length);
   }
 }

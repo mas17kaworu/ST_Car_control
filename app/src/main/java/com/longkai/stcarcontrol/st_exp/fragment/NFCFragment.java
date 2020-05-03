@@ -1,6 +1,9 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +15,8 @@ import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDNFCList.CMDNFCReturn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+import com.longkai.stcarcontrol.st_exp.customView.dashboard.DashboardView;
+import com.longkai.stcarcontrol.st_exp.customView.dialog.NFCDialog;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl;
 import java.lang.ref.WeakReference;
 
@@ -43,6 +48,10 @@ public class NFCFragment extends Fragment {
     return mView;
   }
 
+  @Override public void onStart() {
+    super.onStart();
+  }
+
   public void setTvKeyInfo(String text) {
     tvKeyInfo.setText(text);
   }
@@ -67,7 +76,18 @@ public class NFCFragment extends Fragment {
     ivDoor.setImageResource(resID);
   }
 
+  NFCDialog nfcDialog;
 
+  public void showDialog(final CMDNFCReturn.Response response){
+    nfcDialog = new NFCDialog(this.getContext(), response);
+    nfcDialog.show();
+    Handler handler = new Handler();
+    handler.postDelayed(new Runnable() {
+      @Override public void run() {
+        nfcDialog.dismiss();
+      }
+    }, 3000);
+  }
 
   private static class NFCCMDListener extends CommandListenerAdapter<CMDNFCReturn.Response> {
     WeakReference<NFCFragment> fragment;
@@ -76,12 +96,17 @@ public class NFCFragment extends Fragment {
       this.fragment = new WeakReference<>(fragment);
     }
 
+    private CMDNFCReturn.Response lastResponse;
+
     @Override public void onSuccess(final CMDNFCReturn.Response response) {
       if (fragment.get() != null) {
         fragment.get().getActivity().runOnUiThread(new Runnable() {
           @Override public void run() {
-            //todo show dialog
             //compare with
+            if (lastResponse == null || !response.equals(lastResponse)){
+              fragment.get().showDialog(response);
+            }
+            lastResponse = response;
 
             switch (response.key_info) {
               case 0:
@@ -162,4 +187,6 @@ public class NFCFragment extends Fragment {
     ServiceManager.getInstance().unregisterRegularlyCommand(command);
     super.onDestroy();
   }
+
+
 }

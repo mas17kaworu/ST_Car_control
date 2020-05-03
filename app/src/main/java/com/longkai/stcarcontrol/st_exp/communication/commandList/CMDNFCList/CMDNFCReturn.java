@@ -85,5 +85,10 @@ public class CMDNFCReturn extends BaseCommand {
       array[5] = CheckSumBit.checkSum(array, array.length - 1);
       return array;
     }
+
+    @Override public boolean equals(Object o) {
+      return this.key_info.equals(((Response) o).key_info) && this.door_info.equals(
+          ((Response) o).door_info) && this.filter_info.equals(((Response) o).filter_info);
+    }
   }
 }
