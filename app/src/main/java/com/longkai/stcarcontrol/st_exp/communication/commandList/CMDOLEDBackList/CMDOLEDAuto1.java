@@ -6,6 +6,7 @@ public class CMDOLEDAuto1 extends CMDOLEDBase{
    }
    @Override
 	public void turnOn(){
+     payload[0] = 0;
           payload[0] |= AutoRun1;
           refreshDataPayload();
    }

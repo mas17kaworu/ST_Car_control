@@ -26,7 +26,7 @@ import static com.longkai.stcarcontrol.st_exp.Utils.FileUtils.INTERNAL_PATH;
 
 public class STCarApplication extends Application {
 
-    public static final boolean inUIDebugMode = false;
+    public static final boolean inUIDebugMode = true;
 
     @Override
     public void onCreate() {

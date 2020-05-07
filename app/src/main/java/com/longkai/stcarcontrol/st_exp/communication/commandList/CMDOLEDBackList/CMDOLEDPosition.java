@@ -8,6 +8,9 @@ public class CMDOLEDPosition extends CMDOLEDBase{
 	public void turnOn(){
      payload[0] &= ~(Reversing);
      payload[0] &= ~(Brake);
+     payload[0] &= ~(AutoRun1);
+     payload[0] &= ~(AutoRun2);
+     payload[0] &= ~(AutoRun3);
 
           payload[0] |= Position;
           refreshDataPayload();

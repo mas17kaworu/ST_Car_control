@@ -57,11 +57,11 @@
 
   <string name="upgrade">upgrade</string>
 
-  <string name="nfc_key_not_available">Key not \navailable</string>
-  <string name="nfc_valid_key">Valid key \ndetected</string>
-  <string name="nfc_invalid_key">Invalid key \ndetected</string>
-  <string name="filter_not_available">Filter not available \nor invalid filter. </string>
-  <string name="valid_filter">Valid filter detected,\n 90% remain</string>
+  <string name="nfc_key_not_available">Key not available</string>
+  <string name="nfc_valid_key">Valid key detected</string>
+  <string name="nfc_invalid_key">Invalid key detected</string>
+  <string name="filter_not_available">Filter not available or invalid filter. </string>
+  <string name="valid_filter">Valid filter detected, 90% remain</string>
   <string name="nfc_unlock_door">NFC Unlock Door</string>
   <string name="nfc_lock_door">NFC lock Door</string>
   <string name="nfc_states_change">States Changed</string>

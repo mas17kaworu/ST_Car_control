@@ -170,10 +170,10 @@ public class NFCFragment extends Fragment {
                     .setIvDoor(R.mipmap.ic_nfc_door_unlock);
                 break;
               default:
-                fragment.get()
+                /*fragment.get()
                     .tvDoorInfo.setVisibility(View.INVISIBLE);
                 fragment.get()
-                    .ivDoor.setVisibility(View.INVISIBLE);
+                    .ivDoor.setVisibility(View.INVISIBLE);*/
                 break;
             }
 

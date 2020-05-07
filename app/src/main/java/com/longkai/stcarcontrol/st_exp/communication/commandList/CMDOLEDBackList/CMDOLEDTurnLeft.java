@@ -8,6 +8,10 @@ public class CMDOLEDTurnLeft extends CMDOLEDBase{
    @Override
 	public void turnOn(){
      payload[0] &= ~(Reversing);
+     payload[0] &= ~(AutoRun1);
+     payload[0] &= ~(AutoRun2);
+     payload[0] &= ~(AutoRun3);
+
           payload[0] |= TurnLeft;
           refreshDataPayload();
    }

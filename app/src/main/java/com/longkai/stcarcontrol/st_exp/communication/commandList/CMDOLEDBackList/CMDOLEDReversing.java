@@ -9,6 +9,7 @@ public class CMDOLEDReversing extends CMDOLEDBase{
 	public void turnOn(){
           payload[0] = 0;
 
+
           payload[0] |= Reversing;
           refreshDataPayload();
    }

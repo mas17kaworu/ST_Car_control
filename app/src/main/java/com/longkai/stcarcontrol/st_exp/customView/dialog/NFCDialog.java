@@ -21,6 +21,8 @@ public class NFCDialog extends Dialog {
 
   private ImageView ivKey, ivFilter, ivDoor;
 
+  private static Integer keyCache, filterCache, doorCache;
+
   private CMDNFCReturn.Response response;
 
   public NFCDialog(@NonNull Context context, CMDNFCReturn.Response response) {
@@ -31,7 +33,7 @@ public class NFCDialog extends Dialog {
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    View mView = View.inflate(context, R.layout.dialog_nfc,null);
+    View mView = View.inflate(context, R.layout.dialog_nfc, null);
     setContentView(mView);
 
     tvKeyInfo = (TextView) mView.findViewById(R.id.tv_nfc_dialog_key_info);
@@ -44,58 +46,75 @@ public class NFCDialog extends Dialog {
 
     Window win = getWindow();
     WindowManager.LayoutParams lp = win.getAttributes();
-    lp.height = BitmapUtil.dp2px(context,270);
-    lp.width = BitmapUtil.dp2px(context,500);
+    lp.height = BitmapUtil.dp2px(context, 270);
+    lp.width = BitmapUtil.dp2px(context, 500);
     win.setAttributes(lp);
   }
 
   @Override protected void onStart() {
     super.onStart();
-    switch (response.key_info) {
-      case 0:
-        tvKeyInfo.setText(R.string.nfc_key_not_available);
-        ivKey.setImageResource(R.mipmap.ic_nfc_key_not_available);
-        break;
-      case 1:
-        tvKeyInfo.setText(R.string.nfc_valid_key);
-        ivKey.setImageResource(R.mipmap.ic_nfc_key_available);
-        break;
-      case 2:
-        tvKeyInfo.setText(R.string.nfc_invalid_key);
-        ivKey.setImageResource(R.mipmap.ic_nfc_key_invalid);
-        break;
+
+    if (!response.key_info.equals(keyCache)) {
+      keyCache = response.key_info;
+      switch (response.key_info) {
+        case 0:
+          tvKeyInfo.setText(R.string.nfc_key_not_available);
+          ivKey.setImageResource(R.mipmap.ic_nfc_key_not_available);
+          break;
+        case 1:
+          tvKeyInfo.setText(R.string.nfc_valid_key);
+          ivKey.setImageResource(R.mipmap.ic_nfc_key_available);
+          break;
+        case 2:
+          tvKeyInfo.setText(R.string.nfc_invalid_key);
+          ivKey.setImageResource(R.mipmap.ic_nfc_key_invalid);
+          break;
+      }
+    } else {
+      tvKeyInfo.setVisibility(View.GONE);
+      ivKey.setVisibility(View.GONE);
     }
     //filter
-    switch (response.filter_info) {
-      case 0:
-        tvFilterInfo.setText(R.string.filter_not_available);
-        ivFilter.setImageResource(R.mipmap.ic_nfc_filter_invalid);
-        break;
-      case 1:
-        tvFilterInfo.setText(R.string.valid_filter);
-        ivFilter.setImageResource(R.mipmap.ic_nfc_filter_available);
-        break;
+    if (!response.filter_info.equals(filterCache)) {
+      filterCache = response.filter_info;
+      switch (response.filter_info) {
+        case 0:
+          tvFilterInfo.setText(R.string.filter_not_available);
+          ivFilter.setImageResource(R.mipmap.ic_nfc_filter_invalid);
+          break;
+        case 1:
+          tvFilterInfo.setText(R.string.valid_filter);
+          ivFilter.setImageResource(R.mipmap.ic_nfc_filter_available);
+          break;
+      }
+    } else {
+      tvFilterInfo.setVisibility(View.GONE);
+      ivFilter.setVisibility(View.GONE);
     }
     //door
-    switch (response.door_info) {
-      case 1:
-        tvDoorInfo.setVisibility(View.VISIBLE);
-        ivDoor.setVisibility(View.VISIBLE);
-        tvDoorInfo.setText(R.string.nfc_lock_door);
-        ivDoor.setImageResource(R.mipmap.ic_nfc_door_lock);
-        break;
-      case 2:
-        tvDoorInfo.setVisibility(View.VISIBLE);
-        ivDoor.setVisibility(View.VISIBLE);
-        tvDoorInfo.setText(R.string.nfc_unlock_door);
-        ivDoor.setImageResource(R.mipmap.ic_nfc_door_unlock);
-        break;
-      default:
-        tvDoorInfo.setVisibility(View.INVISIBLE);
-        ivDoor.setVisibility(View.INVISIBLE);
-        break;
+    if (!response.door_info.equals(doorCache)) {
+      doorCache = response.door_info;
+      switch (response.door_info) {
+        case 1:
+          tvDoorInfo.setVisibility(View.VISIBLE);
+          ivDoor.setVisibility(View.VISIBLE);
+          tvDoorInfo.setText(R.string.nfc_lock_door);
+          ivDoor.setImageResource(R.mipmap.ic_nfc_door_lock);
+          break;
+        case 2:
+          tvDoorInfo.setVisibility(View.VISIBLE);
+          ivDoor.setVisibility(View.VISIBLE);
+          tvDoorInfo.setText(R.string.nfc_unlock_door);
+          ivDoor.setImageResource(R.mipmap.ic_nfc_door_unlock);
+          break;
+        default:
+          //tvDoorInfo.setVisibility(View.GONE);
+          //ivDoor.setVisibility(View.GONE);
+          break;
+      }
+    } else {
+      tvDoorInfo.setVisibility(View.GONE);
+      ivDoor.setVisibility(View.GONE);
     }
   }
-
-
 }
