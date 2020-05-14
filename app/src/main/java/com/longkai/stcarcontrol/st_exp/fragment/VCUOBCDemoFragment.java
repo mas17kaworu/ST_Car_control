@@ -16,6 +16,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOBCDemoList.
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUGUI7List.CMDVCUGUI7;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.dashboard.OBCDemoDashboard;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -74,6 +75,10 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
     dashboardVbat.setValue(0);
 
     ServiceManager.getInstance().registerRegularlyCommand(cmdobcReturn, commandListener);
+
+    //test
+    MockMessageServiceImpl.getService().StartService(VCUOBCDemoFragment.class.toString());
+
     return mView;
   }
   SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
@@ -187,33 +192,33 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
             }
 
             String[] llcStates=res.getStringArray(R.array.llc_state);
-            switch (response.PFCState){
+            switch (response.LLCState){
               case 0x00:
-                fragment.tvPFCState.setText(pfcStates[0]);
+                fragment.tvLLCState.setText(llcStates[0]);
                 break;
               case 0x05:
-                fragment.tvPFCState.setText(pfcStates[1]);
+                fragment.tvLLCState.setText(llcStates[1]);
                 break;
               case 0x0a:
-                fragment.tvPFCState.setText(pfcStates[2]);
+                fragment.tvLLCState.setText(llcStates[2]);
                 break;
               case 0x15:
-                fragment.tvPFCState.setText(pfcStates[3]);
+                fragment.tvLLCState.setText(llcStates[3]);
                 break;
               case 0x1A:
-                fragment.tvPFCState.setText(pfcStates[4]);
+                fragment.tvLLCState.setText(llcStates[4]);
                 break;
               case 0x25:
-                fragment.tvPFCState.setText(pfcStates[5]);
+                fragment.tvLLCState.setText(llcStates[5]);
                 break;
               case 0x35:
-                fragment.tvPFCState.setText(pfcStates[6]);
+                fragment.tvLLCState.setText(llcStates[6]);
                 break;
               case 0x3A:
-                fragment.tvPFCState.setText(pfcStates[7]);
+                fragment.tvLLCState.setText(llcStates[7]);
                 break;
               case 0xEE:
-                fragment.tvPFCState.setText(pfcStates[8]);
+                fragment.tvLLCState.setText(llcStates[8]);
                 break;
 
             }

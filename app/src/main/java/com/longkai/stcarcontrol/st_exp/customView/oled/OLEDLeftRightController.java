@@ -46,16 +46,64 @@ public class OLEDLeftRightController {
     );
     leftRunner = new PaoMaDeng(LeftLightList);
     rightRunner = new PaoMaDeng(RightLightList);
+    flashRunner = new FlashRunner();
+  }
+
+  public void updateByState(OLEDLeftRightState state){
+    handler.removeCallbacksAndMessages(null);//remove all
+    switchAllLight(false);
+    switch (state) {
+      case ALL_ON:
+        switchAllLight(true);
+        break;
+      case ALL_OFF:
+        break;
+      case RUN_LEFT:
+        turnOnLeft();
+        break;
+      case RUN_RIGHT:
+        turnOnRight();
+        break;
+      case DOUBLE_FLASH:
+        doubleFlash();
+        break;
+      default:
+        break;
+    }
+  }
+
+  private void switchAllLight(boolean turnOn) {
+    for (WeakReference<ImageView> lampRF: LeftLightList
+    ) {
+      if (lampRF.get() != null) {
+        if (turnOn) {
+          lampRF.get().setVisibility(View.VISIBLE);
+        } else {
+          lampRF.get().setVisibility(View.INVISIBLE);
+        }
+      }
+    }
+
+    for (WeakReference<ImageView> lampRF: RightLightList
+    ) {
+      if (lampRF.get() != null) {
+        if (turnOn) {
+          lampRF.get().setVisibility(View.VISIBLE);
+        } else {
+          lampRF.get().setVisibility(View.INVISIBLE);
+        }
+      }
+    }
   }
 
 
 
   public void turnOnLeft(){
-    if (rightState.get()) { //sync left and right
+    /*if (rightState.get()) { //sync left and right
       handler.removeCallbacks(rightRunner);
-      turnOffAllLight(RightLightList);
+      turnOffOneSideLight(RightLightList);
       handler.post(rightRunner);
-    }
+    }*/
     handler.removeCallbacks(leftRunner);
     handler.post(leftRunner);
     leftState.set(true);
@@ -64,24 +112,28 @@ public class OLEDLeftRightController {
   public void turnOffLeft(){
     leftState.set(false);
     handler.removeCallbacks(leftRunner);
-    turnOffAllLight(LeftLightList);
+    turnOffOneSideLight(LeftLightList);
   }
 
-  public void turnOnRight(){
-    if (leftState.get()){//sync left and right
+  private void turnOnRight(){
+    /*if (leftState.get()){//sync left and right
       handler.removeCallbacks(leftRunner);
-      turnOffAllLight(LeftLightList);
+      turnOffOneSideLight(LeftLightList);
       handler.post(leftRunner);
-    }
+    }*/
     handler.removeCallbacks(rightRunner);
     handler.post(rightRunner);
     rightState.set(true);
   }
 
-  public void turnOffRight(){
+  private void turnOffRight(){
     rightState.set(false);
     handler.removeCallbacks(rightRunner);
-    turnOffAllLight(RightLightList);
+    turnOffOneSideLight(RightLightList);
+  }
+
+  private void doubleFlash(){
+    handler.post(flashRunner);
   }
 
 
@@ -89,8 +141,23 @@ public class OLEDLeftRightController {
 
   private PaoMaDeng leftRunner, rightRunner;
 
+  private FlashRunner flashRunner;
+
   private void playAnimation(List<WeakReference<ImageView>> lampList){
     handler.post(new PaoMaDeng(lampList));
+  }
+
+  private class FlashRunner implements Runnable {
+    private int number=0;
+    @Override public void run() {
+      if (number%2 == 0) {
+        switchAllLight(true);
+      } else {
+        switchAllLight(false);
+      }
+      number++;
+      handler.postDelayed(this, 500);
+    }
   }
 
   private class PaoMaDeng implements Runnable {
@@ -114,12 +181,12 @@ public class OLEDLeftRightController {
           return;
         }
       }
-      turnOffAllLight(lampList);
+      turnOffOneSideLight(lampList);
       handler.postDelayed(this, 150);
     }
   }
 
-  private void turnOffAllLight(List<WeakReference<ImageView>> lampList){
+  private void turnOffOneSideLight(List<WeakReference<ImageView>> lampList){
     for (WeakReference<ImageView> lampRF: lampList
     ) {
       if (lampRF.get() != null) {

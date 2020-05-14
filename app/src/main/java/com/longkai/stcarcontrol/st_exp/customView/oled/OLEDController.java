@@ -28,10 +28,14 @@ public class OLEDController {
 
   public void updateState(OLEDState state){
     if (fragmentRF.get() != null){
+      OLEDLeftRightState leftRightState = OLEDLeftRightState.ALL_OFF;
+
       if (state.reverseState) {
         reversingIV.setVisibility(View.VISIBLE);
+        leftRightState = OLEDLeftRightState.ALL_ON;
       } else {
         reversingIV.setVisibility(View.INVISIBLE);
+        //leftRightState = OLEDLeftRightState.ALL_OFF;
       }
 
       if (state.breakState)
@@ -44,17 +48,21 @@ public class OLEDController {
       else
         positionIV.setVisibility(View.INVISIBLE);
 
-      if (state.turnRightState){
-        oledLeftRightController.turnOnRight();
-      } else {
-        oledLeftRightController.turnOffRight();
-      }
 
-      if (state.turnLeftState){
-        oledLeftRightController.turnOnLeft();
-      } else {
-        oledLeftRightController.turnOffLeft();
+      if (!state.reverseState) {
+        if (state.turnRightState) {
+          leftRightState = OLEDLeftRightState.RUN_RIGHT;
+        }
+
+        if (state.turnLeftState) {
+          leftRightState = OLEDLeftRightState.RUN_LEFT;
+        }
+
+        if (state.turnRightState && state.turnLeftState) {
+          leftRightState = OLEDLeftRightState.DOUBLE_FLASH;
+        }
       }
+      oledLeftRightController.updateByState(leftRightState);
     }
   }
 

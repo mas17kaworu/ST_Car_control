@@ -33,13 +33,13 @@ public class CMDOBCReturn extends BaseCommand {
    */
   @Override public BaseResponse toResponse(byte[] data) throws Exception {
     Response response = new Response(getCommandId());
-    if (data[2] == 0x12) {//todo length?
+    if (data[2] == 0x12) {
       response.PFCState = (data[4] & 0xff);
       response.LLCState = (data[5] & 0xff);
-      response.Vac = (((data[6] & 0xff) << 8 | (data[7] & 0xff)) * 5.0f /4096 - 2.612f) / 0.0053f;
-      response.Vbus = ((data[8] & 0xff) << 8 | (data[9] & 0xff)) * 100.956f + 0;
-      response.Vbat = ((data[10] & 0xff) << 8 | (data[11] & 0xff)) * 104.724f + 0;
-      response.Ibat = ((data[12] & 0xff) << 8 | (data[13] & 0xff)) * 5.54631f -2.79922f;
+      response.Vac = (((data[6] & 0xff) << 8 | (data[7] & 0xff)) * 5.0f / 4096f - 2.612f) / 0.0053f;
+      response.Vbus = (((data[8] & 0xff) << 8 | (data[9] & 0xff)) * 5.0f / 4096f) * 100.9559f + 0;
+      response.Vbat = (((data[10] & 0xff) << 8 | (data[11] & 0xff)) * 5.0f / 4096f) * 104.7242f + 0;
+      response.Ibat = (((data[12] & 0xff) << 8 | (data[13] & 0xff)) * 5.0f / 4096f) * 5.54631f -2.79922f;
     }
     return response;
   }
@@ -66,5 +66,6 @@ public class CMDOBCReturn extends BaseCommand {
     public Response(byte commandId) {
       super(commandId);
     }
+
   }
 }

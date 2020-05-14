@@ -83,14 +83,13 @@
       android:id="@+id/iv_nfc_door_status"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:src="@mipmap/ic_nfc_door_opened"
+      android:src="@mipmap/ic_nfc_door_idle"
       app:layout_constraintTop_toTopOf="@+id/iv_nfc_background"
       app:layout_constraintLeft_toLeftOf="@+id/iv_nfc_background"
       app:layout_constraintBottom_toBottomOf="@+id/iv_nfc_background"
       app:layout_constraintRight_toRightOf="@+id/iv_nfc_background"
       app:layout_constraintVertical_bias="0.9"
-      app:layout_constraintHorizontal_bias="0.5"
-      android:visibility="invisible"/>
+      app:layout_constraintHorizontal_bias="0.5"/>
 
   <TextView
       android:id="@+id/tv_nfc_door_info"
