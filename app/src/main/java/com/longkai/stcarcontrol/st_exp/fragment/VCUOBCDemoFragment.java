@@ -34,6 +34,7 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
   private TextView tvTimeCounting;
   private GifImageView gifVCharging;
   private AtomicBoolean charging = new AtomicBoolean(false);
+  private AtomicBoolean chargeBtnStat = new AtomicBoolean(false);
 
   private OBCDemoCMDListener commandListener;
 
@@ -101,28 +102,40 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.iv_obc_demo_switch:
-        if (charging.get()){ //关闭
-          charging.set(false);
+        if (chargeBtnStat.get()){ //关闭
+          chargeBtnStat.set(false);
           ivSwitch.setImageResource(R.mipmap.ic_obc_demo_switch_on);
-          gifVCharging.setVisibility(View.INVISIBLE);
+
           CMDVCUGUI7.instance.OBCDemoOff();
           ServiceManager.getInstance().sendCommandToCar(CMDVCUGUI7.instance,new CommandListenerAdapter());
 
 
         } else { //开启
-          time =  ZERO;
-          String date = df.format(time);
-          tvTimeCounting.setText(date);
-          charging.set(true);
-          handler.removeCallbacks(runnable);
-          handler.postDelayed(runnable, 1000);
+
+          chargeBtnStat.set(true);
+
           ivSwitch.setImageResource(R.mipmap.ic_obc_demo_switch_off);
-          showChargingGif();
+
           CMDVCUGUI7.instance.OBCDemoOn();
           ServiceManager.getInstance().sendCommandToCar(CMDVCUGUI7.instance,new CommandListenerAdapter());
 
         }
         break;
+    }
+  }
+
+  private void refreshCharging() {
+    if (charging.get()){
+      time =  ZERO;
+      String date = df.format(time);
+      tvTimeCounting.setText(date);
+      handler.removeCallbacks(runnable);
+      handler.postDelayed(runnable, 1000);
+      showChargingGif();
+      dashboardVac.setValue(220);
+    } else {
+      gifVCharging.setVisibility(View.INVISIBLE);
+      dashboardVac.setValue(0);
     }
   }
 
@@ -145,7 +158,7 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
 
 
 
-  private static class OBCDemoCMDListener extends CommandListenerAdapter<CMDOBCReturn.Response>{
+  private class OBCDemoCMDListener extends CommandListenerAdapter<CMDOBCReturn.Response>{
 
     private WeakReference<VCUOBCDemoFragment> reference;
     OBCDemoCMDListener(VCUOBCDemoFragment fragment){
@@ -159,10 +172,23 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
           @Override public void run() {
             fragment.dashboardVbat.setValue(response.Vbat);
             fragment.dashboardVbus.setValue(response.Vbus);
-            fragment.dashboardVac.setValue(response.Vac);
+            //fragment.dashboardVac.setValue(response.Vac);
             fragment.dashboardIbat.setValue(response.Ibat);
 
             Resources res = fragment.getActivity().getResources();
+
+            if (response.PFCState == 3 && response.LLCState == 0x25){
+              if (!charging.get()) { //从uncharging 到 charging
+                charging.set(true);
+                refreshCharging();
+              }
+            } else {
+              if (charging.get()) { //从charging 到 uncharging
+                charging.set(false);
+                refreshCharging();
+              }
+            }
+
             String[] pfcStates=res.getStringArray(R.array.pfc_state);
             switch (response.PFCState){
               case 0:

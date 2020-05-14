@@ -8,6 +8,8 @@ import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentBase;
 public class OBCReturnFragmentMock extends MockFragmentBase {
   private CMDOBCReturn.Response response = new CMDOBCReturn.Response();
 
+  private int counter = 0;
+
   public OBCReturnFragmentMock(Handler handler) {
     super(handler);
   }
@@ -21,7 +23,7 @@ public class OBCReturnFragmentMock extends MockFragmentBase {
   private void case1() {
     byte[] responseBytes = {
         0x5a, 0x3c, 0x12, 0x26,
-        0x03,
+        0x02,
         0x25,
         0x03,
         (byte)0xA4,
@@ -34,6 +36,15 @@ public class OBCReturnFragmentMock extends MockFragmentBase {
         0x00//check
     };
 
+    counter++;
+
+    if (counter < 10){
+      responseBytes [4]= 0x00;
+    } else if (counter < 20) {
+      responseBytes [4]= 0x03;
+    } else if (counter < 30) {
+      responseBytes [4]= 0x01;
+    }
     responseBytes[responseBytes.length-1] = CheckSumBit.checkSum(responseBytes, responseBytes.length - 1);
     dispatcher.onReceive(responseBytes, 0, responseBytes.length);
   }
