@@ -6,7 +6,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
  * Created by Administrator on 2017/8/14.
  */
 
-public interface CommandListener {
+public interface CommandListener<T extends BaseResponse> {
 
     /**
      * Set the timestamp of send this command.
@@ -24,7 +24,7 @@ public interface CommandListener {
      * Called when command execute success.
      * @param response the response of command.
      */
-    void onSuccess(BaseResponse response);
+    void onSuccess(T response);
 
     /**
      * Called when command execute timeout. the default value of timeout is 2 second.
@@ -37,5 +37,7 @@ public interface CommandListener {
      */
     void onError(int errorCode);
 
-    public int getTimeout();
+    int getTimeout();
+
+    void setTimeout(int timeout);
 }

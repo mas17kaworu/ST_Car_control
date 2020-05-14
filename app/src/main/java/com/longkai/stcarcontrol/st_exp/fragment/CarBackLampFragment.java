@@ -27,6 +27,8 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDBCMRearLampL
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGM;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
+import static com.longkai.stcarcontrol.st_exp.ConstantData.MainFragment.FRAGMENT_TRANSACTION_CAR_BACK_OLED;
+
 /**
  * Created by Administrator on 2017/8/19.
  */
@@ -35,7 +37,13 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
 
     private View mView;
 
-    private ImageView ivCarbackBreakLamp, ivCarbackPositionLamp, ivCarbackTurnleftLamp, ivCarbackTurnrightLamp;
+    private ImageView
+        ivCarbackBreakLamp,
+        ivCarbackPositionLamp,
+        ivCarbackTurnleftLamp,
+        ivCarbackTurnrightLamp;
+
+
 
     @Nullable
     @Override
@@ -46,6 +54,7 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
         mView.findViewById(R.id.iv_carback_turnleft_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_carback_turnright_click).setOnClickListener(this);
         mView.findViewById(R.id.tv_car_back_diagnostic).setOnClickListener(this);
+        mView.findViewById(R.id.iv_carback_light_to_oled).setOnClickListener(this);
 
         ivCarbackBreakLamp = (ImageView) mView.findViewById(R.id.iv_carback_break_light);
         ivCarbackPositionLamp = (ImageView) mView.findViewById(R.id.iv_carback_reversing_light);
@@ -156,6 +165,10 @@ public class CarBackLampFragment extends Fragment implements View.OnClickListene
             case R.id.tv_car_back_diagram:
                 ((MainActivity)getActivity()).showDiagram(ConstantData.BCM_DIAGRAM);
                 break;
+
+          case R.id.iv_carback_light_to_oled:
+            ((MainActivity)getActivity()).setSelect(FRAGMENT_TRANSACTION_CAR_BACK_OLED);
+            break;
         }
     }
 

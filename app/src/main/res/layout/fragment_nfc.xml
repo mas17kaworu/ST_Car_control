@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/ic_fragment_background">
+
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="NFC"
+      android:textColor="#ffffff"
+      android:textSize="40sp"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintHorizontal_bias="0.1"
+      app:layout_constraintVertical_bias="0.02"/>
+
+  <ImageView
+      android:id="@+id/iv_nfc_background"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@mipmap/iv_nfc_background"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintVertical_bias="0.4"/>
+
+  <ImageView
+      android:id="@+id/iv_nfc_key_status"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@mipmap/ic_nfc_key_not_available"
+      app:layout_constraintTop_toTopOf="@+id/iv_nfc_background"
+      app:layout_constraintLeft_toLeftOf="@+id/iv_nfc_background"
+      app:layout_constraintBottom_toBottomOf="@+id/iv_nfc_background"
+      app:layout_constraintRight_toRightOf="@+id/iv_nfc_background"
+      app:layout_constraintVertical_bias="0.5"
+      app:layout_constraintHorizontal_bias="0.4"/>
+
+  <TextView
+      android:id="@+id/tv_nfc_key_info"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/nfc_key_not_available"
+      android:textSize="20sp"
+      android:textColor="#ffffff"
+      android:layout_marginTop="5dp"
+      app:layout_constraintTop_toBottomOf="@id/iv_nfc_key_status"
+      app:layout_constraintRight_toRightOf="@id/iv_nfc_key_status"
+      app:layout_constraintLeft_toLeftOf="@id/iv_nfc_key_status"/>
+
+  <ImageView
+      android:id="@+id/iv_nfc_filter_status"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@mipmap/ic_nfc_filter_invalid"
+      app:layout_constraintTop_toTopOf="@+id/iv_nfc_background"
+      app:layout_constraintLeft_toLeftOf="@+id/iv_nfc_background"
+      app:layout_constraintBottom_toBottomOf="@+id/iv_nfc_background"
+      app:layout_constraintRight_toRightOf="@+id/iv_nfc_background"
+      app:layout_constraintVertical_bias="0.5"
+      app:layout_constraintHorizontal_bias="0.6"/>
+
+  <TextView
+      android:id="@+id/tv_nfc_filter_info"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/filter_not_available"
+      android:textSize="20sp"
+      android:textColor="#ffffff"
+      android:layout_marginTop="5dp"
+      app:layout_constraintTop_toBottomOf="@id/iv_nfc_filter_status"
+      app:layout_constraintRight_toRightOf="@id/iv_nfc_filter_status"
+      app:layout_constraintLeft_toLeftOf="@id/iv_nfc_filter_status"/>
+
+  <ImageView
+      android:id="@+id/iv_nfc_door_status"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@mipmap/ic_nfc_door_idle"
+      app:layout_constraintTop_toTopOf="@+id/iv_nfc_background"
+      app:layout_constraintLeft_toLeftOf="@+id/iv_nfc_background"
+      app:layout_constraintBottom_toBottomOf="@+id/iv_nfc_background"
+      app:layout_constraintRight_toRightOf="@+id/iv_nfc_background"
+      app:layout_constraintVertical_bias="0.9"
+      app:layout_constraintHorizontal_bias="0.5"/>
+
+  <TextView
+      android:id="@+id/tv_nfc_door_info"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/nfc_lock_door"
+      android:textSize="20sp"
+      android:textColor="#ffffff"
+      android:layout_marginTop="5dp"
+      android:visibility="invisible"
+      app:layout_constraintTop_toBottomOf="@id/iv_nfc_door_status"
+      app:layout_constraintRight_toRightOf="@id/iv_nfc_door_status"
+      app:layout_constraintLeft_toLeftOf="@id/iv_nfc_door_status"/>
+
+
+
+
+
+</android.support.constraint.ConstraintLayout>

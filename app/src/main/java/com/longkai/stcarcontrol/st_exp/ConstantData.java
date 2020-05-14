@@ -57,6 +57,18 @@ public class ConstantData {
     public static int sCenterControlWiper       = 5;//0关 1低 2高
     public static int sCenterControlSafeBelt    = 6;
 
+    public static int[] sBackOLEDStatus = new int[8];
+    public static int sBackOLEDReverse = 0;
+    public static int sBackOLEDBreak = 1;
+    public static int sBackOLEDPosition = 2;
+    public static int sBackOLEDTurnLeft = 3;
+    public static int sBackOLEDTurnRight = 4;
+    public static int sBackOLEDAuto1 = 5;
+    public static int sBackOLEDAuto2 = 6;
+    public static int sBackOLEDAuto3 = 7;
+
+    public static boolean sVCUJDQ1State,sVCUJDQ2State,sVCUJDQ3State;
+
     public static int[] sTrunkStatus = new int[]{0};
     public static int sTrunkStatu   = 0;
 
@@ -68,6 +80,36 @@ public class ConstantData {
     public static final String HVAC_DIAGRAM = "ic_Diagram_HVAC.png";
     public static final String PLCM_DIAGRAM = "ic_Diagram_PLCM.png";
     public static final String POWER_SEAT_DIAGRAM = "ic_Diagram_Power_seat.png";
+
+    //BMS
+
+    public static final int FRAGMENT_TRANSACTION_BMS_HOME = 0;
+
+    //VCU
+    public static final int FRAGMENT_TRANSACTION_HOME = 0;
+    public static final int FRAGMENT_TRANSACTION_VCUVCU = 1;
+    public static final int FRAGMENT_TRANSACTION_OBC_DEMO = 2;
+    public static final int FRAGMENT_TRANSACTION_BMS = 3;
+    public static final int FRAGMENT_TRANSACTION_MCU = 4;
+    public static final int FRAGMENT_TRANSACTION_TBOX = 5;
+
+    public static final int FRAGMENT_TRANSACTION_GYHLSD = 6;
+    public static final int FRAGMENT_TRANSACTION_CHARGE = 7;
+    public static final int FRAGMENT_TRANSACTION_TORQUE = 8;
+    public static final int FRAGMENT_TRANSACTION_MONITOR = 9;
+
+
+    public static final int FRAGMENT_TRANSACTION_OBC = 10;
+
+    public static final int FRAGMENT_TRANSACTION_UPDATE_FIRMWARE = 104;
+
+    public static class MainFragment{
+      public static final int FRAGMENT_TRANSACTION_NFC = 5;
+      public static final int FRAGMENT_TRANSACTION_CAR_BACK = 6;
+      public static final int FRAGMENT_TRANSACTION_CAR_BACK_COVER = 7;
+
+      public static final int FRAGMENT_TRANSACTION_CAR_BACK_OLED = 105;
+    }
 
     public ConstantData(){
 /*        sDataMap = new HashMap<Integer,Integer>();

@@ -9,12 +9,19 @@ import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.Enum.TboxStateEnum;
 import com.longkai.stcarcontrol.st_exp.Interface.StateChange;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.activity.VCUActivity;
+import com.longkai.stcarcontrol.st_exp.communication.Command;
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDECallList.CMDECall;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -24,9 +31,12 @@ import java.util.HashSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
+
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
 
 /**
  * Created by Administrator on 2018/5/20.
@@ -46,6 +56,9 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, S
 
     private ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
     SimpleDateFormat simpleDateFormat;
+
+    private EditText phoneNumberEditor;
+    private String phoneNumber="";
 
     @Nullable
     @Override
@@ -73,6 +86,11 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, S
         gif_view_send = (GifImageView) mView.findViewById(R.id.gifv_tbox);
         dataSheetLayout = mView.findViewById(R.id.layout_tbox_sheet);
         sheetTextViews.addAll(Arrays.asList(tvDianji, tvZhengche, tvJizhi, tvGuzhang));
+
+        mView.findViewById(R.id.iv_tbox_phone_setting).setOnClickListener(this);
+        mView.findViewById(R.id.iv_tbox_phone_call).setOnClickListener(this);
+
+        phoneNumberEditor = ((EditText)mView.findViewById(R.id.et_tbox_phone_number));
 
         if (threadPool.isShutdown()){
             threadPool = Executors.newSingleThreadScheduledExecutor();
@@ -127,6 +145,29 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, S
             case R.id.tv_vcu_tbox_guzhangliebiao:
                 chooseTV((TextView) v);
                 break;
+            case R.id.iv_tbox_phone_setting:
+                if (checkPhoneNumberFormat()) {
+                    Command cmd = new CMDECall(phoneNumberEditor.getText().toString(), CMDECall.Type.set);
+                    ServiceManager.getInstance().sendCommandToCar(cmd, new CommandListenerAdapter());
+                }
+                break;
+            case R.id.iv_tbox_phone_call:
+                if (checkPhoneNumberFormat()) {
+                    Command cmd = new CMDECall(phoneNumberEditor.getText().toString(), CMDECall.Type.call);
+                    ServiceManager.getInstance().sendCommandToCar(cmd, new CommandListenerAdapter());
+                }
+                break;
+        }
+    }
+
+    private boolean checkPhoneNumberFormat(){
+        String numberStr = phoneNumberEditor.getText().toString();
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        if (numberStr.length() == 11 && pattern.matcher(numberStr).matches()){
+            return true;
+        } else {
+            Toast.makeText(getActivity(), R.string.warning_phone_number_format_error, Toast.LENGTH_LONG).show();
+            return false;
         }
     }
 
@@ -184,6 +225,9 @@ public class VCUTboxFragment extends Fragment implements View.OnClickListener, S
             case MailAndPhone:
                 loadGifToMainView(R.mipmap.gif_tbox_mail_phone);
                 rlPhone.setVisibility(View.VISIBLE);
+                break;
+            case UpdateFirmware:
+
                 break;
         }
     }

@@ -37,6 +37,7 @@ public class ServiceManager {
         return instance;
     }
 
+    //service connected listener
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             binder = (CommunicationServer.CommServerBinder) service;
@@ -96,6 +97,25 @@ public class ServiceManager {
         }
     }
 
+    public void registerCommandOnce(Command command, CommandListener listener) {
+        if (binder != null) {
+            binder.asyncRegisterCommandOnce(command, listener);
+        }
+
+    }
+
+    public void registerRegularlyCommand(Command command, CommandListener listener){
+        if (binder != null) {
+            binder.asyncRegisterRegularCommand(command, listener);
+        }
+    }
+
+    public void unregisterRegularlyCommand(Command command){
+        if (binder != null) {
+            binder.asyncUnregisterRegularCommand(command);
+        }
+    }
+
     public void setConnectionListener(ConnectionListener connectionListener) {
         if (connectionListener != null) {
             binder.registerConnectionListener(connectionListener);
@@ -105,6 +125,14 @@ public class ServiceManager {
     public void connectToDevice(Bundle bundle, ConnectionListener listener, ConnectionType type){
         if (null != binder) {
             binder.ConnectToDevice(bundle, listener, type);
+        }
+    }
+
+    public ProtocolMessageDispatch getMessageDispatcher(){
+        if (null != binder) {
+            return binder.getMessageHandler();
+        } else {
+            return null;
         }
     }
 }

@@ -413,12 +413,14 @@ public class DoorFragment extends Fragment implements View.OnClickListener{
             public void run() {
 //                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorUnfoldOff(),new CommandListenerAdapter());
 //                ServiceManager.getInstance().sendCommandToCar(new CMDDoorMirrorFoldOff(),new CommandListenerAdapter());
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        releaseGifView();
-                    }
-                });
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            releaseGifView();
+                        }
+                    });
+                }
 
             }
         }, 2500);

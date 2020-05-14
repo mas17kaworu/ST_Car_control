@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/ic_fragment_background">
@@ -49,7 +51,8 @@
         <com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard
             android:id="@+id/dashboard_bms_main_jdq_front"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            custom:backpicture="voltage"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +70,8 @@
         <com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard
             android:id="@+id/dashboard_bms_main_jdq_behind"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            custom:backpicture="voltage"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -94,6 +98,7 @@
             android:text="主负继电器后"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/dashboard_bms_minus_jdq_behind"
+
             />
     </RelativeLayout>
 
@@ -145,7 +150,8 @@
             <com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard
                 android:id="@+id/dashboard_bms_battery_current"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                custom:backpicture="current"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -168,6 +174,7 @@
         android:layout_marginTop="110dp"
         android:layout_marginStart="920dp">
         <ImageView
+            android:id="@+id/iv_vcu_bms_power_remain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_mcu_battery_remain"
@@ -175,7 +182,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_vcu_bms_batteryremain_percent"/>
+            android:id="@+id/tv_vcu_bms_batteryremain_percent"
+            android:textColor="@color/colorTextPress"
+            android:text="50%"
+            android:layout_centerInParent="true"/>
     </RelativeLayout>
 
     <!--cell part-->

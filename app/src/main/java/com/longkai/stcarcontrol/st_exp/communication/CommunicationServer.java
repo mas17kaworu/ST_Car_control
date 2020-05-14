@@ -10,6 +10,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
@@ -71,6 +72,7 @@ public class CommunicationServer extends Service {
 
     @Override
     public void onDestroy() {
+        Log.i("CommunicationServer", "onDestroy: CommunicationServer");
         instance = null;
         doBackgroundHandler.removeCallbacksAndMessages(null);
         doBackgroundHandler.getLooper().quit();
@@ -186,6 +188,33 @@ public class CommunicationServer extends Service {
             });
         }
 
+        public void asyncRegisterCommandOnce(final Command command, final CommandListener listener) {
+            doBackgroundHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mMessageHandler.registerCommandOnce(command, listener);
+                }
+            });
+        }
+
+        public void asyncRegisterRegularCommand(final Command command, final CommandListener listener){
+            doBackgroundHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mMessageHandler.registerRegularCommand(command, listener);
+                }
+            });
+        }
+
+        public void asyncUnregisterRegularCommand(final Command command){
+            doBackgroundHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mMessageHandler.unregisterRegularCommand(command);
+                }
+            });
+        }
+
         public void registerConnectionListener(ConnectionListener listener) {
             mConnectionListenerList.add(listener);
         }
@@ -205,6 +234,17 @@ public class CommunicationServer extends Service {
             mConnection.open(bundle, listener);
             mConnectionListenerList.clear();
             mConnectionListenerList.add(listener);
+        }
+
+
+
+        /**
+         * For test
+         *
+         * Get dispatcher and mock a response to dispatcher.
+         */
+        public ProtocolMessageDispatch getMessageHandler(){
+            return mMessageHandler;
         }
 
     }

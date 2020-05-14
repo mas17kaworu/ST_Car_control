@@ -27,6 +27,7 @@ public class TorqueDashboard extends View {
     private static final int FULL_ANGLE = 120;
 
     private Bitmap background;
+
     private Bitmap scaleBackGround;
     private Bitmap pin;
     private Paint mPaint;
@@ -39,9 +40,9 @@ public class TorqueDashboard extends View {
     private int leftStartPoint, radius;
 
 
-    private static final float MIN_INTERVAL = 0.1f;
-    private static final float MAX_VALUE = 32.0f;
-    private static final float MIN_VALUE = 0f;
+    protected   float MIN_INTERVAL = 0.1f;
+    protected   float MAX_VALUE = 32.0f; //可变
+    protected   float MIN_VALUE = 0f; //可变
 
 
 
@@ -68,17 +69,21 @@ public class TorqueDashboard extends View {
     int width;
     int height;
 
+    protected int resIdScaleBackGround;
+
     public TorqueDashboard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+      resIdScaleBackGround = R.mipmap.ic_torque_torquirement;
         init(context);
     }
 
-    private void init(Context context){
+
+    protected void init(Context context){
         mPaint = new Paint();
         Resources resources = context.getResources();
         background = BitmapFactory.decodeResource(resources, R.mipmap.ic_torque_requirement_back_o);
         pin = BitmapFactory.decodeResource(resources, R.mipmap.ic_torque_requirement_pin);
-        scaleBackGround = BitmapFactory.decodeResource(resources, R.mipmap.ic_torque_torquirement);
+        scaleBackGround = BitmapFactory.decodeResource(resources, resIdScaleBackGround);
         width = background.getWidth();
         height = background.getHeight();
         matrix = new Matrix();
@@ -94,8 +99,22 @@ public class TorqueDashboard extends View {
         refreshThread.start();
     }
 
+
+
     public void setPercent(float value){
-        target_value_percent = value;
+        if (value > 100) {
+            target_value_percent = 100;
+        } else if (value < 0){
+            target_value_percent = 0;
+        } else {
+            target_value_percent = value;
+        }
+    }
+
+    public void setValue(float value){
+      if (value > MAX_VALUE) value = MAX_VALUE;
+      if (value < MIN_VALUE) value = MIN_VALUE;
+      setPercent((value - MIN_VALUE) * 100 / (MAX_VALUE-MIN_VALUE));
     }
 
     double angle;
@@ -110,7 +129,7 @@ public class TorqueDashboard extends View {
                 (int)(height - pin.getHeight() - (radius * (Math.sin(angle) - Math.sin(Math.toRadians(45))))),
                 mPaint);
         canvas.drawBitmap(background,0,0,mPaint);
-//        canvas.drawText(df.format( (int)((MAX_VALUE-MIN_VALUE) * present_value / 100)) + "v",
+//        canvas.drawText(df.format( (int)((maxValue-minValue) * present_value / 100)) + "v",
 //                width/2.f - 30, height/2.f + 60, mTextPaint);
     }
 

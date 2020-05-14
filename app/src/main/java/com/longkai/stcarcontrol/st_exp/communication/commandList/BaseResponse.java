@@ -4,7 +4,7 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList;
  * Created by Administrator on 2017/8/14.
  */
 
-public class BaseResponse {
+public abstract class BaseResponse {
     public static final int CODE_SUCCESS=0;
     public static final int CODE_ERR_NOT_SUPPORT=1;
     public static final int CODE_ERR_INVAL_PARAM=2;
@@ -15,6 +15,14 @@ public class BaseResponse {
     public static final int CODE_ERR_UNKNOW=254;
 
     protected byte commandId;
+
+    public BaseResponse(){
+
+    }
+
+    protected void setCommandId(byte commandId){
+        this.commandId = commandId;
+    }
 
     public BaseResponse(byte commandId) {
         this.commandId=commandId;
@@ -31,5 +39,9 @@ public class BaseResponse {
         }
         BaseResponse oo = (BaseResponse) o;
         return commandId == oo.commandId;
+    }
+
+    public byte[] mockResponse(){
+        return null;
     }
 }

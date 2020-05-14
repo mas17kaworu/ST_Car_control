@@ -22,9 +22,14 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_PLGM            = 0x08;
     protected static final byte COMMAND_CENTRAL_CONTORL = 0x09;
 
-    protected static final byte COMMAND_VCU_CONTROL     = 0x0C;
+
     protected static final byte COMMAND_VCU_CAR_MODE    = 0x0A;
     protected static final byte COMMAND_VCU_FUN         = 0x0B;
+    protected static final byte COMMAND_VCU_HV_Power_ON = 0x0C;
+    protected static final byte COMMAND_VCU_HV_Power_OFF= 0x0D;
+    protected static final byte COMMAND_VCU_HV_LOOP_DEMO= 0x0E;
+    protected static final byte COMMAND_VCU_HV_LOOP_FUNC= 0x0F;
+
 
     protected static final byte COMMAND_VCU1            = 0x10;
     protected static final byte COMMAND_VCU2            = 0x11;
@@ -32,6 +37,7 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_VCU4            = 0x12;
     protected static final byte COMMAND_VCU5            = 0x14;
     protected static final byte COMMAND_VCU6            = 0x15;
+    protected static final byte COMMAND_VCU7            = 0x1F;
     protected static final byte COMMAND_VCU_BMS_1       = 0x16;
     protected static final byte COMMAND_VCU_BMS_2       = 0x17;
     protected static final byte COMMAND_VCU_BMS_3       = 0x18;
@@ -40,6 +46,21 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_VCU_BMS_6       = 0x1B;
     protected static final byte COMMAND_VCU_MCU_1       = 0x1C;
     protected static final byte COMMAND_VCU_MCU_2       = 0x1D;
+
+    protected static final byte COMMAND_GUI7           = 0x1E;
+    protected static final byte COMMAND_FOTA_DATA      = 0x20;
+    protected static final byte COMMAND_FOTA_DIAG      = 0x21;
+
+    protected static final byte COMMAND_VCU_INFOTEINMENT= 0x00;
+    protected static final byte COMMAND_INFOTEINMENT_NEW= 0x22;
+    protected static final byte COMMAND_ECALL           = 0x23;
+
+    protected static final byte COMMAND_NFC_RETURN      = 0x27;
+    protected static final byte COMMAND_OBC_RETURN      = 0x26;
+
+    protected static final byte COMMAND_OLED_BACK       = 0x28;
+
+
 
     protected byte[] data;//payload
     protected int dataLength;
@@ -50,7 +71,23 @@ public abstract class BaseCommand implements Command {
     public void turnOff(){
     }
 
-
+  /**
+   *
+   *   - Header:   For synchronization purpose
+   *   - Length:   The data length (byte) of communication Length, command & content
+   *   - Command:  The command of protocol
+   *   - Content:  The content of relevant command
+   *   - Checksum: The checksum of the Length, Command & Content.
+   * example
+   *
+   * Header	0x3C5A (先发送0x5A，再0x3C)
+   * Length	0x3
+   * Command	"B[7]: Reserved"	"B[0:7]: 0x27 (NFC CMD)"
+   * Content  xxx
+   *
+   * Checksum	0x--
+   *
+   */
     public byte[] toRawData() {
         byte[] raw;
         if (data == null || data.length == 2) {

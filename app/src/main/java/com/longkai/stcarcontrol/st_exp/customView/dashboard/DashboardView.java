@@ -27,6 +27,7 @@ public class DashboardView extends View {
     private Paint mPaint;
     private TextPaint mTextPaint;
     private float target_value_percent = 0; //0~100
+    private float present_value_percent = 0;
     private float present_value = 0;
     private View view;
     private DecimalFormat df;
@@ -40,8 +41,10 @@ public class DashboardView extends View {
         public void run() {
             super.run();
             while (true) {
-                if (Math.abs(present_value - target_value_percent)> MIN_INTERVAL) {
-                    present_value += caculateInterval(target_value_percent, present_value);
+                if (Math.abs(present_value_percent - target_value_percent)> MIN_INTERVAL) {
+                    present_value_percent += caculateInterval(target_value_percent, present_value_percent);
+                } else {
+                    present_value_percent = target_value_percent;
                 }
                 view.postInvalidate();
                 try {
@@ -57,6 +60,11 @@ public class DashboardView extends View {
 
     int width;
     int height;
+
+  public DashboardView(Context context){
+    super(context);
+    init(context);
+  }
 
     public DashboardView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -81,16 +89,20 @@ public class DashboardView extends View {
     }
 
     public void setValue(float value){
-        target_value_percent = value;
+        target_value_percent = (value - MIN_VALUE) / (MAX_VALUE - MIN_VALUE) * 100;
+    }
+
+    public void setPercent(float percent){
+        target_value_percent = percent;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawBitmap(background,0,0,mPaint);
-        matrix.setRotate(present_value * 240 / 100, width/2, height/2);
+        matrix.setRotate(present_value_percent * 240 / 100, width/2, height/2);
         canvas.drawBitmap(pin, matrix, mPaint);
-        canvas.drawText(df.format( (int)((MAX_VALUE-MIN_VALUE) * present_value / 100)) + "rpm",
+        canvas.drawText(df.format( (int)((MAX_VALUE-MIN_VALUE) * present_value_percent / 100)) + "rpm",
                 width/2.f - 40, height/2.f + 100, mTextPaint);
     }
 

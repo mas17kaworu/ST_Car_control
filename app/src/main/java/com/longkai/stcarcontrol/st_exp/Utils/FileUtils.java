@@ -36,6 +36,14 @@ public class FileUtils {
 	}
 
 
+	public static boolean isExternalStorageWritable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			return true;
+		}
+		return false;
+	}
+
 	public static File createSDFile(String fileName) throws IOException
 	{
 		File file = new File(INTERNAL_PATH + fileName);
@@ -183,4 +191,6 @@ public class FileUtils {
 			e.printStackTrace();
 		}
 	}
+
+
 }

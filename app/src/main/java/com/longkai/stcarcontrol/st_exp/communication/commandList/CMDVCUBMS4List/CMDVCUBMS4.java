@@ -13,7 +13,7 @@ public class CMDVCUBMS4 extends BaseCommand {
             data = new byte[2];
             dataLength = 2;
             data[0] = 0x02;
-            data[1] = (byte) (0b101<<5 | COMMAND_VCU_BMS_4);
+            data[1] = (byte) (0b000<<5 | COMMAND_VCU_BMS_4);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -23,15 +23,15 @@ public class CMDVCUBMS4 extends BaseCommand {
     public BaseResponse toResponse(byte[] data) throws Exception {
         Response response = new Response(getCommandId());
         if (data[2] == 0x14){
-            response.Module_Temperature_7 = (data[5] & 0xff)<<8 |(data[4] & 0xff);
-            response.Module_Temperature_6 = (data[7] & 0xff)<<8 |(data[6] & 0xff);
-            response.Module_Temperature_5 = (data[9] & 0xff)<<8 |(data[8] & 0xff);
-            response.Module_Temperature_4 = (data[11] & 0xff)<<8 |(data[10] & 0xff);
-            response.Module_Temperature_3 = (data[13] & 0xff)<<8 |(data[12] & 0xff);
-            response.Module_Temperature_2 = (data[15] & 0xff)<<8 |(data[14] & 0xff);
-            response.Module_Temperature_1 = (data[17] & 0xff)<<8 |(data[16] & 0xff);
-            response.Pack_Current = (data[19] & 0xff)<<8 |(data[18] & 0xff);
-            response.Pack_Voltage = (data[21] & 0xff)<<8 |(data[20] & 0xff);
+            response.Module_Temperature_7 = ((data[5] & 0x01)<<8 |(data[4] & 0xff)) * 0.2f;
+            response.Module_Temperature_6 = ((data[7] & 0x01)<<8 |(data[6] & 0xff)) * 0.2f;
+            response.Module_Temperature_5 = ((data[9] & 0x01)<<8 |(data[8] & 0xff)) * 0.2f;
+            response.Module_Temperature_4 = ((data[11] & 0x01)<<8 |(data[10] & 0xff)) * 0.2f;
+            response.Module_Temperature_3 = ((data[13] & 0x01)<<8 |(data[12] & 0xff)) * 0.2f;
+            response.Module_Temperature_2 = ((data[15] & 0x01)<<8 |(data[14] & 0xff)) * 0.2f;
+            response.Module_Temperature_1 = ((data[17] & 0x01)<<8 |(data[16] & 0xff)) * 0.2f;
+            response.Pack_Current = ((data[19] & 0xff)<<8 |(data[18] & 0xff)) * 0.1f;
+            response.Pack_Voltage = ((data[21] & 0xff)<<8 |(data[20] & 0xff)) * 0.1f;
         }
         return response;
     }
@@ -42,15 +42,15 @@ public class CMDVCUBMS4 extends BaseCommand {
     }
 
     public static class Response extends BaseResponse {
-        public	int	Pack_Voltage	;
-        public	int	Pack_Current	;
-        public	int	Module_Temperature_1	;
-        public	int	Module_Temperature_2	;
-        public	int	Module_Temperature_3	;
-        public	int	Module_Temperature_4	;
-        public	int	Module_Temperature_5	;
-        public	int	Module_Temperature_6	;
-        public	int	Module_Temperature_7	;
+        public	float	Pack_Voltage	;
+        public	float	Pack_Current	;
+        public	float	Module_Temperature_1	;
+        public	float	Module_Temperature_2	;
+        public	float	Module_Temperature_3	;
+        public	float	Module_Temperature_4	;
+        public	float	Module_Temperature_5	;
+        public	float	Module_Temperature_6	;
+        public	float	Module_Temperature_7	;
 
 
         public Response(byte commandId) {

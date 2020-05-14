@@ -18,22 +18,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <EditText
+            android:id="@+id/et_tbox_phone_number"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:background="@mipmap/ic_tbox_phone_number_editor"
             android:textColor="@color/colorTextGreenSelected"
-            android:inputType="numberDecimal"/>
+            android:inputType="number"/>
 
         <ImageView
             android:layout_marginStart="230dp"
-            android:id="@+id/iv_tbox_phone_message"
+            android:id="@+id/iv_tbox_phone_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_tbox_phone_message"/>
+            android:src="@mipmap/ic_vcu_tbox_phonecall_setting"/>
 
         <ImageView
             android:id="@+id/iv_tbox_phone_call"
-            android:layout_toEndOf="@+id/iv_tbox_phone_message"
+            android:layout_toEndOf="@+id/iv_tbox_phone_setting"
             android:layout_marginStart="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

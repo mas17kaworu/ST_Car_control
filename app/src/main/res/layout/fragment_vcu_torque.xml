@@ -7,6 +7,7 @@
     android:background="@mipmap/ic_fragment_background">
 
     <TextView
+        android:id="@+id/tv_vcu_torque_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Torque"
@@ -15,6 +16,25 @@
         android:textStyle="italic"
         android:layout_marginStart="50dp"
         android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_vcu_torque_test_text"
+        android:textSize="15sp"
+        android:textColor="#ffffff"
+        android:layout_marginStart="50dp"
+        android:layout_below="@id/tv_vcu_torque_title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_vcu_torque_test_text2"
+        android:textSize="15sp"
+        android:textColor="#ffffff"
+        android:layout_marginStart="50dp"
+        android:layout_below="@id/tv_vcu_torque_test_text"/>
+
     <LinearLayout
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
@@ -58,6 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <com.longkai.stcarcontrol.st_exp.customView.dashboard.TorqueDashboard
+                android:id="@+id/dashboard_vcu_torch_expected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </RelativeLayout>
