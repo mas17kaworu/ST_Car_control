@@ -45,10 +45,10 @@
 
   <TextView
       android:id="@+id/tv_nfc_key_info"
-      android:layout_width="wrap_content"
+      android:layout_width="140dp"
       android:layout_height="wrap_content"
       android:text="@string/nfc_key_not_available"
-      android:textSize="20sp"
+      android:textSize="18sp"
       android:textColor="#ffffff"
       android:layout_marginTop="5dp"
       app:layout_constraintTop_toBottomOf="@id/iv_nfc_key_status"
@@ -69,10 +69,10 @@
 
   <TextView
       android:id="@+id/tv_nfc_filter_info"
-      android:layout_width="wrap_content"
+      android:layout_width="140dp"
       android:layout_height="wrap_content"
       android:text="@string/filter_not_available"
-      android:textSize="20sp"
+      android:textSize="18sp"
       android:textColor="#ffffff"
       android:layout_marginTop="5dp"
       app:layout_constraintTop_toBottomOf="@id/iv_nfc_filter_status"
@@ -93,10 +93,10 @@
 
   <TextView
       android:id="@+id/tv_nfc_door_info"
-      android:layout_width="wrap_content"
+      android:layout_width="150dp"
       android:layout_height="wrap_content"
       android:text="@string/nfc_lock_door"
-      android:textSize="20sp"
+      android:textSize="18sp"
       android:textColor="#ffffff"
       android:layout_marginTop="5dp"
       android:visibility="invisible"

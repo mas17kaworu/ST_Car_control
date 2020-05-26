@@ -24,16 +24,17 @@
 
 
   <FrameLayout
+      android:id="@+id/frameLayout"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
       app:layout_constraintHorizontal_bias="0.1"
-      app:layout_constraintVertical_bias="0.2">
-    <include
-        layout="@layout/view_obc_demo_time_counter"/>
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.2"
+      >
+    <include layout="@layout/view_obc_demo_time_counter" />
   </FrameLayout>
 
   <pl.droidsonroids.gif.GifImageView
@@ -47,13 +48,28 @@
       app:layout_constraintHorizontal_bias="0.04"
       app:layout_constraintVertical_bias="0.7"/>
 
+  <TextView
+    android:id="@+id/tv_vac_real"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+    android:text="Vac=0.0v"
+    android:textSize="18sp"
+    android:textColor="@color/colorAccent"
+    app:layout_constraintLeft_toLeftOf="@+id/dashboard_obc_demo_vbac"
+    app:layout_constraintRight_toRightOf="@+id/dashboard_obc_demo_vbac"
+    app:layout_constraintBottom_toTopOf="@+id/dashboard_obc_demo_vbac"
+    android:layout_marginBottom="10dp"
+      />
+
+
+
   <com.longkai.stcarcontrol.st_exp.customView.dashboard.OBCDemoDashboard
       android:id="@+id/dashboard_obc_demo_vbac"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       custom:scaleBackgroundPicture = "@mipmap/ic_obc_demo_vbac_background"
-      custom:maxValue = "500.0"
-      custom:minValue = "-500.0"
+      custom:maxValue = "300.0"
+      custom:minValue = "0.0"
       custom:DanWei = "voltage"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintLeft_toLeftOf="parent"
@@ -153,6 +169,19 @@
       android:textSize="20sp"
       android:textColor="#ffffff"
       />
-
+  <TextView
+      android:id="@+id/tv_obc_demo_charging_state"
+      android:layout_width="260dp"
+      android:layout_height="wrap_content"
+      android:background="#92a2b6"
+      android:text="Stand by"
+      android:textColor="#ffffff"
+      android:textSize="20sp"
+      app:layout_constraintEnd_toEndOf="@+id/frameLayout"
+      app:layout_constraintLeft_toLeftOf="@+id/tv_pfc_state_title"
+      app:layout_constraintStart_toStartOf="@+id/frameLayout"
+      app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+      android:layout_marginTop="10dp"
+      />
 
 </android.support.constraint.ConstraintLayout>

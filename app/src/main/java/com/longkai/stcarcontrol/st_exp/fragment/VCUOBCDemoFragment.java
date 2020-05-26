@@ -18,6 +18,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListener
 import com.longkai.stcarcontrol.st_exp.customView.dashboard.OBCDemoDashboard;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl;
 import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.atomic.AtomicBoolean;
 import pl.droidsonroids.gif.GifDrawable;
@@ -32,8 +33,9 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
 
   private ImageView ivSwitch;
   private TextView tvTimeCounting;
+  private TextView tvChargingState, tvVacRealValue;
   private GifImageView gifVCharging;
-  private AtomicBoolean charging = new AtomicBoolean(false);
+  public AtomicBoolean charging = new AtomicBoolean(false);
   private AtomicBoolean chargeBtnStat = new AtomicBoolean(false);
 
   private OBCDemoCMDListener commandListener;
@@ -59,6 +61,9 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
 
     tvPFCState = (TextView) mView.findViewById(R.id.tv_obc_demo_pfc);
     tvLLCState = (TextView) mView.findViewById(R.id.tv_obc_demo_llc);
+
+    tvChargingState = (TextView) mView.findViewById(R.id.tv_obc_demo_charging_state);
+    tvVacRealValue = (TextView)  mView.findViewById(R.id.tv_vac_real);
 
     dashboardVbat = (OBCDemoDashboard) mView.findViewById(R.id.dashboard_obc_demo_vbat);
     dashboardVac = (OBCDemoDashboard) mView.findViewById(R.id.dashboard_obc_demo_vbac);
@@ -124,9 +129,10 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
     }
   }
 
-  private void refreshCharging() {
+  public void refreshCharging() {
     if (charging.get()){
       time =  ZERO;
+      tvChargingState.setText(R.string.charging);
       String date = df.format(time);
       tvTimeCounting.setText(date);
       handler.removeCallbacks(runnable);
@@ -134,6 +140,7 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
       showChargingGif();
       dashboardVac.setValue(220);
     } else {
+      tvChargingState.setText(R.string.standby);
       gifVCharging.setVisibility(View.INVISIBLE);
       dashboardVac.setValue(0);
     }
@@ -156,39 +163,38 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
     }
   }
 
-
-
-  private class OBCDemoCMDListener extends CommandListenerAdapter<CMDOBCReturn.Response>{
-
+  private static class OBCDemoCMDListener extends CommandListenerAdapter<CMDOBCReturn.Response>{
+    DecimalFormat df=new DecimalFormat("0.00");
     private WeakReference<VCUOBCDemoFragment> reference;
     OBCDemoCMDListener(VCUOBCDemoFragment fragment){
       reference = new WeakReference<>(fragment);
     }
 
     @Override public void onSuccess(final CMDOBCReturn.Response response) {
-      if (reference.get() != null) {
+      if (reference.get() != null && reference.get().getActivity() != null) {
         final VCUOBCDemoFragment fragment = reference.get();
         fragment.getActivity().runOnUiThread(new Runnable() {
           @Override public void run() {
             fragment.dashboardVbat.setValue(response.Vbat);
             fragment.dashboardVbus.setValue(response.Vbus);
+
+            fragment.tvVacRealValue.setText("Vac = " + df.format(response.Vac) + "V");
             //fragment.dashboardVac.setValue(response.Vac);
             fragment.dashboardIbat.setValue(response.Ibat);
 
-            Resources res = fragment.getActivity().getResources();
-
             if (response.PFCState == 3 && response.LLCState == 0x25){
-              if (!charging.get()) { //从uncharging 到 charging
-                charging.set(true);
-                refreshCharging();
+              if (!fragment.charging.get()) { //从uncharging 到 charging
+                fragment.charging.set(true);
+                fragment.refreshCharging();
               }
             } else {
-              if (charging.get()) { //从charging 到 uncharging
-                charging.set(false);
-                refreshCharging();
+              if (fragment.charging.get()) { //从charging 到 uncharging
+                fragment.charging.set(false);
+                fragment.refreshCharging();
               }
             }
 
+            Resources res = fragment.getActivity().getResources();
             String[] pfcStates=res.getStringArray(R.array.pfc_state);
             switch (response.PFCState){
               case 0:

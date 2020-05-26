@@ -104,6 +104,9 @@ public class NFCFragment extends Fragment {
           @Override public void run() {
             //compare with
             if (lastResponse == null || !response.equals(lastResponse)){
+              if (fragment.get().nfcDialog != null) {
+                fragment.get().nfcDialog.dismiss();
+              }
               fragment.get().showDialog(response);
             }
             lastResponse = response;

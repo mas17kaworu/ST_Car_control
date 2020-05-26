@@ -70,6 +70,9 @@
   <string name="charging_time">Charging time</string>
   <string name="obc_charging_info">8-10h Single-phase 230Volt </string>
 
+  <string name="charging">Charging</string>
+  <string name="standby">Stand by</string>
+
   <string-array name="pfc_state">
     <item>IDLE</item>
     <item>INIT</item>

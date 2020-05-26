@@ -29,12 +29,12 @@ public class NFCFragmentMock extends MockFragmentBase {
       response1.door_info = 1;
       response1.filter_info = 1;
       response1.key_info = 1;
-    } else if (responseCount < 20){
+    } else if (responseCount < 12){
       response1.door_info = 2;
       response1.filter_info = 0;
       response1.key_info = 2;
-    } else if (responseCount <30) {
-      response1.door_info = 0;
+    } else if (responseCount < 20) {
+      response1.door_info = 1;
       response1.filter_info = 0;
       response1.key_info = 1;
     }
