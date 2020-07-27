@@ -66,13 +66,16 @@ public class CarBackCoverFragment extends Fragment implements View.OnClickListen
                         timer.schedule(new TimerTask() {
                             @Override
                             public void run() {
+                              if (getActivity() != null) {
                                 getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ivTrunkOpen.setImageResource(R.mipmap.ic_car_back_btn_trunk_open_gray);
-                                        setGif_Image(R.mipmap.ic_car_back_trunk_open);
-                                    }
+                                  @Override
+                                  public void run() {
+                                    ivTrunkOpen.setImageResource(
+                                        R.mipmap.ic_car_back_btn_trunk_open_gray);
+                                    setGif_Image(R.mipmap.ic_car_back_trunk_open);
+                                  }
                                 });
+                              }
                             }
                         },2000);
                         break;
@@ -100,13 +103,16 @@ public class CarBackCoverFragment extends Fragment implements View.OnClickListen
                         timer.schedule(new TimerTask() {
                             @Override
                             public void run() {
+                              if (getActivity() != null) {
                                 getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ivTrunkClose.setImageResource(R.mipmap.ic_car_back_btn_trunk_close_gray);
-                                        setGif_Image(R.mipmap.ic_car_back_trunk_close);
-                                    }
+                                  @Override
+                                  public void run() {
+                                    ivTrunkClose.setImageResource(
+                                        R.mipmap.ic_car_back_btn_trunk_close_gray);
+                                    setGif_Image(R.mipmap.ic_car_back_trunk_close);
+                                  }
                                 });
+                              }
                             }
                         },2000);
                         break;

@@ -51,28 +51,30 @@ public class VCUOBCFragment extends Fragment implements View.OnClickListener{
                 public void onSuccess(BaseResponse response) {
                     super.onSuccess(response);
                     final BaseResponse r = response;
-                    getActivity().runOnUiThread(new Runnable() {
+                    if (getActivity() != null) {
+                      getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if ( (((CMDVCU7.Response) r).gaoya_jidianqi_status & 0x08) == 0) {
-                                ivOBCPJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
-                            } else {
-                                ivOBCPJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
-                            }
+                          if ((((CMDVCU7.Response) r).gaoya_jidianqi_status & 0x08) == 0) {
+                            ivOBCPJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
+                          } else {
+                            ivOBCPJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
+                          }
 
-                            if ( (((CMDVCU7.Response) r).gaoya_jidianqi_status & 0x10) == 0) {
-                                ivOBCMJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
-                            } else {
-                                ivOBCMJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
-                            }
+                          if ((((CMDVCU7.Response) r).gaoya_jidianqi_status & 0x10) == 0) {
+                            ivOBCMJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
+                          } else {
+                            ivOBCMJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
+                          }
 
-                            if ( (((CMDVCU7.Response) r).gaoya_jidianqi_status & 0x20) == 0) {
-                                ivDcdcJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
-                            } else {
-                                ivDcdcJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
-                            }
+                          if ((((CMDVCU7.Response) r).gaoya_jidianqi_status & 0x20) == 0) {
+                            ivDcdcJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_off);
+                          } else {
+                            ivDcdcJDQ.setImageResource(R.mipmap.ic_vcu_dianlu_jdq_on);
+                          }
                         }
-                    });
+                      });
+                    }
 
                 }
             });
@@ -115,6 +117,6 @@ public class VCUOBCFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(runnable);
+        handler.removeCallbacks(null);
     }
 }
