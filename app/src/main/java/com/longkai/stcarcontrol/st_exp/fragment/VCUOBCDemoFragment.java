@@ -130,7 +130,7 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
   }
 
   public void refreshCharging() {
-    if (charging.get()){
+    if (charging.get()) {
       time =  ZERO;
       tvChargingState.setText(R.string.charging);
       String date = df.format(time);
@@ -138,11 +138,11 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
       handler.removeCallbacks(runnable);
       handler.postDelayed(runnable, 1000);
       showChargingGif();
-      dashboardVac.setValue(220);
+      //dashboardVac.setValue(220);
     } else {
       tvChargingState.setText(R.string.standby);
       gifVCharging.setVisibility(View.INVISIBLE);
-      dashboardVac.setValue(0);
+      //dashboardVac.setValue(0);
     }
   }
 
@@ -182,7 +182,7 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
             //fragment.dashboardVac.setValue(response.Vac);
             fragment.dashboardIbat.setValue(response.Ibat);
 
-            if (response.PFCState == 3 && response.LLCState == 0x25){
+            if (response.PFCState == 3 && response.LLCState == 0x25) {
               if (!fragment.charging.get()) { //从uncharging 到 charging
                 fragment.charging.set(true);
                 fragment.refreshCharging();
@@ -194,65 +194,73 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
               }
             }
 
-            Resources res = fragment.getActivity().getResources();
-            String[] pfcStates=res.getStringArray(R.array.pfc_state);
-            switch (response.PFCState){
-              case 0:
-              fragment.tvPFCState.setText(pfcStates[0]);
-              break;
-              case 1:
-                fragment.tvPFCState.setText(pfcStates[1]);
-                break;
-              case 2:
-                fragment.tvPFCState.setText(pfcStates[2]);
-                break;
-              case 3:
-                fragment.tvPFCState.setText(pfcStates[3]);
-                break;
-              case 4:
-                fragment.tvPFCState.setText(pfcStates[4]);
-                break;
-              case 5:
-                fragment.tvPFCState.setText(pfcStates[5]);
-                break;
-              case 6:
-                fragment.tvPFCState.setText(pfcStates[6]);
-                break;
-              case 7:
-                fragment.tvPFCState.setText(pfcStates[7]);
-                break;
+            //PFCState = fault   LLCState = fault   Vac为0  其他情况 220V
+            if (response.PFCState == 5 && response.LLCState == 0xEE){
+              fragment.dashboardVac.setValue(0);
+            } else {
+              fragment.dashboardVac.setValue(220);
             }
 
-            String[] llcStates=res.getStringArray(R.array.llc_state);
-            switch (response.LLCState){
-              case 0x00:
-                fragment.tvLLCState.setText(llcStates[0]);
-                break;
-              case 0x05:
-                fragment.tvLLCState.setText(llcStates[1]);
-                break;
-              case 0x0a:
-                fragment.tvLLCState.setText(llcStates[2]);
-                break;
-              case 0x15:
-                fragment.tvLLCState.setText(llcStates[3]);
-                break;
-              case 0x1A:
-                fragment.tvLLCState.setText(llcStates[4]);
-                break;
-              case 0x25:
-                fragment.tvLLCState.setText(llcStates[5]);
-                break;
-              case 0x35:
-                fragment.tvLLCState.setText(llcStates[6]);
-                break;
-              case 0x3A:
-                fragment.tvLLCState.setText(llcStates[7]);
-                break;
-              case 0xEE:
-                fragment.tvLLCState.setText(llcStates[8]);
-                break;
+            if (fragment.getActivity() != null) {
+              Resources res = fragment.getActivity().getResources();
+              String[] pfcStates = res.getStringArray(R.array.pfc_state);
+              switch (response.PFCState) {
+                case 0:
+                  fragment.tvPFCState.setText(pfcStates[0]);
+                  break;
+                case 1:
+                  fragment.tvPFCState.setText(pfcStates[1]);
+                  break;
+                case 2:
+                  fragment.tvPFCState.setText(pfcStates[2]);
+                  break;
+                case 3:
+                  fragment.tvPFCState.setText(pfcStates[3]);
+                  break;
+                case 4:
+                  fragment.tvPFCState.setText(pfcStates[4]);
+                  break;
+                case 5:
+                  fragment.tvPFCState.setText(pfcStates[5]);
+                  break;
+                case 6:
+                  fragment.tvPFCState.setText(pfcStates[6]);
+                  break;
+                case 7:
+                  fragment.tvPFCState.setText(pfcStates[7]);
+                  break;
+              }
 
+              String[] llcStates = res.getStringArray(R.array.llc_state);
+              switch (response.LLCState) {
+                case 0x00:
+                  fragment.tvLLCState.setText(llcStates[0]);
+                  break;
+                case 0x05:
+                  fragment.tvLLCState.setText(llcStates[1]);
+                  break;
+                case 0x0a:
+                  fragment.tvLLCState.setText(llcStates[2]);
+                  break;
+                case 0x15:
+                  fragment.tvLLCState.setText(llcStates[3]);
+                  break;
+                case 0x1A:
+                  fragment.tvLLCState.setText(llcStates[4]);
+                  break;
+                case 0x25:
+                  fragment.tvLLCState.setText(llcStates[5]);
+                  break;
+                case 0x35:
+                  fragment.tvLLCState.setText(llcStates[6]);
+                  break;
+                case 0x3A:
+                  fragment.tvLLCState.setText(llcStates[7]);
+                  break;
+                case 0xEE:
+                  fragment.tvLLCState.setText(llcStates[8]);
+                  break;
+              }
             }
           }
         });
