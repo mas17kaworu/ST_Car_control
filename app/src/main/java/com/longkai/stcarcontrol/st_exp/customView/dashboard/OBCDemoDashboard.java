@@ -37,6 +37,7 @@ public class OBCDemoDashboard extends View {
   private float present_value = 0;
   private View view;
   private DecimalFormat df;
+  private long animation_time_interval = 50;
 
   private int leftStartPoint, radius;
 
@@ -60,7 +61,7 @@ public class OBCDemoDashboard extends View {
         }
         view.postInvalidate();
         try {
-          Thread.sleep(50);
+          Thread.sleep(animation_time_interval);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
@@ -125,7 +126,9 @@ public class OBCDemoDashboard extends View {
     refreshThread.start();
   }
 
-
+  public void setAnimation_time_interval(long intervalTime) {
+    animation_time_interval = intervalTime;
+  }
 
   public void setPercent(float value){
     if (value > 100) {

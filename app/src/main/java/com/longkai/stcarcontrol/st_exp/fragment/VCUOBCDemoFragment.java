@@ -77,6 +77,7 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
 
     dashboardIbat.setValue(0);
     dashboardVac.setValue(0);
+    dashboardVac.setAnimation_time_interval(1);
     dashboardVbus.setValue(0);
     dashboardVbat.setValue(0);
 
@@ -195,10 +196,10 @@ public class VCUOBCDemoFragment extends Fragment implements View.OnClickListener
             }
 
             //PFCState = fault   LLCState = fault   Vac为0  其他情况 220V
-            if (response.PFCState == 5 && response.LLCState == 0xEE){
-              fragment.dashboardVac.setValue(0);
-            } else {
+            if (response.PFCState != 5 && response.LLCState != 0xEE){
               fragment.dashboardVac.setValue(220);
+            } else {
+              fragment.dashboardVac.setValue(0);
             }
 
             if (fragment.getActivity() != null) {

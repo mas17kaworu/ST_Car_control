@@ -44,6 +44,9 @@ public class OBCReturnFragmentMock extends MockFragmentBase {
       responseBytes [4]= 0x03;
     } else if (counter < 30) {
       responseBytes [4]= 0x01;
+    } else if (counter < 40) {
+      responseBytes[4] = 0x05;
+      responseBytes[5] = (byte)0xee;
     }
     responseBytes[responseBytes.length-1] = CheckSumBit.checkSum(responseBytes, responseBytes.length - 1);
     dispatcher.onReceive(responseBytes, 0, responseBytes.length);

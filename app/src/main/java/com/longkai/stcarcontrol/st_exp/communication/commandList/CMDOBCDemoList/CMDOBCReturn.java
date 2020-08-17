@@ -19,7 +19,26 @@ public class CMDOBCReturn extends BaseCommand {
   /**
    * CANFD ID	0x1A8	comment
    * byte0	PFC_STATE(8bit)	Detail See slide 11
+   * IDLE = 0
+   * INIT = 1
+   * START = 2
+   * RUN = 3
+   * STOP = 4
+   * FAULT = 5
+   * WAIT = 6
+   * BURST = 7
+   *
    * byte1	LLC_STATE(8bit)	Detail See slide 12
+   * 0x00      IDLE
+   * 0x05      G_PRE_CHARGE
+   * 0x0A      OPEN LOOP
+   * 0x15      SOFT_START
+   * 0x1A      HEAVY_LOAD
+   * 0x25      NORMAL
+   * 0x35      Light_Load_SHUT
+   * 0x3A      Light_Load_FIX_F
+   * 0xEE      FAULT
+   *
    * byte2	Vac_ADC_count[b15:b8]
    * byte3	Vac_ADC_count[b7:b0]
    * byte4	Vbus_ADC_count[b15:b8]
