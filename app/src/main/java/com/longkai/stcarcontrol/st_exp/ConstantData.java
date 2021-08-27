@@ -107,6 +107,9 @@ public class ConstantData {
       public static final int FRAGMENT_TRANSACTION_NFC = 5;
       public static final int FRAGMENT_TRANSACTION_CAR_BACK = 6;
       public static final int FRAGMENT_TRANSACTION_CAR_BACK_COVER = 7;
+      public static final int FRAGMENT_TRANSACTION_AVAS = 8;
+      public static final int FRAGMENT_TRANSACTION_SOUND = 9;
+      public static final int FRAGMENT_TRANSACTION_KEY_PAIR = 10;
 
       public static final int FRAGMENT_TRANSACTION_CAR_BACK_OLED = 105;
     }

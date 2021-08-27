@@ -26,6 +26,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
+import com.longkai.stcarcontrol.st_exp.fragment.AVASFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.BCMDiagnosticFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CarBackCoverFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CarBackLampFragment;
@@ -36,8 +37,10 @@ import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLampTest2;
 import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
 import com.longkai.stcarcontrol.st_exp.fragment.HomeFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.KeyPairFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.NFCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.SoundFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
 
 import java.io.File;
@@ -65,6 +68,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
   private FrontHeadLampTest2 frontHeadLampTest;
   private NFCFragment nfcFragment;
   private CarBackOLEDFragment carBackOLEDFragment;
+  private AVASFragment avasFragment;
+  private SoundFragment soundFragment;
+  private KeyPairFragment keyPairFragment;
 
   private VCUUpdateFirmwareFragment updateFirmwareFragment;
 
@@ -171,7 +177,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         R.drawable.main_activity_bottom_control,
         R.drawable.main_acitvity_bottom_nfc,
         R.drawable.main_activity_bottom_back_car,
-        R.drawable.main_activity_bottom_back_trunk
+        R.drawable.main_activity_bottom_back_trunk,
+        R.drawable.main_activity_bottom_hompage,
+        R.drawable.main_activity_bottom_hompage,
+        R.drawable.main_activity_bottom_hompage,
     };
 
     hListViewAdapter = new HorizontalListViewAdapter(getApplicationContext(), ids);
@@ -307,6 +316,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         transaction.replace(R.id.main_fragment_content, nfcFragment);
         break;
+      case ConstantData.MainFragment.FRAGMENT_TRANSACTION_AVAS:
+        if (avasFragment == null) {
+          avasFragment = new AVASFragment();
+        }
+        transaction.replace(R.id.main_fragment_content, avasFragment);
+        break;
+      case ConstantData.MainFragment.FRAGMENT_TRANSACTION_SOUND:
+        if (soundFragment == null) {
+          soundFragment = new SoundFragment();
+        }
+        transaction.replace(R.id.main_fragment_content, soundFragment);
+        break;
+      case ConstantData.MainFragment.FRAGMENT_TRANSACTION_KEY_PAIR:
+        if (keyPairFragment == null) {
+          keyPairFragment = new KeyPairFragment();
+        }
+        transaction.replace(R.id.main_fragment_content, keyPairFragment);
+        break;
       case 100:
         if (mHighBeamLight == null) {
           mHighBeamLight = new HighBeamLight();
@@ -411,6 +438,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     mBCMDiagnosticFragment = null;
     frontHeadLampTest = null;
     nfcFragment = null;
+    avasFragment = null;
+    soundFragment = null;
+    keyPairFragment = null;
     System.gc();
   }
 
