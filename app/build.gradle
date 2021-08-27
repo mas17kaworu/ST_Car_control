@@ -3,7 +3,6 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.longkai.stcarcontrol.st_exp"
         minSdkVersion 21
