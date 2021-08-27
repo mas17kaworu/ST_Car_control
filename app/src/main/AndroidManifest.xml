@@ -29,7 +29,7 @@
         android:theme="@style/AppTheme"
         >
         <activity android:name=".activity.ChooseActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="userLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -37,15 +37,15 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="userLandscape">
         </activity>
         <activity
             android:name=".activity.VCUActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="userLandscape">
         </activity>
         <activity
             android:name=".activity.InfotainmentActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="userLandscape">
         </activity>
         <service
             android:name=".communication.CommunicationServer"
