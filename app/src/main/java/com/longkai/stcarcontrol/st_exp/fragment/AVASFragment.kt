@@ -1,20 +1,26 @@
 package com.longkai.stcarcontrol.st_exp.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.longkai.stcarcontrol.st_exp.R
+import androidx.fragment.app.Fragment
+import com.longkai.stcarcontrol.st_exp.databinding.FragmentAvasBinding
 
-internal class AVASFragment : Fragment() {
+class AVASFragment : Fragment() {
+
+  private lateinit var binding: FragmentAvasBinding
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
+  ): View {
+    binding = FragmentAvasBinding.inflate(inflater, container, false)
+    return binding.root
+  }
 
-    return inflater.inflate(R.layout.fragment_avas, container, false)
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
   }
 }
