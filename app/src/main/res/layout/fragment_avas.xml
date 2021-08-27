@@ -3,15 +3,165 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="30dp">
 
-    <TextView
-        android:id="@+id/textView2"
+    <Space
+        android:id="@+id/modeTopDivider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="AVAS"
+        app:layout_constraintBottom_toTopOf="@+id/mode1Icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <ImageView
+        android:id="@+id/mode1Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/mode1Text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/mode2Icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modeTopDivider"
+        app:srcCompat="@drawable/door_lock" />
+
+    <TextView
+        android:id="@+id/mode1Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Mode 1"
+        app:layout_constraintBottom_toTopOf="@+id/modeBottomDivider"
+        app:layout_constraintEnd_toEndOf="@id/mode1Icon"
+        app:layout_constraintStart_toStartOf="@id/mode1Icon"
+        app:layout_constraintTop_toBottomOf="@+id/mode1Icon" />
+
+    <ImageView
+        android:id="@+id/mode2Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/mode1Icon"
+        app:layout_constraintEnd_toStartOf="@+id/mode3Icon"
+        app:layout_constraintStart_toEndOf="@+id/mode1Icon"
+        app:layout_constraintTop_toTopOf="@+id/mode1Icon"
+        app:srcCompat="@drawable/door_lock" />
+
+    <TextView
+        android:id="@+id/mode2Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mode 2"
+        app:layout_constraintBottom_toBottomOf="@+id/mode1Text"
+        app:layout_constraintEnd_toEndOf="@id/mode2Icon"
+        app:layout_constraintStart_toStartOf="@id/mode2Icon"
+        app:layout_constraintTop_toTopOf="@+id/mode1Text" />
+
+    <ImageView
+        android:id="@+id/mode3Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/mode1Icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/mode2Icon"
+        app:layout_constraintTop_toTopOf="@+id/mode1Icon"
+        app:srcCompat="@drawable/door_lock" />
+
+    <TextView
+        android:id="@+id/mode3Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mode 3"
+        app:layout_constraintBottom_toBottomOf="@+id/mode1Text"
+        app:layout_constraintEnd_toEndOf="@id/mode3Icon"
+        app:layout_constraintStart_toStartOf="@id/mode3Icon"
+        app:layout_constraintTop_toTopOf="@+id/mode1Text" />
+
+    <Space
+        android:id="@+id/modeBottomDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/volumeSeekBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mode1Text" />
+
+    <SeekBar
+        android:id="@+id/volumeSeekBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/speedSeekBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modeBottomDivider" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Volume: "
+        app:layout_constraintBottom_toBottomOf="@id/volumeSeekBar"
+        app:layout_constraintEnd_toStartOf="@id/volumeSeekBar"
+        app:layout_constraintTop_toTopOf="@id/volumeSeekBar" />
+
+    <SeekBar
+        android:id="@+id/speedSeekBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/muteTopDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/volumeSeekBar" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Speed: "
+        app:layout_constraintBottom_toBottomOf="@id/speedSeekBar"
+        app:layout_constraintEnd_toStartOf="@id/speedSeekBar"
+        app:layout_constraintTop_toTopOf="@id/speedSeekBar" />
+
+    <Space
+        android:id="@+id/muteTopDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/muteIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/speedSeekBar" />
+
+    <ImageView
+        android:id="@+id/muteIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/muteText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/muteTopDivider"
+        app:srcCompat="@drawable/door_unlock" />
+
+    <TextView
+        android:id="@+id/muteText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Mute/UnMute"
+        app:layout_constraintBottom_toTopOf="@+id/muteBottomDivider"
+        app:layout_constraintEnd_toEndOf="@id/muteIcon"
+        app:layout_constraintStart_toStartOf="@id/muteIcon"
+        app:layout_constraintTop_toBottomOf="@+id/muteIcon" />
+
+    <Space
+        android:id="@+id/muteBottomDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/muteText" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
