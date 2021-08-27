@@ -1,17 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="30dp">
 
-    <TextView
-        android:id="@+id/textView3"
+    <Space
+        android:id="@+id/modeTopDivider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sound"
+        app:layout_constraintBottom_toTopOf="@+id/soundEffectIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <ImageView
+        android:id="@+id/soundEffectIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/soundEffectText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/soundFieldIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modeTopDivider"
+        app:srcCompat="@drawable/door_lock" />
+
+    <TextView
+        android:id="@+id/soundEffectText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Mode 1"
+        app:layout_constraintBottom_toTopOf="@+id/modeBottomDivider"
+        app:layout_constraintEnd_toEndOf="@id/soundEffectIcon"
+        app:layout_constraintStart_toStartOf="@id/soundEffectIcon"
+        app:layout_constraintTop_toBottomOf="@+id/soundEffectIcon" />
+
+    <ImageView
+        android:id="@+id/soundFieldIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectIcon"
+        app:layout_constraintEnd_toStartOf="@+id/immersionEffectIcon"
+        app:layout_constraintStart_toEndOf="@+id/soundEffectIcon"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectIcon"
+        app:srcCompat="@drawable/door_lock" />
+
+    <TextView
+        android:id="@+id/soundFieldText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mode 2"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectText"
+        app:layout_constraintEnd_toEndOf="@id/soundFieldIcon"
+        app:layout_constraintStart_toStartOf="@id/soundFieldIcon"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectText" />
+
+    <ImageView
+        android:id="@+id/immersionEffectIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/soundFieldIcon"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectIcon"
+        app:srcCompat="@drawable/door_lock" />
+
+    <TextView
+        android:id="@+id/immersionEffectText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mode 3"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectText"
+        app:layout_constraintEnd_toEndOf="@id/immersionEffectIcon"
+        app:layout_constraintStart_toStartOf="@id/immersionEffectIcon"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectText" />
+
+    <Space
+        android:id="@+id/modeBottomDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/volumeSeekBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/soundEffectText" />
+
+    <SeekBar
+        android:id="@+id/volumeSeekBar"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/muteTopDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modeBottomDivider" />
+
+
+    <Space
+        android:id="@+id/muteTopDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/muteIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/volumeSeekBar" />
+
+    <ImageView
+        android:id="@+id/muteIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/muteText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/muteTopDivider"
+        app:srcCompat="@drawable/door_unlock" />
+
+    <TextView
+        android:id="@+id/muteText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Volume Mute/UnMute"
+        app:layout_constraintBottom_toTopOf="@+id/muteBottomDivider"
+        app:layout_constraintEnd_toEndOf="@id/muteIcon"
+        app:layout_constraintStart_toStartOf="@id/muteIcon"
+        app:layout_constraintTop_toBottomOf="@+id/muteIcon" />
+
+    <Space
+        android:id="@+id/muteBottomDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/muteText" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
