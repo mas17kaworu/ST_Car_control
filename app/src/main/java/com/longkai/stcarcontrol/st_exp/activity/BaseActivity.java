@@ -8,17 +8,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.longkai.stcarcontrol.st_exp.Utils.FileUtils;
-import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
-import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
-import com.longkai.stcarcontrol.st_exp.communication.btComm.BTManager;
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 
 import org.apache.log4j.Level;

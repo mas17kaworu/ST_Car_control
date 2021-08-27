@@ -1,17 +1,15 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 
-import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;

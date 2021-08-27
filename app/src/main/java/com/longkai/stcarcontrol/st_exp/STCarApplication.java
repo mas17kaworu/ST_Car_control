@@ -4,12 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.pm.PackageManager;
-import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import com.longkai.stcarcontrol.st_exp.Utils.CrashHandler;
-import com.longkai.stcarcontrol.st_exp.Utils.FileUtils;
 
 import org.apache.log4j.Level;
 
@@ -17,7 +15,6 @@ import java.io.File;
 
 import de.mindpipe.android.logging.log4j.LogConfigurator;
 
-import static android.content.ContentValues.TAG;
 import static com.longkai.stcarcontrol.st_exp.Utils.FileUtils.INTERNAL_PATH;
 
 /**

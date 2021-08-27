@@ -1,8 +1,8 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,7 +18,6 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMD
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGMTrunkUpOff;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPLGMList.CMDPLGMTrunkUpOn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
-import com.longkai.stcarcontrol.st_exp.customView.MenuViewItem;
 
 import java.util.Timer;
 import java.util.TimerTask;

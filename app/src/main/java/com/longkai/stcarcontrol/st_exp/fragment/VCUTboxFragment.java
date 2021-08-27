@@ -2,10 +2,10 @@ package com.longkai.stcarcontrol.st_exp.fragment;
 
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.text.Layout;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.longkai.stcarcontrol.st_exp.Enum.TboxStateEnum;
 import com.longkai.stcarcontrol.st_exp.Interface.StateChange;
 import com.longkai.stcarcontrol.st_exp.R;
-import com.longkai.stcarcontrol.st_exp.activity.VCUActivity;
 import com.longkai.stcarcontrol.st_exp.communication.Command;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDECallList.CMDECall;
@@ -35,8 +34,6 @@ import java.util.regex.Pattern;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
-
-import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
 
 /**
  * Created by Administrator on 2018/5/20.

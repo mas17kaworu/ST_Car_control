@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <android.support.percent.PercentRelativeLayout
+        <androidx.percentlayout.widget.PercentRelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@mipmap/ic_torque_acc_back">
@@ -51,9 +51,9 @@
                 custom:layout_marginStartPercent="3%"
                 custom:layout_marginTopPercent="8%"
                 custom:style="blue"/>
-        </android.support.percent.PercentRelativeLayout>
+        </androidx.percentlayout.widget.PercentRelativeLayout>
 
-        <android.support.percent.PercentRelativeLayout
+        <androidx.percentlayout.widget.PercentRelativeLayout
             android:layout_marginStart="50dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                 custom:layout_marginStartPercent="17%"
                 custom:layout_marginTopPercent="23%"
                 android:src="@mipmap/ic_torque_break_light"/>
-        </android.support.percent.PercentRelativeLayout>
+        </androidx.percentlayout.widget.PercentRelativeLayout>
 
         <RelativeLayout
             android:layout_marginStart="50dp"

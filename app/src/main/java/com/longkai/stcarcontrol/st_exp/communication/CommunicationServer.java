@@ -1,7 +1,6 @@
 package com.longkai.stcarcontrol.st_exp.communication;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
@@ -9,7 +8,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;

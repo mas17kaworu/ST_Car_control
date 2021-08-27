@@ -40,7 +40,7 @@ public class UdpServer implements ConnectionInterface {
         recvPacket = new DatagramPacket(mRecvBuffer, mRecvBuffer.length);
         try {
             sendPacket = new DatagramPacket(mSendBuffer, mSendBuffer.length, new InetSocketAddress(mTargetIp, mTargetPort));
-        } catch (SocketException e) {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
 
@@ -52,7 +52,7 @@ public class UdpServer implements ConnectionInterface {
         recvPacket = new DatagramPacket(mRecvBuffer, mRecvBuffer.length);
         try {
             sendPacket = new DatagramPacket(mSendBuffer, mSendBuffer.length, new InetSocketAddress(mTargetIp, mTargetPort));
-        } catch (SocketException e) {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }

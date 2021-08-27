@@ -1,11 +1,9 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +13,6 @@ import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDNFCList.CMDNFCReturn;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
-import com.longkai.stcarcontrol.st_exp.customView.dashboard.DashboardView;
 import com.longkai.stcarcontrol.st_exp.customView.dialog.NFCDialog;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl;
 import java.lang.ref.WeakReference;

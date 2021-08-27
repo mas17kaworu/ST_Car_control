@@ -2,8 +2,8 @@ package com.longkai.stcarcontrol.st_exp.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +13,12 @@ import android.widget.TextView;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU6List.CMDVCU6;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUBMS1List.CMDVCUBMS1;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUBMS3List.CMDVCUBMS3;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUBMS4List.CMDVCUBMS4;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCUBMS5List.CMDVCUBMS5;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.VerticalRollingBar;
-import com.longkai.stcarcontrol.st_exp.customView.dashboard.DashboardView;
 import com.longkai.stcarcontrol.st_exp.customView.dashboard.VoltageDashboard;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl;
 

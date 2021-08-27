@@ -1,8 +1,8 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +13,6 @@ import com.longkai.stcarcontrol.st_exp.activity.MainActivity;
 import com.longkai.stcarcontrol.st_exp.communication.Command;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAutoRunSwitch;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampAutoCon;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHBLEDR1;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampHBLEDR2;

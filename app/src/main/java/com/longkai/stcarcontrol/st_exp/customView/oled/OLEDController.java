@@ -1,8 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.customView.oled;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import java.lang.ref.WeakReference;
 

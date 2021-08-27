@@ -2,8 +2,8 @@ package com.longkai.stcarcontrol.st_exp.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +16,8 @@ import com.longkai.stcarcontrol.st_exp.Interface.StateChange;
 import com.longkai.stcarcontrol.st_exp.R;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
