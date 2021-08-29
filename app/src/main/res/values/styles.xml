@@ -20,16 +20,24 @@
         <!-- 是否使用背景半透明 -->
     </style>
 
-  <style name="Notification_Dialog" parent="android:style/Theme.Dialog">
-    <!--背景颜色及和透明程度-->
-    <item name="android:windowBackground">@color/dialogBackgroundColor</item>
-    <!--是否去除标题 -->
-    <item name="android:windowNoTitle">true</item>
-    <!--是否去除边框-->
-    <item name="android:windowFrame">@null</item>
-    <!--是否浮现在activity之上-->
-    <item name="android:windowIsFloating">true</item>
-    <!--是否模糊-->
-    <item name="android:backgroundDimEnabled">true</item>
-  </style>
+    <style name="Notification_Dialog" parent="android:style/Theme.Dialog">
+        <!--背景颜色及和透明程度-->
+        <item name="android:windowBackground">@color/dialogBackgroundColor</item>
+        <!--是否去除标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!--是否去除边框-->
+        <item name="android:windowFrame">@null</item>
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">true</item>
+        <!--是否模糊-->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="KeyPairNumber" parent="TextAppearance.AppCompat.Large">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:background">@drawable/bg_key_pair_number</item>
+        <item name="android:textColor">@color/colorTextGreenSelected</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>

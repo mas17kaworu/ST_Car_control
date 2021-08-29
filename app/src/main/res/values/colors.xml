@@ -9,5 +9,5 @@
     <color name="colorTextNormal">#717682</color>
     <color name="colorTextGreenSelected">#32f0a2</color>
     <color name="transparent">#00000000</color>
-  <color name="dialogBackgroundColor">#2C343B</color>
+    <color name="dialogBackgroundColor">#2C343B</color>
 </resources>
