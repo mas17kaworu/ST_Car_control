@@ -79,10 +79,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mode1Text" />
 
-    <SeekBar
+    <com.google.android.material.slider.Slider
         android:id="@+id/volumeSeekBar"
         android:layout_width="300dp"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        style="@style/Widget.App.Slider"
+        app:trackColor="@android:color/holo_red_dark"
+        app:trackHeight="10dp"
+        app:thumbColor="@android:color/holo_red_dark"
+        app:thumbRadius="15dp"
+        app:thumbStrokeColor="@android:color/white"
+        app:thumbStrokeWidth="1dp"
         app:layout_constraintBottom_toTopOf="@+id/speedSeekBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

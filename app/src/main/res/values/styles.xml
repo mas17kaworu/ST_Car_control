@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -39,5 +39,15 @@
         <item name="android:background">@drawable/bg_key_pair_number</item>
         <item name="android:textColor">@color/colorTextGreenSelected</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Widget.App.Slider" parent="Widget.MaterialComponents.Slider">
+<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Slider</item>-->
+    </style>
+
+    <style name="ThemeOverlay.App.Slider" parent="">
+        <item name="colorPrimary">@android:color/holo_blue_dark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorOnSurface">@android:color/holo_red_dark</item>
     </style>
 </resources>
