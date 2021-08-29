@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="30dp">
-
-    <Space
-        android:id="@+id/modeTopDivider"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/soundEffectIcon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
 
     <ImageView
         android:id="@+id/soundEffectIcon"
@@ -25,7 +14,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/soundFieldIcon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/modeTopDivider"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/door_lock" />
 
     <TextView
@@ -81,9 +71,8 @@
 
     <Space
         android:id="@+id/modeBottomDivider"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="30dp"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         app:layout_constraintBottom_toTopOf="@+id/volumeSeekBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -101,9 +90,8 @@
 
     <Space
         android:id="@+id/muteTopDivider"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="30dp"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         app:layout_constraintBottom_toTopOf="@+id/muteIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -125,19 +113,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Volume Mute/UnMute"
-        app:layout_constraintBottom_toTopOf="@+id/muteBottomDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/muteIcon"
         app:layout_constraintStart_toStartOf="@id/muteIcon"
         app:layout_constraintTop_toBottomOf="@+id/muteIcon" />
-
-    <Space
-        android:id="@+id/muteBottomDivider"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/muteText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
