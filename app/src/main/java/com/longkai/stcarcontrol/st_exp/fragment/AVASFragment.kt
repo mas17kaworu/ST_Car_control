@@ -6,48 +6,90 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAvasList.CMDAvasSoundMode
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAvasList.CMDAvasSoundMode.Mode
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAvasList.*
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAvasList.CMDAvasVolume.AvasVolumeDirection
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentAvasBinding
 
 class AVASFragment : Fragment() {
 
-  private lateinit var binding: FragmentAvasBinding
+    private lateinit var binding: FragmentAvasBinding
 
-  private var mode: Mode = Mode.Mode1
+    private var mode: Mode = Mode.Mode1
+    private var volume: Int = 10
+    private var speed: Int = 0x3FFE / 2
+    private var play: Boolean = false
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    binding = FragmentAvasBinding.inflate(inflater, container, false)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-
-    binding.mode1Icon.setOnClickListener { onModeChanged(Mode.Mode1) }
-    binding.mode2Icon.setOnClickListener { onModeChanged(Mode.Mode2) }
-  }
-
-  private fun onModeChanged(newMode: Mode) {
-    if (mode != newMode) {
-      mode = newMode
-      ServiceManager.getInstance().sendCommandToCar(
-        CMDAvasSoundMode(mode),
-        CommandListenerAdapter<CMDAvasSoundMode.Response>()
-      )
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAvasBinding.inflate(inflater, container, false)
+        return binding.root
     }
-  }
 
-  companion object {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    const val VOLUME_MIN = 0
-    const val VOLUME_MAX = 20
-    const val SPEED_MIN = 0
-    const val SPEED_MAX = 16382
-  }
+        binding.mode1Icon.setOnClickListener { onModeChanged(Mode.Mode1) }
+        binding.mode2Icon.setOnClickListener { onModeChanged(Mode.Mode2) }
+
+        binding.volumeSlider.addOnChangeListener { _, volume, _ ->
+            onVolumeChanged(volume.toInt())
+        }
+
+        binding.speedSlider.addOnChangeListener { _, speed, _ ->
+            onSpeedChanged(speed.toInt())
+        }
+
+        binding.playIcon.setOnClickListener { onPlayChanged() }
+    }
+
+    private fun onModeChanged(newMode: Mode) {
+        if (mode != newMode) {
+            mode = newMode
+            updateModeUI()
+            ServiceManager.getInstance().sendCommandToCar(
+                CMDAvasSoundMode(mode),
+                CommandListenerAdapter<CMDAvasSoundMode.Response>()
+            )
+        }
+    }
+
+    private fun updateModeUI() {
+        binding.mode1Icon.isSelected = mode == Mode.Mode1
+        binding.mode2Icon.isSelected = mode == Mode.Mode2
+    }
+
+    private fun onVolumeChanged(newVolume: Int) {
+        if (newVolume != volume) {
+            val direction =
+                if (newVolume > volume) AvasVolumeDirection.Up else AvasVolumeDirection.Down
+            volume = newVolume
+            ServiceManager.getInstance().sendCommandToCar(
+                CMDAvasVolume(direction, volume),
+                CommandListenerAdapter<CMDAvasVolume.Response>()
+            )
+        }
+    }
+
+    private fun onSpeedChanged(newSpeed: Int) {
+        if (newSpeed != speed) {
+            speed = newSpeed
+            ServiceManager.getInstance().sendCommandToCar(
+                CMDAvasSpeed(speed),
+                CommandListenerAdapter<CMDAvasSpeed.Response>()
+            )
+        }
+    }
+
+    private fun onPlayChanged() {
+        play = play.not()
+        binding.playIcon.isSelected = play
+        ServiceManager.getInstance().sendCommandToCar(
+            CMDAvasSoundSwitch(mode, play),
+            CommandListenerAdapter<CMDAvasSoundSwitch.Response>()
+        )
+    }
 }

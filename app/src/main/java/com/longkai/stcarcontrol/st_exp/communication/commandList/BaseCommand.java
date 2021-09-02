@@ -60,6 +60,10 @@ public abstract class BaseCommand implements Command {
 
     protected static final byte COMMAND_OLED_BACK       = 0x28;
 
+    protected static final byte COMMAND_SOUND           = 0x29;
+    protected static final byte COMMAND_AVAS            = 0x30;
+    protected static final byte COMMAND_KEY_PAIR        = 0x31;
+
 
 
     protected byte[] data;//payload

@@ -1,20 +1,16 @@
-package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAvasList
+package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList
 
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
 
-class CMDAvasSoundSwitch(mode: Mode, play: Boolean) : BaseCommand() {
+class CMDSoundFieldSwitch(isOn: Boolean) : BaseCommand() {
 
     init {
         data = ByteArray(10) { 0x00 }
         dataLength = 8
         data[0] = 0x08
-        data[1] = COMMAND_AVAS
-        data[6] = when (mode) {
-            Mode.Mode1 -> 0x04
-            Mode.Mode2 -> 0x08
-        }
-        data[7] = when(play) {
+        data[1] = COMMAND_SOUND
+        data[8] = when(isOn) {
             true -> 0x22
             false -> 0x11
         }
@@ -25,7 +21,7 @@ class CMDAvasSoundSwitch(mode: Mode, play: Boolean) : BaseCommand() {
     }
 
     override fun getCommandId(): Byte {
-        return COMMAND_AVAS
+        return COMMAND_SOUND
     }
 
     class Response(commandId: Byte) : BaseResponse(commandId)

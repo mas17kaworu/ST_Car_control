@@ -73,49 +73,49 @@
         android:id="@+id/modeBottomDivider"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/volumeSeekBar"
+        app:layout_constraintBottom_toTopOf="@+id/volumeSlider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/soundEffectText" />
 
-    <SeekBar
-        android:id="@+id/volumeSeekBar"
+    <com.google.android.material.slider.Slider
+        android:id="@+id/volumeSlider"
         android:layout_width="150dp"
         android:layout_height="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/muteTopDivider"
+        app:layout_constraintBottom_toTopOf="@+id/playTopDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/modeBottomDivider" />
 
 
     <Space
-        android:id="@+id/muteTopDivider"
+        android:id="@+id/playTopDivider"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/muteIcon"
+        app:layout_constraintBottom_toTopOf="@+id/playIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/volumeSeekBar" />
+        app:layout_constraintTop_toBottomOf="@+id/volumeSlider" />
 
     <ImageView
-        android:id="@+id/muteIcon"
+        android:id="@+id/playIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/muteText"
+        app:layout_constraintBottom_toTopOf="@+id/playText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/muteTopDivider"
+        app:layout_constraintTop_toBottomOf="@+id/playTopDivider"
         app:srcCompat="@drawable/selector_sound" />
 
     <TextView
-        android:id="@+id/muteText"
+        android:id="@+id/playText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Volume Mute/UnMute"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/muteIcon"
-        app:layout_constraintStart_toStartOf="@id/muteIcon"
-        app:layout_constraintTop_toBottomOf="@+id/muteIcon" />
+        app:layout_constraintEnd_toEndOf="@id/playIcon"
+        app:layout_constraintStart_toStartOf="@id/playIcon"
+        app:layout_constraintTop_toBottomOf="@+id/playIcon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

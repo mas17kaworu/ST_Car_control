@@ -74,13 +74,13 @@
         android:id="@+id/modeBottomDivider"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/volumeSeekBar"
+        app:layout_constraintBottom_toTopOf="@+id/volumeSlider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mode1Text" />
 
     <com.google.android.material.slider.Slider
-        android:id="@+id/volumeSeekBar"
+        android:id="@+id/volumeSlider"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         style="@style/Widget.App.Slider"
@@ -90,7 +90,7 @@
         app:thumbRadius="15dp"
         app:thumbStrokeColor="@android:color/white"
         app:thumbStrokeWidth="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/speedSeekBar"
+        app:layout_constraintBottom_toTopOf="@+id/speedSlider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/modeBottomDivider" />
@@ -100,58 +100,58 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Volume: "
-        app:layout_constraintBottom_toBottomOf="@id/volumeSeekBar"
-        app:layout_constraintEnd_toStartOf="@id/volumeSeekBar"
-        app:layout_constraintTop_toTopOf="@id/volumeSeekBar" />
+        app:layout_constraintBottom_toBottomOf="@id/volumeSlider"
+        app:layout_constraintEnd_toStartOf="@id/volumeSlider"
+        app:layout_constraintTop_toTopOf="@id/volumeSlider" />
 
-    <SeekBar
-        android:id="@+id/speedSeekBar"
+    <com.google.android.material.slider.Slider
+        android:id="@+id/speedSlider"
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
 
-        app:layout_constraintBottom_toTopOf="@+id/muteTopDivider"
+        app:layout_constraintBottom_toTopOf="@+id/playTopDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/volumeSeekBar" />
+        app:layout_constraintTop_toBottomOf="@+id/volumeSlider" />
 
     <TextView
         android:id="@+id/speedTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Speed: "
-        app:layout_constraintBottom_toBottomOf="@id/speedSeekBar"
-        app:layout_constraintEnd_toStartOf="@id/speedSeekBar"
-        app:layout_constraintTop_toTopOf="@id/speedSeekBar" />
+        app:layout_constraintBottom_toBottomOf="@id/speedSlider"
+        app:layout_constraintEnd_toStartOf="@id/speedSlider"
+        app:layout_constraintTop_toTopOf="@id/speedSlider" />
 
     <Space
-        android:id="@+id/muteTopDivider"
+        android:id="@+id/playTopDivider"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/muteIcon"
+        app:layout_constraintBottom_toTopOf="@+id/playIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/speedSeekBar" />
+        app:layout_constraintTop_toBottomOf="@+id/speedSlider" />
 
     <ImageView
-        android:id="@+id/muteIcon"
+        android:id="@+id/playIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/muteText"
+        app:layout_constraintBottom_toTopOf="@+id/playText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/muteTopDivider"
+        app:layout_constraintTop_toBottomOf="@+id/playTopDivider"
         app:srcCompat="@drawable/selector_sound" />
 
     <TextView
-        android:id="@+id/muteText"
+        android:id="@+id/playText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Mute/UnMute"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/muteIcon"
-        app:layout_constraintStart_toStartOf="@id/muteIcon"
-        app:layout_constraintTop_toBottomOf="@+id/muteIcon" />
+        app:layout_constraintEnd_toEndOf="@id/playIcon"
+        app:layout_constraintStart_toStartOf="@id/playIcon"
+        app:layout_constraintTop_toBottomOf="@+id/playIcon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
