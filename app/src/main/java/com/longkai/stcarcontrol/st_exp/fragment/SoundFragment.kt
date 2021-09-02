@@ -48,6 +48,7 @@ class SoundFragment : Fragment() {
 
     private fun onSoundEffectChanged() {
         soundEffect = soundEffect.not()
+        binding.soundEffectIcon.isSelected = soundEffect
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundEffectSwitch(soundEffect),
             CommandListenerAdapter<CMDSoundEffectSwitch.Response>()
@@ -56,6 +57,7 @@ class SoundFragment : Fragment() {
 
     private fun onSoundFieldChanged() {
         soundField = soundField.not()
+        binding.soundFieldIcon.isSelected = soundField
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundFieldSwitch(soundField),
             CommandListenerAdapter<CMDSoundFieldSwitch.Response>()
@@ -64,6 +66,7 @@ class SoundFragment : Fragment() {
 
     private fun onImmersionEffectChanged() {
         immersionEffect = immersionEffect.not()
+        binding.immersionEffectIcon.isSelected = immersionEffect
         ServiceManager.getInstance().sendCommandToCar(
             CMDImmersionEffectSwitch(immersionEffect),
             CommandListenerAdapter<CMDImmersionEffectSwitch.Response>()

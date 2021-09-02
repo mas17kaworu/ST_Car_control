@@ -15,6 +15,8 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDKeyPairList.
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDKeyPairList.CMDKeyPairStart
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentKeyPairBinding
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.KeyPairFragmentMock
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl
 import kotlin.random.Random
 
 class KeyPairFragment : Fragment() {
@@ -64,7 +66,7 @@ class KeyPairFragment : Fragment() {
 
         binding.keyIcon.setOnClickListener {
             keys.clear()
-            keys.plus(generateKeys())
+            keys.addAll(generateKeys())
             ServiceManager.getInstance().sendCommandToCar(
                 CMDKeyPairStart(keys),
                 object : CommandListenerAdapter<CMDKeyPairStart.Response>(30) {
@@ -82,6 +84,9 @@ class KeyPairFragment : Fragment() {
                 }
             )
         }
+
+        //test
+        MockMessageServiceImpl.getService().StartService(KeyPairFragmentMock::class.java.toString())
     }
 
     private fun generateKeys() : List<Int> {

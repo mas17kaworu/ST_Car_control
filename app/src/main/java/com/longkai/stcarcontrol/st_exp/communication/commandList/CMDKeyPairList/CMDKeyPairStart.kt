@@ -30,10 +30,19 @@ class CMDKeyPairStart(keys: List<Int>) : BaseCommand() {
     }
 
     class Response(commandId: Byte, val status: Byte) : BaseResponse(commandId) {
+
         companion object {
             const val STATUS_PAIR_IN_PROGRESS : Byte = 0x01
             const val STATUS_PAIR_SUCCESS : Byte = 0x02
             const val STATUS_PAIR_FAILED : Byte = 0x03
         }
+
+        constructor(status: Byte): this(COMMAND_KEY_PAIR, status)
+
+        override fun mockResponse(): ByteArray {
+            return byteArrayOf(CMD_TYPE_RECV, status)
+        }
+
+
     }
 }
