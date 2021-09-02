@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/door_lock" />
+        app:srcCompat="@drawable/selector_mode_1" />
 
     <TextView
         android:id="@+id/mode1Text"
@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toStartOf="@+id/mode3Icon"
         app:layout_constraintStart_toEndOf="@+id/mode1Icon"
         app:layout_constraintTop_toTopOf="@+id/mode1Icon"
-        app:srcCompat="@drawable/door_lock" />
+        app:srcCompat="@drawable/selector_mode_2" />
 
     <TextView
         android:id="@+id/mode2Text"
@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/mode2Icon"
         app:layout_constraintTop_toTopOf="@+id/mode1Icon"
-        app:srcCompat="@drawable/door_lock" />
+        app:srcCompat="@drawable/selector_mode_3" />
 
     <TextView
         android:id="@+id/mode3Text"
@@ -141,7 +141,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/muteTopDivider"
-        app:srcCompat="@drawable/door_unlock" />
+        app:srcCompat="@drawable/selector_sound" />
 
     <TextView
         android:id="@+id/muteText"
