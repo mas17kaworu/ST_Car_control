@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAvasList.*
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAvasList.CMDAvasVolume.AvasVolumeDirection
@@ -31,6 +32,9 @@ class AVASFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        updateModeUI()
+        updateMuteUI()
 
         binding.mode1Icon.setOnClickListener { onModeChanged(Mode.Mode1) }
         binding.mode2Icon.setOnClickListener { onModeChanged(Mode.Mode2) }
@@ -59,7 +63,10 @@ class AVASFragment : Fragment() {
 
     private fun updateModeUI() {
         binding.mode1Icon.isSelected = mode == Mode.Mode1
+        binding.mode1Text.isSelected = mode == Mode.Mode1
+
         binding.mode2Icon.isSelected = mode == Mode.Mode2
+        binding.mode2Text.isSelected = mode == Mode.Mode2
     }
 
     private fun onVolumeChanged(newVolume: Int) {
@@ -86,10 +93,17 @@ class AVASFragment : Fragment() {
 
     private fun onPlayChanged() {
         play = play.not()
-        binding.playIcon.isSelected = play
+        updateMuteUI()
         ServiceManager.getInstance().sendCommandToCar(
             CMDAvasSoundSwitch(mode, play),
             CommandListenerAdapter<CMDAvasSoundSwitch.Response>()
         )
     }
+
+    private fun updateMuteUI() {
+        binding.playIcon.isSelected = play
+        val textRes = if (play) R.string.mute else R.string.unmute
+        binding.playText.setText(textRes)
+    }
+
 }

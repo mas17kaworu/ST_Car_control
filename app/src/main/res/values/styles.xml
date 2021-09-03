@@ -33,7 +33,7 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
-    <style name="KeyPairNumber" parent="TextAppearance.AppCompat.Large">
+    <style name="KeyPairNumber" parent="TextAppearance.MaterialComponents.Headline2">
         <item name="android:layout_width">50dp</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:background">@drawable/bg_key_pair_number</item>
@@ -49,5 +49,13 @@
         <item name="colorPrimary">@android:color/holo_blue_dark</item>
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorOnSurface">@android:color/holo_red_dark</item>
+    </style>
+
+    <style name="ModeText" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/selector_normal_and_selected</item>
+    </style>
+
+    <style name="NormalText" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/colorNormal</item>
     </style>
 </resources>
