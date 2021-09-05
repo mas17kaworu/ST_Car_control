@@ -42,7 +42,5 @@ class CMDKeyPairStart(keys: List<Int>) : BaseCommand() {
         override fun mockResponse(): ByteArray {
             return byteArrayOf(CMD_TYPE_RECV, status)
         }
-
-
     }
 }

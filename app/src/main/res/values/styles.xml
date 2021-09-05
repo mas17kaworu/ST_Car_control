@@ -33,9 +33,9 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
-    <style name="KeyPairNumber" parent="TextAppearance.MaterialComponents.Headline2">
-        <item name="android:layout_width">50dp</item>
-        <item name="android:layout_height">50dp</item>
+    <style name="KeyPairNumber" parent="TextAppearance.MaterialComponents.Headline3">
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">80dp</item>
         <item name="android:background">@drawable/bg_key_pair_number</item>
         <item name="android:textColor">@color/colorTextGreenSelected</item>
         <item name="android:gravity">center</item>
@@ -59,5 +59,9 @@
 
     <style name="NormalText" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:textColor">@color/colorNormal</item>
+    </style>
+
+    <style name="KeyPairTitle" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/colorWhite</item>
     </style>
 </resources>

@@ -10,12 +10,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAvasList.CMDAvasSoundMode
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDKeyPairList.CMDKeyPairCancel
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDKeyPairList.CMDKeyPairStart
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentKeyPairBinding
-import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.KeyPairFragmentMock
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl
 import kotlin.random.Random
 
@@ -65,12 +63,18 @@ class KeyPairFragment : Fragment() {
         })
 
         binding.keyIcon.setOnClickListener {
+            if (step != PairStep.Home) return@setOnClickListener
+
             keys.clear()
             keys.addAll(generateKeys())
+            step = PairStep.Start
+            updateUI()
+
             ServiceManager.getInstance().sendCommandToCar(
                 CMDKeyPairStart(keys),
-                object : CommandListenerAdapter<CMDKeyPairStart.Response>(30) {
+                object : CommandListenerAdapter<CMDKeyPairStart.Response>(TIMEOUT_MS) {
                     override fun onSuccess(response: CMDKeyPairStart.Response?) {
+                        println("zcf onSuccess")
                         when (response?.status) {
                             CMDKeyPairStart.Response.STATUS_PAIR_IN_PROGRESS -> step = PairStep.Pairing
                             CMDKeyPairStart.Response.STATUS_PAIR_SUCCESS -> step = PairStep.Success
@@ -79,6 +83,7 @@ class KeyPairFragment : Fragment() {
                     }
 
                     override fun onTimeout() {
+                        println("zcf onTimeout")
                         step = PairStep.Failed
                     }
                 }
@@ -86,7 +91,7 @@ class KeyPairFragment : Fragment() {
         }
 
         //test
-        MockMessageServiceImpl.getService().StartService(KeyPairFragmentMock::class.java.toString())
+        MockMessageServiceImpl.getService().StartService(KeyPairFragment::class.java.toString())
     }
 
     private fun generateKeys() : List<Int> {
@@ -99,24 +104,29 @@ class KeyPairFragment : Fragment() {
         when (step) {
             PairStep.Home -> {
                 binding.keyIcon.setImageResource(R.drawable.key_pair_green)
+                binding.keyPairText.setText(R.string.key_pair_title)
                 binding.keys.visibility = View.GONE
             }
             PairStep.Start -> {
                 binding.keyIcon.setImageResource(R.drawable.key_pair_grey)
+                binding.keyPairText.setText(R.string.key_pair_code)
                 binding.keys.visibility = View.VISIBLE
                 fillKeys()
             }
             PairStep.Pairing -> {
                 binding.keyIcon.setImageResource(R.drawable.key_pair_in_progress)
+                binding.keyPairText.setText(R.string.key_pair_in_progress)
                 binding.keys.visibility = View.VISIBLE
                 fillKeys()
             }
             PairStep.Success -> {
                 binding.keyIcon.setImageResource(R.drawable.key_pair_success)
+                binding.keyPairText.setText(R.string.key_pair_success)
                 binding.keys.visibility = View.GONE
             }
             PairStep.Failed -> {
                 binding.keyIcon.setImageResource(R.drawable.key_pair_grey)
+                binding.keyPairText.setText(R.string.key_pair_failed)
                 binding.keys.visibility = View.GONE
             }
         }
@@ -131,5 +141,9 @@ class KeyPairFragment : Fragment() {
         binding.key6.text = keys[5].toString()
         binding.key7.text = keys[6].toString()
         binding.key8.text = keys[7].toString()
+    }
+
+    companion object {
+        const val TIMEOUT_MS = 30 * 1000
     }
 }

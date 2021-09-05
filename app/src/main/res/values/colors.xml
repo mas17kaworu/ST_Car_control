@@ -12,4 +12,5 @@
     <color name="dialogBackgroundColor">#2C343B</color>
     <color name="colorSelected">@color/colorAccent</color>
     <color name="colorBlue">#3abee5</color>
+    <color name="colorWhite">#ffffffff</color>
 </resources>

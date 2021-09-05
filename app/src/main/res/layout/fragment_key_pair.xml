@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="30dp">
+    android:padding="20dp">
 
     <TextView
         android:id="@+id/keyPairText"
+        style="@style/KeyPairTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="钥匙配对"
+        android:layout_marginTop="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="钥匙配对" />
 
     <ImageView
         android:id="@+id/keyIcon"
@@ -24,6 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.45"
         app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/door_lock"
         tools:visibility="visible" />
@@ -31,83 +33,83 @@
     <TextView
         android:id="@+id/key1"
         style="@style/KeyPairNumber"
-        android:layout_marginTop="50dp"
-        android:text="1"
+        android:layout_marginTop="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/key2"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/keyIcon" />
+        app:layout_constraintTop_toBottomOf="@+id/keyIcon"
+        tools:text="1" />
 
     <TextView
         android:id="@+id/key2"
         style="@style/KeyPairNumber"
         android:layout_marginStart="20dp"
-        android:text="2"
         app:layout_constraintBottom_toBottomOf="@id/key1"
         app:layout_constraintEnd_toStartOf="@+id/key3"
         app:layout_constraintStart_toEndOf="@+id/key1"
-        app:layout_constraintTop_toTopOf="@id/key1" />
+        app:layout_constraintTop_toTopOf="@id/key1"
+        tools:text="2" />
 
     <TextView
         android:id="@+id/key3"
         style="@style/KeyPairNumber"
         android:layout_marginStart="20dp"
-        android:text="3"
         app:layout_constraintBottom_toBottomOf="@id/key1"
         app:layout_constraintEnd_toStartOf="@+id/key4"
         app:layout_constraintStart_toEndOf="@+id/key2"
-        app:layout_constraintTop_toTopOf="@id/key1" />
+        app:layout_constraintTop_toTopOf="@id/key1"
+        tools:text="3" />
 
     <TextView
         android:id="@+id/key4"
         style="@style/KeyPairNumber"
         android:layout_marginStart="20dp"
-        android:text="4"
         app:layout_constraintBottom_toBottomOf="@id/key1"
         app:layout_constraintEnd_toStartOf="@+id/key5"
         app:layout_constraintStart_toEndOf="@+id/key3"
-        app:layout_constraintTop_toTopOf="@id/key1" />
+        app:layout_constraintTop_toTopOf="@id/key1"
+        tools:text="4" />
 
     <TextView
         android:id="@+id/key5"
         style="@style/KeyPairNumber"
         android:layout_marginStart="40dp"
-        android:text="5"
         app:layout_constraintBottom_toBottomOf="@id/key1"
         app:layout_constraintEnd_toStartOf="@+id/key6"
         app:layout_constraintStart_toEndOf="@+id/key4"
-        app:layout_constraintTop_toTopOf="@id/key1" />
+        app:layout_constraintTop_toTopOf="@id/key1"
+        tools:text="5" />
 
     <TextView
         android:id="@+id/key6"
         style="@style/KeyPairNumber"
         android:layout_marginStart="20dp"
-        android:text="6"
         app:layout_constraintBottom_toBottomOf="@id/key1"
         app:layout_constraintEnd_toStartOf="@+id/key7"
         app:layout_constraintStart_toEndOf="@+id/key5"
-        app:layout_constraintTop_toTopOf="@id/key1" />
+        app:layout_constraintTop_toTopOf="@id/key1"
+        tools:text="6" />
 
     <TextView
         android:id="@+id/key7"
         style="@style/KeyPairNumber"
         android:layout_marginStart="20dp"
-        android:text="7"
         app:layout_constraintBottom_toBottomOf="@id/key1"
         app:layout_constraintEnd_toStartOf="@+id/key8"
         app:layout_constraintStart_toEndOf="@+id/key6"
-        app:layout_constraintTop_toTopOf="@id/key1" />
+        app:layout_constraintTop_toTopOf="@id/key1"
+        tools:text="7" />
 
     <TextView
         android:id="@+id/key8"
         style="@style/KeyPairNumber"
         android:layout_marginStart="20dp"
-        android:text="8"
         app:layout_constraintBottom_toBottomOf="@id/key1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/key7"
-        app:layout_constraintTop_toTopOf="@id/key1" />
+        app:layout_constraintTop_toTopOf="@id/key1"
+        tools:text="8" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/keys"

@@ -109,6 +109,14 @@
   <string name="sound_immersion_effect">沉浸式音效</string>
   <string name="volume_mute">Volume Mute</string>
   <string name="volume_unmute">Volume UnMute</string>
+  
+  <!-- Key Pair screen -->
+  <string name="key_pair_title">钥匙配对</string>
+  <string name="key_pair_code">钥匙配对密码</string>
+  <string name="key_pair_in_progress">钥匙配对中…</string>
+  <string name="key_pair_success">钥匙配对成功</string>
+  <string name="key_pair_failed">钥匙配对失败</string>
+
 
 
 </resources>

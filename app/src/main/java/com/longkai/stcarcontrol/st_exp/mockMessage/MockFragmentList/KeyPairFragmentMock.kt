@@ -2,6 +2,7 @@ package com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList
 
 import android.os.Handler
 import android.util.Log
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFOTAList.CMDFOTADIAG
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDKeyPairList.CMDKeyPairStart
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentBase
 import kotlin.random.Random
@@ -14,8 +15,11 @@ class KeyPairFragmentMock(handler: Handler?) : MockFragmentBase(handler) {
     }
 
     private fun case1() {
+        println("zcf case1")
+        getExactCmd(CMDKeyPairStart::class.java) as CMDKeyPairStart? ?: return
+
         val status = Random.nextInt(1, 4).toByte()
-        Log.i("KeyPairFragmentMock", "KeyPairFragmentMock is running, status: $status")
+        Log.i("KeyPairFragmentMock", "zcf KeyPairFragmentMock is running, status: $status")
         val response = CMDKeyPairStart.Response(status)
         val mockByte = response.mockResponse()
         dispatcher.onReceive(mockByte, 0, mockByte.size)

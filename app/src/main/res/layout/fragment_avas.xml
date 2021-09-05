@@ -21,11 +21,11 @@
 
     <TextView
         android:id="@+id/mode1Text"
+        style="@style/ModeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/avas_mode1"
-        style="@style/ModeText"
         app:layout_constraintBottom_toTopOf="@+id/modeBottomDivider"
         app:layout_constraintEnd_toEndOf="@id/mode1Icon"
         app:layout_constraintStart_toStartOf="@id/mode1Icon"
@@ -43,10 +43,10 @@
 
     <TextView
         android:id="@+id/mode2Text"
+        style="@style/ModeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/avas_mode2"
-        style="@style/ModeText"
         app:layout_constraintBottom_toBottomOf="@+id/mode1Text"
         app:layout_constraintEnd_toEndOf="@id/mode2Icon"
         app:layout_constraintStart_toStartOf="@id/mode2Icon"
@@ -64,10 +64,10 @@
 
     <TextView
         android:id="@+id/mode3Text"
+        style="@style/ModeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/avas_mode3"
-        style="@style/ModeText"
         app:layout_constraintBottom_toBottomOf="@+id/mode1Text"
         app:layout_constraintEnd_toEndOf="@id/mode3Icon"
         app:layout_constraintStart_toStartOf="@id/mode3Icon"
@@ -92,33 +92,33 @@
 
     <TextView
         android:id="@+id/volumeTitle"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/avas_volume"
         android:layout_marginEnd="10dp"
-        style="@style/NormalText"
+        android:text="@string/avas_volume"
         app:layout_constraintBottom_toBottomOf="@id/volumeSlider"
         app:layout_constraintEnd_toStartOf="@id/volumeSlider"
         app:layout_constraintTop_toTopOf="@id/volumeSlider" />
 
     <com.google.android.material.slider.Slider
         android:id="@+id/speedSlider"
-        android:layout_marginTop="10dp"
         style="@style/Widget.App.Slider"
-        app:trackColor="@color/colorBlue"
-        app:thumbColor="@color/colorBlue"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toTopOf="@+id/playTopDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/volumeSlider" />
+        app:layout_constraintTop_toBottomOf="@+id/volumeSlider"
+        app:thumbColor="@color/colorBlue"
+        app:trackColor="@color/colorBlue" />
 
     <TextView
         android:id="@+id/speedTitle"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/avas_speed"
         android:layout_marginEnd="10dp"
-        style="@style/NormalText"
+        android:text="@string/avas_speed"
         app:layout_constraintBottom_toBottomOf="@id/speedSlider"
         app:layout_constraintEnd_toStartOf="@id/speedSlider"
         app:layout_constraintTop_toTopOf="@id/speedSlider" />
@@ -144,11 +144,11 @@
 
     <TextView
         android:id="@+id/playText"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="@string/mute"
-        style="@style/NormalText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/playIcon"
         app:layout_constraintStart_toStartOf="@id/playIcon"
