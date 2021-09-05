@@ -84,15 +84,7 @@
 
     <com.google.android.material.slider.Slider
         android:id="@+id/volumeSlider"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
         style="@style/Widget.App.Slider"
-        app:trackColor="@android:color/holo_red_dark"
-        app:trackHeight="10dp"
-        app:thumbColor="@android:color/holo_red_dark"
-        app:thumbRadius="15dp"
-        app:thumbStrokeColor="@android:color/white"
-        app:thumbStrokeWidth="1dp"
         app:layout_constraintBottom_toTopOf="@+id/speedSlider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -103,6 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/avas_volume"
+        android:layout_marginEnd="10dp"
         style="@style/NormalText"
         app:layout_constraintBottom_toBottomOf="@id/volumeSlider"
         app:layout_constraintEnd_toStartOf="@id/volumeSlider"
@@ -110,10 +103,10 @@
 
     <com.google.android.material.slider.Slider
         android:id="@+id/speedSlider"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
         android:layout_marginTop="10dp"
-
+        style="@style/Widget.App.Slider"
+        app:trackColor="@color/colorBlue"
+        app:thumbColor="@color/colorBlue"
         app:layout_constraintBottom_toTopOf="@+id/playTopDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -124,6 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/avas_speed"
+        android:layout_marginEnd="10dp"
         style="@style/NormalText"
         app:layout_constraintBottom_toBottomOf="@id/speedSlider"
         app:layout_constraintEnd_toStartOf="@id/speedSlider"

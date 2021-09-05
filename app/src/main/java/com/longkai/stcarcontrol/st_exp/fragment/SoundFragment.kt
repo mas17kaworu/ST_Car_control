@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDAvasList.*
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList.*
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList.CMDSoundVolume.SoundVolumeDirection
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
@@ -19,7 +19,7 @@ class SoundFragment : Fragment() {
     private var soundEffect: Boolean = false
     private var soundField: Boolean = false
     private var immersionEffect: Boolean = false
-    private var volume: Int = 10
+    private var volume: Int = (VOLUME_MAX + VOLUME_MIN) / 2
     private var play: Boolean = false
 
     override fun onCreateView(
@@ -35,6 +35,8 @@ class SoundFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initUI()
+
         binding.soundEffectIcon.setOnClickListener { onSoundEffectChanged() }
         binding.soundFieldIcon.setOnClickListener { onSoundFieldChanged() }
         binding.immersionEffectIcon.setOnClickListener { onImmersionEffectChanged() }
@@ -44,6 +46,23 @@ class SoundFragment : Fragment() {
         }
 
         binding.playIcon.setOnClickListener { onPlayChanged() }
+    }
+
+    private fun initUI() {
+
+        binding.soundEffectIcon.isSelected = soundEffect
+        binding.soundFieldIcon.isSelected = soundField
+        binding.immersionEffectIcon.isSelected = immersionEffect
+
+        binding.volumeSlider.apply {
+            valueFrom = VOLUME_MIN.toFloat()
+            valueTo = VOLUME_MAX.toFloat()
+            stepSize = VOLUME_STEP_SIZE.toFloat()
+            value = volume.toFloat()
+        }
+
+        binding.playIcon.isSelected = play
+
     }
 
     private fun onSoundEffectChanged() {
@@ -88,9 +107,17 @@ class SoundFragment : Fragment() {
     private fun onPlayChanged() {
         play = play.not()
         binding.playIcon.isSelected = play
+        val textRes = if (play) R.string.volume_mute else R.string.volume_unmute
+        binding.playText.setText(textRes)
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundPlaySwitch(play),
             CommandListenerAdapter<CMDSoundPlaySwitch.Response>()
         )
+    }
+
+    companion object {
+        const val VOLUME_MIN = 0
+        const val VOLUME_MAX = 16
+        const val VOLUME_STEP_SIZE = 1
     }
 }

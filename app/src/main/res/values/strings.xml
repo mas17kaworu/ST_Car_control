@@ -96,12 +96,19 @@
   <string name="mute">Mute</string>
   <string name="unmute">UnMute</string>
 
-  <!--  AVAS screen-->
+  <!-- AVAS screen -->
   <string name="avas_mode1">Mode 1</string>
   <string name="avas_mode2">Mode 2</string>
   <string name="avas_mode3">Mode 3</string>
-  <string name="avas_volume">Volume: </string>
-  <string name="avas_speed">Speed: </string>
+  <string name="avas_volume">Volume</string>
+  <string name="avas_speed">Speed</string>
+
+  <!-- Sound screen -->
+  <string name="sound_effect_mode">音效模式</string>
+  <string name="sound_field_mode">声场模式</string>
+  <string name="sound_immersion_effect">沉浸式音效</string>
+  <string name="volume_mute">Volume Mute</string>
+  <string name="volume_unmute">Volume UnMute</string>
 
 
 </resources>

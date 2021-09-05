@@ -17,8 +17,8 @@ class AVASFragment : Fragment() {
     private lateinit var binding: FragmentAvasBinding
 
     private var mode: Mode = Mode.Mode1
-    private var volume: Int = 10
-    private var speed: Int = 0x3FFE / 2
+    private var volume: Int = (VOLUME_MAX + VOLUME_MIN) / 2
+    private var speed: Int = (SPEED_MAX + SPEED_MIN) / 2
     private var play: Boolean = false
 
     override fun onCreateView(
@@ -35,6 +35,7 @@ class AVASFragment : Fragment() {
 
         updateModeUI()
         updateMuteUI()
+        initSliders()
 
         binding.mode1Icon.setOnClickListener { onModeChanged(Mode.Mode1) }
         binding.mode2Icon.setOnClickListener { onModeChanged(Mode.Mode2) }
@@ -104,6 +105,30 @@ class AVASFragment : Fragment() {
         binding.playIcon.isSelected = play
         val textRes = if (play) R.string.mute else R.string.unmute
         binding.playText.setText(textRes)
+    }
+
+    private fun initSliders() {
+        binding.volumeSlider.apply {
+            valueFrom = VOLUME_MIN.toFloat()
+            valueTo = VOLUME_MAX.toFloat()
+            stepSize = VOLUME_STEP_SIZE.toFloat()
+            value = volume.toFloat()
+        }
+        binding.speedSlider.apply {
+            valueFrom = SPEED_MIN.toFloat()
+            valueTo = SPEED_MAX.toFloat()
+            stepSize = SPEED_STEP_SIZE.toFloat()
+            value = speed.toFloat()
+        }
+    }
+
+    companion object {
+        const val VOLUME_MIN = 0
+        const val VOLUME_MAX = 20
+        const val VOLUME_STEP_SIZE = 1
+        const val SPEED_MIN = 0
+        const val SPEED_MAX = 0x3FFE
+        const val SPEED_STEP_SIZE = 1
     }
 
 }

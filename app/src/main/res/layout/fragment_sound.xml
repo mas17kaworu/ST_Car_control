@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Mode 1"
+        android:text="@string/sound_effect_mode"
         app:layout_constraintBottom_toTopOf="@+id/modeBottomDivider"
         app:layout_constraintEnd_toEndOf="@id/soundEffectIcon"
         app:layout_constraintStart_toStartOf="@id/soundEffectIcon"
@@ -43,7 +43,7 @@
         android:id="@+id/soundFieldText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mode 2"
+        android:text="@string/sound_field_mode"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectText"
         app:layout_constraintEnd_toEndOf="@id/soundFieldIcon"
         app:layout_constraintStart_toStartOf="@id/soundFieldIcon"
@@ -63,7 +63,7 @@
         android:id="@+id/immersionEffectText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mode 3"
+        android:text="@string/sound_immersion_effect"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectText"
         app:layout_constraintEnd_toEndOf="@id/immersionEffectIcon"
         app:layout_constraintStart_toStartOf="@id/immersionEffectIcon"
@@ -80,13 +80,11 @@
 
     <com.google.android.material.slider.Slider
         android:id="@+id/volumeSlider"
-        android:layout_width="150dp"
-        android:layout_height="30dp"
+        style="@style/Widget.App.Slider"
         app:layout_constraintBottom_toTopOf="@+id/playTopDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/modeBottomDivider" />
-
 
     <Space
         android:id="@+id/playTopDivider"
@@ -112,7 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Volume Mute/UnMute"
+        android:text="@string/volume_mute"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/playIcon"
         app:layout_constraintStart_toStartOf="@id/playIcon"
