@@ -110,7 +110,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/volumeSlider"
         app:thumbColor="@color/colorBlue"
-        app:trackColor="@color/colorBlue" />
+        app:trackColorActive="@color/colorBlue" />
 
     <TextView
         android:id="@+id/speedTitle"

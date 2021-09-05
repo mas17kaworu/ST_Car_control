@@ -2,6 +2,8 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDKeyPairList
 
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDKeyPairList.CMDKeyPairStart.Response.Companion.STATUS_PAIR_FAILED
+import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit
 
 class CMDKeyPairStart(keys: List<Int>) : BaseCommand() {
 
@@ -18,10 +20,10 @@ class CMDKeyPairStart(keys: List<Int>) : BaseCommand() {
     }
 
     override fun toResponse(data: ByteArray): BaseResponse {
-        return if (data[0].equals(CMD_TYPE_RECV)) {
-            Response(commandId, data[1])
+        if (data[2] == 0x03.toByte()) {
+            return Response(commandId, data[4])
         } else {
-            Response(commandId, Response.STATUS_PAIR_FAILED)
+            return Response(commandId, STATUS_PAIR_FAILED)
         }
     }
 
@@ -40,7 +42,14 @@ class CMDKeyPairStart(keys: List<Int>) : BaseCommand() {
         constructor(status: Byte): this(COMMAND_KEY_PAIR, status)
 
         override fun mockResponse(): ByteArray {
-            return byteArrayOf(CMD_TYPE_RECV, status)
+            val array = ByteArray(6)
+            array[0] = COMMAND_HEAD0
+            array[1] = COMMAND_HEAD1
+            array[2] = 0x03
+            array[3] = getCommandId().toByte()
+            array[4] = status
+            array[5] = CheckSumBit.checkSum(array, array.size - 1)
+            return array
         }
     }
 }

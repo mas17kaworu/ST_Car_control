@@ -3,6 +3,7 @@ package com.longkai.stcarcontrol.st_exp.fragment
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,23 +19,34 @@ import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl
 import kotlin.random.Random
 
 class KeyPairFragment : Fragment() {
+    private val TAG = KeyPairFragment::class.java.simpleName
 
     enum class PairStep {
-        Home, Start, Pairing, Success, Failed
+        Home, Start, Pairing, Success, Failed;
+
+        fun nextEligibleSteps(): List<PairStep> {
+            return when(this) {
+                Home -> listOf(Start)
+                Start -> listOf(Pairing)
+                Pairing -> listOf(Success, Failed)
+                Success -> listOf(Home)
+                Failed -> listOf(Home)
+            }
+        }
     }
 
     private lateinit var binding: FragmentKeyPairBinding
     private val handler = Handler(Looper.getMainLooper())
+    private var command: CMDKeyPairStart? = null
 
     private var step: PairStep = PairStep.Home
         set(value) {
-            field = value
-            when (value) {
-                PairStep.Home, PairStep.Success, PairStep.Failed -> keys.clear()
-                else -> {}
+            Log.i(TAG, "Step change, current: $field, next: $value")
+            if (value in field.nextEligibleSteps()) {
+                field = value
+                Log.i(TAG, "Step changed to :$field")
+                handler.post { updateUI() }
             }
-
-            handler.post { updateUI() }
         }
     private val keys: MutableList<Int> = mutableListOf()
 
@@ -68,13 +80,13 @@ class KeyPairFragment : Fragment() {
             keys.clear()
             keys.addAll(generateKeys())
             step = PairStep.Start
-            updateUI()
 
-            ServiceManager.getInstance().sendCommandToCar(
-                CMDKeyPairStart(keys),
+            command = CMDKeyPairStart(keys)
+            ServiceManager.getInstance().registerRegularlyCommand(
+                command,
                 object : CommandListenerAdapter<CMDKeyPairStart.Response>(TIMEOUT_MS) {
                     override fun onSuccess(response: CMDKeyPairStart.Response?) {
-                        println("zcf onSuccess")
+                        Log.i(TAG, "onSuccess, response status: ${response?.status}")
                         when (response?.status) {
                             CMDKeyPairStart.Response.STATUS_PAIR_IN_PROGRESS -> step = PairStep.Pairing
                             CMDKeyPairStart.Response.STATUS_PAIR_SUCCESS -> step = PairStep.Success
@@ -83,11 +95,20 @@ class KeyPairFragment : Fragment() {
                     }
 
                     override fun onTimeout() {
-                        println("zcf onTimeout")
+                        Log.i(TAG, "onTimeout")
                         step = PairStep.Failed
                     }
                 }
             )
+
+            handler.postDelayed(object: Runnable {
+                override fun run() {
+                    Log.i(TAG, "unregister command")
+                    unregisterCommand()
+                    step = PairStep.Failed
+                }
+
+            }, TIMEOUT_MS.toLong())
         }
 
         //test
@@ -103,30 +124,35 @@ class KeyPairFragment : Fragment() {
     private fun updateUI() {
         when (step) {
             PairStep.Home -> {
-                binding.keyIcon.setImageResource(R.drawable.key_pair_green)
                 binding.keyPairText.setText(R.string.key_pair_title)
+                binding.keyIcon.setImageResource(R.drawable.key_pair_green)
+                binding.keyIcon.isEnabled = true
                 binding.keys.visibility = View.GONE
             }
             PairStep.Start -> {
-                binding.keyIcon.setImageResource(R.drawable.key_pair_grey)
                 binding.keyPairText.setText(R.string.key_pair_code)
+                binding.keyIcon.setImageResource(R.drawable.key_pair_grey)
+                binding.keyIcon.isEnabled = false
                 binding.keys.visibility = View.VISIBLE
                 fillKeys()
             }
             PairStep.Pairing -> {
-                binding.keyIcon.setImageResource(R.drawable.key_pair_in_progress)
                 binding.keyPairText.setText(R.string.key_pair_in_progress)
+                binding.keyIcon.setImageResource(R.drawable.key_pair_in_progress)
+                binding.keyIcon.isEnabled = false
                 binding.keys.visibility = View.VISIBLE
                 fillKeys()
             }
             PairStep.Success -> {
-                binding.keyIcon.setImageResource(R.drawable.key_pair_success)
                 binding.keyPairText.setText(R.string.key_pair_success)
+                binding.keyIcon.setImageResource(R.drawable.key_pair_success)
+                binding.keyIcon.isEnabled = false
                 binding.keys.visibility = View.GONE
             }
             PairStep.Failed -> {
-                binding.keyIcon.setImageResource(R.drawable.key_pair_grey)
                 binding.keyPairText.setText(R.string.key_pair_failed)
+                binding.keyIcon.setImageResource(R.drawable.key_pair_grey)
+                binding.keyIcon.isEnabled = false
                 binding.keys.visibility = View.GONE
             }
         }
@@ -141,6 +167,19 @@ class KeyPairFragment : Fragment() {
         binding.key6.text = keys[5].toString()
         binding.key7.text = keys[6].toString()
         binding.key8.text = keys[7].toString()
+    }
+
+    override fun onDestroy() {
+        unregisterCommand()
+        handler.removeCallbacksAndMessages(null)
+        super.onDestroy()
+    }
+
+    private fun unregisterCommand() {
+        if (command != null) {
+            ServiceManager.getInstance().unregisterRegularlyCommand(command)
+            command = null
+        }
     }
 
     companion object {
