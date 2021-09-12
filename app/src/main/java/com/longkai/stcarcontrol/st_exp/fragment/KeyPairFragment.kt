@@ -151,7 +151,7 @@ class KeyPairFragment : Fragment() {
             }
             PairStep.Failed -> {
                 binding.keyPairText.setText(R.string.key_pair_failed)
-                binding.keyIcon.setImageResource(R.drawable.key_pair_grey)
+                binding.keyIcon.setImageResource(R.drawable.key_pair_failed)
                 binding.keyIcon.isEnabled = false
                 binding.keys.visibility = View.GONE
             }
