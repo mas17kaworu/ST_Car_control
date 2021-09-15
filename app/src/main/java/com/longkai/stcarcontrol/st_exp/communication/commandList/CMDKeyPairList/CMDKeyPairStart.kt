@@ -20,8 +20,8 @@ class CMDKeyPairStart(keys: List<Int>) : BaseCommand() {
     }
 
     override fun toResponse(data: ByteArray): BaseResponse {
-        if (data[2] == 0x03.toByte()) {
-            return Response(commandId, data[4])
+        if (data[2] == 0x04.toByte() && data[4] == CMD_TYPE_RECV) {
+            return Response(commandId, data[5])
         } else {
             return Response(commandId, STATUS_PAIR_FAILED)
         }
@@ -42,13 +42,14 @@ class CMDKeyPairStart(keys: List<Int>) : BaseCommand() {
         constructor(status: Byte): this(COMMAND_KEY_PAIR, status)
 
         override fun mockResponse(): ByteArray {
-            val array = ByteArray(6)
+            val array = ByteArray(7)
             array[0] = COMMAND_HEAD0
             array[1] = COMMAND_HEAD1
-            array[2] = 0x03
+            array[2] = 0x04
             array[3] = getCommandId().toByte()
-            array[4] = status
-            array[5] = CheckSumBit.checkSum(array, array.size - 1)
+            array[4] = CMD_TYPE_RECV
+            array[5] = status
+            array[6] = CheckSumBit.checkSum(array, array.size - 1)
             return array
         }
     }
