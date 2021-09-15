@@ -15,11 +15,11 @@ class CMDAvasVolume(direction: AvasVolumeDirection, step: Int) : BaseCommand() {
         dataLength = 8
         data[0] = 0x08
         data[1] = COMMAND_AVAS
-        data[6] = when (direction) {
+        data[2+0] = step.toByte()
+        data[2+1] = when (direction) {
             AvasVolumeDirection.Up -> 0x10
             AvasVolumeDirection.Down -> 0x20
         }
-        data[7] = step.toByte()
     }
 
     override fun toResponse(data: ByteArray?): BaseResponse {

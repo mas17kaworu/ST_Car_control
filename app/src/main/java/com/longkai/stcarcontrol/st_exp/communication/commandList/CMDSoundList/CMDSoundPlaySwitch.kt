@@ -14,7 +14,7 @@ class CMDSoundPlaySwitch(play: Boolean) : BaseCommand() {
             true -> 0x2
             false -> 0x1
         }
-        data[6] = value.shl(6).toByte()
+        data[2+3] = value.shl(6).toByte()
     }
 
     override fun toResponse(data: ByteArray?): BaseResponse {

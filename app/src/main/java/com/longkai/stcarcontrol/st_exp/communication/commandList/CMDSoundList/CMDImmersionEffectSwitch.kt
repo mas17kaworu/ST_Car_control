@@ -10,7 +10,7 @@ class CMDImmersionEffectSwitch(isOn: Boolean) : BaseCommand() {
         dataLength = 8
         data[0] = 0x08
         data[1] = COMMAND_SOUND
-        data[7] = when(isOn) {
+        data[2+2] = when(isOn) {
             true -> 0x22
             false -> 0x11
         }

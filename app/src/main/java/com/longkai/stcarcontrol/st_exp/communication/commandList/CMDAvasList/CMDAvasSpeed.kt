@@ -10,11 +10,11 @@ class CMDAvasSpeed(speed: Int) : BaseCommand() {
         dataLength = 8
         data[0] = 0x08
         data[1] = COMMAND_AVAS
-        data[2] = 0xE7.toUByte().toByte()
-        data[3] = 0xAB.toUByte().toByte()
+        data[2+6] = 0xE7.toUByte().toByte()
+        data[2+7] = 0xAB.toUByte().toByte()
 
-        data[8] = speed.toByte()
-        data[9] = speed.shr(8).toByte()
+        data[2+0] = speed.toByte()
+        data[2+1] = speed.shr(8).toByte()
 
     }
 

@@ -18,7 +18,7 @@ class CMDSoundVolume(direction: SoundVolumeDirection, step: Int) : BaseCommand()
             SoundVolumeDirection.Up -> 0x1
             SoundVolumeDirection.Down -> 0x2
         }
-        data[6] = upBit.shl(4).plus(step).toByte()
+        data[2+3] = upBit.shl(4).plus(step).toByte()
     }
 
     override fun toResponse(data: ByteArray?): BaseResponse {

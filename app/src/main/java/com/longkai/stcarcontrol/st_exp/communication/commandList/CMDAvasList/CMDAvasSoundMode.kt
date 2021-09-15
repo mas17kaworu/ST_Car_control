@@ -14,7 +14,7 @@ class CMDAvasSoundMode(mode: Mode) : BaseCommand() {
         dataLength = 8
         data[0] = 0x08
         data[1] = COMMAND_AVAS
-        data[6] = when (mode) {
+        data[2+1] = when (mode) {
             Mode.Mode1 -> 0x04
             Mode.Mode2 -> 0x08
         }
