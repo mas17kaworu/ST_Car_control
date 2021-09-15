@@ -7,8 +7,8 @@ class CMDKeyPairCancel() : BaseCommand() {
 
     init {
         data = ByteArray(7) { 0x00 }
-        dataLength = 5
-        data[0] = 0x05
+        dataLength = 7
+        data[0] = 7
         data[1] = COMMAND_KEY_PAIR
         data[2] = CMD_TYPE_CANCEL
     }

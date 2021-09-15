@@ -12,8 +12,8 @@ class CMDAvasVolume(direction: AvasVolumeDirection, step: Int) : BaseCommand() {
 
     init {
         data = ByteArray(10) { 0x00 }
-        dataLength = 8
-        data[0] = 0x08
+        dataLength = 10
+        data[0] = 10
         data[1] = COMMAND_AVAS
         data[2+0] = step.toByte()
         data[2+1] = when (direction) {

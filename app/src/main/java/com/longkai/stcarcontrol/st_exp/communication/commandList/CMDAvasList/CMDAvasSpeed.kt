@@ -7,8 +7,8 @@ class CMDAvasSpeed(speed: Int) : BaseCommand() {
 
     init {
         data = ByteArray(10) { 0x00 }
-        dataLength = 8
-        data[0] = 0x08
+        dataLength = 10
+        data[0] = 10
         data[1] = COMMAND_AVAS
         data[2+6] = 0xE7.toUByte().toByte()
         data[2+7] = 0xAB.toUByte().toByte()

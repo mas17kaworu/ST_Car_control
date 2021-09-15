@@ -9,8 +9,8 @@ class CMDKeyPairStart(keys: List<Int>) : BaseCommand() {
 
     init {
         data = ByteArray(7) { 0x00 }
-        dataLength = 5
-        data[0] = 0x05
+        dataLength = 7
+        data[0] = 7
         data[1] = COMMAND_KEY_PAIR
         data[2] = CMD_TYPE_SEND
         data[3] = keys[0].shl(4).plus(keys[1]).toByte()
