@@ -82,7 +82,6 @@ class KeyPairFragment : Fragment() {
             step = PairStep.Start
 
             command = CMDKeyPairStart(keys)
-            ServiceManager.getInstance().sendCommandToCar(command, CommandListenerAdapter<CMDKeyPairCancel.Response>())
             ServiceManager.getInstance().registerRegularlyCommand(
                 command,
                 object : CommandListenerAdapter<CMDKeyPairStart.Response>(TIMEOUT_MS) {
@@ -101,6 +100,7 @@ class KeyPairFragment : Fragment() {
                     }
                 }
             )
+            ServiceManager.getInstance().sendCommandToCar(command, CommandListenerAdapter<CMDKeyPairCancel.Response>())
 
             handler.postDelayed(object: Runnable {
                 override fun run() {
