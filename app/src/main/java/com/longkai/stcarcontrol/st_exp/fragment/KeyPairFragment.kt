@@ -27,7 +27,7 @@ class KeyPairFragment : Fragment() {
         fun nextEligibleSteps(): List<PairStep> {
             return when(this) {
                 Home -> listOf(Start)
-                Start -> listOf(Pairing)
+                Start -> listOf(Pairing, Success, Failed)
                 Pairing -> listOf(Success, Failed)
                 Success -> listOf(Home)
                 Failed -> listOf(Home)
