@@ -68,6 +68,7 @@ class SoundFragment : Fragment() {
     private fun onSoundEffectChanged() {
         soundEffect = soundEffect.not()
         binding.soundEffectIcon.isSelected = soundEffect
+        binding.soundEffectText.isSelected = soundEffect
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundEffectSwitch(soundEffect),
             CommandListenerAdapter<CMDSoundEffectSwitch.Response>()
@@ -77,6 +78,7 @@ class SoundFragment : Fragment() {
     private fun onSoundFieldChanged() {
         soundField = soundField.not()
         binding.soundFieldIcon.isSelected = soundField
+        binding.soundFieldText.isSelected = soundField
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundFieldSwitch(soundField),
             CommandListenerAdapter<CMDSoundFieldSwitch.Response>()
@@ -86,6 +88,7 @@ class SoundFragment : Fragment() {
     private fun onImmersionEffectChanged() {
         immersionEffect = immersionEffect.not()
         binding.immersionEffectIcon.isSelected = immersionEffect
+        binding.immersionEffectText.isSelected = immersionEffect
         ServiceManager.getInstance().sendCommandToCar(
             CMDImmersionEffectSwitch(immersionEffect),
             CommandListenerAdapter<CMDImmersionEffectSwitch.Response>()
@@ -107,7 +110,7 @@ class SoundFragment : Fragment() {
     private fun onPlayChanged() {
         play = play.not()
         binding.playIcon.isSelected = play
-        val textRes = if (play) R.string.volume_mute else R.string.volume_unmute
+        val textRes = if (play) R.string.volume_unmute else R.string.volume_mute
         binding.playText.setText(textRes)
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundPlaySwitch(play),

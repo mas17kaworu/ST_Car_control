@@ -103,7 +103,7 @@ class AVASFragment : Fragment() {
 
     private fun updateMuteUI() {
         binding.playIcon.isSelected = play
-        val textRes = if (play) R.string.mute else R.string.unmute
+        val textRes = if (play) R.string.volume_unmute else R.string.volume_mute
         binding.playText.setText(textRes)
     }
 
