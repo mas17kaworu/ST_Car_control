@@ -6,11 +6,22 @@
     android:layout_height="match_parent"
     android:padding="30dp">
 
+    <TextView
+        android:id="@+id/soundEffectText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/sound_effect_mode"
+        style="@style/ModeTitle"
+        app:layout_constraintBottom_toTopOf="@+id/soundEffectIcon"
+        app:layout_constraintEnd_toEndOf="@id/soundEffectIcon"
+        app:layout_constraintStart_toStartOf="@id/soundEffectIcon" />
+
     <ImageView
         android:id="@+id/soundEffectIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/soundEffectText"
+        app:layout_constraintBottom_toTopOf="@+id/soundEffectModeText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/soundFieldIcon"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,16 +30,27 @@
         app:srcCompat="@drawable/selector_sound_effect" />
 
     <TextView
-        android:id="@+id/soundEffectText"
+        android:id="@+id/soundEffectModeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/sound_effect_mode"
-        style="@style/ModeText"
+        style="@style/NormalText"
         app:layout_constraintBottom_toTopOf="@+id/modeBottomDivider"
         app:layout_constraintEnd_toEndOf="@id/soundEffectIcon"
         app:layout_constraintStart_toStartOf="@id/soundEffectIcon"
         app:layout_constraintTop_toBottomOf="@+id/soundEffectIcon" />
+
+    <TextView
+        android:id="@+id/soundFieldText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sound_field_mode"
+        style="@style/ModeTitle"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectText"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectText"
+        app:layout_constraintEnd_toEndOf="@id/soundFieldIcon"
+        app:layout_constraintStart_toStartOf="@id/soundFieldIcon"/>
 
     <ImageView
         android:id="@+id/soundFieldIcon"
@@ -41,15 +63,26 @@
         app:srcCompat="@drawable/selector_sound_field" />
 
     <TextView
-        android:id="@+id/soundFieldText"
+        android:id="@+id/soundFieldModeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sound_field_mode"
-        style="@style/ModeText"
-        app:layout_constraintBottom_toBottomOf="@+id/soundEffectText"
+        style="@style/NormalText"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectModeText"
         app:layout_constraintEnd_toEndOf="@id/soundFieldIcon"
         app:layout_constraintStart_toStartOf="@id/soundFieldIcon"
-        app:layout_constraintTop_toTopOf="@+id/soundEffectText" />
+        app:layout_constraintTop_toTopOf="@+id/soundEffectModeText" />
+
+    <TextView
+        android:id="@+id/immersionEffectText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sound_immersion_effect"
+        style="@style/ModeTitle"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectText"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectText"
+        app:layout_constraintEnd_toEndOf="@id/immersionEffectIcon"
+        app:layout_constraintStart_toStartOf="@id/immersionEffectIcon" />
 
     <ImageView
         android:id="@+id/immersionEffectIcon"
@@ -62,15 +95,15 @@
         app:srcCompat="@drawable/selector_immersion_effect" />
 
     <TextView
-        android:id="@+id/immersionEffectText"
+        android:id="@+id/immersionEffectModeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sound_immersion_effect"
-        style="@style/ModeText"
-        app:layout_constraintBottom_toBottomOf="@+id/soundEffectText"
+        style="@style/NormalText"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectModeText"
         app:layout_constraintEnd_toEndOf="@id/immersionEffectIcon"
         app:layout_constraintStart_toStartOf="@id/immersionEffectIcon"
-        app:layout_constraintTop_toTopOf="@+id/soundEffectText" />
+        app:layout_constraintTop_toTopOf="@+id/soundEffectModeText" />
 
     <Space
         android:id="@+id/modeBottomDivider"
@@ -79,7 +112,7 @@
         app:layout_constraintBottom_toTopOf="@+id/volumeSlider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/soundEffectText" />
+        app:layout_constraintTop_toBottomOf="@+id/soundEffectModeText" />
 
     <com.google.android.material.slider.Slider
         android:id="@+id/volumeSlider"

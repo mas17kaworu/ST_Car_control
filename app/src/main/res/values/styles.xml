@@ -59,7 +59,11 @@
     </style>
 
     <style name="NormalText" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="android:textColor">@color/colorNormal</item>
+        <item name="android:textColor">@color/colorWhite</item>
+    </style>
+
+    <style name="ModeTitle" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/colorWhite</item>
     </style>
 
     <style name="KeyPairTitle" parent="TextAppearance.MaterialComponents.Headline4">
