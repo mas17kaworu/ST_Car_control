@@ -88,6 +88,7 @@ class KeyPairFragment : Fragment() {
                 object : CommandListenerAdapter<CMDKeyPairStart.Response>(KEY_PAIR_TIMEOUT_MS) {
                     override fun onSuccess(response: CMDKeyPairStart.Response?) {
                         Log.i(TAG, "onSuccess, response status: ${response?.status}")
+                        scheduleTimeOutCancel()
                         when (response?.status) {
                             CMDKeyPairStart.Response.STATUS_PAIR_IN_PROGRESS -> step = PairStep.Pairing
                             CMDKeyPairStart.Response.STATUS_PAIR_SUCCESS -> step = PairStep.Success
@@ -102,15 +103,7 @@ class KeyPairFragment : Fragment() {
                 }
             )
 
-
-            handler.postDelayed(object: Runnable {
-                override fun run() {
-                    Log.i(TAG, "unregister command")
-                    unregisterCommand()
-                    step = PairStep.Failed
-                }
-
-            }, KEY_PAIR_TIMEOUT_MS.toLong())
+            scheduleTimeOutCancel()
         }
 
         binding.keyCheckIcon.setOnClickListener {
@@ -196,7 +189,20 @@ class KeyPairFragment : Fragment() {
         }
     }
 
+    val timeOutCancelRunnable = object: Runnable {
+        override fun run() {
+            Log.i(TAG, "unregister command")
+            unregisterCommand()
+            step = PairStep.Failed
+        }
+    }
+
+    private fun scheduleTimeOutCancel() {
+        handler.removeCallbacks(timeOutCancelRunnable)
+        handler.postDelayed(timeOutCancelRunnable, KEY_PAIR_TIMEOUT_MS.toLong())
+    }
+
     companion object {
-        const val KEY_PAIR_TIMEOUT_MS = 60 * 1000
+        const val KEY_PAIR_TIMEOUT_MS = 30 * 1000
     }
 }
