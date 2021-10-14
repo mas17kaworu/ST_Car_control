@@ -133,7 +133,7 @@ class KeyPairFragment : Fragment() {
     private fun updateUI() {
         when (step) {
             PairStep.Home -> {
-                binding.keyPairText.setText(R.string.key_pair_title)
+                binding.keyPairText.setText(R.string.key_page_title)
                 binding.keyPairIcon.setImageResource(R.drawable.key_pair_green)
                 binding.keyPairIcon.isEnabled = true
                 binding.keys.visibility = View.GONE
