@@ -8,11 +8,11 @@
 
     <TextView
         android:id="@+id/soundEffectText"
+        style="@style/ModeTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="@string/sound_effect_mode"
-        style="@style/ModeTitle"
         app:layout_constraintBottom_toTopOf="@+id/soundEffectIcon"
         app:layout_constraintEnd_toEndOf="@id/soundEffectIcon"
         app:layout_constraintStart_toStartOf="@id/soundEffectIcon" />
@@ -31,11 +31,11 @@
 
     <TextView
         android:id="@+id/soundEffectModeText"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/sound_effect_mode"
-        style="@style/NormalText"
         app:layout_constraintBottom_toTopOf="@+id/modeBottomDivider"
         app:layout_constraintEnd_toEndOf="@id/soundEffectIcon"
         app:layout_constraintStart_toStartOf="@id/soundEffectIcon"
@@ -43,14 +43,14 @@
 
     <TextView
         android:id="@+id/soundFieldText"
+        style="@style/ModeTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sound_field_mode"
-        style="@style/ModeTitle"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectText"
-        app:layout_constraintTop_toTopOf="@+id/soundEffectText"
         app:layout_constraintEnd_toEndOf="@id/soundFieldIcon"
-        app:layout_constraintStart_toStartOf="@id/soundFieldIcon"/>
+        app:layout_constraintStart_toStartOf="@id/soundFieldIcon"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectText" />
 
     <ImageView
         android:id="@+id/soundFieldIcon"
@@ -64,10 +64,10 @@
 
     <TextView
         android:id="@+id/soundFieldModeText"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sound_field_mode"
-        style="@style/NormalText"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectModeText"
         app:layout_constraintEnd_toEndOf="@id/soundFieldIcon"
         app:layout_constraintStart_toStartOf="@id/soundFieldIcon"
@@ -75,14 +75,14 @@
 
     <TextView
         android:id="@+id/immersionEffectText"
+        style="@style/ModeTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sound_immersion_effect"
-        style="@style/ModeTitle"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectText"
-        app:layout_constraintTop_toTopOf="@+id/soundEffectText"
         app:layout_constraintEnd_toEndOf="@id/immersionEffectIcon"
-        app:layout_constraintStart_toStartOf="@id/immersionEffectIcon" />
+        app:layout_constraintStart_toStartOf="@id/immersionEffectIcon"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectText" />
 
     <ImageView
         android:id="@+id/immersionEffectIcon"
@@ -96,10 +96,10 @@
 
     <TextView
         android:id="@+id/immersionEffectModeText"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sound_immersion_effect"
-        style="@style/NormalText"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectModeText"
         app:layout_constraintEnd_toEndOf="@id/immersionEffectIcon"
         app:layout_constraintStart_toStartOf="@id/immersionEffectIcon"
@@ -143,11 +143,11 @@
 
     <TextView
         android:id="@+id/playText"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="@string/volume_mute"
-        style="@style/NormalText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/playIcon"
         app:layout_constraintStart_toStartOf="@id/playIcon"

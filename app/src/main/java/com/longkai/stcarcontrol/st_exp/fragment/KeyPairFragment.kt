@@ -74,7 +74,7 @@ class KeyPairFragment : Fragment() {
             }
         })
 
-        binding.keyIcon.setOnClickListener {
+        binding.keyPairIcon.setOnClickListener {
             if (step != PairStep.Home) return@setOnClickListener
 
             keys.clear()
@@ -85,7 +85,7 @@ class KeyPairFragment : Fragment() {
             ServiceManager.getInstance().sendCommandToCar(command, CommandListenerAdapter<CMDKeyPairStart.Response>())
             ServiceManager.getInstance().registerRegularlyCommand(
                 command,
-                object : CommandListenerAdapter<CMDKeyPairStart.Response>(TIMEOUT_MS) {
+                object : CommandListenerAdapter<CMDKeyPairStart.Response>(KEY_PAIR_TIMEOUT_MS) {
                     override fun onSuccess(response: CMDKeyPairStart.Response?) {
                         Log.i(TAG, "onSuccess, response status: ${response?.status}")
                         when (response?.status) {
@@ -110,7 +110,7 @@ class KeyPairFragment : Fragment() {
                     step = PairStep.Failed
                 }
 
-            }, TIMEOUT_MS.toLong())
+            }, KEY_PAIR_TIMEOUT_MS.toLong())
         }
 
         //test
@@ -127,35 +127,40 @@ class KeyPairFragment : Fragment() {
         when (step) {
             PairStep.Home -> {
                 binding.keyPairText.setText(R.string.key_pair_title)
-                binding.keyIcon.setImageResource(R.drawable.key_pair_green)
-                binding.keyIcon.isEnabled = true
+                binding.keyPairIcon.setImageResource(R.drawable.key_pair_green)
+                binding.keyPairIcon.isEnabled = true
                 binding.keys.visibility = View.GONE
+                binding.keyCheckUIGroup.visibility = View.VISIBLE
             }
             PairStep.Start -> {
                 binding.keyPairText.setText(R.string.key_pair_code)
-                binding.keyIcon.setImageResource(R.drawable.key_pair_grey)
-                binding.keyIcon.isEnabled = false
+                binding.keyPairIcon.setImageResource(R.drawable.key_pair_grey)
+                binding.keyPairIcon.isEnabled = false
                 binding.keys.visibility = View.VISIBLE
+                binding.keyCheckUIGroup.visibility = View.GONE
                 fillKeys()
             }
             PairStep.Pairing -> {
                 binding.keyPairText.setText(R.string.key_pair_in_progress)
-                binding.keyIcon.setImageResource(R.drawable.key_pair_in_progress)
-                binding.keyIcon.isEnabled = false
+                binding.keyPairIcon.setImageResource(R.drawable.key_pair_in_progress)
+                binding.keyPairIcon.isEnabled = false
                 binding.keys.visibility = View.VISIBLE
+                binding.keyCheckUIGroup.visibility = View.GONE
                 fillKeys()
             }
             PairStep.Success -> {
                 binding.keyPairText.setText(R.string.key_pair_success)
-                binding.keyIcon.setImageResource(R.drawable.key_pair_success)
-                binding.keyIcon.isEnabled = false
+                binding.keyPairIcon.setImageResource(R.drawable.key_pair_success)
+                binding.keyPairIcon.isEnabled = false
                 binding.keys.visibility = View.GONE
+                binding.keyCheckUIGroup.visibility = View.GONE
             }
             PairStep.Failed -> {
                 binding.keyPairText.setText(R.string.key_pair_failed)
-                binding.keyIcon.setImageResource(R.drawable.key_pair_failed)
-                binding.keyIcon.isEnabled = false
+                binding.keyPairIcon.setImageResource(R.drawable.key_pair_failed)
+                binding.keyPairIcon.isEnabled = false
                 binding.keys.visibility = View.GONE
+                binding.keyCheckUIGroup.visibility = View.GONE
             }
         }
     }
@@ -185,6 +190,6 @@ class KeyPairFragment : Fragment() {
     }
 
     companion object {
-        const val TIMEOUT_MS = 30 * 1000
+        const val KEY_PAIR_TIMEOUT_MS = 60 * 1000
     }
 }

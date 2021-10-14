@@ -119,7 +119,6 @@ class SoundFragment : Fragment() {
         binding.immersionEffectIcon.isSelected = immersionEffect
         val immersionEffectTextResId = if (immersionEffect) R.string.sound_immersion_effect_on else R.string.sound_immersion_effect_off
         binding.immersionEffectModeText.setText(immersionEffectTextResId)
-
     }
 
     private fun onVolumeChanged(newVolume: Int) {

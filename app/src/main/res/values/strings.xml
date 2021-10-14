@@ -117,7 +117,9 @@
   <string name="volume_unmute">Volume UnMute</string>
   
   <!-- Key Pair screen -->
+  <string name="key_page_title">电子钥匙</string>
   <string name="key_pair_title">钥匙配对</string>
+  <string name="key_check_title">钥匙检查</string>
   <string name="key_pair_code">钥匙配对密码</string>
   <string name="key_pair_in_progress">钥匙配对中…</string>
   <string name="key_pair_success">钥匙配对成功</string>

@@ -15,20 +15,53 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="钥匙配对" />
+        tools:text="@string/key_page_title" />
 
     <ImageView
-        android:id="@+id/keyIcon"
+        android:id="@+id/keyPairIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/key1"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/keyCheckIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.45"
         app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/door_lock"
         tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/keyPairIconText"
+        style="@style/ModeTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/key_pair_title"
+        app:layout_constraintEnd_toEndOf="@id/keyPairIcon"
+        app:layout_constraintStart_toStartOf="@id/keyPairIcon"
+        app:layout_constraintTop_toBottomOf="@id/keyPairIcon" />
+
+    <ImageView
+        android:id="@+id/keyCheckIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/keyPairIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/keyPairIcon"
+        app:layout_constraintTop_toTopOf="@id/keyPairIcon"
+        app:srcCompat="@drawable/door_lock"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/keyCheckIconText"
+        style="@style/ModeTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/key_check_title"
+        app:layout_constraintEnd_toEndOf="@id/keyCheckIcon"
+        app:layout_constraintStart_toStartOf="@id/keyCheckIcon"
+        app:layout_constraintTop_toBottomOf="@id/keyCheckIcon" />
 
     <TextView
         android:id="@+id/key1"
@@ -38,7 +71,7 @@
         app:layout_constraintEnd_toStartOf="@+id/key2"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/keyIcon"
+        app:layout_constraintTop_toBottomOf="@+id/keyPairIcon"
         tools:text="1" />
 
     <TextView
@@ -117,6 +150,13 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="key1,key2, key3, key4, key5, key6, key7, key8"
         tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/keyCheckUIGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="keyCheckIcon, keyCheckIconText, keyPairIconText"
+        tools:visibility="visible"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
