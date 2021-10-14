@@ -113,6 +113,13 @@ class KeyPairFragment : Fragment() {
             }, KEY_PAIR_TIMEOUT_MS.toLong())
         }
 
+        binding.keyCheckIcon.setOnClickListener {
+            Log.i(TAG, "childFragmentManager: $childFragmentManager")
+            childFragmentManager.beginTransaction()
+                .replace(R.id.keyCheckRootLayout, KeyCheckFragment())
+                .commit()
+        }
+
         //test
         MockMessageServiceImpl.getService().StartService(KeyPairFragment::class.java.toString())
     }

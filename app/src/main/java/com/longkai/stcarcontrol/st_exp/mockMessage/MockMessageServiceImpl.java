@@ -3,12 +3,14 @@ package com.longkai.stcarcontrol.st_exp.mockMessage;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import com.longkai.stcarcontrol.st_exp.fragment.KeyCheckFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.KeyPairFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.NFCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUOBCDemoFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.KeyCheckFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.KeyPairFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.NFCFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.OBCReturnFragmentMock;
@@ -57,7 +59,9 @@ public class MockMessageServiceImpl implements MockMessageService {
       } else if (fragmentClass.equalsIgnoreCase(VCUOBCDemoFragment.class.toString())) {
         runnable = new OBCReturnFragmentMock(doBackgroundHandler);
       } else if (fragmentClass.equalsIgnoreCase(KeyPairFragment.class.toString())) {
-        runnable = new KeyPairFragmentMock((doBackgroundHandler));
+        runnable = new KeyPairFragmentMock(doBackgroundHandler);
+      } else if (fragmentClass.equalsIgnoreCase(KeyCheckFragment.class.toString())) {
+        runnable = new KeyCheckFragmentMock(doBackgroundHandler);
       }
       doBackgroundHandler.post(runnable);
     }

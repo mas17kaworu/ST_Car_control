@@ -125,6 +125,9 @@
   <string name="key_pair_success">钥匙配对成功</string>
   <string name="key_pair_failed">钥匙配对失败</string>
 
+  <string name="key_check_found">检测到有效钥匙</string>
+  <string name="key_check_not_found">未检测到有效钥匙</string>
+
 
 
 </resources>
