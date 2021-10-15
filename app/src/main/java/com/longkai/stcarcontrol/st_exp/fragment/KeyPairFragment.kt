@@ -1,6 +1,9 @@
 package com.longkai.stcarcontrol.st_exp.fragment
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -27,8 +30,8 @@ class KeyPairFragment : Fragment() {
         fun nextEligibleSteps(): List<PairStep> {
             return when(this) {
                 Home -> listOf(Start)
-                Start -> listOf(Pairing, Success, Failed)
-                Pairing -> listOf(Success, Failed)
+                Start -> listOf(Pairing, Success, Failed, Home)
+                Pairing -> listOf(Success, Failed, Home)
                 Success -> listOf(Home)
                 Failed -> listOf(Home)
             }
@@ -66,11 +69,8 @@ class KeyPairFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                cancelKeyPair()
                 step = PairStep.Home
-                ServiceManager.getInstance().sendCommandToCar(
-                    CMDKeyPairCancel(),
-                    CommandListenerAdapter<CMDKeyPairCancel.Response>()
-                )
             }
         })
 
@@ -88,7 +88,6 @@ class KeyPairFragment : Fragment() {
                 object : CommandListenerAdapter<CMDKeyPairStart.Response>(KEY_PAIR_TIMEOUT_MS) {
                     override fun onSuccess(response: CMDKeyPairStart.Response?) {
                         Log.i(TAG, "onSuccess, response status: ${response?.status}")
-                        scheduleTimeOutCancel()
                         when (response?.status) {
                             CMDKeyPairStart.Response.STATUS_PAIR_IN_PROGRESS -> step = PairStep.Pairing
                             CMDKeyPairStart.Response.STATUS_PAIR_SUCCESS -> step = PairStep.Success
@@ -98,12 +97,15 @@ class KeyPairFragment : Fragment() {
 
                     override fun onTimeout() {
                         Log.i(TAG, "onTimeout")
+                        cancelKeyPair()
                         step = PairStep.Failed
                     }
                 }
             )
 
-            scheduleTimeOutCancel()
+            //test
+            MockMessageServiceImpl.getService().StopService(KeyCheckFragment::class.java.toString())
+            MockMessageServiceImpl.getService().StartService(KeyPairFragment::class.java.toString())
         }
 
         binding.keyCheckIcon.setOnClickListener {
@@ -112,9 +114,6 @@ class KeyPairFragment : Fragment() {
                 .replace(R.id.keyCheckRootLayout, KeyCheckFragment())
                 .commit()
         }
-
-        //test
-        MockMessageServiceImpl.getService().StartService(KeyPairFragment::class.java.toString())
     }
 
     private fun generateKeys() : List<Int> {
@@ -130,14 +129,13 @@ class KeyPairFragment : Fragment() {
                 binding.keyPairIcon.setImageResource(R.drawable.key_pair_green)
                 binding.keyPairIcon.isEnabled = true
                 binding.keys.visibility = View.GONE
-                binding.keyCheckUIGroup.visibility = View.VISIBLE
+
             }
             PairStep.Start -> {
                 binding.keyPairText.setText(R.string.key_pair_code)
                 binding.keyPairIcon.setImageResource(R.drawable.key_pair_grey)
                 binding.keyPairIcon.isEnabled = false
                 binding.keys.visibility = View.VISIBLE
-                binding.keyCheckUIGroup.visibility = View.GONE
                 fillKeys()
             }
             PairStep.Pairing -> {
@@ -145,7 +143,6 @@ class KeyPairFragment : Fragment() {
                 binding.keyPairIcon.setImageResource(R.drawable.key_pair_in_progress)
                 binding.keyPairIcon.isEnabled = false
                 binding.keys.visibility = View.VISIBLE
-                binding.keyCheckUIGroup.visibility = View.GONE
                 fillKeys()
             }
             PairStep.Success -> {
@@ -153,15 +150,50 @@ class KeyPairFragment : Fragment() {
                 binding.keyPairIcon.setImageResource(R.drawable.key_pair_success)
                 binding.keyPairIcon.isEnabled = false
                 binding.keys.visibility = View.GONE
-                binding.keyCheckUIGroup.visibility = View.GONE
             }
             PairStep.Failed -> {
                 binding.keyPairText.setText(R.string.key_pair_failed)
                 binding.keyPairIcon.setImageResource(R.drawable.key_pair_failed)
                 binding.keyPairIcon.isEnabled = false
                 binding.keys.visibility = View.GONE
-                binding.keyCheckUIGroup.visibility = View.GONE
             }
+        }
+
+        binding.keyCheckUIGroup.visibility = if (step == PairStep.Home) View.VISIBLE else View.GONE
+
+        if (step == PairStep.Start) {
+            binding.timer.visibility = View.VISIBLE
+            keyPairStartTimer.start()
+        } else {
+            binding.timer.visibility = View.GONE
+            keyPairStartTimer.cancel()
+        }
+
+        if (step == PairStep.Pairing) {
+            scheduleTimeOutCancel()
+            pairingAnimator.start()
+        } else {
+            removeTimeOutCancel()
+            pairingAnimator.cancel()
+        }
+    }
+
+    private val pairingAnimator by lazy {
+        val animator = ObjectAnimator.ofFloat(binding.keyPairIcon, "rotation", 360f)
+        animator.duration = 1000
+        animator.repeatMode = ValueAnimator.RESTART
+        animator.repeatCount = ValueAnimator.INFINITE
+        animator
+    }
+
+    private val keyPairStartTimer = object : CountDownTimer(KEY_PAIR_START_TIMEOUT_MS, 1000L) {
+        override fun onTick(millisUntilFinished: Long) {
+            binding.timer.setText(getString(R.string.key_pair_start_timeout_msg, millisUntilFinished/1000))
+        }
+
+        override fun onFinish() {
+            cancelKeyPair()
+            step = PairStep.Failed
         }
     }
 
@@ -177,22 +209,26 @@ class KeyPairFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        unregisterCommand()
-        handler.removeCallbacksAndMessages(null)
+        cancelKeyPair()
         super.onDestroy()
     }
 
-    private fun unregisterCommand() {
+    private fun cancelKeyPair() {
         if (command != null) {
             ServiceManager.getInstance().unregisterRegularlyCommand(command)
             command = null
         }
+        ServiceManager.getInstance().sendCommandToCar(
+            CMDKeyPairCancel(),
+            CommandListenerAdapter<CMDKeyPairCancel.Response>()
+        )
+        handler.removeCallbacksAndMessages(null)
     }
 
     val timeOutCancelRunnable = object: Runnable {
         override fun run() {
-            Log.i(TAG, "unregister command")
-            unregisterCommand()
+            Log.i(TAG, "timeout cancel")
+            cancelKeyPair()
             step = PairStep.Failed
         }
     }
@@ -202,7 +238,12 @@ class KeyPairFragment : Fragment() {
         handler.postDelayed(timeOutCancelRunnable, KEY_PAIR_TIMEOUT_MS.toLong())
     }
 
+    private fun removeTimeOutCancel() {
+        handler.removeCallbacks(timeOutCancelRunnable)
+    }
+
     companion object {
+        const val KEY_PAIR_START_TIMEOUT_MS = 60 * 1000L
         const val KEY_PAIR_TIMEOUT_MS = 30 * 1000
     }
 }
