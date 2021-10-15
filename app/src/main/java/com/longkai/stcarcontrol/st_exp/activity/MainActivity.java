@@ -30,6 +30,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.AVASFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.BCMDiagnosticFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CarBackCoverFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CarBackLampFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.CarBackOLED2Fragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CarBackOLEDFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.DoorFragment;
@@ -51,6 +52,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_BMS_HOME;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.MainFragment.FRAGMENT_TRANSACTION_CAR_BACK_OLED;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.MainFragment.FRAGMENT_TRANSACTION_CAR_BACK_OLED2;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -68,6 +70,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
   private FrontHeadLampTest2 frontHeadLampTest;
   private NFCFragment nfcFragment;
   private CarBackOLEDFragment carBackOLEDFragment;
+  private CarBackOLED2Fragment carBackOLED2Fragment;
   private AVASFragment avasFragment;
   private SoundFragment soundFragment;
   private KeyPairFragment keyPairFragment;
@@ -363,6 +366,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
           carBackOLEDFragment = new CarBackOLEDFragment();
         }
         transaction.replace(R.id.main_fragment_content, carBackOLEDFragment);
+        break;
+      case FRAGMENT_TRANSACTION_CAR_BACK_OLED2:
+        if (carBackOLED2Fragment == null) {
+          carBackOLED2Fragment = new CarBackOLED2Fragment();
+        }
+        transaction.replace(R.id.main_fragment_content, carBackOLED2Fragment);
         break;
       default:
         break;
