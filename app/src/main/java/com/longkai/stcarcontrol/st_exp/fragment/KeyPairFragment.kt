@@ -179,7 +179,7 @@ class KeyPairFragment : Fragment() {
     }
 
     private val pairingAnimator by lazy {
-        val animator = ObjectAnimator.ofFloat(binding.keyPairIcon, "rotation", 360f)
+        val animator = ObjectAnimator.ofFloat(binding.keyPairIcon, "rotation", -360f)
         animator.duration = 1000
         animator.repeatMode = ValueAnimator.RESTART
         animator.repeatCount = ValueAnimator.INFINITE
