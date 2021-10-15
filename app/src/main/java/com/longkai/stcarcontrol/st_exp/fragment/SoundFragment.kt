@@ -16,9 +16,21 @@ class SoundFragment : Fragment() {
 
     private lateinit var binding: FragmentSoundBinding
 
+    /**
+     * true - 动感; false - 自然
+     */
     private var soundEffect: Boolean = false
+
+    /**
+     * true - 全车; false - 前排
+     */
     private var soundField: Boolean = false
+
+    /**
+     * true - ON; false - OFF
+     */
     private var immersionEffect: Boolean = false
+
     private var volume: Int = (VOLUME_MAX + VOLUME_MIN) / 2
     private var play: Boolean = false
 
@@ -49,10 +61,9 @@ class SoundFragment : Fragment() {
     }
 
     private fun initUI() {
-
-        binding.soundEffectIcon.isSelected = soundEffect
-        binding.soundFieldIcon.isSelected = soundField
-        binding.immersionEffectIcon.isSelected = immersionEffect
+        updateSoundEffectUI()
+        updateSoundFieldUI()
+        updateImmersionEffectUI()
 
         binding.volumeSlider.apply {
             valueFrom = VOLUME_MIN.toFloat()
@@ -67,7 +78,7 @@ class SoundFragment : Fragment() {
 
     private fun onSoundEffectChanged() {
         soundEffect = soundEffect.not()
-        binding.soundEffectIcon.isSelected = soundEffect
+        updateSoundEffectUI()
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundEffectSwitch(soundEffect),
             CommandListenerAdapter<CMDSoundEffectSwitch.Response>()
@@ -76,7 +87,7 @@ class SoundFragment : Fragment() {
 
     private fun onSoundFieldChanged() {
         soundField = soundField.not()
-        binding.soundFieldIcon.isSelected = soundField
+        updateSoundFieldUI()
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundFieldSwitch(soundField),
             CommandListenerAdapter<CMDSoundFieldSwitch.Response>()
@@ -85,11 +96,29 @@ class SoundFragment : Fragment() {
 
     private fun onImmersionEffectChanged() {
         immersionEffect = immersionEffect.not()
-        binding.immersionEffectIcon.isSelected = immersionEffect
+        updateImmersionEffectUI()
         ServiceManager.getInstance().sendCommandToCar(
             CMDImmersionEffectSwitch(immersionEffect),
             CommandListenerAdapter<CMDImmersionEffectSwitch.Response>()
         )
+    }
+
+    private fun updateSoundEffectUI() {
+        binding.soundEffectIcon.isSelected = soundEffect
+        val soundEffectModeTextResId = if (soundEffect) R.string.sound_effect_dynamic else R.string.sound_effect_natural
+        binding.soundEffectModeText.setText(soundEffectModeTextResId)
+    }
+
+    private fun updateSoundFieldUI() {
+        binding.soundFieldIcon.isSelected = soundField
+        val soundFieldModeTextResId = if (soundField) R.string.sound_field_all else R.string.sound_field_front
+        binding.soundFieldModeText.setText(soundFieldModeTextResId)
+    }
+
+    private fun updateImmersionEffectUI() {
+        binding.immersionEffectIcon.isSelected = immersionEffect
+        val immersionEffectTextResId = if (immersionEffect) R.string.sound_immersion_effect_on else R.string.sound_immersion_effect_off
+        binding.immersionEffectModeText.setText(immersionEffectTextResId)
     }
 
     private fun onVolumeChanged(newVolume: Int) {
@@ -107,7 +136,7 @@ class SoundFragment : Fragment() {
     private fun onPlayChanged() {
         play = play.not()
         binding.playIcon.isSelected = play
-        val textRes = if (play) R.string.volume_mute else R.string.volume_unmute
+        val textRes = if (play) R.string.volume_unmute else R.string.volume_mute
         binding.playText.setText(textRes)
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundPlaySwitch(play),

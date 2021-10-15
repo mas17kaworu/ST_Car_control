@@ -3,6 +3,9 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
 
+/**
+ * isOn: true - 全车; false - 前排
+ */
 class CMDSoundFieldSwitch(isOn: Boolean) : BaseCommand() {
 
     init {

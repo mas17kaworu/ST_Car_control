@@ -107,15 +107,27 @@
   <string name="sound_effect_mode">音效模式</string>
   <string name="sound_field_mode">声场模式</string>
   <string name="sound_immersion_effect">沉浸式音效</string>
+  <string name="sound_effect_dynamic">动感</string>
+  <string name="sound_effect_natural">自然</string>
+  <string name="sound_field_front">前排</string>
+  <string name="sound_field_all">全车</string>
+  <string name="sound_immersion_effect_on">打开</string>
+  <string name="sound_immersion_effect_off">关闭</string>
   <string name="volume_mute">Volume Mute</string>
   <string name="volume_unmute">Volume UnMute</string>
   
   <!-- Key Pair screen -->
+  <string name="key_page_title">电子钥匙</string>
   <string name="key_pair_title">钥匙配对</string>
+  <string name="key_check_title">钥匙检查</string>
   <string name="key_pair_code">钥匙配对密码</string>
   <string name="key_pair_in_progress">钥匙配对中…</string>
   <string name="key_pair_success">钥匙配对成功</string>
   <string name="key_pair_failed">钥匙配对失败</string>
+  <string name="key_pair_start_timeout_msg">%1$ds</string>
+
+  <string name="key_check_found">检测到有效钥匙</string>
+  <string name="key_check_not_found">未检测到有效钥匙</string>
 
 
 

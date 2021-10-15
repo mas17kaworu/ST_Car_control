@@ -3,6 +3,9 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
 
+/**
+ * isOn: true - ON; false - OFF
+ */
 class CMDImmersionEffectSwitch(isOn: Boolean) : BaseCommand() {
 
     init {
@@ -11,8 +14,8 @@ class CMDImmersionEffectSwitch(isOn: Boolean) : BaseCommand() {
         data[0] = 10
         data[1] = COMMAND_SOUND
         data[2+2] = when(isOn) {
-            true -> 0x22
-            false -> 0x11
+            true -> 0x11
+            false -> 0x22
         }
     }
 
