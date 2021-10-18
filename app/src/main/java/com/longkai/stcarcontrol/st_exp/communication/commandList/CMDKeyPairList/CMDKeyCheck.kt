@@ -9,7 +9,7 @@ import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit
 class CMDKeyCheck() : BaseCommand() {
 
     override fun toResponse(data: ByteArray): BaseResponse {
-        if (data[2] == 0x04.toByte() && data[5] == STATUS_FOUND) {
+        if (data[2] == 0x05.toByte() && data[6] == STATUS_FOUND) {
             return Response(commandId, STATUS_FOUND)
         } else {
             return Response(commandId, STATUS_NOT_FOUND)
@@ -30,14 +30,15 @@ class CMDKeyCheck() : BaseCommand() {
         constructor(status: Byte): this(COMMAND_KEY_CHECK, status)
 
         override fun mockResponse(): ByteArray {
-            val array = ByteArray(7)
+            val array = ByteArray(8)
             array[0] = COMMAND_HEAD0
             array[1] = COMMAND_HEAD1
-            array[2] = 0x04
+            array[2] = 0x05
             array[3] = getCommandId().toByte()
-            array[4] = 0x00
-            array[5] = status
-            array[6] = CheckSumBit.checkSum(array, array.size - 1)
+            array[4] = 0x02
+            array[5] = 0x00
+            array[6] = status
+            array[7] = CheckSumBit.checkSum(array, array.size - 1)
             return array
         }
     }
