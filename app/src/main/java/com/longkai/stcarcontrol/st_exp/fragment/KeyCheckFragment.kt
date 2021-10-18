@@ -70,9 +70,11 @@ class KeyCheckFragment : Fragment() {
                         CMDKeyCheck.Response.STATUS_FOUND -> keyFound = true
                         CMDKeyCheck.Response.STATUS_NOT_FOUND -> keyFound = false
                     }
+                    scheduleTimeOut()
                 }
             }
         )
+        scheduleTimeOut()
     }
 
     override fun onStop() {
@@ -87,8 +89,24 @@ class KeyCheckFragment : Fragment() {
         }
     }
 
+    private val timeOutRunnable = object : Runnable {
+        override fun run() {
+            Log.i(TAG, "timeout, key not found")
+            keyFound = false
+        }
+    }
+
+    private fun scheduleTimeOut() {
+        handler.removeCallbacks(timeOutRunnable)
+        handler.postDelayed(timeOutRunnable, TIME_OUT_MILLIS)
+    }
+
     fun updateUI() {
         val keyCheckResultResId = if (keyFound) R.string.key_check_found else R.string.key_check_not_found
         binding.keyCheckResult.setText(keyCheckResultResId)
+    }
+
+    companion object {
+        const val TIME_OUT_MILLIS = 6000L
     }
 }

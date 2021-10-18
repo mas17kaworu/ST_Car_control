@@ -12,7 +12,7 @@ class KeyCheckFragmentMock(handler: Handler?) : MockFragmentBase(handler) {
     override fun run() {
         case1()
         handler.removeCallbacksAndMessages(null) //remove all
-        handler.postDelayed(this, 5000) //500ms 循环
+        handler.postDelayed(this, 8000) //500ms 循环
     }
 
     private fun case1() {
