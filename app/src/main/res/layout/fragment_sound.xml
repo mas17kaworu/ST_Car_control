@@ -29,6 +29,25 @@
         app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/selector_sound_effect" />
 
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleButton"
+        style="@style/ToggleButtonGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_effect_natural"
+            style="@style/ToggleButton" />
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_effect_dynamic"
+            style="@style/ToggleButton" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/soundEffectSwitch"
         style="@style/ModeSwitch"
