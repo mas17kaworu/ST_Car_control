@@ -174,7 +174,7 @@ class KeyPairFragment : Fragment() {
             pairingAnimator.start()
         } else {
             removeTimeOutCancel()
-            pairingAnimator.cancel()
+            pairingAnimator.end()
         }
     }
 
