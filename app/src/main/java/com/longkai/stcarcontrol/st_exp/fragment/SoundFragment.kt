@@ -57,7 +57,7 @@ class SoundFragment : Fragment() {
             onVolumeChanged(volume.toInt())
         }
 
-        binding.playIcon.setOnClickListener { onPlayChanged() }
+        binding.volumeOnOff.setOnClickListener { onPlayChanged() }
     }
 
     private fun initUI() {
@@ -72,7 +72,7 @@ class SoundFragment : Fragment() {
             value = volume.toFloat()
         }
 
-        binding.playIcon.isSelected = play
+        binding.volumeOnOff.isSelected = play
 
     }
 
@@ -135,7 +135,7 @@ class SoundFragment : Fragment() {
 
     private fun onPlayChanged() {
         play = play.not()
-        binding.playIcon.isSelected = play
+        binding.volumeOnOff.isSelected = play
         val textRes = if (play) R.string.volume_unmute else R.string.volume_mute
         binding.playText.setText(textRes)
         ServiceManager.getInstance().sendCommandToCar(

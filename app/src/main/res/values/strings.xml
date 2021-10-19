@@ -115,6 +115,10 @@
   <string name="sound_immersion_effect_off">关闭</string>
   <string name="volume_mute">Volume Mute</string>
   <string name="volume_unmute">Volume UnMute</string>
+  <string name="sound_style_hifi">高保真展现</string>
+  <string name="sound_style_concert">现场音乐厅</string>
+  <string name="sound_style_cinema">震撼影剧院</string>
+  
   
   <!-- Key Pair screen -->
   <string name="key_page_title">Digital Key</string>

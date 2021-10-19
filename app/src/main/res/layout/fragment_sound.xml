@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="30dp">
+    android:padding="30dp"
+    tools:background="@drawable/homefragment_gray_background">
 
     <TextView
         android:id="@+id/soundEffectText"
@@ -21,25 +22,60 @@
         android:id="@+id/soundEffectIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/soundEffectModeText"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/modeBottomDivider"
         app:layout_constraintEnd_toStartOf="@+id/soundFieldIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/selector_sound_effect" />
 
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/soundEffectSwitch"
+        style="@style/ModeSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/sound_effect_natural"
+        app:layout_constraintBottom_toTopOf="@+id/soundEffectModeText"
+        app:layout_constraintEnd_toEndOf="@id/soundEffectIcon"
+        app:layout_constraintStart_toStartOf="@id/soundEffectIcon"
+        app:layout_constraintTop_toBottomOf="@+id/soundEffectIcon" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/soundFieldSwitch"
+        style="@style/ModeSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/sound_effect_natural"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectSwitch"
+        app:layout_constraintEnd_toEndOf="@+id/soundFieldIcon"
+        app:layout_constraintStart_toStartOf="@+id/soundFieldIcon"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectSwitch" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/immersionEffectSwitch"
+        style="@style/ModeSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/sound_effect_natural"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectSwitch"
+        app:layout_constraintEnd_toEndOf="@+id/immersionEffectIcon"
+        app:layout_constraintStart_toStartOf="@+id/immersionEffectIcon"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectSwitch" />
+
     <TextView
         android:id="@+id/soundEffectModeText"
         style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/sound_effect_mode"
-        app:layout_constraintBottom_toTopOf="@+id/modeBottomDivider"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/soundEffectIcon"
         app:layout_constraintStart_toStartOf="@id/soundEffectIcon"
-        app:layout_constraintTop_toBottomOf="@+id/soundEffectIcon" />
+        app:layout_constraintTop_toBottomOf="@+id/soundEffectSwitch" />
 
     <TextView
         android:id="@+id/soundFieldText"
@@ -68,6 +104,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sound_field_mode"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectModeText"
         app:layout_constraintEnd_toEndOf="@id/soundFieldIcon"
         app:layout_constraintStart_toStartOf="@id/soundFieldIcon"
@@ -100,6 +137,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sound_immersion_effect"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectModeText"
         app:layout_constraintEnd_toEndOf="@id/immersionEffectIcon"
         app:layout_constraintStart_toStartOf="@id/immersionEffectIcon"
@@ -108,38 +146,86 @@
     <Space
         android:id="@+id/modeBottomDivider"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="120dp"
         app:layout_constraintBottom_toTopOf="@+id/volumeSlider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/soundEffectModeText" />
+        app:layout_constraintTop_toBottomOf="@+id/soundEffectIcon" />
+
+    <Button
+        android:id="@+id/soundEffectOnOff"
+        style="@style/NormalOutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="关闭音效"
+        app:layout_constraintBottom_toBottomOf="@+id/volumeSlider"
+        app:layout_constraintEnd_toStartOf="@+id/volumeOnOff"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/volumeSlider" />
+
+    <ImageView
+        android:id="@+id/volumeOnOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/volumeSlider"
+        app:layout_constraintEnd_toStartOf="@+id/volumeSlider"
+        app:layout_constraintStart_toEndOf="@+id/soundEffectOnOff"
+        app:layout_constraintTop_toTopOf="@+id/volumeSlider"
+        app:srcCompat="@drawable/selector_sound" />
 
     <com.google.android.material.slider.Slider
         android:id="@+id/volumeSlider"
         style="@style/Widget.App.Slider"
-        app:layout_constraintBottom_toTopOf="@+id/playTopDivider"
+        app:layout_constraintBottom_toTopOf="@+id/volumeBottomDivider"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/volumeOnOff"
         app:layout_constraintTop_toBottomOf="@+id/modeBottomDivider" />
 
     <Space
-        android:id="@+id/playTopDivider"
+        android:id="@+id/volumeBottomDivider"
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/playIcon"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toTopOf="@+id/soundStyleHifi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/volumeSlider" />
 
-    <ImageView
-        android:id="@+id/playIcon"
+    <Button
+        android:id="@+id/soundStyleHifi"
+        style="@style/NormalOutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/playText"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/sound_style_hifi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/soundStyleConcert"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playTopDivider"
-        app:srcCompat="@drawable/selector_sound" />
+        app:layout_constraintTop_toBottomOf="@+id/volumeBottomDivider" />
+
+    <Button
+        android:id="@+id/soundStyleConcert"
+        style="@style/NormalOutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="60dp"
+        android:text="@string/sound_style_concert"
+        app:layout_constraintBottom_toBottomOf="@+id/soundStyleHifi"
+        app:layout_constraintEnd_toStartOf="@+id/soundStyleCinema"
+        app:layout_constraintStart_toEndOf="@+id/soundStyleHifi"
+        app:layout_constraintTop_toTopOf="@+id/soundStyleHifi" />
+
+    <Button
+        android:id="@+id/soundStyleCinema"
+        style="@style/NormalOutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sound_style_cinema"
+        app:layout_constraintBottom_toBottomOf="@+id/soundStyleHifi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/soundStyleConcert"
+        app:layout_constraintTop_toTopOf="@+id/soundStyleHifi" />
 
     <TextView
         android:id="@+id/playText"
@@ -148,9 +234,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="@string/volume_mute"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/playIcon"
-        app:layout_constraintStart_toStartOf="@id/playIcon"
-        app:layout_constraintTop_toBottomOf="@+id/playIcon" />
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@id/volumeOnOff"
+        app:layout_constraintStart_toStartOf="@id/volumeOnOff"
+        app:layout_constraintTop_toBottomOf="@+id/volumeOnOff" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

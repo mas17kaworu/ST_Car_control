@@ -69,4 +69,33 @@
     <style name="KeyPairTitle" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textColor">@color/colorWhite</item>
     </style>
+
+    <style name="ModeSwitch" parent="Widget.MaterialComponents.CompoundButton.Switch">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.ModeSwitch</item>
+        <item name="android:textAppearance">@style/NormalText</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="switchPadding">4dp</item>
+    </style>
+
+    <style name="ThemeOverlay.ModeSwitch" parent="">
+        <item name="colorSurface">@color/colorBlue</item>
+        <item name="colorOnSurface">@color/colorBlue</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+    </style>
+
+
+    <style name="NormalOutlinedButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button.TextButton</item>
+        <item name="android:textAppearance">@style/NormalText</item>
+        <item name="strokeColor">@color/colorWhite</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Button.TextButton" parent="">
+        <item name="colorPrimary">@color/colorWhite</item>
+    </style>
 </resources>

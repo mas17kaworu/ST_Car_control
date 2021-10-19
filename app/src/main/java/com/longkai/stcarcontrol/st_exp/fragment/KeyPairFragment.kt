@@ -210,6 +210,8 @@ class KeyPairFragment : Fragment() {
 
     override fun onDestroy() {
         cancelKeyPair()
+        keyPairStartTimer.cancel()
+        pairingAnimator.cancel()
         super.onDestroy()
     }
 
