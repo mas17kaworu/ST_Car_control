@@ -77,9 +77,10 @@ class KeyCheckFragment : Fragment() {
         scheduleTimeOut()
     }
 
-    override fun onStop() {
+    override fun onDestroy() {
         unregisterCommand()
-        super.onStop()
+        handler.removeCallbacksAndMessages(null)
+        super.onDestroy()
     }
 
     private fun unregisterCommand() {
