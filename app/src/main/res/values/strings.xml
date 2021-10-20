@@ -115,6 +115,8 @@
   <string name="immersion_effect_surround">环绕</string>
   <string name="volume_mute">Volume Mute</string>
   <string name="volume_unmute">Volume UnMute</string>
+  <string name="sound_mode_turn_on">打开音效</string>
+  <string name="sound_mode_turn_off">关闭音效</string>
   <string name="sound_style_hifi">高保真展现</string>
   <string name="sound_style_concert">现场音乐厅</string>
   <string name="sound_style_cinema">震撼影剧院</string>

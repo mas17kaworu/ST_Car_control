@@ -154,6 +154,7 @@ class SoundFragment : Fragment() {
 
     private fun onSoundModeChanged(newSoundMode: SoundMode) {
         soundMode = newSoundMode
+        binding.soundModeOnOff.setText(if(soundMode == SoundMode.On) R.string.sound_mode_turn_off else R.string.sound_mode_turn_on)
         val enabled = (soundMode == SoundMode.On)
         binding.soundModeGroup.referencedIds.map {
             val view = binding.root.findViewById<View>(it)
