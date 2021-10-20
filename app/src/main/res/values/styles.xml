@@ -87,7 +87,7 @@
     <style name="NormalOutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button.TextButton</item>
         <item name="android:textAppearance">@style/NormalText</item>
-        <item name="strokeColor">@color/colorWhite</item>
+        <item name="strokeColor">@color/selector_enabled</item>
         <item name="strokeWidth">1dp</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
@@ -106,6 +106,7 @@
         <item name="android:paddingStart">8dp</item>
         <item name="android:paddingEnd">8dp</item>
         <item name="android:minWidth">30dp</item>
+        <item name="strokeColor">@color/selector_enabled</item>
     </style>
 
     <style name="ToggleButtonGroup" parent="Widget.MaterialComponents.MaterialButtonToggleGroup">

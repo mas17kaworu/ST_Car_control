@@ -1,10 +1,13 @@
 package com.longkai.stcarcontrol.st_exp.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList.*
@@ -16,23 +19,21 @@ class SoundFragment : Fragment() {
 
     private lateinit var binding: FragmentSoundBinding
 
-    /**
-     * true - 动感; false - 自然
-     */
-    private var soundEffect: Boolean = false
-
-    /**
-     * true - 全车; false - 前排
-     */
-    private var soundField: Boolean = false
-
-    /**
-     * true - ON; false - OFF
-     */
-    private var immersionEffect: Boolean = false
+    private var soundEffect: SoundEffect = SoundEffect.Cozy
+    private var soundField: SoundField = SoundField.Quality
+        private set
+    private var immersionEffect: ImmersionEffect = ImmersionEffect.Natural
+    private var soundMode: SoundMode = SoundMode.On
+    private var soundStyle: SoundStyle? = null
 
     private var volume: Int = (VOLUME_MAX + VOLUME_MIN) / 2
     private var play: Boolean = false
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    enum class SoundStyle {
+        Hifi, Concert, Cinema
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,15 +50,48 @@ class SoundFragment : Fragment() {
 
         initUI()
 
-        binding.soundEffectIcon.setOnClickListener { onSoundEffectChanged() }
-        binding.soundFieldIcon.setOnClickListener { onSoundFieldChanged() }
-        binding.immersionEffectIcon.setOnClickListener { onImmersionEffectChanged() }
+        binding.soundEffectToggleButtonGroup.addOnButtonCheckedListener(toggleButtonCheckedListener)
+        binding.soundFieldToggleButtonGroup.addOnButtonCheckedListener(toggleButtonCheckedListener)
+        binding.immersionEffectToggleButtonGroup.addOnButtonCheckedListener(toggleButtonCheckedListener)
+
+        binding.soundModeOnOff.setOnClickListener {
+            val newSoundMode = if (soundMode == SoundMode.On) SoundMode.Off else SoundMode.On
+            onSoundModeChanged(newSoundMode)
+        }
+
+        binding.soundStyleHifi.setOnClickListener {
+            setSoundStyle(SoundStyle.Hifi)
+        }
+        binding.soundStyleConcert.setOnClickListener {
+            setSoundStyle(SoundStyle.Concert)
+        }
+        binding.soundStyleCinema.setOnClickListener {
+            setSoundStyle(SoundStyle.Cinema)
+        }
 
         binding.volumeSlider.addOnChangeListener { _, volume, _ ->
             onVolumeChanged(volume.toInt())
         }
 
         binding.volumeOnOff.setOnClickListener { onPlayChanged() }
+    }
+
+    private val toggleButtonCheckedListener = object : MaterialButtonToggleGroup.OnButtonCheckedListener {
+        override fun onButtonChecked(
+            group: MaterialButtonToggleGroup?,
+            checkedId: Int,
+            isChecked: Boolean
+        ) {
+            if (!isChecked) return
+            when (checkedId) {
+                binding.soundEffectCozy.id -> onSoundEffectChanged(SoundEffect.Cozy)
+                binding.soundEffectDynamic.id -> onSoundEffectChanged(SoundEffect.Dynamic)
+                binding.soundFieldQuality.id -> onSoundFieldChanged(SoundField.Quality)
+                binding.soundFieldFocus.id -> onSoundFieldChanged(SoundField.Focus)
+                binding.immersionEffectNatural.id -> onImmersionEffectChanged(ImmersionEffect.Natural)
+                binding.immersionEffectSurround.id -> onImmersionEffectChanged(ImmersionEffect.Surround)
+            }
+        }
     }
 
     private fun initUI() {
@@ -76,27 +110,24 @@ class SoundFragment : Fragment() {
 
     }
 
-    private fun onSoundEffectChanged() {
-        soundEffect = soundEffect.not()
-        updateSoundEffectUI()
+    private fun onSoundEffectChanged(newSoundEffect: SoundEffect) {
+        soundEffect = newSoundEffect
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundEffectSwitch(soundEffect),
             CommandListenerAdapter<CMDSoundEffectSwitch.Response>()
         )
     }
 
-    private fun onSoundFieldChanged() {
-        soundField = soundField.not()
-        updateSoundFieldUI()
+    private fun onSoundFieldChanged(newSoundField: SoundField) {
+        soundField = newSoundField
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundFieldSwitch(soundField),
             CommandListenerAdapter<CMDSoundFieldSwitch.Response>()
         )
     }
 
-    private fun onImmersionEffectChanged() {
-        immersionEffect = immersionEffect.not()
-        updateImmersionEffectUI()
+    private fun onImmersionEffectChanged(newImmersionEffect: ImmersionEffect) {
+        immersionEffect = newImmersionEffect
         ServiceManager.getInstance().sendCommandToCar(
             CMDImmersionEffectSwitch(immersionEffect),
             CommandListenerAdapter<CMDImmersionEffectSwitch.Response>()
@@ -104,21 +135,74 @@ class SoundFragment : Fragment() {
     }
 
     private fun updateSoundEffectUI() {
-        binding.soundEffectIcon.isSelected = soundEffect
-        val soundEffectModeTextResId = if (soundEffect) R.string.sound_effect_dynamic else R.string.sound_effect_natural
-        binding.soundEffectModeText.setText(soundEffectModeTextResId)
+        binding.soundEffectToggleButtonGroup.check(
+            if (soundEffect == SoundEffect.Cozy) binding.soundEffectCozy.id else binding.soundEffectDynamic.id
+        )
     }
 
     private fun updateSoundFieldUI() {
-        binding.soundFieldIcon.isSelected = soundField
-        val soundFieldModeTextResId = if (soundField) R.string.sound_field_all else R.string.sound_field_front
-        binding.soundFieldModeText.setText(soundFieldModeTextResId)
+        binding.soundFieldToggleButtonGroup.check(
+            if (soundField == SoundField.Quality) binding.soundFieldQuality.id else binding.soundFieldFocus.id
+        )
     }
 
     private fun updateImmersionEffectUI() {
-        binding.immersionEffectIcon.isSelected = immersionEffect
-        val immersionEffectTextResId = if (immersionEffect) R.string.sound_immersion_effect_on else R.string.sound_immersion_effect_off
-        binding.immersionEffectModeText.setText(immersionEffectTextResId)
+        binding.immersionEffectToggleButtonGroup.check(
+            if (immersionEffect == ImmersionEffect.Natural) binding.immersionEffectNatural.id else binding.immersionEffectSurround.id
+        )
+    }
+
+    private fun onSoundModeChanged(newSoundMode: SoundMode) {
+        soundMode = newSoundMode
+        val enabled = (soundMode == SoundMode.On)
+        binding.soundModeGroup.referencedIds.map {
+            val view = binding.root.findViewById<View>(it)
+            if (view is MaterialButtonToggleGroup) {
+                view.enableChildren(enabled)
+            } else {
+                view.isEnabled = enabled
+            }
+        }
+        ServiceManager.getInstance().sendCommandToCar(
+            CMDSoundModeSwitch(soundMode),
+            CommandListenerAdapter<CMDSoundModeSwitch.Response>()
+        )
+    }
+
+    private fun MaterialButtonToggleGroup.enableChildren(enabled: Boolean) {
+        for (i in 0 until childCount) {
+            getChildAt(i).isEnabled = enabled
+        }
+    }
+
+    private fun setSoundStyle(newSoundStyle: SoundStyle) {
+        soundStyle = newSoundStyle
+        when(newSoundStyle) {
+            SoundStyle.Hifi -> {
+                soundEffect = SoundEffect.Cozy
+                soundField = SoundField.Quality
+                immersionEffect = ImmersionEffect.Natural
+            }
+            SoundStyle.Concert -> {
+                soundEffect = SoundEffect.Cozy
+                soundField = SoundField.Quality
+                immersionEffect = ImmersionEffect.Surround
+            }
+            SoundStyle.Cinema -> {
+                soundEffect = SoundEffect.Dynamic
+                soundField = SoundField.Focus
+                immersionEffect = ImmersionEffect.Surround
+            }
+        }
+
+        updateSoundEffectUI()
+        updateSoundFieldUI()
+        updateImmersionEffectUI()
+
+        ServiceManager.getInstance().sendCommandToCar(
+            CMDAkmSound(soundEffect, soundField, immersionEffect),
+            CommandListenerAdapter<CMDSoundVolume.Response>()
+        )
     }
 
     private fun onVolumeChanged(newVolume: Int) {

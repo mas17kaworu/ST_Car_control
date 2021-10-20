@@ -108,11 +108,11 @@
   <string name="sound_field_mode">声场模式</string>
   <string name="sound_immersion_effect">沉浸式音效</string>
   <string name="sound_effect_dynamic">动感</string>
-  <string name="sound_effect_natural">自然</string>
-  <string name="sound_field_front">前排</string>
-  <string name="sound_field_all">全车</string>
-  <string name="sound_immersion_effect_on">打开</string>
-  <string name="sound_immersion_effect_off">关闭</string>
+  <string name="sound_effect_cozy">舒适</string>
+  <string name="sound_field_focus">聚焦</string>
+  <string name="sound_field_quality">醇音</string>
+  <string name="immersion_effect_natural">自然</string>
+  <string name="immersion_effect_surround">环绕</string>
   <string name="volume_mute">Volume Mute</string>
   <string name="volume_unmute">Volume UnMute</string>
   <string name="sound_style_hifi">高保真展现</string>

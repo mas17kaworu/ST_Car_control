@@ -3,19 +3,21 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
 
-/**
- * isOn: true - 动感; false - 自然
- */
-class CMDSoundEffectSwitch(isOn: Boolean) : BaseCommand() {
+
+enum class SoundEffect {
+    Cozy, Dynamic
+}
+
+class CMDSoundEffectSwitch(soundEffect: SoundEffect) : BaseCommand() {
 
     init {
         data = ByteArray(10) { 0x00 }
         dataLength = 10
         data[0] = 10
         data[1] = COMMAND_SOUND
-        data[2+0] = when(isOn) {
-            true -> 0x11
-            false -> 0x22
+        data[2+0] = when(soundEffect) {
+            SoundEffect.Cozy -> 0x11
+            SoundEffect.Dynamic -> 0x22
         }
     }
 

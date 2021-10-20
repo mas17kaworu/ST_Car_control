@@ -13,4 +13,5 @@
     <color name="colorSelected">@color/colorAccent</color>
     <color name="colorBlue">#3abee5</color>
     <color name="colorWhite">#ffffffff</color>
+    <color name="colorGray">#88888888</color>
 </resources>

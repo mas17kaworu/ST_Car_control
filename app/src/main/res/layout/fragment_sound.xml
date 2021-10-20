@@ -30,25 +30,74 @@
         app:srcCompat="@drawable/selector_sound_effect" />
 
     <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/toggleButton"
+        android:id="@+id/soundEffectToggleButtonGroup"
         style="@style/ToggleButtonGroup"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/soundEffectIcon"
+        app:layout_constraintStart_toStartOf="@id/soundEffectIcon"
+        app:layout_constraintTop_toBottomOf="@+id/soundEffectIcon">
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/soundEffectCozy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sound_effect_natural"
+            android:text="@string/sound_effect_cozy"
             style="@style/ToggleButton" />
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/soundEffectDynamic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sound_effect_dynamic"
             style="@style/ToggleButton" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/soundFieldToggleButtonGroup"
+        style="@style/ToggleButtonGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectToggleButtonGroup"
+        app:layout_constraintEnd_toEndOf="@+id/soundFieldIcon"
+        app:layout_constraintStart_toStartOf="@+id/soundFieldIcon"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectToggleButtonGroup">
+        <Button
+            android:id="@+id/soundFieldQuality"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_field_quality"
+            style="@style/ToggleButton" />
+        <Button
+            android:id="@+id/soundFieldFocus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_field_focus"
+            style="@style/ToggleButton" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/immersionEffectToggleButtonGroup"
+        style="@style/ToggleButtonGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/soundEffectToggleButtonGroup"
+        app:layout_constraintEnd_toEndOf="@+id/immersionEffectIcon"
+        app:layout_constraintStart_toStartOf="@+id/immersionEffectIcon"
+        app:layout_constraintTop_toTopOf="@+id/soundEffectToggleButtonGroup">
+        <Button
+            android:id="@+id/immersionEffectNatural"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/immersion_effect_natural"
+            style="@style/ToggleButton" />
+        <Button
+            android:id="@+id/immersionEffectSurround"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/immersion_effect_surround"
+            style="@style/ToggleButton" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+<!--    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/soundEffectSwitch"
         style="@style/ModeSwitch"
         android:layout_width="wrap_content"
@@ -94,7 +143,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/soundEffectIcon"
         app:layout_constraintStart_toStartOf="@id/soundEffectIcon"
-        app:layout_constraintTop_toBottomOf="@+id/soundEffectSwitch" />
+        app:layout_constraintTop_toBottomOf="@+id/soundEffectSwitch" />-->
 
     <TextView
         android:id="@+id/soundFieldText"
@@ -117,7 +166,7 @@
         app:layout_constraintTop_toTopOf="@+id/soundEffectIcon"
         app:srcCompat="@drawable/selector_sound_field" />
 
-    <TextView
+<!--    <TextView
         android:id="@+id/soundFieldModeText"
         style="@style/NormalText"
         android:layout_width="wrap_content"
@@ -127,7 +176,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectModeText"
         app:layout_constraintEnd_toEndOf="@id/soundFieldIcon"
         app:layout_constraintStart_toStartOf="@id/soundFieldIcon"
-        app:layout_constraintTop_toTopOf="@+id/soundEffectModeText" />
+        app:layout_constraintTop_toTopOf="@+id/soundEffectModeText" />-->
 
     <TextView
         android:id="@+id/immersionEffectText"
@@ -150,7 +199,7 @@
         app:layout_constraintTop_toTopOf="@+id/soundEffectIcon"
         app:srcCompat="@drawable/selector_immersion_effect" />
 
-    <TextView
+<!--    <TextView
         android:id="@+id/immersionEffectModeText"
         style="@style/NormalText"
         android:layout_width="wrap_content"
@@ -160,19 +209,20 @@
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectModeText"
         app:layout_constraintEnd_toEndOf="@id/immersionEffectIcon"
         app:layout_constraintStart_toStartOf="@id/immersionEffectIcon"
-        app:layout_constraintTop_toTopOf="@+id/soundEffectModeText" />
+        app:layout_constraintTop_toTopOf="@+id/soundEffectModeText" />-->
 
     <Space
         android:id="@+id/modeBottomDivider"
         android:layout_width="0dp"
-        android:layout_height="120dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="100dp"
         app:layout_constraintBottom_toTopOf="@+id/volumeSlider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/soundEffectIcon" />
 
     <Button
-        android:id="@+id/soundEffectOnOff"
+        android:id="@+id/soundModeOnOff"
         style="@style/NormalOutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -190,7 +240,7 @@
         android:layout_marginHorizontal="40dp"
         app:layout_constraintBottom_toBottomOf="@+id/volumeSlider"
         app:layout_constraintEnd_toStartOf="@+id/volumeSlider"
-        app:layout_constraintStart_toEndOf="@+id/soundEffectOnOff"
+        app:layout_constraintStart_toEndOf="@+id/soundModeOnOff"
         app:layout_constraintTop_toTopOf="@+id/volumeSlider"
         app:srcCompat="@drawable/selector_sound" />
 
@@ -257,5 +307,11 @@
         app:layout_constraintEnd_toEndOf="@id/volumeOnOff"
         app:layout_constraintStart_toStartOf="@id/volumeOnOff"
         app:layout_constraintTop_toBottomOf="@+id/volumeOnOff" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/soundModeGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="soundEffectToggleButtonGroup, soundFieldToggleButtonGroup, immersionEffectToggleButtonGroup, soundStyleHifi, soundStyleConcert, soundStyleCinema"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
