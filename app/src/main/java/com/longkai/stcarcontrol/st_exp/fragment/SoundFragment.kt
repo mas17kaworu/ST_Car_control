@@ -1,12 +1,20 @@
 package com.longkai.stcarcontrol.st_exp.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
@@ -14,6 +22,9 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList.*
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList.CMDSoundVolume.SoundVolumeDirection
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentSoundBinding
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class SoundFragment : Fragment() {
 
@@ -21,7 +32,6 @@ class SoundFragment : Fragment() {
 
     private var soundEffect: SoundEffect = SoundEffect.Cozy
     private var soundField: SoundField = SoundField.Quality
-        private set
     private var immersionEffect: ImmersionEffect = ImmersionEffect.Natural
     private var soundMode: SoundMode = SoundMode.On
     private var soundStyle: SoundStyle? = null
@@ -32,8 +42,17 @@ class SoundFragment : Fragment() {
     private val handler = Handler(Looper.getMainLooper())
 
     enum class SoundStyle {
-        Hifi, Concert, Cinema
+        Hifi, Concert, Cinema;
+
+        companion object  {
+            fun withName(name: String): SoundStyle? {
+                return SoundStyle.values().find { it.name == name }
+            }
+        }
     }
+
+    private val Context.dataStore : DataStore<Preferences> by preferencesDataStore("sound_fragment")
+    private val SOUND_STYLE = stringPreferencesKey("sound_style")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,6 +93,8 @@ class SoundFragment : Fragment() {
         }
 
         binding.volumeOnOff.setOnClickListener { onPlayChanged() }
+
+        readPersistedSoundStyle()
     }
 
     private val toggleButtonCheckedListener = object : MaterialButtonToggleGroup.OnButtonCheckedListener {
@@ -176,7 +197,7 @@ class SoundFragment : Fragment() {
         }
     }
 
-    private fun setSoundStyle(newSoundStyle: SoundStyle) {
+    private fun setSoundStyle(newSoundStyle: SoundStyle?) {
         soundStyle = newSoundStyle
         when(newSoundStyle) {
             SoundStyle.Hifi -> {
@@ -194,20 +215,27 @@ class SoundFragment : Fragment() {
                 soundField = SoundField.Focus
                 immersionEffect = ImmersionEffect.Surround
             }
+            null -> {
+                soundEffect = SoundEffect.Cozy
+                soundField = SoundField.Quality
+                immersionEffect = ImmersionEffect.Natural
+            }
         }
 
         updateSoundEffectUI()
         updateSoundFieldUI()
         updateImmersionEffectUI()
 
-        binding.soundStyleHifi.isSelected = (soundStyle == SoundStyle.Hifi)
-        binding.soundStyleConcert.isSelected = (soundStyle == SoundStyle.Concert)
-        binding.soundStyleCinema.isSelected = (soundStyle == SoundStyle.Cinema)
+        binding.soundStyleHifi.isSelected = (newSoundStyle == SoundStyle.Hifi)
+        binding.soundStyleConcert.isSelected = (newSoundStyle == SoundStyle.Concert)
+        binding.soundStyleCinema.isSelected = (newSoundStyle == SoundStyle.Cinema)
 
         ServiceManager.getInstance().sendCommandToCar(
             CMDAkmSound(soundEffect, soundField, immersionEffect),
             CommandListenerAdapter<CMDSoundVolume.Response>()
         )
+
+        persistSoundStyle(newSoundStyle)
     }
 
     private fun onVolumeChanged(newVolume: Int) {
@@ -231,6 +259,30 @@ class SoundFragment : Fragment() {
             CMDSoundPlaySwitch(play),
             CommandListenerAdapter<CMDSoundPlaySwitch.Response>()
         )
+    }
+
+    private fun readPersistedSoundStyle() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            requireContext().dataStore.data.collect { prefs ->
+                val savedSoundStyle = prefs.get(SOUND_STYLE)
+                savedSoundStyle?.let {
+                    soundStyle = SoundStyle.withName(it)
+                    setSoundStyle(soundStyle)
+                }
+            }
+        }
+    }
+
+    private fun persistSoundStyle(newSoundStyle: SoundStyle?) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            requireContext().dataStore.edit { prefs ->
+                if (newSoundStyle != null) {
+                    prefs.set(SOUND_STYLE, newSoundStyle.name)
+                } else {
+                    prefs.remove(SOUND_STYLE)
+                }
+            }
+        }
     }
 
     companion object {
