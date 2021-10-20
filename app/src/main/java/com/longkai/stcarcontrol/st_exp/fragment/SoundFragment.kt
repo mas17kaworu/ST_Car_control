@@ -133,6 +133,7 @@ class SoundFragment : Fragment() {
 
     private fun onSoundEffectChanged(newSoundEffect: SoundEffect) {
         soundEffect = newSoundEffect
+        updateSoundStyleUI(soundEffectToSoundStyle())
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundEffectSwitch(soundEffect),
             CommandListenerAdapter<CMDSoundEffectSwitch.Response>()
@@ -141,6 +142,7 @@ class SoundFragment : Fragment() {
 
     private fun onSoundFieldChanged(newSoundField: SoundField) {
         soundField = newSoundField
+        updateSoundStyleUI(soundEffectToSoundStyle())
         ServiceManager.getInstance().sendCommandToCar(
             CMDSoundFieldSwitch(soundField),
             CommandListenerAdapter<CMDSoundFieldSwitch.Response>()
@@ -149,6 +151,7 @@ class SoundFragment : Fragment() {
 
     private fun onImmersionEffectChanged(newImmersionEffect: ImmersionEffect) {
         immersionEffect = newImmersionEffect
+        updateSoundStyleUI(soundEffectToSoundStyle())
         ServiceManager.getInstance().sendCommandToCar(
             CMDImmersionEffectSwitch(immersionEffect),
             CommandListenerAdapter<CMDImmersionEffectSwitch.Response>()
@@ -226,9 +229,7 @@ class SoundFragment : Fragment() {
         updateSoundFieldUI()
         updateImmersionEffectUI()
 
-        binding.soundStyleHifi.isSelected = (newSoundStyle == SoundStyle.Hifi)
-        binding.soundStyleConcert.isSelected = (newSoundStyle == SoundStyle.Concert)
-        binding.soundStyleCinema.isSelected = (newSoundStyle == SoundStyle.Cinema)
+        updateSoundStyleUI(soundEffectToSoundStyle())
 
         ServiceManager.getInstance().sendCommandToCar(
             CMDAkmSound(soundEffect, soundField, immersionEffect),
@@ -236,6 +237,31 @@ class SoundFragment : Fragment() {
         )
 
         persistSoundStyle(newSoundStyle)
+    }
+
+    private fun soundEffectToSoundStyle(): SoundStyle? {
+        if (soundEffect == SoundEffect.Cozy &&
+            soundField == SoundField.Quality &&
+            immersionEffect == ImmersionEffect.Natural) {
+            return SoundStyle.Hifi
+        } else if (soundEffect == SoundEffect.Cozy &&
+            soundField == SoundField.Quality &&
+            immersionEffect == ImmersionEffect.Surround) {
+            return SoundStyle.Concert
+        } else if (soundEffect == SoundEffect.Dynamic &&
+            soundField == SoundField.Focus &&
+            immersionEffect == ImmersionEffect.Surround) {
+            return SoundStyle.Cinema
+        }
+        else {
+            return null
+        }
+    }
+
+    private fun updateSoundStyleUI(newSoundStyle: SoundStyle?) {
+        binding.soundStyleHifi.isSelected = (newSoundStyle == SoundStyle.Hifi)
+        binding.soundStyleConcert.isSelected = (newSoundStyle == SoundStyle.Concert)
+        binding.soundStyleCinema.isSelected = (newSoundStyle == SoundStyle.Cinema)
     }
 
     private fun onVolumeChanged(newVolume: Int) {
