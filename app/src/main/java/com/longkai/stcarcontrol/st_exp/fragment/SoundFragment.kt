@@ -200,6 +200,10 @@ class SoundFragment : Fragment() {
         updateSoundFieldUI()
         updateImmersionEffectUI()
 
+        binding.soundStyleHifi.isSelected = (soundStyle == SoundStyle.Hifi)
+        binding.soundStyleConcert.isSelected = (soundStyle == SoundStyle.Concert)
+        binding.soundStyleCinema.isSelected = (soundStyle == SoundStyle.Cinema)
+
         ServiceManager.getInstance().sendCommandToCar(
             CMDAkmSound(soundEffect, soundField, immersionEffect),
             CommandListenerAdapter<CMDSoundVolume.Response>()

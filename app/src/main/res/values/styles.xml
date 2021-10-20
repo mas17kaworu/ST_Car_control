@@ -87,6 +87,7 @@
     <style name="NormalOutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button.TextButton</item>
         <item name="android:textAppearance">@style/NormalText</item>
+        <item name="android:textColor">@color/selector_enabled_selected</item>
         <item name="strokeColor">@color/selector_enabled</item>
         <item name="strokeWidth">1dp</item>
         <item name="android:paddingTop">8dp</item>
