@@ -1,29 +1,22 @@
 package com.longkai.stcarcontrol.st_exp.fragment
 
-import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.longkai.stcarcontrol.st_exp.R
+import com.longkai.stcarcontrol.st_exp.appPrefsDataStore
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList.*
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSoundList.CMDSoundVolume.SoundVolumeDirection
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentSoundBinding
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class SoundFragment : Fragment() {
@@ -39,8 +32,6 @@ class SoundFragment : Fragment() {
     private var volume: Int = (VOLUME_MAX + VOLUME_MIN) / 2
     private var play: Boolean = false
 
-    private val handler = Handler(Looper.getMainLooper())
-
     enum class SoundStyle {
         Hifi, Concert, Cinema;
 
@@ -51,7 +42,6 @@ class SoundFragment : Fragment() {
         }
     }
 
-    private val Context.dataStore : DataStore<Preferences> by preferencesDataStore("sound_fragment")
     private val SOUND_STYLE = stringPreferencesKey("sound_style")
 
     override fun onCreateView(
@@ -289,7 +279,7 @@ class SoundFragment : Fragment() {
 
     private fun readPersistedSoundStyle() {
         viewLifecycleOwner.lifecycleScope.launch {
-            requireContext().dataStore.data.collect { prefs ->
+            requireContext().appPrefsDataStore.data.collect { prefs ->
                 val savedSoundStyle = prefs.get(SOUND_STYLE)
                 savedSoundStyle?.let {
                     soundStyle = SoundStyle.withName(it)
@@ -301,7 +291,7 @@ class SoundFragment : Fragment() {
 
     private fun persistSoundStyle(newSoundStyle: SoundStyle?) {
         viewLifecycleOwner.lifecycleScope.launch {
-            requireContext().dataStore.edit { prefs ->
+            requireContext().appPrefsDataStore.edit { prefs ->
                 if (newSoundStyle != null) {
                     prefs.set(SOUND_STYLE, newSoundStyle.name)
                 } else {
