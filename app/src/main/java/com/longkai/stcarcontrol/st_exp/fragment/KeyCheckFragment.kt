@@ -104,6 +104,11 @@ class KeyCheckFragment : Fragment() {
 
     fun updateUI() {
         val keyCheckResultResId = if (keyFound) R.string.key_check_found else R.string.key_check_not_found
+        if (keyFound) {
+            binding.keyCheckIcon.setImageResource(R.mipmap.ic_key_check_valid)
+        } else {
+            binding.keyCheckIcon.setImageResource(R.mipmap.ic_key_check_invalid)
+        }
         binding.keyCheckResult.setText(keyCheckResultResId)
     }
 

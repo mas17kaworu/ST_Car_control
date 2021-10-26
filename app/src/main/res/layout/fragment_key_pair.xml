@@ -17,14 +17,25 @@
         tools:text="@string/key_page_title" />
 
     <ImageView
-        android:id="@+id/keyPairIcon"
+        android:id="@+id/ivDigitalKeyBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@mipmap/ic_digital_key_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.75"/>
+
+    <ImageView
+        android:id="@+id/keyPairIcon"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         app:layout_constraintBottom_toTopOf="@id/key1"
         app:layout_constraintEnd_toStartOf="@id/keyCheckIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45"
+        app:layout_constraintVertical_bias="0.3"
         app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/door_lock"
         tools:visibility="visible" />
@@ -42,13 +53,13 @@
 
     <ImageView
         android:id="@+id/keyCheckIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         app:layout_constraintBottom_toBottomOf="@id/keyPairIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/keyPairIcon"
         app:layout_constraintTop_toTopOf="@id/keyPairIcon"
-        app:srcCompat="@drawable/door_lock"
+        app:srcCompat="@mipmap/ic_key_check_enter"
         tools:visibility="visible" />
 
     <TextView

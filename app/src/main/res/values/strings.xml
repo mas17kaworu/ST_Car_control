@@ -133,7 +133,7 @@
   <string name="key_pair_start_timeout_msg">%1$ds</string>
 
   <string name="key_check_found">Detected valid key</string>
-  <string name="key_check_not_found">Not detected valid key</string>
+  <string name="key_check_not_found">No key detected</string>
 
 
 

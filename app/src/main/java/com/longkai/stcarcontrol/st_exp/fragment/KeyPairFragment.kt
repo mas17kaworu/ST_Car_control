@@ -160,6 +160,7 @@ class KeyPairFragment : Fragment() {
         }
 
         binding.keyCheckUIGroup.visibility = if (step == PairStep.Home) View.VISIBLE else View.GONE
+        binding.ivDigitalKeyBackground.visibility = if (step == PairStep.Home) View.VISIBLE else View.GONE
 
         if (step == PairStep.Start) {
             binding.timer.visibility = View.VISIBLE

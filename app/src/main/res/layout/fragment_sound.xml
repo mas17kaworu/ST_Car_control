@@ -20,8 +20,8 @@
 
     <ImageView
         android:id="@+id/soundEffectIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         app:layout_constraintBottom_toTopOf="@+id/modeBottomDivider"
         app:layout_constraintEnd_toStartOf="@+id/soundFieldIcon"
         app:layout_constraintStart_toStartOf="parent"
@@ -167,8 +167,8 @@
 
     <ImageView
         android:id="@+id/soundFieldIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectIcon"
         app:layout_constraintEnd_toStartOf="@+id/immersionEffectIcon"
         app:layout_constraintStart_toEndOf="@+id/soundEffectIcon"
@@ -200,8 +200,8 @@
 
     <ImageView
         android:id="@+id/immersionEffectIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         app:layout_constraintBottom_toBottomOf="@+id/soundEffectIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/soundFieldIcon"

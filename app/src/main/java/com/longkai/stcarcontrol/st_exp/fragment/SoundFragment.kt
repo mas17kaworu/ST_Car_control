@@ -303,7 +303,7 @@ class SoundFragment : Fragment() {
 
     companion object {
         const val VOLUME_MIN = 0
-        const val VOLUME_MAX = 16
+        const val VOLUME_MAX = 15
         const val VOLUME_STEP_SIZE = 1
     }
 }
