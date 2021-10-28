@@ -252,6 +252,9 @@ class SoundFragment : Fragment() {
         binding.soundStyleHifi.isSelected = (newSoundStyle == SoundStyle.Hifi)
         binding.soundStyleConcert.isSelected = (newSoundStyle == SoundStyle.Concert)
         binding.soundStyleCinema.isSelected = (newSoundStyle == SoundStyle.Cinema)
+        binding.soundStyleHifiIcon.isSelected = (newSoundStyle == SoundStyle.Hifi)
+        binding.soundStyleConcertIcon.isSelected = (newSoundStyle == SoundStyle.Concert)
+        binding.soundStyleCinemaIcon.isSelected = (newSoundStyle == SoundStyle.Cinema)
     }
 
     private fun onVolumeChanged(newVolume: Int) {

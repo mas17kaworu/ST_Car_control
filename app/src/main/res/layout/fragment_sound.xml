@@ -264,7 +264,7 @@
     <Space
         android:id="@+id/volumeBottomDivider"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="20dp"
         app:layout_constraintBottom_toTopOf="@+id/soundStyleHifi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -275,6 +275,7 @@
         style="@style/NormalOutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
         android:text="@string/sound_style_hifi"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/soundStyleConcert"
@@ -287,7 +288,7 @@
         style="@style/NormalOutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="60dp"
+        android:layout_marginHorizontal="100dp"
         android:text="@string/sound_style_concert"
         app:layout_constraintBottom_toBottomOf="@+id/soundStyleHifi"
         app:layout_constraintEnd_toStartOf="@+id/soundStyleCinema"
@@ -305,6 +306,33 @@
         app:layout_constraintStart_toEndOf="@+id/soundStyleConcert"
         app:layout_constraintTop_toTopOf="@+id/soundStyleHifi" />
 
+    <ImageView
+        android:id="@+id/soundStyleHifiIcon"
+        style="@style/SoundStyleIcon"
+        android:src="@drawable/selector_sound_style_hifi"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/soundStyleHifi"
+        app:layout_constraintStart_toStartOf="@+id/soundStyleHifi"
+        app:layout_constraintEnd_toEndOf="@+id/soundStyleHifi"/>
+
+    <ImageView
+        android:id="@+id/soundStyleConcertIcon"
+        style="@style/SoundStyleIcon"
+        android:src="@drawable/selector_sound_style_concert"
+        app:layout_constraintTop_toTopOf="@+id/soundStyleHifiIcon"
+        app:layout_constraintBottom_toBottomOf="@+id/soundStyleHifiIcon"
+        app:layout_constraintStart_toStartOf="@+id/soundStyleConcert"
+        app:layout_constraintEnd_toEndOf="@+id/soundStyleConcert"/>
+
+    <ImageView
+        android:id="@+id/soundStyleCinemaIcon"
+        style="@style/SoundStyleIcon"
+        android:src="@drawable/selector_sound_style_cinema"
+        app:layout_constraintTop_toTopOf="@+id/soundStyleHifiIcon"
+        app:layout_constraintBottom_toBottomOf="@+id/soundStyleHifiIcon"
+        app:layout_constraintStart_toStartOf="@+id/soundStyleCinema"
+        app:layout_constraintEnd_toEndOf="@+id/soundStyleCinema"/>
+
     <TextView
         android:id="@+id/playText"
         style="@style/NormalText"
@@ -321,6 +349,6 @@
         android:id="@+id/soundModeGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="soundEffectToggleButtonGroup, soundFieldToggleButtonGroup, immersionEffectToggleButtonGroup, soundStyleHifi, soundStyleConcert, soundStyleCinema" />
+        app:constraint_referenced_ids="soundEffectToggleButtonGroup, soundFieldToggleButtonGroup, immersionEffectToggleButtonGroup, soundStyleHifi, soundStyleConcert, soundStyleCinema, soundStyleHifiIcon, soundStyleConcertIcon, soundStyleCinemaIcon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
