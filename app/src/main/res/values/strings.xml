@@ -97,9 +97,9 @@
   <string name="unmute">UnMute</string>
 
   <!-- AVAS screen -->
-  <string name="avas_mode1">Mode 1</string>
-  <string name="avas_mode2">Mode 2</string>
-  <string name="avas_mode3">Mode 3</string>
+  <string name="avas_mode1">Sine wave fusion</string>
+  <string name="avas_mode2">WAV splice</string>
+  <string name="avas_mode3">Auto Play</string>
   <string name="avas_volume">Volume</string>
   <string name="avas_speed">Speed</string>
 

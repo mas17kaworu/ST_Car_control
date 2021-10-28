@@ -4,7 +4,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
 
 enum class Mode {
-    Mode1, Mode2
+    Mode1, Mode2, Mode3
 }
 
 class CMDAvasSoundMode(mode: Mode) : BaseCommand() {
@@ -17,6 +17,7 @@ class CMDAvasSoundMode(mode: Mode) : BaseCommand() {
         data[2+1] = when (mode) {
             Mode.Mode1 -> 0x04
             Mode.Mode2 -> 0x08
+            Mode.Mode3 -> 0x09
         }
     }
 

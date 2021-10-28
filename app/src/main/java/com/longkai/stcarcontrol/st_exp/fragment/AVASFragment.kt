@@ -39,6 +39,7 @@ class AVASFragment : Fragment() {
 
         binding.mode1Icon.setOnClickListener { onModeChanged(Mode.Mode1) }
         binding.mode2Icon.setOnClickListener { onModeChanged(Mode.Mode2) }
+        binding.mode3Icon.setOnClickListener { onModeChanged(Mode.Mode3) }
 
         binding.volumeSlider.addOnChangeListener { _, volume, _ ->
             onVolumeChanged(volume.toInt())
@@ -68,6 +69,9 @@ class AVASFragment : Fragment() {
 
         binding.mode2Icon.isSelected = mode == Mode.Mode2
         binding.mode2Text.isSelected = mode == Mode.Mode2
+
+        binding.mode3Icon.isSelected = mode == Mode.Mode3
+        binding.mode3Text.isSelected = mode == Mode.Mode3
     }
 
     private fun onVolumeChanged(newVolume: Int) {

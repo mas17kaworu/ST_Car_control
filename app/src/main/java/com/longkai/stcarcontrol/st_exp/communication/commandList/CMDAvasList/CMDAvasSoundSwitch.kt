@@ -17,6 +17,7 @@ class CMDAvasSoundSwitch(mode: Mode, play: Boolean) : BaseCommand() {
         data[2+1] = when (mode) {
             Mode.Mode1 -> 0x04
             Mode.Mode2 -> 0x08
+            Mode.Mode3 -> 0x09
         }
     }
 
