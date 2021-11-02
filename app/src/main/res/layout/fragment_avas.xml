@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     android:padding="30dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Acoustic Vehicle Alerting System"
+        android:textColor="#ffffff"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        />
 
     <ImageView
         android:id="@+id/mode1Icon"

@@ -39,25 +39,34 @@ public class OLED2Controller {
 
       if (state.reverseState) {
         reversingIV.setVisibility(View.VISIBLE);
-        leftRightState = OLEDLeftRightState.ALL_ON;
+//        leftRightState = OLEDLeftRightState.ALL_ON;
       } else {
         reversingIV.setVisibility(View.INVISIBLE);
         //leftRightState = OLEDLeftRightState.ALL_OFF;
       }
 
-      if (state.breakState)
+      if (state.breakState) {
         breakIV.setVisibility(View.VISIBLE);
-
-      else
-
-        breakIV.setVisibility(View.INVISIBLE);
+        positionIV.setImageResource(R.mipmap.ic_back_oled2_position_state1);
+        positionIV.setVisibility(View.VISIBLE);
+      }
+      else {
+        if (!state.positionState) { // position 也是关的
+          breakIV.setVisibility(View.INVISIBLE);
+          positionIV.setVisibility(View.INVISIBLE);
+        }
+      }
 
       if (state.positionState) {
         positionIV.setVisibility(View.VISIBLE);
+        breakIV.setVisibility(View.VISIBLE);
         handler.postDelayed(runner, 500);
       } else {
         handler.removeCallbacks(runner);
-        positionIV.setVisibility(View.INVISIBLE);
+        if (!state.breakState) { // break 也是关的
+          breakIV.setVisibility(View.INVISIBLE);
+          positionIV.setVisibility(View.INVISIBLE);
+        }
       }
 
 
