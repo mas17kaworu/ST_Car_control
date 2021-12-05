@@ -26,7 +26,7 @@ val Context.appPrefsDataStore : DataStore<Preferences> by preferencesDataStore("
 class STCarApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        CrashHandler.getsInstance().init(this)
+        // CrashHandler.getsInstance().init(this)
 
 //        Log.i("longkai", "Karl test isExternalStorageWritable = " + FileUtils.isExternalStorageWritable());
 //        Log.i("longkai", "Karl test INTERNAL_PATH = " + INTERNAL_PATH);
