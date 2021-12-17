@@ -1,167 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/ic_fragment_background">
-    <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/gifv_seat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_tmp"
-        android:layout_marginTop="112px"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="533px"
-         />
+    android:background="@mipmap/ic_fragment_background"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <TextView
         android:id="@+id/tv_seat_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/homepage_seat"
-        android:layout_marginTop="30dp"
         android:layout_marginLeft="50dp"
-        android:textColor="#FFFFFF"
+        android:layout_marginTop="30dp"
+        android:text="@string/homepage_seat"
         android:textAllCaps="true"
-        android:textSize="40sp"/>
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_seat_diagram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Diagram"
         android:textColor="#dddddd"
-        android:textStyle="italic"
         android:textSize="30sp"
-        android:layout_below="@id/tv_seat_title"
-        android:layout_alignStart="@id/tv_seat_title"/>
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="@id/tv_seat_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_seat_title" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gifv_seat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_seat_tmp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/seatLine1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="230dp"
+            android:layout_marginEnd="170dp"
+            android:src="@mipmap/ic_seat_line1"
+            app:layout_constraintEnd_toEndOf="@id/gifv_seat"
+            app:layout_constraintTop_toTopOf="@id/gifv_seat" />
+
+        <include
+            android:id="@+id/seatBackSupport"
+            layout="@layout/seat_back_support_collection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/seatLine1"
+            app:layout_constraintEnd_toStartOf="@+id/seatLine1"
+            app:layout_constraintTop_toTopOf="@+id/seatLine1" />
+
+        <ImageView
+            android:id="@+id/seatLine2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="360dp"
+            android:layout_marginEnd="356dp"
+            android:src="@mipmap/ic_seat_line2"
+            app:layout_constraintEnd_toEndOf="@id/gifv_seat"
+            app:layout_constraintTop_toTopOf="@id/gifv_seat" />
+
+        <include
+            android:id="@+id/seatBottomRotate"
+            layout="@layout/seat_bottom_rotate_collection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/seatLine2"
+            app:layout_constraintStart_toStartOf="@+id/seatLine2"
+            app:layout_constraintTop_toBottomOf="@id/seatLine2" />
+
+        <include
+            android:id="@+id/seatBottomUpdown"
+            layout="@layout/seat_bottom_updown_collection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-30dp"
+            app:layout_constraintEnd_toEndOf="@+id/seatBottomRotate"
+            app:layout_constraintStart_toStartOf="@+id/seatBottomRotate"
+            app:layout_constraintTop_toBottomOf="@+id/seatBottomRotate" />
 
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_line1"
-        android:layout_marginTop="300dp"
-        android:layout_marginLeft="240dp"/>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="230dp"
-        android:layout_marginLeft="90dp">
-        <include layout="@layout/seat_back_support_collection"/>
-    </RelativeLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/seatBottomUpdown"
+            app:layout_constraintStart_toEndOf="@+id/seatBottomRotate">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="800dp"
-        android:layout_marginTop="200dp">
-        <include layout="@layout/seat_back_forward_backward_collection"/>
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_seat_heat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_seat_heat_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_line2"
-        android:layout_marginLeft="175dp"
-        android:layout_marginTop="420dp"/>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="75dp"
-        android:layout_marginTop="470dp">
-        <include layout="@layout/seat_bottom_rotate_collection"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="140dp"
-        android:layout_marginTop="520dp">
-        <include layout="@layout/seat_bottom_updown_collection"/>
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_seat_heat_stage_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:src="@mipmap/ic_seat_stage_gray"
+                app:layout_constraintEnd_toStartOf="@id/iv_seat_heat_stage_2"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_seat_heat" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="700dp"
-        android:layout_marginTop="440dp">
-        <include layout="@layout/seat_bottom_forward_backward_collection"/>
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_seat_heat_stage_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_seat_stage_gray"
+                app:layout_constraintEnd_toStartOf="@id/iv_seat_heat_stage_3"
+                app:layout_constraintStart_toEndOf="@id/iv_seat_heat_stage_1"
+                app:layout_constraintTop_toTopOf="@id/iv_seat_heat_stage_1" />
 
+            <ImageView
+                android:id="@+id/iv_seat_heat_stage_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_seat_stage_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_seat_heat_stage_2"
+                app:layout_constraintTop_toTopOf="@id/iv_seat_heat_stage_1" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/iv_seat_heat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_heat_gray"
-        android:layout_marginStart="320dp"
-        android:layout_marginTop="570dp"/>
-    <ImageView
-        android:id="@+id/iv_seat_heat_stage_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_stage_gray"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/iv_seat_heat"
-        android:layout_alignStart="@id/iv_seat_heat" />
-    <ImageView
-        android:id="@+id/iv_seat_heat_stage_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_stage_gray"
-        android:layout_marginLeft="19dp"
-        android:layout_alignTop="@id/iv_seat_heat_stage_1"
-        android:layout_toRightOf="@id/iv_seat_heat_stage_1"/>
-    <ImageView
-        android:id="@+id/iv_seat_heat_stage_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_stage_gray"
-        android:layout_marginLeft="43dp"
-        android:layout_alignTop="@id/iv_seat_heat_stage_1"
-        android:layout_toRightOf="@id/iv_seat_heat_stage_1"/>
+        <include
+            android:id="@+id/seatBackForwardBackward"
+            layout="@layout/seat_back_forward_backward_collection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            app:layout_constraintBottom_toBottomOf="@+id/gifv_seat"
+            app:layout_constraintStart_toEndOf="@+id/gifv_seat"
+            app:layout_constraintTop_toTopOf="@+id/gifv_seat" />
 
+        <include
+            android:id="@+id/seatBottomForwardBackward"
+            layout="@layout/seat_bottom_forward_backward_collection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="@+id/seatBackForwardBackward"
+            app:layout_constraintTop_toBottomOf="@+id/seatBackForwardBackward" />
 
-    <ImageView
-        android:id="@+id/iv_seat_wind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_wind_gray"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="570dp"
-        android:visibility="invisible"/>
-    <RelativeLayout
-        android:id="@+id/set_group_wind"
-        android:layout_marginTop="570dp"
-        android:layout_toEndOf="@id/iv_seat_wind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible">
-        <include layout="@layout/seat_wind_group"/>
-    </RelativeLayout>
+        <ImageView
+            android:id="@+id/iv_seat_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_seat_set_gray"
+            app:layout_constraintEnd_toStartOf="@+id/set_group_set"
+            app:layout_constraintStart_toStartOf="@+id/seatBottomForwardBackward"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
 
-    <ImageView
-        android:id="@+id/iv_seat_set"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_seat_set_gray"
-        android:layout_marginStart="750dp"
-        android:layout_marginTop="570dp"/>
-    <RelativeLayout
-        android:id="@+id/set_group_set"
-        android:layout_marginTop="570dp"
-        android:layout_toEndOf="@id/iv_seat_set"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-        <include layout="@layout/seat_set_group"/>
-    </RelativeLayout>
+        <include
+            android:id="@+id/set_group_set"
+            layout="@layout/seat_set_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_seat_set"
+            app:layout_constraintStart_toEndOf="@id/iv_seat_set"
+            app:layout_constraintTop_toTopOf="@+id/iv_seat_set" />
 
-    <pl.droidsonroids.gif.GifImageView
+        <ImageView
+            android:id="@+id/iv_seat_wind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_seat_wind_gray"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toStartOf="@+id/set_group_wind"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
 
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="100dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"/>
+        <include
+            android:id="@+id/set_group_wind"
+            layout="@layout/seat_wind_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_seat_wind"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_seat_wind"
+            app:layout_constraintTop_toTopOf="@+id/iv_seat_wind" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
