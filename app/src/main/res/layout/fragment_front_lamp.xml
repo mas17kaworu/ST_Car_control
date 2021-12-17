@@ -35,7 +35,7 @@
         android:id="@+id/iv_lamp_jump"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/lamp_jump_to_high_beam"
-        android:layout_marginTop="600dp"
-        android:layout_marginStart="880dp"/>
+        android:layout_marginStart="880dp"
+        android:layout_marginTop="560dp"
+        android:src="@drawable/lamp_jump_to_high_beam" />
 </RelativeLayout>
