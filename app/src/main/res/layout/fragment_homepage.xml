@@ -1,142 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:background="@mipmap/ic_fragment_background">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_car"
-        android:layout_marginTop="200dp"
-        android:layout_centerInParent="true" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="50dp"
+            android:src="@mipmap/ic_homepage_car"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_seat"
-        android:layout_marginStart="530dp"
-        android:layout_marginTop="130dp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/homepage_seat"
-        android:layout_marginStart="585dp"
-        android:layout_marginTop="145dp"
-        android:textColor="#FFC008"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_homepage_seat"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="464dp"
+            android:layout_marginTop="5dp" />
 
-    <ImageView
-        android:id="@+id/iv_homepage_led"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_lights"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="485dp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/homepage_front_lamp"
-        android:layout_below="@id/iv_homepage_led"
-        android:layout_marginStart="50dp"
-        android:textColor="#FFC008" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/homepage_seat"
+            android:textColor="#FFC008"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="514dp"
+            android:layout_marginTop="20dp" />
 
-<!--    <ImageView
+        <ImageView
+            android:id="@+id/iv_homepage_reverse_bcm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_homepage_bcm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="195dp"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BCM"
+            android:textColor="#FFC008"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="242dp"
+            android:layout_marginTop="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_homepage_reverse_mirror"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_homepage_daochejin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="288dp"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Power mirror"
+            android:textColor="#FFC008"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="338dp"
+            android:layout_marginTop="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_homepage_back_trunk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_homepage_houbeixiang"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="772dp"
+            android:layout_marginTop="7dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Power trunk"
+            android:textColor="#FFC008"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="824dp"
+            android:layout_marginTop="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_homepage_front_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_homepage_hvac"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="109dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HVAC"
+            android:textColor="#FFC008"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="156dp" />
+
+        <ImageView
+            android:id="@+id/iv_homepage_led"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_homepage_lights"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="358dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/homepage_front_lamp"
+            android:textColor="#FFC008"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="-15dp"
+            android:layout_marginTop="408dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_homepage_gateway"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="321dp"
+            android:layout_marginTop="449dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gateway"
+            android:textColor="#FFC008"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="368dp"
+            android:layout_marginTop="462dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_homepage_door"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="500dp"
+            android:layout_marginTop="418dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/homepage_door"
+            android:textColor="#FFC008"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="550dp"
+            android:layout_marginTop="430dp" />
+
+        <ImageView
+            android:id="@+id/iv_homepage_auto_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_homepage_auto_display_u"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="737dp"
+            android:layout_marginTop="436dp" />
+
+        <ImageView
+            android:id="@+id/iv_homepage_upgrade_firmware"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/upgrade_firmware_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="826dp"
+            android:layout_marginTop="440dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/upgrade"
+            android:textColor="#ffffff"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="831dp"
+            android:layout_marginTop="496dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_homepage_line"
         android:layout_marginStart="490dp"
         android:layout_marginTop="470dp"/>-->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_door"
-        android:layout_marginStart="560dp"
-        android:layout_marginTop="540dp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/homepage_door"
-        android:layout_marginStart="615dp"
-        android:layout_marginTop="555dp"
-        android:textColor="#FFC008" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_gateway"
-        android:layout_marginStart="385dp"
-        android:layout_marginTop="570dp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gateway"
-        android:layout_marginStart="435dp"
-        android:layout_marginTop="580dp"
-        android:textColor="#FFC008" />
-
-    <ImageView
-        android:id="@+id/iv_homepage_front_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_hvac"
-        android:layout_marginTop="230dp"
-        android:layout_marginStart="70dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="HVAC"
-        android:textColor="#FFC008"
-        android:layout_below="@+id/iv_homepage_front_box"
-        android:layout_alignStart="@+id/iv_homepage_front_box" />
-
-    <ImageView
-        android:id="@+id/iv_homepage_reverse_mirror"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_daochejin"
-        android:layout_marginStart="355dp"
-        android:layout_marginTop="130dp" />
-    <TextView
-        android:layout_toRightOf="@id/iv_homepage_reverse_mirror"
-        android:layout_alignTop="@id/iv_homepage_reverse_mirror"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Power mirror"
-        android:layout_marginTop="15dp"
-        android:textColor="#FFC008"/>
-
-    <ImageView
-        android:id="@+id/iv_homepage_reverse_bcm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_bcm"
-        android:layout_marginStart="257dp"
-        android:layout_marginTop="140dp"/>
-    <TextView
-        android:layout_toRightOf="@id/iv_homepage_reverse_bcm"
-        android:layout_alignTop="@id/iv_homepage_reverse_bcm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="BCM"
-        android:layout_marginTop="15dp"
-        android:textColor="#FFC008"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_houbeixiang"
-        android:layout_marginTop="130dp"
-        android:layout_marginStart="838dp"
-        android:id="@+id/iv_homepage_back_trunk" />
-    <TextView
-        android:layout_toRightOf="@id/iv_homepage_back_trunk"
-        android:layout_alignTop="@id/iv_homepage_back_trunk"
-        android:layout_marginTop="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Power trunk"
-        android:textColor="#FFC008" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -147,27 +232,5 @@
         android:textStyle="italic"
         android:layout_marginStart="50dp"
         android:layout_marginTop="20dp"/>
-    <ImageView
-        android:id="@+id/iv_homepage_auto_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_homepage_auto_display_u"
-        android:layout_marginStart="800dp"
-        android:layout_marginTop="550dp"/>
-
-    <ImageView
-        android:id="@+id/iv_homepage_upgrade_firmware"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/upgrade_firmware_btn"
-        android:layout_marginStart="900dp"
-        android:layout_marginTop="550dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/upgrade"
-        android:layout_marginStart="905dp"
-        android:layout_marginTop="610dp"
-        android:textColor="#ffffff"/>
 
 </RelativeLayout>
