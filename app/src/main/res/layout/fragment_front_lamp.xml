@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/ic_fragment_background">
+    android:background="@mipmap/ic_fragment_background"
+    android:orientation="vertical">
+
     <TextView
         android:id="@+id/tv_car_front_lamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="30dp"
         android:text="LED Head Lamp"
         android:textColor="#ffffff"
         android:textSize="40sp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="30dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_Head_Lamp_diagram"
         android:layout_width="wrap_content"
@@ -20,22 +26,27 @@
         android:textColor="#dddddd"
         android:textSize="30sp"
         android:textStyle="italic"
-        android:layout_alignStart="@id/tv_car_front_lamp"
-        android:layout_below="@id/tv_car_front_lamp" />
+        app:layout_constraintStart_toStartOf="@id/tv_car_front_lamp"
+        app:layout_constraintTop_toBottomOf="@id/tv_car_front_lamp" />
 
-    <RelativeLayout
+
+    <include
+        android:id="@+id/lampFrontGroup"
+        layout="@layout/lamp_front_collection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="200dp">
-        <include layout="@layout/lamp_front_collection"/>
-    </RelativeLayout>
+        android:layout_marginBottom="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_lamp_jump"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="880dp"
-        android:layout_marginTop="560dp"
-        android:src="@drawable/lamp_jump_to_high_beam" />
-</RelativeLayout>
+        android:layout_marginTop="50dp"
+        android:src="@drawable/lamp_jump_to_high_beam"
+        app:layout_constraintStart_toEndOf="@id/lampFrontGroup"
+        app:layout_constraintTop_toBottomOf="@id/lampFrontGroup" />
+</androidx.constraintlayout.widget.ConstraintLayout>
