@@ -226,11 +226,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ST China"
-        android:textSize="30sp"
-        android:textColor="#ffffff"
-        android:textStyle="italic"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="30dp"
+        android:text="ST China"
+        android:textColor="#ffffff"
+        android:textSize="30sp"
+        android:textStyle="italic" />
 
 </RelativeLayout>
