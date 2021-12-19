@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/ic_fragment_background">
+
     <TextView
         android:id="@+id/tv_trunk_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="30dp"
         android:text="Power Trunk"
         android:textColor="#ffffff"
         android:textSize="40sp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="30dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_trunk_diagram"
@@ -19,30 +23,39 @@
         android:layout_height="wrap_content"
         android:text="Diagram"
         android:textColor="#dddddd"
-        android:textStyle="italic"
         android:textSize="30sp"
-        android:layout_below="@id/tv_trunk_title"
-        android:layout_alignStart="@id/tv_trunk_title" />
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="@id/tv_trunk_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_trunk_title" />
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifv_car_trunk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="80dp"
+        android:elevation="-1dp"
         android:src="@mipmap/ic_car_back_trunk_close"
-        android:layout_marginLeft="50dp"
-        android:layout_centerVertical="true" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/iv_carback_trunk_open"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="870dp"
-        android:layout_marginTop="400dp"
-        android:src="@mipmap/ic_car_back_btn_trunk_close_gray"/>
+        android:layout_marginTop="280dp"
+        android:src="@mipmap/ic_car_back_btn_trunk_close_gray"
+        app:layout_constraintStart_toEndOf="@id/gifv_car_trunk"
+        app:layout_constraintTop_toTopOf="@id/gifv_car_trunk" />
+
     <ImageView
         android:id="@+id/iv_carback_trunk_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="870dp"
-        android:layout_marginTop="500dp"
-        android:src="@mipmap/ic_car_back_btn_trunk_open_gray"/>
-</RelativeLayout>
+        android:layout_marginTop="50dp"
+        android:src="@mipmap/ic_car_back_btn_trunk_open_gray"
+        app:layout_constraintStart_toStartOf="@id/iv_carback_trunk_open"
+        app:layout_constraintTop_toBottomOf="@id/iv_carback_trunk_open" />
+</androidx.constraintlayout.widget.ConstraintLayout>
