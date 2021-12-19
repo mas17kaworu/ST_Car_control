@@ -92,24 +92,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
+            android:background="@mipmap/ic_door_mirror_back"
+            android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/leftGroup"
             app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/doorControlGroupBg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_door_mirror_back"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/iv_door_mirror_select"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="8dp"
                 android:layout_toEndOf="@+id/collection_mirror_adjust"
                 android:src="@drawable/door_mirror_select"
                 app:layout_constraintStart_toEndOf="@+id/collection_mirror_adjust"
@@ -149,7 +142,7 @@
                 android:layout_height="10dp"
                 android:layout_below="@+id/textView_rearwindow_adjust"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:max="100"
                 android:progress="20"
                 android:progressDrawable="@drawable/door_progress_bar_drawable"
@@ -196,6 +189,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/iv_door_mirror_minus"
+                android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/rl_door_button_ground_lamp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -218,7 +212,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/iv_door_mirror_heat"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="4dp"
                         android:text="mirror heat"
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
@@ -243,7 +237,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/iv_door_mirror_fold"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="4dp"
                         android:text="mirror fold"
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
@@ -267,7 +261,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/iv_door_fade_zone_lamp"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="4dp"
                         android:text="Blind Light"
                         android:textColor="#ffffff" />
                 </RelativeLayout>
@@ -298,7 +292,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/iv_door_mirror_light"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="4dp"
                         android:text="turn light"
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
@@ -322,7 +316,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/iv_door_mirror_unfold"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="4dp"
                         android:text="mirror unfold"
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
@@ -346,7 +340,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/iv_door_foot_lamp"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="4dp"
                         android:text="foot lamp"
                         android:textColor="#ffffff" />
                 </RelativeLayout>
@@ -375,7 +369,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/iv_door_ground_lamp"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="4dp"
                     android:text="ground lamp"
                     android:textColor="#ffffff" />
             </RelativeLayout>
