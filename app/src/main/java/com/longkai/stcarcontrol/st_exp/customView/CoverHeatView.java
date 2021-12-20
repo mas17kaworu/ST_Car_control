@@ -38,7 +38,9 @@ public class CoverHeatView extends View{
     private static final int WHITE_COLOR = 0xCCFFFFE0;
     private Bitmap colorPool;
 
-    private static final int[] mHeatPointPos = {
+    // The points are defined for density=2 screens.
+    private static final int BASE_DENSITY = 2;
+    private static final int[] mHeatPointPosForDensity2 = {
             130,200,
             440,223,
             655,223,
@@ -65,6 +67,7 @@ public class CoverHeatView extends View{
     private int radio = 70;
 
     private RadialGradient radialGradient = null;
+    private int[] mHeatPointPos = new int[mHeatPointPosForDensity2.length];
 
     public CoverHeatView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -114,6 +117,11 @@ public class CoverHeatView extends View{
         view = this;
 //        test.start();
 
+        // Transform heat point position for different densities
+        Float density = getResources().getDisplayMetrics().density;
+        for (int i = 0; i < mHeatPointPosForDensity2.length; i++) {
+            mHeatPointPos[i] = (int) (mHeatPointPosForDensity2[i] * density / BASE_DENSITY);
+        }
     }
 
     @Override

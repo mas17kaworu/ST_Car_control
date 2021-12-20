@@ -26,6 +26,7 @@
         android:visibility="invisible" />
 
     <ImageView
+        android:id="@+id/bg_dianluban"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -36,23 +37,27 @@
         android:id="@+id/temperature_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_alignTop="@+id/bg_dianluban"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
         android:background="#554B0082" />
 
     <ImageView
         android:id="@+id/iv_diagnostic_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="100dp"
         android:layout_marginBottom="100dp"
-        android:layout_alignParentBottom="true"
         android:src="@drawable/high_beam_back" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="900dp"
-        android:layout_marginTop="270dp"
+        android:layout_alignTop="@id/bg_dianluban"
+        android:layout_alignBottom="@id/bg_dianluban"
+        android:layout_marginStart="50dp"
+        android:layout_toEndOf="@id/bg_dianluban"
         android:scaleY="2"
         android:src="@mipmap/ic_sewentiao" />
 
