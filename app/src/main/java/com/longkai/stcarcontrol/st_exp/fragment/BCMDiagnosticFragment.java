@@ -1,5 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
+import static com.longkai.stcarcontrol.st_exp.ConstantData.MainFragment.FRAGMENT_TRANSACTION_CAR_BACK;
+
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.Nullable;
@@ -78,7 +80,7 @@ public class BCMDiagnosticFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_diagnostic_back:
-                ((MainActivity)getActivity()).setSelect(5);
+                ((MainActivity)getActivity()).setSelect(FRAGMENT_TRANSACTION_CAR_BACK);
                 break;
 
         }

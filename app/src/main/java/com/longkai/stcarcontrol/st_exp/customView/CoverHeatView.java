@@ -39,7 +39,7 @@ public class CoverHeatView extends View{
     private Bitmap colorPool;
 
     // The points are defined for density=2 screens.
-    private static final int BASE_DENSITY = 2;
+    private static final float BASE_DENSITY = 2f;
     private static final int[] mHeatPointPosForDensity2 = {
             130,200,
             440,223,

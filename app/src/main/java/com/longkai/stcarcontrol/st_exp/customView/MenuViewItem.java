@@ -25,6 +25,10 @@ public class MenuViewItem extends FrameLayout {
 
     private Bitmap bitmap;
 
+    private float density = 2f;
+
+    private static final float BASE_DENSITY = 2f;
+
     public MenuViewItem(Context context) {
 
         super( context);
@@ -51,6 +55,8 @@ public class MenuViewItem extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        density = getResources().getDisplayMetrics().density;
 
         int action = event.getAction();
 
@@ -90,7 +96,10 @@ public class MenuViewItem extends FrameLayout {
 
         }
 
-        int pixel = bitmap.getPixel( x, y);
+        // The xhdpi images are for density=2. need transformation for special densities.
+        int scaledX = (int) (x * BASE_DENSITY / density);
+        int scaledY = (int) (y * BASE_DENSITY / density);
+        int pixel = bitmap.getPixel(scaledX, scaledY);
 
         if(Color.TRANSPARENT == pixel) {
 
