@@ -58,7 +58,9 @@
 
         <activity
             android:name=".compose.DDSActivity"
-            android:exported="true"/>
+            android:exported="true"
+            android:screenOrientation="userLandscape"
+            android:theme="@style/Theme.STCarCompose"/>
     </application>
 
 </manifest>

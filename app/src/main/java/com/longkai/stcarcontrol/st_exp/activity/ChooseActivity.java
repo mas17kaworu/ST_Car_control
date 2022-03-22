@@ -21,6 +21,7 @@ import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
+import com.longkai.stcarcontrol.st_exp.compose.DDSActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -89,6 +90,7 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
         findViewById(R.id.btn_choose_function).setOnClickListener(this);
         findViewById(R.id.btn_choose_VCU).setOnClickListener(this);
         findViewById(R.id.btn_choose_entertainment).setOnClickListener(this);
+        findViewById(R.id.btn_choose_dds).setOnClickListener(this);
         ivBTConnectionState = (ImageView) findViewById(R.id.iv_chooseactivity_lost_bluetooth);
         ivBTConnectionState.setOnClickListener(this);
         ivWifiConnectionState = (ImageView) findViewById(R.id.iv_chooseactivity_lost_wifi);
@@ -98,7 +100,6 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
             ivWifiConnectionState.setVisibility(View.INVISIBLE);
             ivBTConnectionState.setVisibility(View.INVISIBLE);
         }
-
     }
 
     @Override
@@ -115,6 +116,9 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
             case R.id.btn_choose_entertainment:
                 Intent intent3 = new Intent(this, InfotainmentActivity.class);
                 startActivity(intent3);
+                break;
+            case R.id.btn_choose_dds:
+                startActivity(new Intent(this, DDSActivity.class));
                 break;
             case R.id.iv_chooseactivity_lost_wifi:
                 SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "WIFI");
