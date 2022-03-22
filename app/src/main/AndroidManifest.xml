@@ -29,7 +29,8 @@
         android:theme="@style/AppTheme"
         >
         <activity android:name=".activity.ChooseActivity"
-            android:screenOrientation="userLandscape">
+            android:screenOrientation="userLandscape"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
