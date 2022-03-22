@@ -55,6 +55,10 @@
                 <action android:name="com.yuneec.droneservice.remote" />
             </intent-filter>-->
         </service>
+
+        <activity
+            android:name=".compose.DDSActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>
