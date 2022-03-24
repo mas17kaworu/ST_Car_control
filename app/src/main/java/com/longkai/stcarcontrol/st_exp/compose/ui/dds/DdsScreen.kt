@@ -1,9 +1,14 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -82,12 +87,14 @@ fun CreateService(
         innerPadding = 24.dp
     ) {
 
-        Column(modifier = modifier.padding(horizontal = 12.dp).fillMaxWidth(0.9f)) {
+        Column(
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 36.dp)
+        ) {
             HeaderText(text = "Create a new Service")
 
             Spacer(modifier = Modifier.height(16.dp))
-
-
 
             Column(Modifier.fillMaxWidth(0.8f)) {
                 OutlinedTextField(
@@ -118,14 +125,17 @@ fun CreateService(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            LazyColumn {
-                items(actions.size) { index ->
+            Column {
+                actions.mapIndexed { index, action ->
                     ActionItem(
-                        sequence = index + 1,
+                        sequence = index,
                         actionOptions = actionOptions,
-                        initialSelection = actions[index],
-                        onSelectionChanged = {
-
+                        actionSelection = action,
+                        onSelectionChanged = { newAction ->
+                            actions = actions.toMutableList().apply { this[index] = newAction }
+                        },
+                        onActionRemoved = { indexToRemove ->
+                            actions = actions.toMutableList().apply { removeAt(indexToRemove) }
                         }
                     )
                 }
@@ -134,7 +144,12 @@ fun CreateService(
             Spacer(modifier = Modifier.height(24.dp))
 
             Row {
-                Text(text = "Add another action ...")
+                Text(
+                    text = "Add another action ...",
+                    modifier = Modifier.clickable {
+                        actions = actions + actionOptions[0]
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -150,19 +165,20 @@ fun CreateService(
 fun ActionItem(
     sequence: Int,
     actionOptions: List<ServiceAction>,
-    initialSelection: ServiceAction,
-    onSelectionChanged: (ServiceAction) -> Unit
+    actionSelection: ServiceAction,
+    onSelectionChanged: (ServiceAction) -> Unit,
+    onActionRemoved: (Int) -> Unit
 ) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = sequence.toString(),
+            text = "${sequence + 1}",
             modifier = Modifier.width(30.dp)
         )
 
-        var actionSelection by remember { mutableStateOf(initialSelection) }
+//        var actionSelection by remember { mutableStateOf(initialSelection) }
 
         Column(
             modifier = Modifier.weight(weight = 1f),
@@ -173,8 +189,8 @@ fun ActionItem(
                 options = actionOptions,
                 selectedOption = actionSelection,
                 onValueChange = {
-                    actionSelection = it
-                    onSelectionChanged(actionSelection)
+//                    actionSelection = it
+                    onSelectionChanged(it)
                 }
             )
             if (actionSelection is ServiceAction.Delay) {
@@ -184,8 +200,8 @@ fun ActionItem(
                     onValueChange = {
                         if (it.length <= 3) {
                             val delay = Integer.parseInt(it)
-                            actionSelection = ServiceAction.Delay(seconds = delay)
-                            onSelectionChanged(actionSelection)
+                            val newSelection = ServiceAction.Delay(seconds = delay)
+                            onSelectionChanged(newSelection)
                         }
                     },
                     trailingIcon = {
@@ -206,7 +222,10 @@ fun ActionItem(
 
         Image(
             painter = painterResource(id = R.drawable.ic_baseline_remove_circle_outline_24),
-            contentDescription = "Add or remove action"
+            contentDescription = "Add or remove action",
+            modifier = Modifier.clickable {
+                onActionRemoved(sequence)
+            }
         )
     }
 }
