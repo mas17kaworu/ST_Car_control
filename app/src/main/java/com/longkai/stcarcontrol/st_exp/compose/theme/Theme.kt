@@ -29,7 +29,7 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun STCarTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-  val colors = if (darkTheme) {
+  val colors = if (true/*darkTheme*/) {
     DarkColorPalette
   } else {
     LightColorPalette
