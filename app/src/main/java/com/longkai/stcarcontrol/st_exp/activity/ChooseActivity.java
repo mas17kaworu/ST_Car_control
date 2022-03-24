@@ -21,7 +21,7 @@ import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
-import com.longkai.stcarcontrol.st_exp.compose.DDSActivity;
+import com.longkai.stcarcontrol.st_exp.compose.DdsActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -118,7 +118,7 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
                 startActivity(intent3);
                 break;
             case R.id.btn_choose_dds:
-                startActivity(new Intent(this, DDSActivity.class));
+                startActivity(new Intent(this, DdsActivity.class));
                 break;
             case R.id.iv_chooseactivity_lost_wifi:
                 SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "WIFI");

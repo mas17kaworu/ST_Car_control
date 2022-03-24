@@ -57,7 +57,7 @@
         </service>
 
         <activity
-            android:name=".compose.DDSActivity"
+            android:name=".compose.DdsActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="userLandscape"

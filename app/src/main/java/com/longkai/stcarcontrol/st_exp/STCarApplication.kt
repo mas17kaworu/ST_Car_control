@@ -13,6 +13,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.longkai.stcarcontrol.st_exp.STCarApplication
 import com.longkai.stcarcontrol.st_exp.Utils.FileUtils
+import com.longkai.stcarcontrol.st_exp.compose.data.AppContainer
+import com.longkai.stcarcontrol.st_exp.compose.data.AppContainerImpl
 import org.apache.log4j.Level
 import java.io.File
 import java.lang.Exception
@@ -24,6 +26,9 @@ import java.lang.Exception
 val Context.appPrefsDataStore : DataStore<Preferences> by preferencesDataStore("app")
 
 class STCarApplication : Application() {
+
+    lateinit var appContainer: AppContainer
+
     override fun onCreate() {
         super.onCreate()
         // CrashHandler.getsInstance().init(this)
@@ -32,6 +37,7 @@ class STCarApplication : Application() {
 //        Log.i("longkai", "Karl test INTERNAL_PATH = " + INTERNAL_PATH);
 //        logConfig();
 //        FileUtils.createSDDir(INTERNAL_PATH + "testlk");
+        appContainer = AppContainerImpl(this)
     }
 
     companion object {
