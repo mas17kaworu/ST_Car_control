@@ -1,6 +1,8 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -10,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.Typography
@@ -21,7 +24,10 @@ import com.longkai.stcarcontrol.st_exp.compose.ui.components.HeaderText
 @Composable
 fun ServiceListCard(
     modifier: Modifier = Modifier,
-    services: List<ExpressService>
+    services: List<ExpressService>,
+    onClickService: (ExpressService) -> Unit,
+    onDoubleClickService: (ExpressService) -> Unit,
+    onClickCreateService: () -> Unit
 ) {
     CorneredContainer(
         modifier = modifier,
@@ -39,10 +45,14 @@ fun ServiceListCard(
                 cells = GridCells.Fixed(4)
             ) {
                 items(services) { service ->
-                    ServiceCard(service = service)
+                    ServiceItemCard(
+                        service = service,
+                        onClick = onClickService,
+                        onDoubleClick = onDoubleClickService
+                    )
                 }
                 item {
-                    ServiceCardCreate()
+                    ServiceCreateItemCard(onClick = onClickCreateService)
                 }
             }
         }
@@ -50,12 +60,21 @@ fun ServiceListCard(
 }
 
 @Composable
-fun ServiceCard(
-    service: ExpressService
+fun ServiceItemCard(
+    service: ExpressService,
+    onClick: (ExpressService) -> Unit,
+    onDoubleClick: (ExpressService) -> Unit
 ) {
     Box(contentAlignment = Alignment.Center) {
         CorneredContainer(
-            modifier = Modifier.aspectRatio(1f),
+            modifier = Modifier
+                .aspectRatio(1f)
+                .pointerInput(true) {
+                    detectTapGestures(
+                        onTap = { onClick(service) },
+                        onDoubleTap = { onDoubleClick(service) }
+                    )
+                },
             outerPadding = 12.dp,
             innerPadding = 12.dp,
             backgroundColor = MaterialTheme.colors.primaryVariant
@@ -70,10 +89,16 @@ fun ServiceCard(
 }
 
 @Composable
-fun ServiceCardCreate() {
+fun ServiceCreateItemCard(
+    onClick: () -> Unit
+) {
     Box(contentAlignment = Alignment.Center) {
         CorneredContainer(
-            modifier = Modifier.aspectRatio(1f),
+            modifier = Modifier
+                .aspectRatio(1f)
+                .clickable {
+                    onClick()
+                },
             outerPadding = 12.dp,
             innerPadding = 12.dp,
             backgroundColor = MaterialTheme.colors.primaryVariant

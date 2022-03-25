@@ -1,11 +1,10 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.ActivityViewContainer
 
@@ -17,6 +16,8 @@ fun DdsScreen(
 
     if (uiState.loading) return
 
+    var focusedService: ExpressService? by remember { mutableStateOf(null) }
+
     ActivityViewContainer {
         Row(
             modifier = Modifier
@@ -26,7 +27,10 @@ fun DdsScreen(
             Column(modifier = Modifier.weight(0.5f)) {
                 ServiceListCard(
                     modifier = Modifier.heightIn(min = 200.dp, max = 400.dp),
-                    services = uiState.expressServices
+                    services = uiState.expressServices,
+                    onClickService = { focusedService = it },
+                    onDoubleClickService = {},
+                    onClickCreateService = { focusedService = null }
                 )
 
                 Row {
@@ -42,13 +46,17 @@ fun DdsScreen(
             Spacer(modifier = Modifier.padding(horizontal = 24.dp))
 
             Column(Modifier.weight(0.5f)) {
-                CreateServiceCard(
-                    triggerOptions = TriggerCondition.values().toList(),
-                    actionOptions = uiState.actionOptions,
-                    onCreateService = { service ->
-                        ddsViewModel.saveExpressService(service)
-                    }
-                )
+                if (focusedService == null) {
+                    CreateServiceCard(
+                        triggerOptions = TriggerCondition.values().toList(),
+                        actionOptions = uiState.actionOptions,
+                        onCreateService = { service ->
+                            ddsViewModel.saveExpressService(service)
+                        }
+                    )
+                } else {
+
+                }
             }
         }
     }
