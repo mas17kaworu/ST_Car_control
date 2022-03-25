@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.compose.ui
+package com.longkai.stcarcontrol.st_exp.compose.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*

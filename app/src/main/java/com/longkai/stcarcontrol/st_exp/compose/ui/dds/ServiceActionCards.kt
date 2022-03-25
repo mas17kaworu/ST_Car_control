@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction
-import com.longkai.stcarcontrol.st_exp.compose.ui.CorneredContainer
+import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.HeaderText
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.ListItemText
 

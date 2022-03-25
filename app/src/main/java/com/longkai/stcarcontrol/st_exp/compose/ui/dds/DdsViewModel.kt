@@ -3,15 +3,15 @@ package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.DdsRepo
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction
 import com.longkai.stcarcontrol.st_exp.compose.data.successOr
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 data class DdsUiState(
     val expressServices: List<ExpressService> = emptyList(),
@@ -21,6 +21,7 @@ data class DdsUiState(
     val loading: Boolean = false
 )
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DdsViewModel(
     private val ddsRepo: DdsRepo
 ): ViewModel() {
@@ -29,31 +30,44 @@ class DdsViewModel(
     val uiState: StateFlow<DdsUiState> = _uiState.asStateFlow()
 
     init {
-        refreshAll()
+        refreshServiceActions()
+
+        viewModelScope.launch {
+            try {
+                ddsRepo.expressServices().collect { expressServices ->
+                    _uiState.update { it.copy(expressServices = expressServices) }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
-    private fun refreshAll() {
+    private fun refreshServiceActions() {
         _uiState.update { it.copy(loading = true) }
 
         viewModelScope.launch {
-            val expressServiceDeferred = async { ddsRepo.expressServices() }
             val avasActionsDeferred = async { ddsRepo.avasActions() }
             val oledActionsDeferred = async { ddsRepo.oledActions() }
 
-            val expressServices = expressServiceDeferred.await().successOr(emptyList())
             val avasActions = avasActionsDeferred.await().successOr(emptyList())
             val oledActions = oledActionsDeferred.await().successOr(emptyList())
             val actionOptions = avasActions + ServiceAction.Delay(seconds = 5) + oledActions
 
             _uiState.update {
                 it.copy(
-                    expressServices = expressServices,
                     avasActions = avasActions,
                     oledActions = oledActions,
                     actionOptions = actionOptions,
                     loading = false
                 )
             }
+        }
+    }
+
+    fun saveExpressService(service: ExpressService) {
+        viewModelScope.launch {
+            ddsRepo.saveExpressService(service)
         }
     }
 

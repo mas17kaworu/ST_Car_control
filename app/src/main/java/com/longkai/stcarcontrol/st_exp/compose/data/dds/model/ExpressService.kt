@@ -1,5 +1,8 @@
 package com.longkai.stcarcontrol.st_exp.compose.data.dds.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ExpressService(
     val name: String,
     val triggerCondition: TriggerCondition,
@@ -15,35 +18,10 @@ enum class TriggerCondition(val description: String) {
     }
 }
 
-//sealed class ServiceAction {
-//    data class AvasAction(val soundEffect: Int) : ServiceAction() {
-//        override fun name(): String {
-//            return "Sound Effect $soundEffect"
-//        }
-//    }
-//
-//    data class OledAction(val lightEffect: Int) : ServiceAction() {
-//        override fun name(): String {
-//            return "Light Effect $lightEffect"
-//        }
-//    }
-//
-//    data class Delay(val seconds: Int): ServiceAction() {
-//        override fun name(): String {
-//            return "Delay"
-//        }
-//    }
-//
-//    abstract fun name(): String
-//
-//    companion object {
-//        fun from(name: String): ServiceAction {
-//            ServiceAction.
-//        }
-//    }
-//}
-
+@Serializable
 sealed class ServiceAction {
+
+    @Serializable
     data class AvasAction(
         val name: String,
         val action: String? = null
@@ -53,6 +31,7 @@ sealed class ServiceAction {
         }
     }
 
+    @Serializable
     data class OledAction(
         val name: String,
         val action: String? = null
@@ -62,6 +41,7 @@ sealed class ServiceAction {
         }
     }
 
+    @Serializable
     data class Delay(
         val name: String = "Delay",
         val seconds: Int

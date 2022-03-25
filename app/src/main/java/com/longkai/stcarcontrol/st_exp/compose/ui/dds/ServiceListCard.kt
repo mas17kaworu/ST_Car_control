@@ -12,14 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.composestart.ui.theme.Typography
+import com.longkai.stcarcontrol.st_exp.compose.ui.theme.Typography
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
-import com.longkai.stcarcontrol.st_exp.compose.ui.CorneredContainer
+import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.HeaderText
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ServiceList(
+fun ServiceListCard(
     modifier: Modifier = Modifier,
     services: List<ExpressService>
 ) {
