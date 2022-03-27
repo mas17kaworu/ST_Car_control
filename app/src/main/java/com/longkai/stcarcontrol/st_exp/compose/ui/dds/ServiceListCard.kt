@@ -71,10 +71,7 @@ fun ServiceItemCard(
                 .aspectRatio(1f)
                 .pointerInput(service) {
                     detectTapGestures(
-                        onTap = {
-                            println("zcf taped: $service")
-                            onClick(service)
-                                },
+                        onTap = { onClick(service) },
                         onDoubleTap = { onDoubleClick(service) }
                     )
                 },

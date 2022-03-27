@@ -10,7 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,6 +23,7 @@ import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.DropDownList
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.HeaderText
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.ListItemText
+import java.lang.NumberFormatException
 
 
 @Composable
@@ -64,6 +64,31 @@ fun EditServiceCard(
     )
 }
 
+data class ActionItem(
+    val serviceAction: ServiceAction,
+    val delay: String?
+) {
+    override fun toString(): String {
+        return serviceAction.toString()
+    }
+}
+
+fun ServiceAction.toActionItem() = ActionItem(
+    serviceAction = this,
+    delay = if (this is ServiceAction.Delay) this.seconds.toString() else null
+)
+
+fun ActionItem.toServiceAction() = if (this.serviceAction is ServiceAction.Delay) {
+    val parsedDelay = this.delay?.let {
+        try {
+            Integer.parseInt(this.delay)
+        } catch (e : NumberFormatException) {
+            0
+        }
+    } ?: 0
+    ServiceAction.Delay(seconds = parsedDelay)
+} else this.serviceAction
+
 /**
  * @param serviceInReview
  *  - null: Create mode
@@ -88,8 +113,11 @@ fun ServiceDetailCard(
     var triggerCondition by remember(serviceInReview) {
         mutableStateOf(serviceInReview?.triggerCondition ?: triggerOptions[0])
     }
-    var actions by remember(serviceInReview) {
-        mutableStateOf(serviceInReview?.actions ?: listOf(actionOptions[0]))
+
+    val actionItemOptions = actionOptions.map { it.toActionItem() }
+    var actionItems by remember(serviceInReview) {
+        val actions = serviceInReview?.actions ?: listOf(actionOptions[0])
+        mutableStateOf(actions.map { it.toActionItem() })
     }
 
     CorneredContainer(
@@ -137,16 +165,18 @@ fun ServiceDetailCard(
             Spacer(modifier = Modifier.height(16.dp))
 
             Column {
-                actions.mapIndexed { index, action ->
+                actionItems.mapIndexed { index, actionItem ->
                     ActionItem(
                         sequence = index,
-                        actionOptions = actionOptions,
-                        actionSelection = action,
-                        onSelectionChanged = { newAction ->
-                            actions = actions.toMutableList().apply { this[index] = newAction }
+                        actionItemOptions = actionItemOptions,
+                        actionItemSelection = actionItem,
+                        onSelectionChanged = { newActionItem ->
+                            actionItems =
+                                actionItems.toMutableList().apply { this[index] = newActionItem }
                         },
                         onActionRemoved = { indexToRemove ->
-                            actions = actions.toMutableList().apply { removeAt(indexToRemove) }
+                            actionItems =
+                                actionItems.toMutableList().apply { removeAt(indexToRemove) }
                         }
                     )
                 }
@@ -162,7 +192,7 @@ fun ServiceDetailCard(
                     modifier = Modifier
                         .width(IntrinsicSize.Max)
                         .clickable {
-                            actions = actions + actionOptions[0]
+                            actionItems = actionItems + actionItemOptions[0]
                         }
                         .fillMaxWidth()
                 )
@@ -178,7 +208,7 @@ fun ServiceDetailCard(
                             ExpressServiceParam(
                                 name = serviceName,
                                 triggerCondition = triggerCondition,
-                                actions = actions
+                                actions = actionItems.map { it.toServiceAction() }
                             )
                         )
                     },
@@ -198,7 +228,7 @@ fun ServiceDetailCard(
                                     id = serviceInReview.id,
                                     name = serviceName,
                                     triggerCondition = triggerCondition,
-                                    actions = actions
+                                    actions = actionItems.map { it.toServiceAction() }
                                 )
                             )
                         },
@@ -209,6 +239,9 @@ fun ServiceDetailCard(
                             modifier = Modifier.padding(horizontal = 8.dp)
                         )
                     }
+
+                    Spacer(modifier = Modifier.width(20.dp))
+                    
                     Button(
                         onClick = {
                             onDeleteService?.invoke(serviceInReview)
@@ -229,9 +262,9 @@ fun ServiceDetailCard(
 @Composable
 fun ActionItem(
     sequence: Int,
-    actionOptions: List<ServiceAction>,
-    actionSelection: ServiceAction,
-    onSelectionChanged: (ServiceAction) -> Unit,
+    actionItemOptions: List<ActionItem>,
+    actionItemSelection: ActionItem,
+    onSelectionChanged: (ActionItem) -> Unit,
     onActionRemoved: (Int) -> Unit
 ) {
 
@@ -249,25 +282,23 @@ fun ActionItem(
         ) {
             DropDownList(
                 label = "Action",
-                options = actionOptions,
-                selectedOption = actionSelection,
+                options = actionItemOptions,
+                selectedOption = actionItemSelection,
                 onValueChange = {
                     onSelectionChanged(it)
                 }
             )
-            if (actionSelection is ServiceAction.Delay) {
-//                var delayInput by remember(actionSelection) { mutableStateOf(actionSelection.seconds.toString()) }
-
+            if (actionItemSelection.serviceAction is ServiceAction.Delay) {
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = actionSelection.seconds.toString(),
+                    value = actionItemSelection.delay ?: "",
                     onValueChange = { input ->
                         val delayInput = input.filter { it.isDigit() }.take(3)
-                        if (delayInput.isNotBlank()) {
-                            val delay = Integer.parseInt(delayInput)
-                            val newSelection = ServiceAction.Delay(seconds = delay)
-                            onSelectionChanged(newSelection)
-                        }
+                        val newSelection = ActionItem(
+                            serviceAction = ServiceAction.Delay(seconds = 0), // this seconds is no use, will be replaced when create or update.
+                            delay = delayInput
+                        )
+                        onSelectionChanged(newSelection)
                     },
                     trailingIcon = {
                         Text(
