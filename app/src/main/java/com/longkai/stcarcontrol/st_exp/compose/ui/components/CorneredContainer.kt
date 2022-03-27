@@ -20,7 +20,7 @@ fun CorneredContainer(
     cornerSize: Dp = 16.dp,
     outerPadding: Dp = 16.dp,
     innerPadding: Dp = 16.dp,
-    backgroundColor: Color = Color.Gray,
+    backgroundColor: Color = Color.Gray.copy(alpha = 0.3f),
     content: @Composable BoxWithConstraintsScope.() -> Unit
 ) {
     Surface(
