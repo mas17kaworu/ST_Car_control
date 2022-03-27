@@ -6,6 +6,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 
 val fakeExpressServices = listOf(
     ExpressService(
+        id = 0,
         name = "Welcome service",
         triggerCondition = TriggerCondition.DigitalKeyUnlock,
         actions = listOf(
@@ -15,6 +16,7 @@ val fakeExpressServices = listOf(
         )
     ),
     ExpressService(
+        id = 1,
         name = "Light 2 service",
         triggerCondition = TriggerCondition.DoubleClick,
         actions = listOf(
@@ -22,6 +24,7 @@ val fakeExpressServices = listOf(
         )
     ),
     ExpressService(
+        id = 2,
         name = "Sound 1 service",
         triggerCondition = TriggerCondition.DoubleClick,
         actions = listOf(

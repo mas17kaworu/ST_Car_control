@@ -50,12 +50,22 @@ fun DdsScreen(
                     CreateServiceCard(
                         triggerOptions = TriggerCondition.values().toList(),
                         actionOptions = uiState.actionOptions,
-                        onCreateService = { service ->
-                            ddsViewModel.saveExpressService(service)
-                        }
+                        onCreateService = { ddsViewModel.createExpressService(it) }
                     )
                 } else {
-
+                    EditServiceCard(
+                        triggerOptions = TriggerCondition.values().toList(),
+                        actionOptions = uiState.actionOptions,
+                        serviceInReview = focusedService!!,
+                        onUpdateService = {
+                            ddsViewModel.updateExpressService(it)
+                            focusedService = it
+                        },
+                        onDeleteService = {
+                            ddsViewModel.deleteExpressService(it)
+                            focusedService = null
+                        }
+                    )
                 }
             }
         }

@@ -7,9 +7,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.longkai.stcarcontrol.st_exp.appPrefsDataStore
 import com.longkai.stcarcontrol.st_exp.compose.data.Result
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressServiceParam
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction.AvasAction
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction.OledAction
-import com.longkai.stcarcontrol.st_exp.fragment.SoundFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -23,7 +23,9 @@ interface DdsRepo {
     fun expressServices(): Flow<List<ExpressService>>
     suspend fun avasActions(): Result<List<AvasAction>>
     suspend fun oledActions(): Result<List<OledAction>>
-    suspend fun saveExpressService(service: ExpressService)
+    suspend fun createExpressService(serviceParam: ExpressServiceParam)
+    suspend fun updateExpressService(service: ExpressService)
+    suspend fun deleteExpressService(service: ExpressService)
 }
 
 class DdsRepoImpl(
@@ -69,17 +71,66 @@ class DdsRepoImpl(
         }
     }
 
-    override suspend fun saveExpressService(service: ExpressService) {
+    override suspend fun createExpressService(serviceParam: ExpressServiceParam) {
         withContext(Dispatchers.IO) {
             context.appPrefsDataStore.edit { prefs ->
                 val oldServicesString = prefs[EXPRESS_SERVICES]
                 val newServices = if (oldServicesString != null) {
                     val oldServices = Json.decodeFromString<List<ExpressService>>(oldServicesString)
-                    oldServices + service
+                    oldServices + ExpressService(
+                        id = oldServices.lastOrNull()?.id?.plus(1) ?: 0,
+                        name = serviceParam.name,
+                        triggerCondition = serviceParam.triggerCondition,
+                        actions = serviceParam.actions
+                    )
                 } else {
-                    listOf(service)
+                    listOf(
+                        ExpressService(
+                            id = 0,
+                            name = serviceParam.name,
+                            triggerCondition = serviceParam.triggerCondition,
+                            actions = serviceParam.actions
+                        )
+                    )
                 }
                 prefs[EXPRESS_SERVICES] = Json.encodeToString(newServices)
+            }
+        }
+    }
+
+    override suspend fun updateExpressService(service: ExpressService) {
+        withContext(Dispatchers.IO) {
+            context.appPrefsDataStore.edit { prefs ->
+                val oldServicesString = prefs[EXPRESS_SERVICES]
+                if (oldServicesString != null) {
+                    val oldServices = Json.decodeFromString<List<ExpressService>>(oldServicesString)
+                    val index = oldServices.indexOfFirst { it.id == service.id }
+                    val mutableList = oldServices.toMutableList()
+                    if (index != -1) {
+                        mutableList.removeAt(index)
+                        mutableList.add(index, service)
+                    } else {
+                        mutableList.add(service)
+                    }
+                    prefs[EXPRESS_SERVICES] = Json.encodeToString(mutableList)
+                }
+            }
+        }
+    }
+
+    override suspend fun deleteExpressService(service: ExpressService) {
+        withContext(Dispatchers.IO) {
+            context.appPrefsDataStore.edit { prefs ->
+                val oldServicesString = prefs[EXPRESS_SERVICES]
+                if (oldServicesString != null) {
+                    val oldServices = Json.decodeFromString<List<ExpressService>>(oldServicesString)
+                    val index = oldServices.indexOfFirst { it.id == service.id }
+                    val mutableList = oldServices.toMutableList()
+                    if (index != -1) {
+                        mutableList.removeAt(index)
+                    }
+                    prefs[EXPRESS_SERVICES] = Json.encodeToString(mutableList)
+                }
             }
         }
     }

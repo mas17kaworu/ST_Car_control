@@ -69,9 +69,12 @@ fun ServiceItemCard(
         CorneredContainer(
             modifier = Modifier
                 .aspectRatio(1f)
-                .pointerInput(true) {
+                .pointerInput(service) {
                     detectTapGestures(
-                        onTap = { onClick(service) },
+                        onTap = {
+                            println("zcf taped: $service")
+                            onClick(service)
+                                },
                         onDoubleTap = { onDoubleClick(service) }
                     )
                 },

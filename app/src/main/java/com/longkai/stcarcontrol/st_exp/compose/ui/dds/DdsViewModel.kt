@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.DdsRepo
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressServiceParam
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction
 import com.longkai.stcarcontrol.st_exp.compose.data.successOr
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -65,9 +66,21 @@ class DdsViewModel(
         }
     }
 
-    fun saveExpressService(service: ExpressService) {
+    fun createExpressService(serviceParam: ExpressServiceParam) {
         viewModelScope.launch {
-            ddsRepo.saveExpressService(service)
+            ddsRepo.createExpressService(serviceParam)
+        }
+    }
+
+    fun updateExpressService(service: ExpressService) {
+        viewModelScope.launch {
+            ddsRepo.updateExpressService(service)
+        }
+    }
+
+    fun deleteExpressService(service: ExpressService) {
+        viewModelScope.launch {
+            ddsRepo.deleteExpressService(service)
         }
     }
 

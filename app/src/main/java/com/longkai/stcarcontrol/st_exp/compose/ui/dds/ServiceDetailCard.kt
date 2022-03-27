@@ -10,12 +10,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressServiceParam
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
@@ -23,17 +25,72 @@ import com.longkai.stcarcontrol.st_exp.compose.ui.components.DropDownList
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.HeaderText
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.ListItemText
 
-@OptIn(ExperimentalMaterialApi::class)
+
 @Composable
 fun CreateServiceCard(
-    modifier: Modifier = Modifier,
     triggerOptions: List<TriggerCondition>,
     actionOptions: List<ServiceAction>,
-    onCreateService: (ExpressService) -> Unit
+    modifier: Modifier = Modifier,
+    onCreateService: ((ExpressServiceParam) -> Unit)
 ) {
-    var serviceName by remember { mutableStateOf("") }
-    var triggerCondition by remember { mutableStateOf(triggerOptions[0]) }
-    var actions by remember { mutableStateOf(listOf(actionOptions[0])) }
+    ServiceDetailCard(
+        triggerOptions = triggerOptions,
+        actionOptions = actionOptions,
+        modifier = modifier,
+        serviceInReview = null,
+        onCreateService = onCreateService,
+        onUpdateService = null,
+        onDeleteService = null
+    )
+}
+
+@Composable
+fun EditServiceCard(
+    triggerOptions: List<TriggerCondition>,
+    actionOptions: List<ServiceAction>,
+    modifier: Modifier = Modifier,
+    serviceInReview: ExpressService,
+    onUpdateService: ((ExpressService) -> Unit),
+    onDeleteService: ((ExpressService) -> Unit)
+) {
+    ServiceDetailCard(
+        triggerOptions = triggerOptions,
+        actionOptions = actionOptions,
+        modifier = modifier,
+        serviceInReview = serviceInReview,
+        onCreateService = null,
+        onUpdateService = onUpdateService,
+        onDeleteService = onDeleteService
+    )
+}
+
+/**
+ * @param serviceInReview
+ *  - null: Create mode
+ *  - else: Edit mode
+ */
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ServiceDetailCard(
+    triggerOptions: List<TriggerCondition>,
+    actionOptions: List<ServiceAction>,
+    modifier: Modifier,
+    serviceInReview: ExpressService?,
+    onCreateService: ((ExpressServiceParam) -> Unit)?,
+    onUpdateService: ((ExpressService) -> Unit)?,
+    onDeleteService: ((ExpressService) -> Unit)?
+) {
+    val cardTitle = if (serviceInReview == null) "Create a new Service" else "Service details"
+
+    var serviceName by remember(serviceInReview) {
+        mutableStateOf(serviceInReview?.name ?: "")
+    }
+    var triggerCondition by remember(serviceInReview) {
+        mutableStateOf(serviceInReview?.triggerCondition ?: triggerOptions[0])
+    }
+    var actions by remember(serviceInReview) {
+        mutableStateOf(serviceInReview?.actions ?: listOf(actionOptions[0]))
+    }
 
     CorneredContainer(
         modifier = modifier.fillMaxWidth(),
@@ -46,7 +103,7 @@ fun CreateServiceCard(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 36.dp)
         ) {
-            HeaderText(text = "Create a new Service")
+            HeaderText(text = cardTitle)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -113,22 +170,57 @@ fun CreateServiceCard(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                onClick = {
-                    onCreateService(
-                        ExpressService(
-                            name = serviceName,
-                            triggerCondition = triggerCondition,
-                            actions = actions
+
+            if (serviceInReview == null) {
+                Button(
+                    onClick = {
+                        onCreateService?.invoke(
+                            ExpressServiceParam(
+                                name = serviceName,
+                                triggerCondition = triggerCondition,
+                                actions = actions
+                            )
                         )
+                    },
+                    enabled = serviceName.isNotEmpty()
+                ) {
+                    Text(
+                        text = "Create",
+                        modifier = Modifier.padding(horizontal = 8.dp)
                     )
-                },
-                enabled = serviceName.isNotEmpty()
-            ) {
-                Text(
-                    text = "Create",
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
+                }
+            } else {
+                Row {
+                    Button(
+                        onClick = {
+                            onUpdateService?.invoke(
+                                ExpressService(
+                                    id = serviceInReview.id,
+                                    name = serviceName,
+                                    triggerCondition = triggerCondition,
+                                    actions = actions
+                                )
+                            )
+                        },
+                        enabled = serviceName.isNotEmpty()
+                    ) {
+                        Text(
+                            text = "Update",
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                    }
+                    Button(
+                        onClick = {
+                            onDeleteService?.invoke(serviceInReview)
+                        },
+                        enabled = serviceName.isNotEmpty()
+                    ) {
+                        Text(
+                            text = "Delete",
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                    }
+                }
             }
         }
     }
@@ -151,8 +243,6 @@ fun ActionItem(
             modifier = Modifier.width(30.dp)
         )
 
-//        var actionSelection by remember { mutableStateOf(initialSelection) }
-
         Column(
             modifier = Modifier.weight(weight = 1f),
             horizontalAlignment = Alignment.End
@@ -162,17 +252,19 @@ fun ActionItem(
                 options = actionOptions,
                 selectedOption = actionSelection,
                 onValueChange = {
-//                    actionSelection = it
                     onSelectionChanged(it)
                 }
             )
             if (actionSelection is ServiceAction.Delay) {
+//                var delayInput by remember(actionSelection) { mutableStateOf(actionSelection.seconds.toString()) }
+
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = (actionSelection as ServiceAction.Delay).seconds.toString(),
-                    onValueChange = {
-                        if (it.length <= 3) {
-                            val delay = Integer.parseInt(it)
+                    value = actionSelection.seconds.toString(),
+                    onValueChange = { input ->
+                        val delayInput = input.filter { it.isDigit() }.take(3)
+                        if (delayInput.isNotBlank()) {
+                            val delay = Integer.parseInt(delayInput)
                             val newSelection = ServiceAction.Delay(seconds = delay)
                             onSelectionChanged(newSelection)
                         }

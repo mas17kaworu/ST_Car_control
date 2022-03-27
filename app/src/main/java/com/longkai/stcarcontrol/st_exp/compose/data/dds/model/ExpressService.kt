@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ExpressService(
+    val id: Long,
     val name: String,
     val triggerCondition: TriggerCondition,
     val actions: List<ServiceAction>
