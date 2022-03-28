@@ -1,8 +1,12 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -10,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -31,10 +36,9 @@ fun ServiceListCard(
 ) {
     CorneredContainer(
         modifier = modifier,
-        cornerSize = 24.dp,
-        innerPadding = 24.dp
+        cornerSize = 24.dp
     ) {
-        Column {
+        Column(Modifier.padding(24.dp)) {
             HeaderText(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Service Express"
@@ -65,24 +69,34 @@ fun ServiceItemCard(
     onClick: (ExpressService) -> Unit,
     onDoubleClick: (ExpressService) -> Unit
 ) {
-    Box(contentAlignment = Alignment.Center) {
-        CorneredContainer(
+    CorneredContainer(
+        modifier = Modifier.aspectRatio(1f),
+        outerPadding = 12.dp,
+        backgroundColor = MaterialTheme.colors.primaryVariant
+    ) {
+        val interactionSource = remember { MutableInteractionSource() }
+        Box(
             modifier = Modifier
-                .aspectRatio(1f)
+                .indication(interactionSource, LocalIndication.current)
                 .pointerInput(service) {
                     detectTapGestures(
+                        onPress = { offset ->
+                            val press = PressInteraction.Press(offset)
+                            interactionSource.emit(press)
+                            tryAwaitRelease()
+                            interactionSource.emit(PressInteraction.Release(press))
+                        },
                         onTap = { onClick(service) },
                         onDoubleTap = { onDoubleClick(service) }
                     )
                 },
-            outerPadding = 12.dp,
-            innerPadding = 12.dp,
-            backgroundColor = MaterialTheme.colors.primaryVariant
+            contentAlignment = Alignment.Center
         ) {
             Text(
                 text = service.name,
                 textAlign = TextAlign.Center,
-                style = Typography.body1
+                style = Typography.body1,
+                modifier = Modifier.padding(12.dp)
             )
         }
     }
@@ -92,19 +106,19 @@ fun ServiceItemCard(
 fun ServiceCreateItemCard(
     onClick: () -> Unit
 ) {
-    Box(contentAlignment = Alignment.Center) {
-        CorneredContainer(
-            modifier = Modifier
-                .aspectRatio(1f)
-                .clickable {
-                    onClick()
-                },
-            outerPadding = 12.dp,
-            innerPadding = 12.dp,
-            backgroundColor = MaterialTheme.colors.primaryVariant
+    CorneredContainer(
+        modifier = Modifier.aspectRatio(1f),
+        outerPadding = 12.dp,
+        backgroundColor = MaterialTheme.colors.primaryVariant
+    ) {
+        Box(
+            modifier = Modifier.clickable { onClick() },
+            contentAlignment = Alignment.Center
         ) {
             Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .padding(12.dp)
+                    .padding(horizontal = 16.dp),
                 text = "+",
                 textAlign = TextAlign.Center,
                 style = Typography.h3

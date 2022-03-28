@@ -123,11 +123,11 @@ fun ServiceDetailCard(
     CorneredContainer(
         modifier = modifier.fillMaxWidth(),
         cornerSize = 24.dp,
-        innerPadding = 24.dp
     ) {
 
         Column(
             modifier = modifier
+                .padding(24.dp)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 36.dp)
         ) {
