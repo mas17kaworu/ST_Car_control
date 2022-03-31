@@ -4,15 +4,23 @@ import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 
+val fakeSoundEffect1 = ServiceAction.AvasAction("Sound Effect 1", String(byteArrayOf(0x01)))
+val fakeSoundEffect2 = ServiceAction.AvasAction("Sound Effect 2", String(byteArrayOf(0x02)))
+val fakeSoundEffect3 = ServiceAction.AvasAction("Sound Effect 3", String(byteArrayOf(0x03)))
+
+val fakeLightEffect1 = ServiceAction.OledAction("Light Effect 1", String(byteArrayOf(0x01)))
+val fakeLightEffect2 = ServiceAction.OledAction("Light Effect 2", String(byteArrayOf(0x02)))
+val fakeLightEffect3 = ServiceAction.OledAction("Light Effect 3", String(byteArrayOf(0x03)))
+
 val fakeExpressServices = listOf(
     ExpressService(
         id = 0,
         name = "Welcome service",
         triggerCondition = TriggerCondition.DigitalKeyUnlock,
         actions = listOf(
-            ServiceAction.AvasAction("Sound Effect 2"),
+            fakeSoundEffect2,
             ServiceAction.Delay("Delay", 10),
-            ServiceAction.OledAction("Light Effect 3")
+            fakeLightEffect3
         )
     ),
     ExpressService(
@@ -20,7 +28,7 @@ val fakeExpressServices = listOf(
         name = "Light 2 service",
         triggerCondition = TriggerCondition.DoubleClick,
         actions = listOf(
-            ServiceAction.OledAction("Light Effect 2")
+            fakeLightEffect2
         )
     ),
     ExpressService(
@@ -28,19 +36,15 @@ val fakeExpressServices = listOf(
         name = "Sound 1 service",
         triggerCondition = TriggerCondition.DoubleClick,
         actions = listOf(
-            ServiceAction.AvasAction("Sound Effect 1")
+            fakeSoundEffect1
         )
     )
 )
 
 val fakeAvasActions = listOf(
-    ServiceAction.AvasAction("Sound Effect 1"),
-    ServiceAction.AvasAction("Sound Effect 2"),
-    ServiceAction.AvasAction("Sound Effect 3")
+    fakeSoundEffect1, fakeSoundEffect2, fakeSoundEffect3
 )
 
 val fakeOledActions = listOf(
-    ServiceAction.OledAction("Light Effect 1"),
-    ServiceAction.OledAction("Light Effect 2"),
-    ServiceAction.OledAction("Light Effect 3")
+    fakeLightEffect1, fakeLightEffect2, fakeLightEffect3
 )

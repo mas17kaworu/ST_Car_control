@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.Typography
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.HeaderText
 

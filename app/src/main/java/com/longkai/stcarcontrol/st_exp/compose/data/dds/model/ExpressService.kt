@@ -25,7 +25,7 @@ sealed class ServiceAction {
     @Serializable
     data class AvasAction(
         val name: String,
-        val action: String? = null
+        val action: String
     ): ServiceAction() {
         override fun toString(): String {
             return name
@@ -35,7 +35,7 @@ sealed class ServiceAction {
     @Serializable
     data class OledAction(
         val name: String,
-        val action: String? = null
+        val action: String
     ): ServiceAction() {
         override fun toString(): String {
             return name

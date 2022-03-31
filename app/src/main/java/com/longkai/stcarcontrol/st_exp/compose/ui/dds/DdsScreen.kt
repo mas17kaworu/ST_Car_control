@@ -29,7 +29,11 @@ fun DdsScreen(
                     modifier = Modifier.heightIn(min = 200.dp, max = 400.dp),
                     services = uiState.expressServices,
                     onClickService = { focusedService = it },
-                    onDoubleClickService = {},
+                    onDoubleClickService = {
+                        if (it.triggerCondition == TriggerCondition.DoubleClick) {
+                            ddsViewModel.executeExpressService(it)
+                        }
+                    },
                     onClickCreateService = { focusedService = null }
                 )
 

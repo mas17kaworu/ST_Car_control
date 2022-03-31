@@ -37,11 +37,11 @@ class STCarApplication : Application() {
 //        Log.i("longkai", "Karl test INTERNAL_PATH = " + INTERNAL_PATH);
 //        logConfig();
 //        FileUtils.createSDDir(INTERNAL_PATH + "testlk");
-        appContainer = AppContainerImpl(this)
+        appContainer = AppContainerImpl(this, inUIDebugMode)
     }
 
     companion object {
-        const val inUIDebugMode = false
+        const val inUIDebugMode = true
         @JvmStatic
         fun logConfig() {
             val logConfigurator = LogConfigurator()

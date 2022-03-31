@@ -31,37 +31,30 @@ class DdsViewModel(
     val uiState: StateFlow<DdsUiState> = _uiState.asStateFlow()
 
     init {
-        refreshServiceActions()
-
         viewModelScope.launch {
             try {
-                ddsRepo.expressServices().collect { expressServices ->
-                    _uiState.update { it.copy(expressServices = expressServices) }
+                combine(
+                    ddsRepo.expressServices(),
+                    ddsRepo.avasActions,
+                    ddsRepo.oledActions
+                ) { expressServices, avasActionsResult, oledActionsResult ->
+                    val avasActions = avasActionsResult.successOr(emptyList())
+                    val oledActions = oledActionsResult.successOr(emptyList())
+                    val actionOptions = avasActions + ServiceAction.Delay(seconds = 5) + oledActions
+
+                    _uiState.update {
+                        it.copy(
+                            expressServices = expressServices,
+                            avasActions = avasActions,
+                            oledActions = oledActions,
+                            actionOptions = actionOptions,
+                            loading = false
+                        )
+                    }
                 }
+                    .collect()
             } catch (e: Exception) {
                 e.printStackTrace()
-            }
-        }
-    }
-
-    private fun refreshServiceActions() {
-        _uiState.update { it.copy(loading = true) }
-
-        viewModelScope.launch {
-            val avasActionsDeferred = async { ddsRepo.avasActions() }
-            val oledActionsDeferred = async { ddsRepo.oledActions() }
-
-            val avasActions = avasActionsDeferred.await().successOr(emptyList())
-            val oledActions = oledActionsDeferred.await().successOr(emptyList())
-            val actionOptions = avasActions + ServiceAction.Delay(seconds = 5) + oledActions
-
-            _uiState.update {
-                it.copy(
-                    avasActions = avasActions,
-                    oledActions = oledActions,
-                    actionOptions = actionOptions,
-                    loading = false
-                )
             }
         }
     }
@@ -81,6 +74,12 @@ class DdsViewModel(
     fun deleteExpressService(service: ExpressService) {
         viewModelScope.launch {
             ddsRepo.deleteExpressService(service)
+        }
+    }
+
+    fun executeExpressService(service: ExpressService) {
+        viewModelScope.launch {
+            ddsRepo.executeExpressService(service)
         }
     }
 
