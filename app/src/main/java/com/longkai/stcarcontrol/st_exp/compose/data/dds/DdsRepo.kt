@@ -24,6 +24,7 @@ interface DdsRepo {
     fun expressServices(): Flow<List<ExpressService>>
     val avasActions: StateFlow<Result<List<AvasAction>>>
     val oledActions: StateFlow<Result<List<OledAction>>>
+    val digitalKeyUnlocked: StateFlow<Boolean>
     suspend fun createExpressService(serviceParam: ExpressServiceParam)
     suspend fun updateExpressService(service: ExpressService)
     suspend fun deleteExpressService(service: ExpressService)
@@ -44,7 +45,7 @@ class DdsRepoImpl(
     override val oledActions: StateFlow<Result<List<OledAction>>> = _oledActions
 
     private val _digitalKeyUnlocked = MutableStateFlow<Boolean>(false)
-    val digitalKeyUnlocked: StateFlow<Boolean> = _digitalKeyUnlocked
+    override val digitalKeyUnlocked: StateFlow<Boolean> = _digitalKeyUnlocked
 
     init {
         ddsService.start()

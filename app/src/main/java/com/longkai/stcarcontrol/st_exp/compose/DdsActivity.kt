@@ -1,5 +1,6 @@
 package com.longkai.stcarcontrol.st_exp.compose
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.STCarTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.longkai.stcarcontrol.st_exp.STCarApplication
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.notification.DigitalKeyUnlockService
 import com.longkai.stcarcontrol.st_exp.compose.ui.dds.DdsScreen
 import com.longkai.stcarcontrol.st_exp.compose.ui.dds.DdsViewModel
 
@@ -28,5 +30,7 @@ class DdsActivity : ComponentActivity() {
         }
       }
     }
+
+    startService(Intent(this, DigitalKeyUnlockService::class.java))
   }
 }
