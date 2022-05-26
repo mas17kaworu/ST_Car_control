@@ -1,14 +1,21 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
+import android.media.audiofx.Visualizer;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
+import com.longkai.stcarcontrol.st_exp.Utils.FileUtils;
+import com.longkai.stcarcontrol.st_exp.Utils.FileUtils10;
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDAuto1;
@@ -20,8 +27,12 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDReversing;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDTurnLeft;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDTurnRight;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSound.CMDSoundsInfo;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.oled2.OLED2Controller;
+import com.longkai.stcarcontrol.st_exp.model.SoundsInfo;
+import com.longkai.stcarcontrol.st_exp.music.AudioVisualConverter;
+import com.longkai.stcarcontrol.st_exp.music.MyMediaPlayer;
 
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDAuto1;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDAuto2;
@@ -32,14 +43,31 @@ import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDReverse;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDTurnLeft;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDTurnRight;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+
+import kotlin.Pair;
+import kotlin.Triple;
+
 public class CarBackOLED2Fragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = CarBackOLED2Fragment.class.getSimpleName();
+
+    private static int SAMPLES_COUNT_PER_500_MS = 10;
 
     private View mView;
 
-    private ImageView ivReversing, ivBrake, ivPosition, ivTurnLeft, ivTurnRight, ivAuto1, ivAuto2, ivAuto3;
+    private ImageView ivReversing, ivBrake, ivPosition, ivTurnLeft, ivTurnRight, ivAuto1, ivAuto2, ivAuto3, ivPlayOrPause, ivPlayNext, ivPlayPrevious;
 
     private OLED2Controller oledController;
 
+    private MyMediaPlayer mediaPlayer;
+
+    private Boolean isVisualizerInit = false;
+
+    private AudioVisualConverter audioVisualConverter = new AudioVisualConverter();
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -61,12 +89,19 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         ivAuto2.setOnClickListener(this);
         ivAuto3 = (ImageView) mView.findViewById(R.id.btn_back_oled_a3);
         ivAuto3.setOnClickListener(this);
+        ivPlayOrPause = mView.findViewById(R.id.btnPlayAudio);
+        ivPlayOrPause.setOnClickListener(this);
+        ivPlayPrevious = mView.findViewById(R.id.btnPlayPrevious);
+        ivPlayPrevious.setOnClickListener(this);
+        ivPlayNext = mView.findViewById(R.id.btnPlayNext);
+        ivPlayNext.setOnClickListener(this);
 
-
+        mediaPlayer = MyMediaPlayer.getInstance(this.getContext());
 
         return mView;
     }
 
+    private List<Triple<String, Uri, SoundsInfo>> soundsList;
     @Override public void onStart() {
         super.onStart();
         oledController = new OLED2Controller(
@@ -77,6 +112,121 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         );
 
         refreshUI();
+        soundsList = FileUtils10.INSTANCE.getFilesUnderDownloadST(getActivity());
+        try {
+            if (soundsList.isEmpty()) soundsList = new LinkedList<>();
+            soundsList.add(0, new Triple<String, Uri, SoundsInfo>(
+                "st01-default",
+                FileUtils.getResUri(R.raw.st01_wav, this.getContext()),
+                FileUtils10.INSTANCE.readSoundsInfoFile(
+                    FileUtils.getResUri(R.raw.st01_json, this.getContext()), this.getContext()
+                )
+            ));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        //Log.i(TAG, )
+    }
+    private SendSoundsInfoRegular sendCMDTask;
+    private void playMusic(Uri uri, SoundsInfo soundsInfo) {
+        isVisualizerInit = false;
+        mediaPlayer = MyMediaPlayer.getInstance(this.getContext());
+        mediaPlayer.play(uri);
+        mediaPlayer.setPlayStateListener(new MyMediaPlayer.PlayStateListener() {
+            @Override
+            public void onStateChange(MyMediaPlayer.PlayState state) {
+                if (state == MyMediaPlayer.PlayState.STATE_PLAYING) {
+                    isPlaying = true;
+                    sendCMDTask = new SendSoundsInfoRegular(soundsInfo);
+                    handler.post(sendCMDTask);
+                    doWhenStartPlaying();
+                    //initVisualizer();
+                } else if (state == MyMediaPlayer.PlayState.STATE_PAUSE || state == MyMediaPlayer.PlayState.STATE_IDLE) {
+                    handler.removeCallbacks(sendCMDTask);
+                    doWhenStopPlaying();
+                }
+            }
+        });
+    }
+
+    private Visualizer visualizer;
+    private int sampleIndex=0;
+    private int sum = 0;
+    private Visualizer.OnDataCaptureListener dataCaptureListener = new Visualizer.OnDataCaptureListener() {
+        @Override
+        public void onWaveFormDataCapture(Visualizer visualizer, final byte[] waveform, int samplingRate) {
+            //Log.d(TAG, "waveform samplingRate " + samplingRate + " waveform length " + waveform.length);
+            //audioView.post(new Runnable() {
+            //    @Override
+            //    public void run() {
+            //        audioView.setWaveData(waveform);
+            //    }
+            //});
+
+        }
+
+        @Override
+        public void onFftDataCapture(Visualizer visualizer, final byte[] fft, int samplingRate) {
+            //Log.d(TAG, "onFftDataCapture samplingRate" + samplingRate + " FftData " + fft.length);
+            //audioView2.post(new Runnable() {
+            //    @Override
+            //    public void run() {
+            //        audioView2.setWaveData(fft);
+            Log.d(TAG, String.format(Locale.getDefault(), "当前分贝: %s db", audioVisualConverter.getVoiceSize(fft)));
+            //sum += audioVisualConverter.getVoiceSizeGoogle(fft);
+            //if (sampleIndex < SAMPLES_COUNT_PER_500_MS) {
+            //    sampleIndex ++;
+            //} else {
+            //    Log.d(TAG, String.format(Locale.getDefault(), "当前分贝: %s db", sum / SAMPLES_COUNT_PER_500_MS));
+            //    sum = 0;
+            //    sampleIndex = 0;
+            //}
+        }
+    };
+
+
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        super.onDestroy();
+        if (visualizer != null) {
+            visualizer.release();
+        }
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+    }
+
+    private void initVisualizer() {
+        if (isVisualizerInit) {
+            return;
+        }
+        isVisualizerInit = true;
+        //audioVisualConverter = new AudioVisualConverter();
+        Log.d(TAG, "initVisualizer()");
+        try {
+            int mediaPlayerId = mediaPlayer.getMediaPlayerId();
+            Log.i(TAG, "mediaPlayerId: " + mediaPlayerId);
+            if (visualizer != null) {
+                visualizer.release();
+            }
+            visualizer = new Visualizer(mediaPlayerId);
+
+            int captureSize = 128;
+            int captureRate = 2000 * SAMPLES_COUNT_PER_500_MS; //2000 -- 2hz
+            Log.d(TAG, "精度: " + captureSize);
+            Log.d(TAG, "刷新频率: " + captureRate);
+
+            visualizer.setCaptureSize(captureSize);
+            visualizer.setDataCaptureListener(dataCaptureListener, captureRate, true, true);
+            visualizer.setScalingMode(Visualizer.SCALING_MODE_NORMALIZED);
+            visualizer.setEnabled(true);
+        } catch (Exception e) {
+            Log.e(TAG, "请检查录音权限 " + e);
+            isVisualizerInit = false;
+        }
     }
 
     @Override public void onClick(View view) {
@@ -112,6 +262,16 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
             case R.id.btn_back_oled_a3:
                 clickBtn(sBackOLEDAuto3, ivAuto3,new CMDOLEDAuto3());
                 //ServiceManager.getInstance().sendCommandToCar(new CMDOLEDAuto3(), new CommandListenerAdapter());
+                break;
+            case R.id.btnPlayAudio:
+                playOrPause();
+                break;
+            case R.id.btnPlayNext:
+                playNext();
+                break;
+            case R.id.btnPlayPrevious:
+                playPrevious();
+                break;
         }
 
         refreshUI();
@@ -125,6 +285,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         } else {
             //ConstantData.sBackOLEDStatus[index] = 1;
             command.turnOn();
+            //playMusic(FileUtils.getResUri(R.raw.st01, this.getContext()));
             //view.setSelected(true);
         }
         ServiceManager.getInstance().sendCommandToCar(command, new CommandListenerAdapter());
@@ -204,6 +365,77 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
             ConstantData.sBackOLEDStatus[sBackOLEDAuto3] = 0;
         }
     }
+    private Boolean isPlaying = false;
+    private int soundsIndex = 0;
+    Handler handler = new Handler();
+
+    private void playOrPause() {
+        if (!isPlaying) {
+            mediaPlayer.stop();
+            Triple<String, Uri, SoundsInfo> result = soundsList.get(soundsIndex); // todo
+            playMusic(result.getSecond(), result.getThird());
+        } else {
+            mediaPlayer.stop();
+        }
+    }
+
+    private void doWhenStartPlaying() {
+        getView().post(() -> ivPlayOrPause.setImageResource(R.mipmap.ic_stop));
+    }
+
+    private void doWhenStopPlaying() {
+        isPlaying = false;
+        getView().post(() -> ivPlayOrPause.setImageResource(R.mipmap.ic_play));
+    }
+
+    private void playNext() {
+        if (isPlaying) {
+            soundsIndex++;
+            if (soundsIndex >= soundsList.size()) {
+                soundsIndex = 0;
+            }
+            mediaPlayer.stop();
+            Triple<String, Uri, SoundsInfo> result = soundsList.get(soundsIndex); // todo
+            playMusic(result.getSecond(), result.getThird());
+        }
+    }
+
+    private void playPrevious() {
+        if (isPlaying) {
+            soundsIndex--;
+            if (soundsIndex < 0) {
+                soundsIndex = soundsList.size() - 1;
+            }
+            mediaPlayer.stop();
+            Triple<String, Uri, SoundsInfo> result = soundsList.get(soundsIndex); // todo
+            playMusic(result.getSecond(), result.getThird());
+        }
+    }
+
+    private final CommandListenerAdapter doNothing = new CommandListenerAdapter();
+    private class SendSoundsInfoRegular implements Runnable {
+        SendSoundsInfoRegular(SoundsInfo soundsInfo) {
+            this.soundsInfo = soundsInfo;
+        }
+        private int infoIndex = 0;
+        private SoundsInfo soundsInfo;
+
+        @Override public void run() {
+            // Send command
+            Log.d(TAG, "longkai22 frequency " + soundsInfo.component1().get(infoIndex) +
+                " amptitude " + soundsInfo.component2().get(infoIndex));
+            ServiceManager.getInstance().sendCommandToCar(new CMDSoundsInfo(
+                soundsInfo.component1().get(infoIndex),
+                soundsInfo.component2().get(infoIndex)
+            ), doNothing);
+
+            infoIndex++;
+            if (infoIndex < soundsInfo.component1().size() && infoIndex < soundsInfo.component2().size()) {
+                handler.postDelayed(this, 500);
+            }
+
+        }
+    }
 
     /**
      *     protected static final byte TurnLeft = (byte)0x10;
@@ -228,4 +460,6 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
                 (cmdPayload[0] & CMDOLEDBase.TurnRight) != 0
         );
     }
+
+
 }

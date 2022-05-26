@@ -1,22 +1,30 @@
 package com.longkai.stcarcontrol.st_exp.activity;
 
+import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.longkai.stcarcontrol.st_exp.BuildConfig;
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.Utils.FileUtils;
+import com.longkai.stcarcontrol.st_exp.Utils.FileUtils10;
 import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil;
 import com.longkai.stcarcontrol.st_exp.adapter.HorizontalListViewAdapter;
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener;
@@ -86,6 +94,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
   private AtomicBoolean disableSwitchFragment = new AtomicBoolean(false);
 
+  private static final String[] PERMISSIONS = new String[]{
+      Manifest.permission.RECORD_AUDIO,
+      Manifest.permission.MODIFY_AUDIO_SETTINGS,
+      Manifest.permission.READ_EXTERNAL_STORAGE,
+      Manifest.permission.WRITE_EXTERNAL_STORAGE
+  };
+
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -120,15 +136,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     initUI();
     setSelect(0);
 
-    byte UnlockR = (byte) 0x80;
-    byte test = (byte) 0xff;
-    test &= (~UnlockR);
-    Log.d("testLK", UnlockR + "  " + test);
+    //byte UnlockR = (byte) 0x80;
+    //byte test = (byte) 0xff;
+    //test &= (~UnlockR);
+    //Log.d("testLK", UnlockR + "  " + test);
 
-    ActivityCompat.requestPermissions(MainActivity.this, new String[] {
-        android
-            .Manifest.permission.WRITE_EXTERNAL_STORAGE
-    }, 1);
+
+    //getActivity().requestPermissions(PERMISSIONS, 1);
+    //ActivityCompat.checkSelfPermission(this, PERMISSIONS[1])
+    //FileUtils10.INSTANCE.getFilesUnderDownloadST(this);
+    //openFileInNewWindow();
+    requestAllFilesAccessPermission();
+    ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, 1);
 
     int tmp = 500;
     //        float tmp2 = ((float)(5 * tmp) / 1024);
@@ -136,9 +155,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
   }
 
   @Override
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == PICK_TXT_FILE) {
+      //data
+    }
+  }
+
+  @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults) {
     //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     switch (requestCode) {
       case 1:
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -153,6 +181,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         break;
     }
+  }
+  // Request code for selecting a PDF document.
+  private static final int PICK_TXT_FILE = 707;
+
+  private void requestAllFilesAccessPermission() {
+    //Uri uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
+    //
+    //startActivity(
+    //    new Intent(
+    //        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+    //        uri
+    //    )
+    //);
+  }
+
+  private void openFileInNewWindow() {
+    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+    intent.addCategory(Intent.CATEGORY_OPENABLE);
+    intent.setType("text/plain");
+
+    // Optionally, specify a URI for the file that should appear in the
+    // system file picker when it loads.
+    //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+    startActivityForResult(intent, PICK_TXT_FILE);
   }
 
   @Override

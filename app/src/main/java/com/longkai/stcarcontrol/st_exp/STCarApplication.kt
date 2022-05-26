@@ -41,7 +41,7 @@ class STCarApplication : Application() {
     }
 
     companion object {
-        const val inUIDebugMode = true
+        const val inUIDebugMode = false
         @JvmStatic
         fun logConfig() {
             val logConfigurator = LogConfigurator()
@@ -53,7 +53,7 @@ class STCarApplication : Application() {
             logConfigurator.filePattern = "%d %-5p [%c{2}]-[%L] %m%n"
             logConfigurator.maxFileSize = (1024 * 1024 * 5).toLong()
             logConfigurator.isImmediateFlush = true
-            logConfigurator.configure()
+            // logConfigurator.configure()
         }
 
         private const val REQUEST_EXTERNAL_STORAGE = 1
