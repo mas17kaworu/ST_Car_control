@@ -1,10 +1,6 @@
 package com.longkai.stcarcontrol.st_exp;
 
-import com.android.internal.util.Predicate;
-
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 

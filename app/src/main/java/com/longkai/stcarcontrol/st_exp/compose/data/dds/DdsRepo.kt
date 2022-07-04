@@ -11,6 +11,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction.Avas
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction.OledAction
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.service.DdsService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.service.TopicData
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.test.ScreenLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -29,6 +30,7 @@ interface DdsRepo {
     suspend fun updateExpressService(service: ExpressService)
     suspend fun deleteExpressService(service: ExpressService)
     suspend fun executeExpressService(service: ExpressService)
+    suspend fun trySendSomething()
 }
 
 class DdsRepoImpl(
@@ -51,14 +53,17 @@ class DdsRepoImpl(
         ddsService.start()
         ddsService.registerTopicListener(object : DdsService.TopicListener {
             override fun onAvasDataAvailable(topicData: TopicData) {
+                ScreenLog.log( "onAvasDataAvailable")
                 _avasActions.update { Result.Success(topicData.toAvasActions()) }
             }
 
             override fun onOledDataAvailable(topicData: TopicData) {
+                ScreenLog.log( "onOledDataAvailable")
                 _oledActions.update { Result.Success(topicData.toOledActions()) }
             }
 
             override fun onDigitalKeyStateChanged(unlocked: Boolean) {
+                ScreenLog.log( "onDigitalKeyStateChanged")
                 _digitalKeyUnlocked.update { unlocked }
             }
 
@@ -175,6 +180,19 @@ class DdsRepoImpl(
                     is ServiceAction.Delay -> delay(serviceAction.seconds.toLong().times(1000))
                 }
             }
+        }
+    }
+
+    override suspend fun trySendSomething() {
+        withContext(Dispatchers.IO) {
+            ddsService.sendAvasAction(ByteArray(2).apply {
+                this[0] = 1
+                this[0] = 2
+            })
+            ddsService.sendOledAction(ByteArray(2).apply {
+                this[0] = 3
+                this[0] = 4
+            })
         }
     }
 
