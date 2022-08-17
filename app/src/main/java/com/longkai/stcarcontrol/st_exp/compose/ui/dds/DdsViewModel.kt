@@ -83,6 +83,12 @@ class DdsViewModel(
         }
     }
 
+    fun trySendSomething() {
+        viewModelScope.launch {
+            ddsRepo.trySendSomething()
+        }
+    }
+
     companion object {
         fun provideFactory(
             ddsRepo: DdsRepo

@@ -50,7 +50,7 @@ fun parseTopicData(strData: ByteArray): TopicData {
 
             services.add(
                 TopicService(
-                    name = name.toString(),
+                    name = name.decodeToString(),
                     content = content
                 )
             )

@@ -385,7 +385,10 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
 
     private void doWhenStopPlaying() {
         isPlaying = false;
-        getView().post(() -> ivPlayOrPause.setImageResource(R.mipmap.ic_play));
+        if (getView() != null) {
+            getView().post(() -> ivPlayOrPause.setImageResource(R.mipmap.ic_play));
+        }
+
     }
 
     private void playNext() {
