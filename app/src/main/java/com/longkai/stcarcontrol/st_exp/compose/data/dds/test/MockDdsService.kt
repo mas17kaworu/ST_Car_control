@@ -18,7 +18,23 @@ class MockDdsService(private val context: Context): DdsService {
     override fun registerTopicListener(listener: DdsService.TopicListener) {
         Handler(Looper.getMainLooper()).postDelayed(2000) {
             // Log.i(TAG_DDS, "Send DDS mock data")
-            ScreenLog.log( "Send DDS mock data")
+            ScreenLog.log( "Send DDS mock data 1 ")
+            listener.onAvasDataAvailable(fakeAvasActions.toAvasTopicData())
+            listener.onOledDataAvailable(fakeOledActions.toOledTopicData())
+            listener.onDigitalKeyStateChanged(true)
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed(4000) {
+            // Log.i(TAG_DDS, "Send DDS mock data")
+            ScreenLog.log( "Send DDS mock data 2")
+            listener.onAvasDataAvailable(fakeAvasActions.toAvasTopicData())
+            listener.onOledDataAvailable(fakeOledActions.toOledTopicData())
+            listener.onDigitalKeyStateChanged(true)
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed(6000) {
+            // Log.i(TAG_DDS, "Send DDS mock data")
+            ScreenLog.log( "Send DDS mock data 3")
             listener.onAvasDataAvailable(fakeAvasActions.toAvasTopicData())
             listener.onOledDataAvailable(fakeOledActions.toOledTopicData())
             listener.onDigitalKeyStateChanged(true)

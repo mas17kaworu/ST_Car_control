@@ -51,13 +51,13 @@ class DdsServiceImpl(private val context: Context): DdsService {
 
     override fun sendAvasAction(data: ByteArray) {
         // Log.i(TAG, "sendAvasAction: ${data.toDebugString()}")
-        ScreenLog.log("sendAvasAction: ${data.toDebugString()}")
+        // ScreenLog.log("sendAvasAction: ${data.toDebugString()}")
         this.avasWriter.sendData(data)
     }
 
     override fun sendOledAction(data: ByteArray) {
         // Log.i(TAG, "sendOledAction: ${data.toDebugString()}")
-        ScreenLog.log(TAG, "sendOledAction: ${data.toDebugString()}")
+        // ScreenLog.log(TAG, "sendOledAction: ${data.toDebugString()}")
         this.oledWriter.sendData(data)
     }
 
@@ -70,35 +70,48 @@ class DdsServiceImpl(private val context: Context): DdsService {
 
     /* SDK层创建的所有的对象都需要自己进行管理 */
     private fun init(domainId: Long, ip: String?, discoverIp: String, guid: ByteArray?): Long {
-        ScreenLog.log(TAG, "init domainId $domainId ip $ip guid ${guid?.printArrayInInt()}")
+        ScreenLog.log("init domainId $domainId ip $ip guid ${guid?.printArrayInInt()}")
         val domainParticipant =
             JavaDomainParticipant.CreateJavaDomainparticipant(domainId, ip, discoverIp, guid)
         if (null == domainParticipant) {
-            ScreenLog.log(TAG,"Create JavaDomainParticipant error")
+            ScreenLog.log("Create JavaDomainParticipant error")
             return 1
         }
 
         val subscriber = domainParticipant.CreateJavaSubscriber()
         if (null == subscriber) {
-            ScreenLog.log(TAG,"Create JavaSubscriber error")
+            ScreenLog.log("Create JavaSubscriber error")
             return 2
         }
 
         val avasReader = createReader(domainParticipant, subscriber, ReaderTopic.AvasService.topicName) { strData ->
-            ScreenLog.log(TAG,"onAvasDataAvailable ${strData.printArrayInInt()}")
-            val topicData = parseTopicData(strData)
-            topicListener?.onAvasDataAvailable(topicData)
+            ScreenLog.log(" onAvasDataAvailable ${strData.printArrayInInt()}")
+            try {
+                val topicData = parseTopicData(strData)
+                topicListener?.onAvasDataAvailable(topicData)
+            } catch (e: Throwable) {
+                ScreenLog.log("parse AvasData error")
+            }
+            // topicListener?.onAvasDataAvailable(TopicData(1, listOf(TopicService(name = " test ", ByteArray(2)))))
         }
-        val oledReader = createReader(domainParticipant, subscriber, ReaderTopic.OledService.topicName) { strData ->
-            ScreenLog.log(TAG,"onOledDataAvailable ${strData.printArrayInInt()}")
-            val topicData = parseTopicData(strData)
 
-            topicListener?.onOledDataAvailable(topicData)
+        val oledReader = createReader(domainParticipant, subscriber, ReaderTopic.OledService.topicName) { strData ->
+            ScreenLog.log(" onOledDataAvailable ")
+            try {
+                val topicData = parseTopicData(strData)
+                topicListener?.onOledDataAvailable(topicData)
+            } catch (e: Throwable) {
+                ScreenLog.log("parse OLEDData error")
+            }
         }
         val dkeyReader = createReader(domainParticipant, subscriber, ReaderTopic.DkeyService.topicName) { strData ->
-            ScreenLog.log(TAG,"onDigitalKeyStateChanged ${strData.printArrayInInt()}")
-            val unlocked = strData[0].toInt() == 1
-            topicListener?.onDigitalKeyStateChanged(unlocked)
+            ScreenLog.log("onDigitalKeyStateChanged ")
+            try {
+                val unlocked = strData[0].toInt() == 1
+                topicListener?.onDigitalKeyStateChanged(unlocked)
+            } catch (e: Throwable) {
+                ScreenLog.log("parse DigitalKey Data error")
+            }
         }
 
         val publisher = domainParticipant.CreateJavaPublisher()
@@ -109,6 +122,7 @@ class DdsServiceImpl(private val context: Context): DdsService {
 
         val avasWriter = createWriter(domainParticipant, publisher, WriterTopic.AvasControl.topicName)
         val oledWriter = createWriter(domainParticipant, publisher, WriterTopic.OledControl.topicName)
+
 
         if (avasReader == null || oledReader == null || dkeyReader == null || avasWriter == null || oledWriter == null) {
             ScreenLog.log(TAG,"Create reader or writer failed")

@@ -185,13 +185,14 @@ class DdsRepoImpl(
 
     override suspend fun trySendSomething() {
         withContext(Dispatchers.IO) {
-            ddsService.sendAvasAction(ByteArray(2).apply {
-                this[0] = 1
-                this[0] = 2
+            ScreenLog.log("test")
+            ddsService.sendAvasAction(ByteArray(3).apply {
+                this[0] = 5
+                this[1] = 6
             })
             ddsService.sendOledAction(ByteArray(2).apply {
-                this[0] = 3
-                this[0] = 4
+                this[0] = 7
+                // this[1] = 4
             })
         }
     }

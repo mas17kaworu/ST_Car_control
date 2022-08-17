@@ -11,9 +11,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 
 object ScreenLog {
-  val _logs = MutableStateFlow<List<String>>(listOf("Logs...."))
-  val logs: StateFlow<List<String>> = _logs
-
+  private val _logs = MutableSharedFlow<List<String>>(extraBufferCapacity = 1)
+  val logs: Flow<List<String>> = _logs.asSharedFlow()
   private val logHistory = mutableListOf<String>()
 
   fun log(log: String) {
@@ -21,8 +20,10 @@ object ScreenLog {
   }
 
   fun log(tag: String, log: String) {
+    val newList = mutableListOf<String>()
     logHistory.add("$tag $log")
-    if (logHistory.size > 40) logHistory.removeFirst()
-    _logs.update { logHistory }
+    newList.addAll(logHistory)
+    if (logHistory.size > 15) logHistory.removeFirst()
+    _logs.tryEmit(newList)
   }
 }
