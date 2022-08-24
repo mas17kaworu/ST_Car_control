@@ -50,6 +50,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.KeyPairFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.NFCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SeatFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.SoundFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.TrackingFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
 
 import java.io.File;
@@ -82,6 +83,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
   private AVASFragment avasFragment;
   private SoundFragment soundFragment;
   private KeyPairFragment keyPairFragment;
+  private TrackingFragment trackingFragment;
 
   private VCUUpdateFirmwareFragment updateFirmwareFragment;
 
@@ -237,6 +239,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         R.drawable.main_activity_bottom_avas,
         R.drawable.main_activity_bottom_sound,
         R.drawable.main_activity_bottom_key_pair,
+        R.drawable.ic_tracking
     };
 
     hListViewAdapter = new HorizontalListViewAdapter(getApplicationContext(), ids);
@@ -389,6 +392,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
           keyPairFragment = new KeyPairFragment();
         }
         transaction.replace(R.id.main_fragment_content, keyPairFragment);
+        break;
+      case ConstantData.MainFragment.FRAGMENT_TRANSACTION_TRACKING:
+        if (trackingFragment == null) {
+          trackingFragment = new TrackingFragment();
+        }
+        transaction.replace(R.id.main_fragment_content, trackingFragment);
         break;
       case 100:
         if (mHighBeamLight == null) {

@@ -91,6 +91,7 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
         findViewById(R.id.btn_choose_VCU).setOnClickListener(this);
         findViewById(R.id.btn_choose_entertainment).setOnClickListener(this);
         findViewById(R.id.btn_choose_dds).setOnClickListener(this);
+        findViewById(R.id.btn_choose_tracking).setOnClickListener(this);
         ivBTConnectionState = (ImageView) findViewById(R.id.iv_chooseactivity_lost_bluetooth);
         ivBTConnectionState.setOnClickListener(this);
         ivWifiConnectionState = (ImageView) findViewById(R.id.iv_chooseactivity_lost_wifi);
@@ -119,6 +120,9 @@ public class ChooseActivity extends BaseActivity implements View.OnClickListener
                 break;
             case R.id.btn_choose_dds:
                 startActivity(new Intent(this, DdsActivity.class));
+                break;
+            case R.id.btn_choose_tracking:
+                startActivity(new Intent(this, TrackingActivity.class));
                 break;
             case R.id.iv_chooseactivity_lost_wifi:
                 SharedPreferencesUtil.put(this, ConstantData.CONNECTION_TYPE, "WIFI");
