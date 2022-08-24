@@ -93,7 +93,7 @@ class DdsViewModel(
         fun provideFactory(
             ddsRepo: DdsRepo
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return DdsViewModel(ddsRepo) as T
             }
         }

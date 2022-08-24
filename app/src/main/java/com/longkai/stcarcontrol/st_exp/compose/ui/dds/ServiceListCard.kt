@@ -1,6 +1,5 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -8,9 +7,8 @@ import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,11 +20,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.Typography
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
-import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.HeaderText
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ServiceListCard(
     modifier: Modifier = Modifier,
@@ -47,11 +43,12 @@ fun ServiceListCard(
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyVerticalGrid(
-                cells = GridCells.Fixed(4)
+                columns = GridCells.Fixed(4)
             ) {
-                items(services) { service ->
+
+                items(services.size) { index ->
                     ServiceItemCard(
-                        service = service,
+                        service = services[index],
                         onClick = onClickService,
                         onDoubleClick = onDoubleClickService
                     )
