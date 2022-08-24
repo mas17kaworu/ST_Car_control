@@ -59,7 +59,7 @@ class DigitalKeyUnlockService: Service() {
         val cancelIntent = Intent(this, DigitalKeyUnlockService::class.java)
             .let { notificationIntent ->
                 notificationIntent.action = ACTION_CANCEL
-                getService(this, 0, notificationIntent, FLAG_UPDATE_CURRENT)
+                getService(this, 0, notificationIntent, FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT)
             }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
