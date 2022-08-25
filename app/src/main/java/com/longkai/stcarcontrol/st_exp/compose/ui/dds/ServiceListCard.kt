@@ -43,7 +43,7 @@ fun ServiceListCard(
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyVerticalGrid(
-                columns = GridCells.Fixed(4)
+                columns = GridCells.Fixed(8)
             ) {
 
                 items(services.size) { index ->

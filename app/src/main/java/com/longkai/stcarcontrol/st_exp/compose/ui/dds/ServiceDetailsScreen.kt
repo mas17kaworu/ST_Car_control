@@ -1,10 +1,13 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
+import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 
 @Composable
@@ -20,6 +23,12 @@ fun ServiceDetailsScreen(
     val currentService = serviceId?.let { id -> uiState.expressServices.firstOrNull { it.id == id } }
 
     Row {
+        Image(
+            painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+            contentDescription = "back button",
+            modifier = Modifier.padding(12.dp).clickable { onBack() }
+        )
+
         Column(modifier = Modifier.weight(0.5f)) {
             Row {
                 Box(modifier = Modifier.weight(0.5f)) {
@@ -31,7 +40,7 @@ fun ServiceDetailsScreen(
             }
         }
 
-        Spacer(modifier = Modifier.padding(horizontal = 24.dp))
+        Spacer(modifier = Modifier.padding(horizontal = 12.dp))
 
         Column(Modifier.weight(0.5f)) {
             if (currentService == null) {
