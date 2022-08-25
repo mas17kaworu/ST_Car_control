@@ -30,8 +30,6 @@ fun DdsScreen(
     ddsViewModel: DdsViewModel
 ) {
     val uiState by ddsViewModel.uiState.collectAsState()
-    // val logs = ScreenLog.logHistory.toMutableStateList() // .collectAsState(initial = emptyList<String>())
-    // val logs =
 
     if (uiState.loading) return
 
