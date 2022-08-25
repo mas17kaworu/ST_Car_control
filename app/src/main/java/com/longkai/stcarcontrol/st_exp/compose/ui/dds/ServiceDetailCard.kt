@@ -1,5 +1,6 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,6 +24,7 @@ import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.DropDownList
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.HeaderText
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.ListItemText
+import java.lang.Exception
 import java.lang.NumberFormatException
 
 
@@ -119,6 +121,14 @@ fun ServiceDetailCard(
         val actions = serviceInReview?.actions ?: listOf(actionOptions[0])
         mutableStateOf(actions.map { it.toActionItem() })
     }
+    var serviceImageUri by remember(serviceInReview) {
+        val uri = try {
+            serviceInReview?.imageUri?.let { Uri.parse(it) }
+        } catch (e: Exception) {
+            null
+        }
+        mutableStateOf(uri)
+    }
 
     CorneredContainer(
         modifier = modifier.fillMaxWidth(),
@@ -135,26 +145,45 @@ fun ServiceDetailCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Column(Modifier.fillMaxWidth(0.8f)) {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = serviceName,
-                    onValueChange = { serviceName = it },
-                    label = {
-                        Text(text = "Service name: ")
+            Column {
+                Row(
+                    modifier = Modifier.height(IntrinsicSize.Min),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(0.8f),
+                        value = serviceName,
+                        onValueChange = { serviceName = it },
+                        label = {
+                            Text(text = "Service name: ")
+                        }
+                    )
+
+                    Spacer(Modifier.width(8.dp))
+
+                    ServiceImagePicker(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(top = 8.dp)
+                            .aspectRatio(1f),
+                        currentImageUri = serviceImageUri
+                    ) {
+                        serviceImageUri = it
                     }
-                )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                DropDownList(
-                    label = "Trigger condition",
-                    options = triggerOptions,
-                    selectedOption = triggerCondition,
-                    onValueChange = {
-                        triggerCondition = it
-                    }
-                )
+                Box(Modifier.fillMaxWidth(0.8f)) {
+                    DropDownList(
+                        label = "Trigger condition",
+                        options = triggerOptions,
+                        selectedOption = triggerCondition,
+                        onValueChange = {
+                            triggerCondition = it
+                        }
+                    )
+                }
             }
 
 
@@ -208,7 +237,8 @@ fun ServiceDetailCard(
                             ExpressServiceParam(
                                 name = serviceName,
                                 triggerCondition = triggerCondition,
-                                actions = actionItems.map { it.toServiceAction() }
+                                actions = actionItems.map { it.toServiceAction() },
+                                imageUri = serviceImageUri.toString()
                             )
                         )
                     },
@@ -228,7 +258,8 @@ fun ServiceDetailCard(
                                     id = serviceInReview.id,
                                     name = serviceName,
                                     triggerCondition = triggerCondition,
-                                    actions = actionItems.map { it.toServiceAction() }
+                                    actions = actionItems.map { it.toServiceAction() },
+                                    imageUri = serviceImageUri.toString()
                                 )
                             )
                         },

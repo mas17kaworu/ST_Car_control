@@ -117,7 +117,8 @@ class DdsRepoImpl(
                         id = oldServices.lastOrNull()?.id?.plus(1) ?: 0,
                         name = serviceParam.name,
                         triggerCondition = serviceParam.triggerCondition,
-                        actions = serviceParam.actions
+                        actions = serviceParam.actions,
+                        imageUri = serviceParam.imageUri
                     )
                 } else {
                     listOf(
@@ -125,7 +126,8 @@ class DdsRepoImpl(
                             id = 0,
                             name = serviceParam.name,
                             triggerCondition = serviceParam.triggerCondition,
-                            actions = serviceParam.actions
+                            actions = serviceParam.actions,
+                            imageUri = serviceParam.imageUri
                         )
                     )
                 }
