@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,17 +13,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.longkai.stcarcontrol.st_exp.R
-import com.longkai.stcarcontrol.st_exp.compose.Route
-import com.longkai.stcarcontrol.st_exp.compose.data.dds.fakeExpressServices
-import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
-import java.lang.Exception
 
 @Composable
 fun ExpressServicesScreen(
     ddsViewModel: DdsViewModel,
     onCreateService: () -> Unit,
-    onViewServiceDetails: (serviceId: Long) -> Unit
+    onViewServiceDetails: (serviceId: Long) -> Unit,
+    showSnackbar: (String) -> Unit
 ) {
     val uiState by ddsViewModel.uiState.collectAsState()
 
@@ -92,7 +87,12 @@ fun ExpressServicesScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Button(
-                        onClick = { focusedService.let { ddsViewModel.deleteExpressService(it) } },
+                        onClick = {
+                            focusedService.let {
+                                ddsViewModel.deleteExpressService(it)
+                                showSnackbar("Service ${it.name} deleted")
+                            }
+                        },
                     ) {
                         Text(text = "Delete service")
                     }

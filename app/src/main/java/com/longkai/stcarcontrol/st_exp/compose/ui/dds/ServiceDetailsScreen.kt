@@ -14,7 +14,8 @@ import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 fun ServiceDetailsScreen(
     ddsViewModel: DdsViewModel,
     serviceId: Long?,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    showSnackbar: (String) -> Unit
 ) {
     val uiState by ddsViewModel.uiState.collectAsState()
 
@@ -50,6 +51,7 @@ fun ServiceDetailsScreen(
                     onCreateService = {
                         ddsViewModel.createExpressService(it)
                         onBack()
+                        showSnackbar("Service ${it.name} created")
                     }
                 )
             } else {
@@ -59,10 +61,12 @@ fun ServiceDetailsScreen(
                     serviceInReview = currentService,
                     onUpdateService = {
                         ddsViewModel.updateExpressService(it)
+                        showSnackbar("Service ${it.name} updated")
                     },
                     onDeleteService = {
                         ddsViewModel.deleteExpressService(it)
                         onBack()
+                        showSnackbar("Service ${it.name} deleted")
                     }
                 )
             }
