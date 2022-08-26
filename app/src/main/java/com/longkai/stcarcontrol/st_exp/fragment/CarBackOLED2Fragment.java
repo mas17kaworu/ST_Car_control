@@ -32,6 +32,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListener
 import com.longkai.stcarcontrol.st_exp.customView.oled2.OLED2Controller;
 import com.longkai.stcarcontrol.st_exp.model.SoundsInfo;
 import com.longkai.stcarcontrol.st_exp.music.AudioVisualConverter;
+import com.longkai.stcarcontrol.st_exp.music.LibrosaHelper;
 import com.longkai.stcarcontrol.st_exp.music.MyMediaPlayer;
 
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDAuto1;
@@ -69,6 +70,8 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
 
     private AudioVisualConverter audioVisualConverter = new AudioVisualConverter();
 
+    private LibrosaHelper librosaHelper = new LibrosaHelper();
+
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -98,6 +101,23 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
 
         mediaPlayer = MyMediaPlayer.getInstance(this.getContext());
 
+        soundsList = FileUtils10.INSTANCE.getFilesUnderDownloadST(getActivity());
+
+        try {
+            if (soundsList.isEmpty()) soundsList = new LinkedList<>();
+            soundsList.add(0, new Triple<String, Uri, SoundsInfo>(
+                "st01-default",
+                FileUtils.getResUri(R.raw.st01_wav, this.getContext()),
+                FileUtils10.INSTANCE.readSoundsInfoFile(
+                    FileUtils.getResUri(R.raw.st01_json, this.getContext()), this.getContext()
+                )
+            ));
+
+            librosaHelper.loadWAVFile(soundsList.get(1).component2().getPath());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
         return mView;
     }
 
@@ -112,20 +132,6 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         );
 
         refreshUI();
-        soundsList = FileUtils10.INSTANCE.getFilesUnderDownloadST(getActivity());
-        try {
-            if (soundsList.isEmpty()) soundsList = new LinkedList<>();
-            soundsList.add(0, new Triple<String, Uri, SoundsInfo>(
-                "st01-default",
-                FileUtils.getResUri(R.raw.st01_wav, this.getContext()),
-                FileUtils10.INSTANCE.readSoundsInfoFile(
-                    FileUtils.getResUri(R.raw.st01_json, this.getContext()), this.getContext()
-                )
-            ));
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
         //Log.i(TAG, )
     }
     private SendSoundsInfoRegular sendCMDTask;
@@ -372,7 +378,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
     private void playOrPause() {
         if (!isPlaying) {
             mediaPlayer.stop();
-            Triple<String, Uri, SoundsInfo> result = soundsList.get(soundsIndex); // todo
+            Triple<String, Uri, SoundsInfo> result = soundsList.get(soundsIndex);
             playMusic(result.getSecond(), result.getThird());
         } else {
             mediaPlayer.stop();
