@@ -47,7 +47,10 @@ fun ServiceDetailsScreen(
                 CreateServiceCard(
                     triggerOptions = TriggerCondition.values().toList(),
                     actionOptions = uiState.actionOptions,
-                    onCreateService = { ddsViewModel.createExpressService(it) }
+                    onCreateService = {
+                        ddsViewModel.createExpressService(it)
+                        onBack()
+                    }
                 )
             } else {
                 EditServiceCard(

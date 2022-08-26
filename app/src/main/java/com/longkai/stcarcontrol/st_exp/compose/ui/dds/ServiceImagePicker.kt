@@ -19,11 +19,12 @@ fun ServiceImagePicker(
     onImagePicked: ((uri: Uri?) -> Unit),
 ) {
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+        contract = ActivityResultContracts.OpenDocument()
     ) {
         onImagePicked(it)
     }
 
+    println("zcf imagePicker: $currentImageUri")
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current).apply {
             fallback(R.drawable.ic_pick_image)
@@ -31,7 +32,7 @@ fun ServiceImagePicker(
         }.build(),
         contentDescription = "Service image",
         modifier = modifier
-            .clickable { launcher.launch("image/*") },
+            .clickable { launcher.launch(arrayOf("image/*")) },
         contentScale = ContentScale.Crop
     )
 }

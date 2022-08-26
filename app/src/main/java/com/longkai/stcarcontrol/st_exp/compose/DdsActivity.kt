@@ -7,7 +7,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -31,6 +37,7 @@ import com.longkai.stcarcontrol.st_exp.compose.ui.components.ActivityViewContain
 import com.longkai.stcarcontrol.st_exp.compose.ui.dds.DdsViewModel
 import com.longkai.stcarcontrol.st_exp.compose.ui.dds.ExpressServicesScreen
 import com.longkai.stcarcontrol.st_exp.compose.ui.dds.ServiceDetailsScreen
+import kotlinx.coroutines.launch
 
 class DdsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,11 +49,11 @@ class DdsActivity : ComponentActivity() {
         setContent {
             STCarTheme {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
-                    ActivityViewContainer {
+                    ActivityViewContainer() {
                         Box(
                             modifier = Modifier
-                              .fillMaxSize()
-                              .padding(24.dp)
+                                .fillMaxSize()
+                                .padding(24.dp)
                         ) {
                             DdsNavHost(appContainer = appContainer)
                         }
@@ -64,6 +71,7 @@ class DdsActivity : ComponentActivity() {
             factory = DdsViewModel.provideFactory(appContainer.ddsRepo)
         )
         val navController = rememberNavController()
+
         NavHost(navController = navController, startDestination = ROUTE_EXPRESS_SERVICES) {
             composable(ROUTE_EXPRESS_SERVICES) {
                 ExpressServicesScreen(
@@ -81,7 +89,7 @@ class DdsActivity : ComponentActivity() {
                     ddsViewModel = ddsViewModel,
                     serviceId = null,
                     onBack = {
-                        navController.navigate(ROUTE_EXPRESS_SERVICES)
+                        navController.popBackStack()
                     }
                 )
             }
@@ -98,7 +106,7 @@ class DdsActivity : ComponentActivity() {
                         INVALID_SERVICE_ID
                     ),
                     onBack = {
-                        navController.navigate(ROUTE_EXPRESS_SERVICES)
+                        navController.popBackStack()
                     }
                 )
             }

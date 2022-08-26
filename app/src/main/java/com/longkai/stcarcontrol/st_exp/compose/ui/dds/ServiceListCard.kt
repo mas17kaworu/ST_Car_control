@@ -1,6 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
 import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,7 +31,8 @@ fun ServiceListCard(
     services: List<ExpressService>,
     onClickService: (ExpressService) -> Unit,
     onDoubleClickService: (ExpressService) -> Unit,
-    onClickCreateService: () -> Unit
+    onClickCreateService: () -> Unit,
+    selectedServiceId: Long? = null,
 ) {
     CorneredContainer(
         modifier = modifier,
@@ -50,7 +53,8 @@ fun ServiceListCard(
                     ServiceItemCard(
                         service = services[index],
                         onClick = onClickService,
-                        onDoubleClick = onDoubleClickService
+                        onDoubleClick = onDoubleClickService,
+                        selected = (services[index].id == selectedServiceId)
                     )
                 }
                 item {
@@ -65,7 +69,8 @@ fun ServiceListCard(
 fun ServiceItemCard(
     service: ExpressService,
     onClick: (ExpressService) -> Unit,
-    onDoubleClick: (ExpressService) -> Unit
+    onDoubleClick: (ExpressService) -> Unit,
+    selected: Boolean = false
 ) {
     CorneredContainer(
         modifier = Modifier.aspectRatio(1f),
@@ -75,6 +80,7 @@ fun ServiceItemCard(
         val interactionSource = remember { MutableInteractionSource() }
         Box(
             modifier = Modifier
+                .background(if (selected) MaterialTheme.colors.primary else Color.Transparent)
                 .indication(interactionSource, LocalIndication.current)
                 .pointerInput(service) {
                     detectTapGestures(
