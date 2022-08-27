@@ -181,15 +181,6 @@
           app:layout_constraintTop_toBottomOf="@+id/guideLine"
           />
 
-<!--    <ImageView-->
-<!--      android:id="@+id/btn_back_oled_a2"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:src="@drawable/oled_auto2_btn_click"-->
-<!--      app:layout_constraintEnd_toEndOf="@+id/ic_back_oled_background"-->
-<!--      app:layout_constraintStart_toEndOf="@+id/btn_back_oled_a1"-->
-<!--      app:layout_constraintTop_toBottomOf="@+id/guideLine"-->
-<!--      />-->
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -207,21 +198,11 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:src="@drawable/oled_auto3_btn_click"
-      app:layout_constraintEnd_toEndOf="@+id/ic_back_oled_background"
+      app:layout_constraintEnd_toStartOf="@+id/btn_back_oled_stop"
       app:layout_constraintStart_toEndOf="@+id/btn_back_oled_a2"
       app:layout_constraintTop_toBottomOf="@+id/guideLine"
       />
 
-<!--    <ImageView-->
-<!--      android:id="@+id/btn_back_oled_a3"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:src="@drawable/oled_auto3_btn_click"-->
-<!--      app:layout_constraintEnd_toEndOf="parent"-->
-<!--      app:layout_constraintStart_toStartOf="parent"-->
-<!--      app:layout_constraintTop_toTopOf="parent"-->
-<!--      app:layout_constraintBottom_toBottomOf="parent"-->
-<!--      />-->
 
     <TextView
       android:layout_width="wrap_content"
@@ -234,6 +215,29 @@
       app:layout_constraintStart_toStartOf="@+id/btn_back_oled_a3"
       app:layout_constraintTop_toBottomOf="@+id/btn_back_oled_a3"
       />
+
+    <ImageView
+      android:id="@+id/btn_back_oled_stop"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/oled_auto3_btn_click"
+      app:layout_constraintEnd_toEndOf="@+id/ic_back_oled_background"
+      app:layout_constraintStart_toEndOf="@+id/btn_back_oled_a3"
+      app:layout_constraintTop_toBottomOf="@+id/guideLine"
+      />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Stop"
+      android:textSize="14sp"
+      android:textColor="#ffffff"
+      android:layout_marginTop="@dimen/button_text_to_image"
+      app:layout_constraintEnd_toEndOf="@+id/btn_back_oled_stop"
+      app:layout_constraintStart_toStartOf="@+id/btn_back_oled_stop"
+      app:layout_constraintTop_toBottomOf="@+id/btn_back_oled_stop"
+      />
+
 
     <ImageView
       android:id="@+id/btnPlayAudio"

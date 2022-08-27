@@ -25,6 +25,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDBrake;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDPosition;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDReversing;
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDStopAll;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDTurnLeft;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDTurnRight;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSound.CMDSoundsInfo;
@@ -40,6 +41,7 @@ import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDAuto3;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDBreak;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDPosition;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDReverse;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDStopOLED;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDTurnLeft;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDTurnRight;
 
@@ -59,7 +61,8 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
 
     private View mView;
 
-    private ImageView ivReversing, ivBrake, ivPosition, ivTurnLeft, ivTurnRight, ivAuto1, ivAuto2, ivAuto3, ivPlayOrPause, ivPlayNext, ivPlayPrevious;
+    private ImageView ivReversing, ivBrake, ivPosition, ivTurnLeft, ivTurnRight, ivAuto1, ivAuto2,
+        ivAuto3, ivPlayOrPause, ivPlayNext, ivPlayPrevious, ivStop;
 
     private OLED2Controller oledController;
 
@@ -68,6 +71,8 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
     private Boolean isVisualizerInit = false;
 
     private AudioVisualConverter audioVisualConverter = new AudioVisualConverter();
+
+    private Boolean stopSendCMD = false;
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -95,7 +100,8 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         ivPlayPrevious.setOnClickListener(this);
         ivPlayNext = mView.findViewById(R.id.btnPlayNext);
         ivPlayNext.setOnClickListener(this);
-
+        ivStop = (ImageView) mView.findViewById(R.id.btn_back_oled_stop);
+        ivStop.setOnClickListener(this);
         mediaPlayer = MyMediaPlayer.getInstance(this.getContext());
 
         return mView;
@@ -260,7 +266,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
                 //ServiceManager.getInstance().sendCommandToCar(new CMDOLEDAuto2(), new CommandListenerAdapter());
                 break;
             case R.id.btn_back_oled_a3:
-                clickBtn(sBackOLEDAuto3, ivAuto3,new CMDOLEDAuto3());
+                clickBtn(sBackOLEDAuto3, ivAuto3, new CMDOLEDAuto3());
                 //ServiceManager.getInstance().sendCommandToCar(new CMDOLEDAuto3(), new CommandListenerAdapter());
                 break;
             case R.id.btnPlayAudio:
@@ -272,12 +278,19 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
             case R.id.btnPlayPrevious:
                 playPrevious();
                 break;
+            case R.id.btn_back_oled_stop:
+                clickBtn(sBackOLEDStopOLED, ivStop, new CMDOLEDStopAll());
+                break;
         }
 
         refreshUI();
     }
 
     private void clickBtn(int index, ImageView view, BaseCommand command) {
+        if (!(command instanceof CMDOLEDStopAll) && CMDOLEDBase.stopAll) {
+            return;
+        }
+
         if (ConstantData.sBackOLEDStatus[index] == 1) {
             //ConstantData.sBackOLEDStatus[index] = 0;
             command.turnOff();
@@ -298,8 +311,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         if ((cmdPayload[0] & CMDOLEDBase.Reversing) != 0) {
             ivReversing.setSelected(true);
             ConstantData.sBackOLEDStatus[sBackOLEDReverse] = 1;
-        }
-        else{
+        } else{
             ivReversing.setSelected(false);
             ConstantData.sBackOLEDStatus[sBackOLEDReverse] = 0;
         }
@@ -308,8 +320,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         if ((cmdPayload[0] & CMDOLEDBase.Brake) != 0) {
             ivBrake.setSelected(true);
             ConstantData.sBackOLEDStatus[sBackOLEDBreak] = 1;
-        }
-        else {
+        } else {
             ivBrake.setSelected(false);
             ConstantData.sBackOLEDStatus[sBackOLEDBreak] = 0;
         }
@@ -317,8 +328,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         if((cmdPayload[0] & CMDOLEDBase.Position) !=0) {
             ivPosition.setSelected(true);
             ConstantData.sBackOLEDStatus[sBackOLEDPosition] = 1;
-        }
-        else {
+        } else {
             ivPosition.setSelected(false);
             ConstantData.sBackOLEDStatus[sBackOLEDPosition] = 0;
         }
@@ -326,8 +336,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         if((cmdPayload[0] & CMDOLEDBase.TurnLeft) != 0) {
             ivTurnLeft.setSelected(true);
             ConstantData.sBackOLEDStatus[sBackOLEDTurnLeft] = 1;
-        }
-        else {
+        } else {
             ivTurnLeft.setSelected(false);
             ConstantData.sBackOLEDStatus[sBackOLEDTurnLeft] = 0;
         }
@@ -335,8 +344,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         if ((cmdPayload[0] & CMDOLEDBase.TurnRight) != 0) {
             ivTurnRight.setSelected(true);
             ConstantData.sBackOLEDStatus[sBackOLEDTurnRight] = 1;
-        }
-        else {
+        } else {
             ivTurnRight.setSelected(false);
             ConstantData.sBackOLEDStatus[sBackOLEDTurnRight] = 0;
         }
@@ -363,6 +371,14 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         } else {
             ivAuto3.setSelected(false);
             ConstantData.sBackOLEDStatus[sBackOLEDAuto3] = 0;
+        }
+
+        if (CMDOLEDBase.stopAll) {
+            ivStop.setSelected(true);
+            ConstantData.sBackOLEDStatus[sBackOLEDStopOLED] = 1;
+        } else {
+            ivStop.setSelected(false);
+            ConstantData.sBackOLEDStatus[sBackOLEDStopOLED] = 0;
         }
     }
     private Boolean isPlaying = false;

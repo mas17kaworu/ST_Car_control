@@ -57,7 +57,7 @@ public class ConstantData {
     public static int sCenterControlWiper       = 5;//0关 1低 2高
     public static int sCenterControlSafeBelt    = 6;
 
-    public static int[] sBackOLEDStatus = new int[8];
+    public static int[] sBackOLEDStatus = new int[9];
     public static int sBackOLEDReverse = 0;
     public static int sBackOLEDBreak = 1;
     public static int sBackOLEDPosition = 2;
@@ -66,6 +66,7 @@ public class ConstantData {
     public static int sBackOLEDAuto1 = 5;
     public static int sBackOLEDAuto2 = 6;
     public static int sBackOLEDAuto3 = 7;
+    public static int sBackOLEDStopOLED = 8;
 
     public static boolean sVCUJDQ1State,sVCUJDQ2State,sVCUJDQ3State;
 

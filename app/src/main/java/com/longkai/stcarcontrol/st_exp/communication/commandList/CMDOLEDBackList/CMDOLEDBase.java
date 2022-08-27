@@ -18,6 +18,7 @@ public class CMDOLEDBase extends BaseCommand {
     public static final byte AutoRun3 = (byte)0x80;
 
     protected static byte[] payload = {0x00};
+    public static boolean stopAll = false;
 
     public CMDOLEDBase(){
         try{
@@ -31,7 +32,7 @@ public class CMDOLEDBase extends BaseCommand {
         }
     }
 
-    protected void refreshDataPayload(){
+    protected void refreshDataPayload() {
         data[2] = payload[0];
     }
 
