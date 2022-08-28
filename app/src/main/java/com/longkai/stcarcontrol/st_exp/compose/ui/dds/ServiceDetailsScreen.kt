@@ -21,13 +21,18 @@ fun ServiceDetailsScreen(
 
     if (uiState.loading) return
 
-    val currentService = serviceId?.let { id -> uiState.expressServices.firstOrNull { it.id == id } }
+    val currentService =
+        serviceId?.let { id -> uiState.expressServices.firstOrNull { it.id == id } }
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Row {
         Image(
             painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
             contentDescription = "back button",
-            modifier = Modifier.padding(12.dp).clickable { onBack() }
+            modifier = Modifier
+                .padding(12.dp)
+                .clickable { onBack() }
         )
 
         Column(modifier = Modifier.weight(0.5f)) {
@@ -64,12 +69,26 @@ fun ServiceDetailsScreen(
                         showSnackbar("Service ${it.name} updated")
                     },
                     onDeleteService = {
-                        ddsViewModel.deleteExpressService(it)
-                        onBack()
-                        showSnackbar("Service ${it.name} deleted")
+                        showDeleteDialog = true
                     }
                 )
             }
         }
+    }
+
+    if (showDeleteDialog) {
+        DeleteServiceConfirmationDialog(
+            showDialog = showDeleteDialog,
+            onOK = {
+                currentService?.let {
+                    ddsViewModel.deleteExpressService(it)
+                    onBack()
+                    showSnackbar("Service ${it.name} deleted")
+                }
+            },
+            onCancel = {
+                showDeleteDialog = false
+            }
+        )
     }
 }

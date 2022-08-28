@@ -1,21 +1,23 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
 import android.net.Uri
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
-import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.longkai.stcarcontrol.st_exp.R
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 
@@ -30,13 +32,16 @@ fun ExpressServicesScreen(
 
     if (uiState.loading) return
 
-    val focusedService = uiState.expressServices.firstOrNull { it.name == uiState.focusedService?.name }
+    val focusedService =
+        uiState.expressServices.firstOrNull { it.name == uiState.focusedService?.name }
 
-    Column(
-        Modifier.padding(horizontal = 0.dp)
-    ) {
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    Row {
         ServiceListCard(
-            modifier = Modifier.heightIn(min = 200.dp, max = 400.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .fillMaxHeight(),
             services = uiState.expressServices,
             onClickService = {
                 ddsViewModel.onSelectService(it)
@@ -66,9 +71,9 @@ fun ExpressServicesScreen(
                 modifier = Modifier.fillMaxSize(),
                 cornerSize = 24.dp
             ) {
-                Row(
+                Column(
                     modifier = Modifier.padding(24.dp),
-                    horizontalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current).apply {
@@ -77,36 +82,80 @@ fun ExpressServicesScreen(
                             data(uri)
                         }.build(),
                         contentDescription = "Service image",
-                        modifier = Modifier.fillMaxHeight().aspectRatio(1f)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
                     )
 
                     Spacer(modifier = Modifier.width(20.dp))
 
-                    Column(
-                        modifier = Modifier.fillMaxHeight(),
-                        verticalArrangement = Arrangement.Center
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_delete),
+                            contentDescription = "Delete service",
+                            modifier = Modifier.clickable {
+                                showDeleteDialog = true
+                            }.padding(8.dp)
+                        )
+
                         Button(
-                            onClick = { focusedService.let { onViewServiceDetails(it.id) } },
+                            onClick = { focusedService.let { onViewServiceDetails(it.id) } }
                         ) {
                             Text(text = "View service details")
-                        }
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        Button(
-                            onClick = {
-                                focusedService.let {
-                                    ddsViewModel.deleteExpressService(it)
-                                    showSnackbar("Service ${it.name} deleted")
-                                }
-                            },
-                        ) {
-                            Text(text = "Delete service")
                         }
                     }
                 }
             }
         }
+    }
+
+    if (showDeleteDialog) {
+        DeleteServiceConfirmationDialog(
+            showDialog = showDeleteDialog,
+            onOK = {
+                focusedService?.let {
+                    ddsViewModel.deleteExpressService(it)
+                    showSnackbar("Service ${it.name} deleted")
+                }
+                showDeleteDialog = false
+            },
+            onCancel = {
+                showDeleteDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+fun DeleteServiceConfirmationDialog(
+    showDialog: Boolean,
+    onOK: () -> Unit,
+    onCancel: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = onCancel,
+            confirmButton = {
+                Button(onClick = onOK) {
+                    Text(text = "OK")
+                }
+            },
+            dismissButton = {
+                Button(onClick = onCancel) {
+                    Text(text = "Cancel")
+                }
+            },
+            text = {
+                Text(
+                    text = "Do you want to delete the service?"
+                )
+            },
+            backgroundColor = Color.DarkGray,
+            contentColor = Color.White
+        )
     }
 }
