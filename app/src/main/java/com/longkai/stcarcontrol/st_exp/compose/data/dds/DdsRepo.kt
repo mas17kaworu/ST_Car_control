@@ -26,7 +26,7 @@ interface DdsRepo {
     val avasActions: StateFlow<Result<List<AvasAction>>>
     val oledActions: StateFlow<Result<List<OledAction>>>
     val digitalKeyUnlocked: StateFlow<Boolean>
-    suspend fun createExpressService(serviceParam: ExpressServiceParam)
+    suspend fun createExpressService(serviceParam: ExpressServiceParam): ExpressService
     suspend fun updateExpressService(service: ExpressService)
     suspend fun deleteExpressService(service: ExpressService)
     suspend fun executeExpressService(service: ExpressService)
@@ -107,32 +107,26 @@ class DdsRepoImpl(
 //        }
 //    }
 
-    override suspend fun createExpressService(serviceParam: ExpressServiceParam) {
-        withContext(Dispatchers.IO) {
+    override suspend fun createExpressService(serviceParam: ExpressServiceParam): ExpressService {
+        return withContext(Dispatchers.IO) {
+            lateinit var newService: ExpressService
             context.appPrefsDataStore.edit { prefs ->
                 val oldServicesString = prefs[EXPRESS_SERVICES]
-                val newServices = if (oldServicesString != null) {
-                    val oldServices = Json.decodeFromString<List<ExpressService>>(oldServicesString)
-                    oldServices + ExpressService(
-                        id = oldServices.lastOrNull()?.id?.plus(1) ?: 0,
-                        name = serviceParam.name,
-                        triggerCondition = serviceParam.triggerCondition,
-                        actions = serviceParam.actions,
-                        imageUri = serviceParam.imageUri
-                    )
-                } else {
-                    listOf(
-                        ExpressService(
-                            id = 0,
-                            name = serviceParam.name,
-                            triggerCondition = serviceParam.triggerCondition,
-                            actions = serviceParam.actions,
-                            imageUri = serviceParam.imageUri
-                        )
-                    )
+                val oldServices = oldServicesString?.let {
+                    Json.decodeFromString<List<ExpressService>>(oldServicesString)
                 }
+                val newServiceId = oldServices?.lastOrNull()?.id?.plus(1) ?: 0
+                newService = ExpressService(
+                    id = newServiceId,
+                    name = serviceParam.name,
+                    triggerCondition = serviceParam.triggerCondition,
+                    actions = serviceParam.actions,
+                    imageUri = serviceParam.imageUri
+                )
+                val newServices = oldServices?.let { it + newService } ?: listOf(newService)
                 prefs[EXPRESS_SERVICES] = Json.encodeToString(newServices)
             }
+            newService
         }
     }
 

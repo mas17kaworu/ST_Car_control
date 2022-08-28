@@ -28,6 +28,7 @@ fun ServiceImagePicker(
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current).apply {
             fallback(R.drawable.ic_pick_image)
+            error(R.drawable.ic_image_error)
             data(currentImageUri)
         }.build(),
         contentDescription = "Service image",

@@ -17,7 +17,8 @@ data class DdsUiState(
     val avasActions: List<ServiceAction.AvasAction> = emptyList(),
     val oledActions: List<ServiceAction.OledAction> = emptyList(),
     val actionOptions: List<ServiceAction> = emptyList(),
-    val loading: Boolean = false
+    val loading: Boolean = false,
+    val focusedService: ExpressService? = null
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -59,7 +60,8 @@ class DdsViewModel(
 
     fun createExpressService(serviceParam: ExpressServiceParam) {
         viewModelScope.launch {
-            ddsRepo.createExpressService(serviceParam)
+            val newService = ddsRepo.createExpressService(serviceParam)
+            onSelectService(newService)
         }
     }
 
@@ -72,6 +74,7 @@ class DdsViewModel(
     fun deleteExpressService(service: ExpressService) {
         viewModelScope.launch {
             ddsRepo.deleteExpressService(service)
+            onSelectService(null)
         }
     }
 
@@ -79,6 +82,10 @@ class DdsViewModel(
         viewModelScope.launch {
             ddsRepo.executeExpressService(service)
         }
+    }
+
+    fun onSelectService(service: ExpressService?) {
+        _uiState.update { it.copy(focusedService = service) }
     }
 
     fun trySendSomething() {

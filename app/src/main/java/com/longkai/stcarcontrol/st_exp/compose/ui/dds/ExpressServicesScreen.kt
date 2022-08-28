@@ -26,7 +26,7 @@ fun ExpressServicesScreen(
 
     if (uiState.loading) return
 
-    var focusedServiceId by rememberSaveable { mutableStateOf(Route.INVALID_SERVICE_ID) }
+    val focusedService = uiState.expressServices.firstOrNull { it.name == uiState.focusedService?.name }
 
     Column(
         Modifier.padding(horizontal = 0.dp)
@@ -35,8 +35,7 @@ fun ExpressServicesScreen(
             modifier = Modifier.heightIn(min = 200.dp, max = 400.dp),
             services = uiState.expressServices,
             onClickService = {
-//                onViewServiceDetails(it.id)
-                focusedServiceId = it.id
+                ddsViewModel.onSelectService(it)
             },
             onDoubleClickService = {
                 if (it.triggerCondition == TriggerCondition.DoubleClick) {
@@ -44,13 +43,12 @@ fun ExpressServicesScreen(
                 }
             },
             onClickCreateService = {
-                focusedServiceId = Route.INVALID_SERVICE_ID
+                ddsViewModel.onSelectService(null)
                 onCreateService()
             },
-            selectedServiceId = focusedServiceId
+            selectedServiceId = focusedService?.id
         )
 
-        val focusedService = uiState.expressServices.firstOrNull { it.id == focusedServiceId }
         val imageUri = focusedService?.imageUri?.let {
             try {
                 Uri.parse(it)
@@ -66,7 +64,7 @@ fun ExpressServicesScreen(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current).apply {
                         fallback(R.drawable.ic_pick_image)
-                        error(R.drawable.ic_image_placeholder)
+                        error(R.drawable.ic_image_error)
                         data(uri)
                     }.build(),
                     contentDescription = "Service image",
