@@ -2,18 +2,22 @@ package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
 import android.net.Uri
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
+import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 
 @Composable
 fun ExpressServicesScreen(
@@ -58,41 +62,46 @@ fun ExpressServicesScreen(
         }
         imageUri?.let { uri ->
             println("zcf imageUri: $uri")
-            Row(
-                modifier = Modifier.padding(24.dp)
+            CorneredContainer(
+                modifier = Modifier.fillMaxSize(),
+                cornerSize = 24.dp
             ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).apply {
-                        fallback(R.drawable.ic_pick_image)
-                        error(R.drawable.ic_image_error)
-                        data(uri)
-                    }.build(),
-                    contentDescription = "Service image",
-                    modifier = Modifier.fillMaxHeight()
-                )
-                
-                Spacer(modifier = Modifier.width(20.dp))
-
-                Column(
-                    modifier = Modifier.align(Alignment.Top)
+                Row(
+                    modifier = Modifier.padding(24.dp)
                 ) {
-                    Button(
-                        onClick = { focusedService.let { onViewServiceDetails(it.id) } },
-                    ) {
-                        Text(text = "View service details")
-                    }
-                    
-                    Spacer(modifier = Modifier.height(12.dp))
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current).apply {
+                            fallback(R.drawable.ic_pick_image)
+                            error(R.drawable.ic_image_error)
+                            data(uri)
+                        }.build(),
+                        contentDescription = "Service image",
+                        modifier = Modifier.fillMaxHeight().aspectRatio(1f)
+                    )
 
-                    Button(
-                        onClick = {
-                            focusedService.let {
-                                ddsViewModel.deleteExpressService(it)
-                                showSnackbar("Service ${it.name} deleted")
-                            }
-                        },
+                    Spacer(modifier = Modifier.width(20.dp))
+
+                    Column(
+                        modifier = Modifier.align(Alignment.Top)
                     ) {
-                        Text(text = "Delete service")
+                        Button(
+                            onClick = { focusedService.let { onViewServiceDetails(it.id) } },
+                        ) {
+                            Text(text = "View service details")
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Button(
+                            onClick = {
+                                focusedService.let {
+                                    ddsViewModel.deleteExpressService(it)
+                                    showSnackbar("Service ${it.name} deleted")
+                                }
+                            },
+                        ) {
+                            Text(text = "Delete service")
+                        }
                     }
                 }
             }
