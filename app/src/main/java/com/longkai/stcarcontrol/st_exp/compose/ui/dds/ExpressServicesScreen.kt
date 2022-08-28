@@ -67,7 +67,8 @@ fun ExpressServicesScreen(
                 cornerSize = 24.dp
             ) {
                 Row(
-                    modifier = Modifier.padding(24.dp)
+                    modifier = Modifier.padding(24.dp),
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current).apply {
@@ -82,7 +83,8 @@ fun ExpressServicesScreen(
                     Spacer(modifier = Modifier.width(20.dp))
 
                     Column(
-                        modifier = Modifier.align(Alignment.Top)
+                        modifier = Modifier.fillMaxHeight(),
+                        verticalArrangement = Arrangement.Center
                     ) {
                         Button(
                             onClick = { focusedService.let { onViewServiceDetails(it.id) } },
@@ -90,7 +92,7 @@ fun ExpressServicesScreen(
                             Text(text = "View service details")
                         }
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(24.dp))
 
                         Button(
                             onClick = {
