@@ -75,6 +75,7 @@ fun ExpressServicesScreen(
                     modifier = Modifier.padding(24.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
+                    Spacer(modifier = Modifier.height(8.dp))
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current).apply {
                             fallback(R.drawable.ic_pick_image)
@@ -87,7 +88,7 @@ fun ExpressServicesScreen(
                             .weight(1f)
                     )
 
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -97,9 +98,11 @@ fun ExpressServicesScreen(
                         Image(
                             painter = painterResource(id = R.drawable.ic_delete),
                             contentDescription = "Delete service",
-                            modifier = Modifier.clickable {
-                                showDeleteDialog = true
-                            }.padding(8.dp)
+                            modifier = Modifier
+                                .clickable {
+                                    showDeleteDialog = true
+                                }
+                                .padding(4.dp)
                         )
 
                         Button(
