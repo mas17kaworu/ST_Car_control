@@ -1,5 +1,6 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,12 +17,16 @@ import com.longkai.stcarcontrol.st_exp.R
 fun ServiceImagePicker(
     modifier: Modifier = Modifier,
     currentImageUri: Uri? = null,
-    onImagePicked: ((uri: Uri?) -> Unit),
+    onImagePicked: ((uri: Uri) -> Unit),
 ) {
+    val contentResolver = LocalContext.current.contentResolver
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) {
-        onImagePicked(it)
+        it?.let {
+            contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            onImagePicked(it)
+        }
     }
 
     println("zcf imagePicker: $currentImageUri")
