@@ -47,6 +47,7 @@ fun ExpressServicesScreen(
                 ddsViewModel.onSelectService(it)
             },
             onDoubleClickService = {
+                ddsViewModel.onSelectService(it)
                 if (it.triggerCondition == TriggerCondition.DoubleClick) {
                     ddsViewModel.executeExpressService(it)
                 }
