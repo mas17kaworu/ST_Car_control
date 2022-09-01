@@ -1,5 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.customView.dialog;
 
+import static com.longkai.stcarcontrol.st_exp.Utils.ResourceUtilKt.dp2px;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -46,8 +48,8 @@ public class NFCDialog extends Dialog {
 
     Window win = getWindow();
     WindowManager.LayoutParams lp = win.getAttributes();
-    lp.height = BitmapUtil.dp2px(context, 270);
-    lp.width = BitmapUtil.dp2px(context, 500);
+    lp.height = dp2px(context, 270);
+    lp.width = dp2px(context, 500);
     win.setAttributes(lp);
   }
 
