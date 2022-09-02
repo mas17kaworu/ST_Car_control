@@ -1,10 +1,8 @@
 package com.longkai.stcarcontrol.st_exp.activity
 
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.Matrix
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -13,7 +11,7 @@ import com.amap.api.location.AMapLocationClient
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.model.*
 import com.amap.api.maps.utils.SpatialRelationUtil
-import com.amap.api.maps.utils.overlay.SmoothMoveMarker
+import com.amap.api.maps.utils.overlay.MovingPointOverlay
 import com.google.android.material.snackbar.Snackbar
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.Utils.dp2px
@@ -21,10 +19,8 @@ import com.longkai.stcarcontrol.st_exp.Utils.rotate
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentTrackingBinding
 import com.longkai.stcarcontrol.st_exp.tracking.Tracking
 import com.longkai.stcarcontrol.st_exp.tracking.TrackingData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlin.math.atan2
 
 
 class TrackingActivity : ComponentActivity() {
@@ -34,6 +30,7 @@ class TrackingActivity : ComponentActivity() {
     private val aMap get() = mapView.map
 
     private var points: MutableList<LatLng> = mutableListOf()
+    private val progressiveTrackScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +47,7 @@ class TrackingActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        progressiveTrackScope.cancel()
         mapView.onDestroy()
     }
 
@@ -110,19 +108,20 @@ class TrackingActivity : ComponentActivity() {
     private fun moveCar() {
         ensureRecordLoaded()
 
-        val smoothMarker = createSmoothMoveMarker(-90f)
+        val movingMarker = createMovingMarker(-90f)
 
         val drivePoint = points[0]
         val (first) = SpatialRelationUtil.calShortestDistancePoint(points, drivePoint)
         points[first] = drivePoint
         val subList: List<LatLng> = points.subList(first, points.size)
 
-        smoothMarker.setPoints(subList)
-        smoothMarker.setTotalDuration(40)
-        smoothMarker.startSmoothMove()
+        movingMarker.setPoints(subList)
+        movingMarker.setTotalDuration(40)
+        movingMarker.startSmoothMove()
     }
 
     private fun clearTrack() {
+        progressiveTrackScope.coroutineContext.cancelChildren()
         aMap.clear()
     }
 
@@ -131,11 +130,11 @@ class TrackingActivity : ComponentActivity() {
 
         val pointDelay: Long = 1
 
-        val smoothMarker = createSmoothMoveMarker()
+        val movingMarker = createMovingMarker(-90f)
         val polyOptions = PolylineOptions().width(10f).color(Color.CYAN)
         val polyline = aMap.addPolyline(polyOptions)
 
-        CoroutineScope(Dispatchers.Main).launch {
+        progressiveTrackScope.launch {
             points.forEachIndexed { index, point ->
                 if (index == 0) {
                     aMap.animateCamera(CameraUpdateFactory.newLatLng(point))
@@ -145,31 +144,39 @@ class TrackingActivity : ComponentActivity() {
 
                 val previousPoint = if (index == 0) null else points[index - 1]
 
-//                if (previousPoint != null) {
-//                    val polylineOptions = PolylineOptions().width(10f).color(Color.CYAN)
-//                    aMap.addPolyline(polylineOptions.add(previousPoint, point))
-//                }
                 polyOptions.add(point)
                 polyline.points = polyOptions.points
 
-                smoothMarker.setPoints(listOf(previousPoint, point))
-                smoothMarker.setTotalDuration(pointDelay.toInt())
-                smoothMarker.startSmoothMove()
+                movingMarker.setPoints(mutableListOf(previousPoint, point))
+                previousPoint?.let {
+                    movingMarker.setRotate(calculateAngle(previousPoint, point).toFloat())
+                }
+                movingMarker.setTotalDuration(pointDelay.toInt())
+                movingMarker.startSmoothMove()
 
                 delay(pointDelay)
             }
         }
     }
 
-    private fun createSmoothMoveMarker(rotation: Float = 0f): SmoothMoveMarker {
-        return SmoothMoveMarker(aMap).apply {
-            setDescriptor(
-                BitmapDescriptorFactory.fromBitmap(
-                    BitmapFactory.decodeResource(resources, R.drawable.ic_car_hatchback_blue)
-                        .rotate(rotation)
+    private fun createMovingMarker(rotation: Float = 0f): MovingPointOverlay {
+        val marker = aMap.addMarker(
+            MarkerOptions()
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        BitmapFactory.decodeResource(resources, R.drawable.ic_car_hatchback_blue)
+                            .rotate(rotation)
+                    )
                 )
-            )
-        }
+                .anchor(0.5f, 0.5f)
+        )
+        return MovingPointOverlay(aMap, marker)
+    }
+
+    private fun calculateAngle(from: LatLng, to: LatLng): Double {
+        val diffX = to.longitude - from.longitude
+        val diffY = to.latitude - from.latitude
+        return 360 * atan2(diffY, diffX) / (2 * Math.PI) + 90
     }
 
     private fun ensureRecordLoaded() {
