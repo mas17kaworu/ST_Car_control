@@ -15,6 +15,11 @@ import java.io.IOException
 import java.io.InputStreamReader
 
 object FileUtils10 {
+  /**
+   *
+   * Triple String: file name, Uri： music file，SoundsInfo: parsed soundsInfo
+   *
+   */
   fun getFilesUnderDownloadST(
     context: Context
   ): List<Triple<String, Uri?, SoundsInfo?>> {
@@ -121,7 +126,7 @@ object FileUtils10 {
 
 
     val resultList = mutableListOf<Triple<String, Uri?, SoundsInfo?>>()
-    soundsInfoMap.forEach { entry ->
+    uriMap.forEach { entry ->
       resultList.add(Triple(entry.key, uriMap[entry.key], soundsInfoMap[entry.key]))
 
       // resultMap[entry.key] = Pair(
@@ -131,6 +136,7 @@ object FileUtils10 {
 
     return resultList
   }
+  
 
   fun readWAVFromInternalStorage(
     context: Context,

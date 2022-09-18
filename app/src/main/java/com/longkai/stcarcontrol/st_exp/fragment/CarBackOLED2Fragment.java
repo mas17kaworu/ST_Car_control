@@ -120,7 +120,19 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         refreshUI();
         soundsList = FileUtils10.INSTANCE.getFilesUnderDownloadST(getActivity());
         try {
-            if (soundsList.isEmpty()) soundsList = new LinkedList<>();
+            if (soundsList.isEmpty()) {
+                soundsList = new LinkedList<>();
+            } else {
+                // TODO check soundsInfo  有没有
+                List<Pair<String, Uri>> needGenerateList = new LinkedList<>();
+                for (Triple<String, Uri, SoundsInfo> triple:  soundsList) {
+                    if (triple.component3() == null) {
+                        needGenerateList.add(new Pair(triple.component1(), triple.component2()));
+                    }
+                }
+
+                System.out.println("longkai needGenerateList " + needGenerateList.size());
+            }
             soundsList.add(0, new Triple<String, Uri, SoundsInfo>(
                 "st01-default",
                 FileUtils.getResUri(R.raw.st01_wav, this.getContext()),
