@@ -11,6 +11,10 @@ package com.longkai.stcarcontrol.st_exp.Utils
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 
 /**
  * 用于加工bitmap的工具类
@@ -115,4 +119,14 @@ object BitmapUtil {
 fun Bitmap.rotate(degrees: Float): Bitmap {
     val matrix = Matrix().apply { postRotate(degrees) }
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+}
+
+
+fun Context.getBitmapFromVectorDrawable(
+    @DrawableRes resId: Int,
+    @ColorRes tintColor: Int? = null
+): Bitmap {
+    val drawable = AppCompatResources.getDrawable(this, resId)!!
+    tintColor?.let { drawable.setTint(getColor(it)) }
+    return drawable.toBitmap()
 }

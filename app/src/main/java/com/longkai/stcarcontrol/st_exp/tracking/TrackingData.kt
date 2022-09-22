@@ -1,20 +1,20 @@
 package com.longkai.stcarcontrol.st_exp.tracking
 
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 
 sealed class TrackingData(
     open val utcTime: LocalTime,
     open val latitude: Double,
     open val longitude: Double,
+    open val velocity: Double? = null,
 ) {
 
     data class GprmcData(
+        override val utcTime: LocalTime,
         override val latitude: Double,
         override val longitude: Double,
-        override val utcTime: LocalTime,
-        val velocity: Double? = null,
+        override val velocity: Double? = null,
         val direction: Double? = null,
         val utcDate: LocalDate? = null
     ) : TrackingData(utcTime, latitude, longitude)
@@ -23,7 +23,19 @@ sealed class TrackingData(
         override val utcTime: LocalTime,
         override val latitude: Double,
         override val longitude: Double,
-    ): TrackingData(utcTime, latitude, longitude)
+    ) : TrackingData(utcTime, latitude, longitude)
+
+    fun formatTime(): String {
+        return utcTime.toString()
+    }
+
+    fun formatLat(): String {
+        return String.format("%.2f N", latitude)
+    }
+
+    fun formatLng() {
+        String.format("%.2f N", latitude)
+    }
 }
 
 enum class LatitudeHemisphere(val key: String) {
