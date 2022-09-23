@@ -3,27 +3,39 @@ package com.longkai.stcarcontrol.st_exp.tracking
 import java.time.LocalDate
 import java.time.LocalTime
 
-sealed class TrackingData(
-    open val utcTime: LocalTime,
-    open val latitude: Double,
-    open val longitude: Double,
-    open val velocity: Double? = null,
+data class RmcData(
+    val utcTime: LocalTime,
+    val latitude: Double,
+    val longitude: Double,
+    val velocity: Double? = null,
+    val course: Double? = null,
+    val utcDate: LocalDate? = null
+)
+
+data class GgaData(
+    val utcTime: LocalTime,
+    val latitude: Double,
+    val longitude: Double,
+    val gpsStatus: Int? = null,
+    val satelliteNumber: Int? = null,
+    val hdop: Double? = null,
+    val altitude: Double? = null,
+    val geoidHeight: Double? = null
+)
+
+class TrackingData(
+    val utcTime: LocalTime,
+    val latitude: Double,
+    val longitude: Double,
+    val velocity: Double? = null,
+    val course: Double? = null,
+    val utcDate: LocalDate? = null,
+    val gpsStatus: Int? = null,
+    val satelliteNumber: Int? = null,
+    val hdop: Double? = null,
+    val altitude: Double? = null,
+    val geoidHeight: Double? = null
 ) {
-
-    data class GprmcData(
-        override val utcTime: LocalTime,
-        override val latitude: Double,
-        override val longitude: Double,
-        override val velocity: Double? = null,
-        val direction: Double? = null,
-        val utcDate: LocalDate? = null
-    ) : TrackingData(utcTime, latitude, longitude)
-
-    data class GpggaData(
-        override val utcTime: LocalTime,
-        override val latitude: Double,
-        override val longitude: Double,
-    ) : TrackingData(utcTime, latitude, longitude)
 
     fun formatTime(): String {
         return utcTime.toString()
