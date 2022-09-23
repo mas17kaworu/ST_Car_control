@@ -30,7 +30,6 @@ fun ServiceListCard(
     modifier: Modifier = Modifier,
     services: List<ExpressService>,
     onClickService: (ExpressService) -> Unit,
-    onDoubleClickService: (ExpressService) -> Unit,
     onClickCreateService: () -> Unit,
     selectedServiceId: Long? = null,
 ) {
@@ -53,7 +52,6 @@ fun ServiceListCard(
                     ServiceItemCard(
                         service = services[index],
                         onClick = onClickService,
-                        onDoubleClick = onDoubleClickService,
                         selected = (services[index].id == selectedServiceId)
                     )
                 }
@@ -69,7 +67,6 @@ fun ServiceListCard(
 fun ServiceItemCard(
     service: ExpressService,
     onClick: (ExpressService) -> Unit,
-    onDoubleClick: (ExpressService) -> Unit,
     selected: Boolean = false
 ) {
     CorneredContainer(
@@ -77,23 +74,10 @@ fun ServiceItemCard(
         outerPadding = 12.dp,
         backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
-        val interactionSource = remember { MutableInteractionSource() }
         Box(
             modifier = Modifier
                 .background(if (selected) MaterialTheme.colors.primary else Color.Transparent)
-                .indication(interactionSource, LocalIndication.current)
-                .pointerInput(service) {
-                    detectTapGestures(
-                        onPress = { offset ->
-                            val press = PressInteraction.Press(offset)
-                            interactionSource.emit(press)
-                            tryAwaitRelease()
-                            interactionSource.emit(PressInteraction.Release(press))
-                        },
-                        onTap = { onClick(service) },
-                        onDoubleTap = { onDoubleClick(service) }
-                    )
-                },
+                .clickable { onClick(service) },
             contentAlignment = Alignment.Center
         ) {
             Text(

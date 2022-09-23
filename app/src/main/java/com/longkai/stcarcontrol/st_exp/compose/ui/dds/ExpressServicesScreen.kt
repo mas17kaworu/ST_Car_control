@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.longkai.stcarcontrol.st_exp.R
-import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 
@@ -45,12 +44,6 @@ fun ExpressServicesScreen(
             services = uiState.expressServices,
             onClickService = {
                 ddsViewModel.onSelectService(it)
-            },
-            onDoubleClickService = {
-                ddsViewModel.onSelectService(it)
-                if (it.triggerCondition == TriggerCondition.DoubleClick) {
-                    ddsViewModel.executeExpressService(it)
-                }
             },
             onClickCreateService = {
                 ddsViewModel.onSelectService(null)
@@ -106,10 +99,22 @@ fun ExpressServicesScreen(
                                 .padding(4.dp)
                         )
 
-                        Button(
-                            onClick = { focusedService.let { onViewServiceDetails(it.id) } }
-                        ) {
-                            Text(text = "View service details")
+                        Row {
+                            if (focusedService.triggerCondition == TriggerCondition.DoubleClick) {
+                                Button(
+                                    onClick = { ddsViewModel.executeExpressService(focusedService) }
+                                ) {
+                                    Text(text = "Send")
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Button(
+                                onClick = { onViewServiceDetails(focusedService.id) }
+                            ) {
+                                Text(text = "View service details")
+                            }
                         }
                     }
                 }

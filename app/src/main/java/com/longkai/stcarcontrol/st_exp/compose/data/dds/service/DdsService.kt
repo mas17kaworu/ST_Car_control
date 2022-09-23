@@ -71,6 +71,10 @@ class DdsServiceImpl(private val context: Context): DdsService {
     /* SDK层创建的所有的对象都需要自己进行管理 */
     private fun init(domainId: Long, ip: String?, discoverIp: String, guid: ByteArray?): Long {
         ScreenLog.log("init domainId $domainId ip $ip guid ${guid?.printArrayInInt()}")
+        if (ip == null) {
+            ScreenLog.log("ipAddress is null, check your wifi connection")
+            return -1
+        }
         val domainParticipant =
             JavaDomainParticipant.CreateJavaDomainparticipant(domainId, ip, discoverIp, guid)
         if (null == domainParticipant) {

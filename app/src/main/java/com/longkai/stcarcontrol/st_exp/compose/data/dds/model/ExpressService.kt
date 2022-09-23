@@ -13,7 +13,10 @@ data class ExpressService(
 )
 
 enum class TriggerCondition(val description: String) {
-    DoubleClick("Double click service card"),
+    /**
+     *  It initially functions by double click, and changed to manually send.
+     */
+    DoubleClick("Manually send service"),
     DigitalKeyUnlock("Digital key unlock door");
 
     override fun toString(): String {
