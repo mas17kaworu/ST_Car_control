@@ -59,6 +59,8 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
 
     private static int SAMPLES_COUNT_PER_500_MS = 10;
 
+    private boolean usingLocalSoundInfo = false;
+
     private View mView;
 
     private ImageView ivReversing, ivBrake, ivPosition, ivTurnLeft, ivTurnRight, ivAuto1, ivAuto2,
@@ -118,21 +120,23 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         );
 
         refreshUI();
-        soundsList = FileUtils10.INSTANCE.getFilesUnderDownloadST(getActivity());
-        try {
-            if (soundsList.isEmpty()) soundsList = new LinkedList<>();
-            soundsList.add(0, new Triple<String, Uri, SoundsInfo>(
-                "st01-default",
-                FileUtils.getResUri(R.raw.st01_wav, this.getContext()),
-                FileUtils10.INSTANCE.readSoundsInfoFile(
-                    FileUtils.getResUri(R.raw.st01_json, this.getContext()), this.getContext()
-                )
-            ));
-        } catch (Exception e) {
-            System.out.println(e);
-        }
 
-        //Log.i(TAG, )
+        // 不再读区本地数据
+        if (usingLocalSoundInfo) {
+            soundsList = FileUtils10.INSTANCE.getFilesUnderDownloadST(getActivity());
+            try {
+                if (soundsList.isEmpty()) soundsList = new LinkedList<>();
+                soundsList.add(0, new Triple<String, Uri, SoundsInfo>(
+                        "st01-default",
+                        FileUtils.getResUri(R.raw.st01_wav, this.getContext()),
+                        FileUtils10.INSTANCE.readSoundsInfoFile(
+                                FileUtils.getResUri(R.raw.st01_json, this.getContext()), this.getContext()
+                        )
+                ));
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
     }
     private SendSoundsInfoRegular sendCMDTask;
     private void playMusic(Uri uri, SoundsInfo soundsInfo) {
@@ -144,12 +148,18 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
             public void onStateChange(MyMediaPlayer.PlayState state) {
                 if (state == MyMediaPlayer.PlayState.STATE_PLAYING) {
                     isPlaying = true;
-                    sendCMDTask = new SendSoundsInfoRegular(soundsInfo);
-                    handler.post(sendCMDTask);
+                    if (usingLocalSoundInfo) {
+                        sendCMDTask = new SendSoundsInfoRegular(soundsInfo);
+                        handler.post(sendCMDTask);
+                    } else {
+                        initVisualizer();
+                    }
                     doWhenStartPlaying();
-                    //initVisualizer();
+
                 } else if (state == MyMediaPlayer.PlayState.STATE_PAUSE || state == MyMediaPlayer.PlayState.STATE_IDLE) {
-                    handler.removeCallbacks(sendCMDTask);
+                    if (usingLocalSoundInfo) {
+                        handler.removeCallbacks(sendCMDTask);
+                    }
                     doWhenStopPlaying();
                 }
             }
@@ -162,14 +172,16 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
     private Visualizer.OnDataCaptureListener dataCaptureListener = new Visualizer.OnDataCaptureListener() {
         @Override
         public void onWaveFormDataCapture(Visualizer visualizer, final byte[] waveform, int samplingRate) {
-            //Log.d(TAG, "waveform samplingRate " + samplingRate + " waveform length " + waveform.length);
+            Log.d(TAG, "waveform samplingRate " + samplingRate + " waveform length " + waveform.length);
+
+//            Change to (double) (waveform[i] & 0xFF) so that the converted value lies in the range 0..255, instead of -128..127.
+
             //audioView.post(new Runnable() {
             //    @Override
             //    public void run() {
             //        audioView.setWaveData(waveform);
             //    }
             //});
-
         }
 
         @Override
