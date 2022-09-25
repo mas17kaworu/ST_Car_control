@@ -122,6 +122,27 @@ public class AudioVisualConverter {
         return voices;
     }
 
+    /**
+     * Wave data 就是声波数据（波！有高有低 ）
+     * https://www.xiaoyuanjiu.com/108485.html
+     *
+     * data & 0xff 0~255   128是中值
+     * 返回这段时间内的波形均值  时间越短更精确
+     *
+     * @param data
+     * @return
+     */
+    public int meanWaveData(byte[] data) {
+        int sum = 0;
+        int max = 0;
+        for (int i = 0; i < data.length; i++) {
+            sum += (data[i] & 0xFF);
+//            System.out.println((data[i] & 0xFF));
+        }
+        return sum / data.length;
+//        return max;
+    }
+
 
     /**
      * 预处理数据
@@ -147,10 +168,10 @@ public class AudioVisualConverter {
     }
 
     public int getVoiceSizeGoogle(byte[] data) {
-        //byte[] newData = readyFftDataByte(data);
+        byte[] newData = readyFftDataByte(data);
         float maxMagnitude = 0;
-        for (int i = 0; i < data.length; i += 2) {
-            float magnitude = (float) Math.hypot(data[i], data[i+1]);
+        for (int i = 0; i < newData.length; i += 2) {
+            float magnitude = (float) Math.hypot(newData[i], newData[i+1]);
             if (maxMagnitude < magnitude) {
                 maxMagnitude = magnitude;
             }
@@ -158,6 +179,16 @@ public class AudioVisualConverter {
         return (int)maxMagnitude;
     }
 
+    public int getVoiceSTFrequency(byte[] data) {
+        byte[] newData = readyFftDataByte(data);
+        int sum = 0;
+        for (int i = 0; i < newData.length; i += 2) {
+//            System.out.println(newData[i]);
+            sum += newData[i];
+        }
+
+        return sum / newData.length / 2;
+    }
 
 
     /**

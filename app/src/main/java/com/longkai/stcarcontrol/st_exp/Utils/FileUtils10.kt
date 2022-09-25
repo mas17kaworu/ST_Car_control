@@ -121,7 +121,7 @@ object FileUtils10 {
 
 
     val resultList = mutableListOf<Triple<String, Uri?, SoundsInfo?>>()
-    soundsInfoMap.forEach { entry ->
+    uriMap.forEach { entry ->
       resultList.add(Triple(entry.key, uriMap[entry.key], soundsInfoMap[entry.key]))
 
       // resultMap[entry.key] = Pair(
