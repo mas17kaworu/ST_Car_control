@@ -1,17 +1,28 @@
 package com.longkai.stcarcontrol.st_exp.fragment;
 
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDAuto1;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDAuto2;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDAuto3;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDBreak;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDPosition;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDReverse;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDStopOLED;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDTurnLeft;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDTurnRight;
+
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.longkai.stcarcontrol.st_exp.ConstantData;
 import com.longkai.stcarcontrol.st_exp.R;
 import com.longkai.stcarcontrol.st_exp.Utils.FileUtils;
@@ -35,23 +46,12 @@ import com.longkai.stcarcontrol.st_exp.model.SoundsInfo;
 import com.longkai.stcarcontrol.st_exp.music.AudioVisualConverter;
 import com.longkai.stcarcontrol.st_exp.music.MyMediaPlayer;
 
-import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDAuto1;
-import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDAuto2;
-import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDAuto3;
-import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDBreak;
-import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDPosition;
-import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDReverse;
-import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDStopOLED;
-import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDTurnLeft;
-import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDTurnRight;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import kotlin.Pair;
 import kotlin.Triple;
 
 public class CarBackOLED2Fragment extends Fragment implements View.OnClickListener {
@@ -64,7 +64,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
     private View mView;
 
     private ImageView ivReversing, ivBrake, ivPosition, ivTurnLeft, ivTurnRight, ivAuto1, ivAuto2,
-        ivAuto3, ivPlayOrPause, ivPlayNext, ivPlayPrevious, ivStop;
+            ivAuto3, ivPlayOrPause, ivPlayNext, ivPlayPrevious, ivStop;
 
     private OLED2Controller oledController;
 
@@ -76,7 +76,8 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
 
     private Boolean stopSendCMD = false;
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_car_back_oled2, container, false);
@@ -110,35 +111,36 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
     }
 
     private List<Triple<String, Uri, SoundsInfo>> soundsList;
-    @Override public void onStart() {
+
+    @Override
+    public void onStart() {
         super.onStart();
         oledController = new OLED2Controller(
                 this,
-                (ImageView)mView.findViewById(R.id.iv_oled_reverse),
-                (ImageView)mView.findViewById(R.id.iv_oled_break),
-                (ImageView)mView.findViewById(R.id.iv_oled_position)
+                (ImageView) mView.findViewById(R.id.iv_oled_reverse),
+                (ImageView) mView.findViewById(R.id.iv_oled_break),
+                (ImageView) mView.findViewById(R.id.iv_oled_position)
         );
 
         refreshUI();
 
-        // 不再读区本地数据
-        if (usingLocalSoundInfo) {
-            soundsList = FileUtils10.INSTANCE.getFilesUnderDownloadST(getActivity());
-            try {
-                if (soundsList.isEmpty()) soundsList = new LinkedList<>();
-                soundsList.add(0, new Triple<String, Uri, SoundsInfo>(
-                        "st01-default",
-                        FileUtils.getResUri(R.raw.st01_wav, this.getContext()),
-                        FileUtils10.INSTANCE.readSoundsInfoFile(
-                                FileUtils.getResUri(R.raw.st01_json, this.getContext()), this.getContext()
-                        )
-                ));
-            } catch (Exception e) {
-                System.out.println(e);
-            }
+        soundsList = FileUtils10.INSTANCE.getFilesUnderDownloadST(getActivity());
+        try {
+            if (soundsList.isEmpty()) soundsList = new LinkedList<>();
+            soundsList.add(0, new Triple<String, Uri, SoundsInfo>(
+                    "st01-default",
+                    FileUtils.getResUri(R.raw.st01_wav, this.getContext()),
+                    FileUtils10.INSTANCE.readSoundsInfoFile(
+                            FileUtils.getResUri(R.raw.st01_json, this.getContext()), this.getContext()
+                    )
+            ));
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
+
     private SendSoundsInfoRegular sendCMDTask;
+
     private void playMusic(Uri uri, SoundsInfo soundsInfo) {
         isVisualizerInit = false;
         mediaPlayer = MyMediaPlayer.getInstance(this.getContext());
@@ -160,6 +162,9 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
                     if (usingLocalSoundInfo) {
                         handler.removeCallbacks(sendCMDTask);
                     }
+                    if (!usingLocalSoundInfo) {
+                        visualizer.setEnabled(false);
+                    }
                     doWhenStopPlaying();
                 }
             }
@@ -167,45 +172,85 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
     }
 
     private Visualizer visualizer;
-    private int sampleIndex=0;
-    private int sum = 0;
+    private int sampleIndex = 0;
+    private int waveSampleIndex = 0;
+    private int waveMaxAmptitude = 0;
+    //    private int waveMinAmptitude = 128;
+    private long sumFrequency = 0;
+    private long maxFrequency = 0;
+    private AtomicInteger frequencyPushValue = new AtomicInteger(-1);
+    private AtomicInteger amptitudePushValue = new AtomicInteger(-1);
+
     private Visualizer.OnDataCaptureListener dataCaptureListener = new Visualizer.OnDataCaptureListener() {
         @Override
         public void onWaveFormDataCapture(Visualizer visualizer, final byte[] waveform, int samplingRate) {
-            Log.d(TAG, "waveform samplingRate " + samplingRate + " waveform length " + waveform.length);
+//            Log.d(TAG, "waveform samplingRate " + samplingRate + " waveform length " + waveform.length);
+//            Log.d(TAG, "mean value = " + audioVisualConverter.meanWaveData(waveform));
+            int meanWaveData = Math.abs(audioVisualConverter.meanWaveData(waveform) - 128);
+            if (meanWaveData > waveMaxAmptitude) waveMaxAmptitude = meanWaveData;
+//            if (meanWaveData < waveMinAmptitude) waveMinAmptitude = meanWaveData;
 
-//            Change to (double) (waveform[i] & 0xFF) so that the converted value lies in the range 0..255, instead of -128..127.
+            waveSampleIndex++;
+            if (waveSampleIndex == SAMPLES_COUNT_PER_500_MS) {
+                Log.d(TAG, String.format(Locale.getDefault(), "WaveForm %s", waveMaxAmptitude * 2)); // 0 ～ 255
 
-            //audioView.post(new Runnable() {
-            //    @Override
-            //    public void run() {
-            //        audioView.setWaveData(waveform);
-            //    }
-            //});
+                if (amptitudePushValue.get() == -1) { //
+                    amptitudePushValue.set(waveMaxAmptitude * 2);
+                }
+                sendSoundsInfo();
+                waveMaxAmptitude = 0;
+                waveSampleIndex = 0;
+            }
         }
 
         @Override
         public void onFftDataCapture(Visualizer visualizer, final byte[] fft, int samplingRate) {
-            //Log.d(TAG, "onFftDataCapture samplingRate" + samplingRate + " FftData " + fft.length);
-            //audioView2.post(new Runnable() {
-            //    @Override
-            //    public void run() {
-            //        audioView2.setWaveData(fft);
-            Log.d(TAG, String.format(Locale.getDefault(), "当前分贝: %s db", audioVisualConverter.getVoiceSize(fft)));
-            //sum += audioVisualConverter.getVoiceSizeGoogle(fft);
-            //if (sampleIndex < SAMPLES_COUNT_PER_500_MS) {
-            //    sampleIndex ++;
-            //} else {
-            //    Log.d(TAG, String.format(Locale.getDefault(), "当前分贝: %s db", sum / SAMPLES_COUNT_PER_500_MS));
-            //    sum = 0;
-            //    sampleIndex = 0;
-            //}
+            int db = audioVisualConverter.getVoiceSizeGoogle(fft);
+//            Log.d(TAG, String.format(Locale.getDefault(), "当前分贝: %s db", db));
+            if (db > 100) db = 100;
+//            Log.d(TAG, String.format(Locale.getDefault(), "normalize: %s", db /120f * 5 ));
+//            long stfrequncy = Math.round(db / 120f * 5.0);
+            sumFrequency += db;
+            sampleIndex++;
+//            if (maxFrequency < stfrequncy) maxFrequency = stfrequncy;
+            if (sampleIndex == SAMPLES_COUNT_PER_500_MS) {
+                double mean = sumFrequency * 1.0 / SAMPLES_COUNT_PER_500_MS;
+//                Log.d(TAG, String.format(Locale.getDefault(), "mean %s", mean));
+                long out = Math.round(mean / 100f * 5.0);
+                Log.d(TAG, String.format(Locale.getDefault(), "fft %s", out));
+                if (frequencyPushValue.get() == -1) { //
+                    frequencyPushValue.set((int)out);
+
+                }
+                sendSoundsInfo();
+                sumFrequency = 0;
+                sampleIndex = 0;
+                maxFrequency = 0;
+            }
+
+//            ServiceManager.getInstance().sendCommandToCar(new CMDSoundsInfo(
+//                    soundsInfo.component1().get(infoIndex),
+//                    soundsInfo.component2().get(infoIndex)
+//            ), doNothing);
         }
     };
 
 
+    private void sendSoundsInfo() {
+        if (frequencyPushValue.get() != -1 && amptitudePushValue.get() != -1) {
+            ServiceManager.getInstance().sendCommandToCar(new CMDSoundsInfo(
+                    frequencyPushValue.get(),
+                    amptitudePushValue.get()
+            ), doNothing);
+            Log.d(TAG, "SendSoundsInfo " + frequencyPushValue.get() + " " + amptitudePushValue.get());
+            frequencyPushValue.set(-1);
+            amptitudePushValue.set(-1);
+        }
+    }
 
-    @Override public void onDestroy() {
+
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         super.onDestroy();
         if (visualizer != null) {
@@ -219,6 +264,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
 
     private void initVisualizer() {
         if (isVisualizerInit) {
+            visualizer.setEnabled(true);
             return;
         }
         isVisualizerInit = true;
@@ -232,23 +278,27 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
             }
             visualizer = new Visualizer(mediaPlayerId);
 
-            int captureSize = 128;
-            int captureRate = 2000 * SAMPLES_COUNT_PER_500_MS; //2000 -- 2hz
+            int captureSize = Visualizer.getCaptureSizeRange()[0];
+            int captureRate = 2000 * SAMPLES_COUNT_PER_500_MS; //2000 * SAMPLES_COUNT_PER_500_MS; //2000 -- 2hz  2hz 代表每秒两次！
             Log.d(TAG, "精度: " + captureSize);
             Log.d(TAG, "刷新频率: " + captureRate);
 
             visualizer.setCaptureSize(captureSize);
             visualizer.setDataCaptureListener(dataCaptureListener, captureRate, true, true);
-            visualizer.setScalingMode(Visualizer.SCALING_MODE_NORMALIZED);
+            visualizer.setScalingMode(Visualizer.SCALING_MODE_AS_PLAYED); // SCALING_MODE_AS_PLAYED SCALING_MODE_NORMALIZED
+//            visualizer.setMeasurementMode(Visualizer.MEASUREMENT_MODE_NONE);
             visualizer.setEnabled(true);
+//            visualizer.getWaveForm()
+//            visualizer.getFft()
         } catch (Exception e) {
             Log.e(TAG, "请检查录音权限 " + e);
             isVisualizerInit = false;
         }
     }
 
-    @Override public void onClick(View view) {
-        switch (view.getId()){
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.btn_back_oled_reversing:
                 clickBtn(sBackOLEDReverse, ivReversing, new CMDOLEDReversing());
                 //ServiceManager.getInstance().sendCommandToCar(new CMDOLEDReversing(), new CommandListenerAdapter());
@@ -316,14 +366,14 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         ServiceManager.getInstance().sendCommandToCar(command, new CommandListenerAdapter());
     }
 
-    private void refreshUI(){
+    private void refreshUI() {
         oledController.updateState(updateStateByCMD());
 
         byte[] cmdPayload = CMDOLEDBase.getPayload();
         if ((cmdPayload[0] & CMDOLEDBase.Reversing) != 0) {
             ivReversing.setSelected(true);
             ConstantData.sBackOLEDStatus[sBackOLEDReverse] = 1;
-        } else{
+        } else {
             ivReversing.setSelected(false);
             ConstantData.sBackOLEDStatus[sBackOLEDReverse] = 0;
         }
@@ -337,7 +387,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
             ConstantData.sBackOLEDStatus[sBackOLEDBreak] = 0;
         }
 
-        if((cmdPayload[0] & CMDOLEDBase.Position) !=0) {
+        if ((cmdPayload[0] & CMDOLEDBase.Position) != 0) {
             ivPosition.setSelected(true);
             ConstantData.sBackOLEDStatus[sBackOLEDPosition] = 1;
         } else {
@@ -345,7 +395,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
             ConstantData.sBackOLEDStatus[sBackOLEDPosition] = 0;
         }
 
-        if((cmdPayload[0] & CMDOLEDBase.TurnLeft) != 0) {
+        if ((cmdPayload[0] & CMDOLEDBase.TurnLeft) != 0) {
             ivTurnLeft.setSelected(true);
             ConstantData.sBackOLEDStatus[sBackOLEDTurnLeft] = 1;
         } else {
@@ -393,6 +443,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
             ConstantData.sBackOLEDStatus[sBackOLEDStopOLED] = 0;
         }
     }
+
     private Boolean isPlaying = false;
     private int soundsIndex = 0;
     Handler handler = new Handler();
@@ -409,6 +460,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
 
     private void doWhenStartPlaying() {
         getView().post(() -> ivPlayOrPause.setImageResource(R.mipmap.ic_stop));
+
     }
 
     private void doWhenStopPlaying() {
@@ -444,20 +496,23 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
     }
 
     private final CommandListenerAdapter doNothing = new CommandListenerAdapter();
+
     private class SendSoundsInfoRegular implements Runnable {
         SendSoundsInfoRegular(SoundsInfo soundsInfo) {
             this.soundsInfo = soundsInfo;
         }
+
         private int infoIndex = 0;
         private SoundsInfo soundsInfo;
 
-        @Override public void run() {
+        @Override
+        public void run() {
             // Send command
             Log.d(TAG, "longkai22 frequency " + soundsInfo.component1().get(infoIndex) +
-                " amptitude " + soundsInfo.component2().get(infoIndex));
+                    " amptitude " + soundsInfo.component2().get(infoIndex));
             ServiceManager.getInstance().sendCommandToCar(new CMDSoundsInfo(
-                soundsInfo.component1().get(infoIndex),
-                soundsInfo.component2().get(infoIndex)
+                    soundsInfo.component1().get(infoIndex),
+                    soundsInfo.component2().get(infoIndex)
             ), doNothing);
 
             infoIndex++;
@@ -469,19 +524,19 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
     }
 
     /**
-     *     protected static final byte TurnLeft = (byte)0x10;
-     *     protected static final byte TurnRight = (byte)0x08;
-     *     protected static final byte Position = (byte)0x04;
-     *     protected static final byte Brake    = (byte)0x02;
-     *     protected static final byte Reversing = (byte)0x01;
-     *
-     *     protected static final byte AutoRun1 = (byte)0x20;
-     *     protected static final byte AutoRun2 = (byte)0x40;
-     *     protected static final byte AutoRun3 = (byte)0x80;
+     * protected static final byte TurnLeft = (byte)0x10;
+     * protected static final byte TurnRight = (byte)0x08;
+     * protected static final byte Position = (byte)0x04;
+     * protected static final byte Brake    = (byte)0x02;
+     * protected static final byte Reversing = (byte)0x01;
+     * <p>
+     * protected static final byte AutoRun1 = (byte)0x20;
+     * protected static final byte AutoRun2 = (byte)0x40;
+     * protected static final byte AutoRun3 = (byte)0x80;
      *
      * @return
      */
-    private OLED2Controller.OLEDState updateStateByCMD(){
+    private OLED2Controller.OLEDState updateStateByCMD() {
         byte[] cmdPayload = CMDOLEDBase.getPayload();
         return new OLED2Controller.OLEDState(
                 (cmdPayload[0] & CMDOLEDBase.Reversing) != 0,
