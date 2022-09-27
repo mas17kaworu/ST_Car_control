@@ -39,6 +39,16 @@
             android:layout_height="60dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_baseline_folder_special_24"
+            app:layout_constraintBottom_toTopOf="@id/settingsBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/settingsBtn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_baseline_settings_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

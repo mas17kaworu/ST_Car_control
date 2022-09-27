@@ -1,7 +1,9 @@
 package com.longkai.stcarcontrol.st_exp.tracking
 
 import android.content.res.ColorStateList
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -63,6 +65,17 @@ class TrackingActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         mapView.onPause()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        val viewRect = Rect()
+        binding.historyRecordsLayout.getGlobalVisibleRect(viewRect)
+        if (binding.historyRecordsLayout.isVisible &&
+            !viewRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
+            binding.historyRecordsLayout.isVisible = false
+            return true
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
