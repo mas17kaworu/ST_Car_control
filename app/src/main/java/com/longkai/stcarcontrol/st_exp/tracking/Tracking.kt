@@ -18,7 +18,8 @@ object Tracking {
     private lateinit var dataDir: File
 
     fun init(context: Context) {
-        dataDir = context.getExternalFilesDir(null)!!
+        dataDir = File(context.getExternalFilesDir(null), DIR_HISTORY_RECORDS)
+        if (!dataDir.exists()) dataDir.mkdir()
         println("Tracking data directory: $dataDir")
     }
 
@@ -37,53 +38,64 @@ object Tracking {
     suspend fun loadHistoryRecords(): List<HistoryRecord> {
         return withContext(Dispatchers.IO) {
             dataDir.listFiles()
-                .filter { it.isFile }
+                .filter {
+                    it.isDirectory && (File(it, FILE_REAL).exists() || File(it, FILE_PBOX).exists())
+                }
                 .map { HistoryRecord(it.name) }
         }
     }
 
-    suspend fun load(historyRecord: HistoryRecord): List<TrackingData> {
+    suspend fun load(historyRecord: HistoryRecord): HistoryRecordData {
         return withContext(Dispatchers.IO) {
-            val recordsFile = File(dataDir, historyRecord.fileName)
-            println("zcf recordsFile: $recordsFile, ${recordsFile.exists()}")
+            val recordDir = File(dataDir, historyRecord.recordName)
+            val realFile = File(recordDir, FILE_REAL)
+            val pboxFile = File(recordDir, FILE_PBOX)
 
-            if (recordsFile.exists().not()) return@withContext emptyList()
-
-            val records = mutableListOf<TrackingData>()
-            recordsFile.source().use { source ->
-                source.buffer().use { bufferedSource ->
-                    var rmcData: RmcData? = null
-                    var ggaData: GgaData? = null
-
-                    val handleDataPoint = {
-                        rmcData?.let {
-                            val record = mergeRmcAndGga(it, ggaData)
-                            records.add(record)
-                            rmcData = null
-                            ggaData = null
-                        }
-                    }
-
-                    while (true) {
-                        val line = bufferedSource.readUtf8Line() ?: break
-                        val fields = line.split(',')
-
-                        // This assumes RMC data always comes before GGA.
-                        when(fields.first()) {
-                            TYPE_GNRMC -> {
-                                handleDataPoint.invoke()
-                                rmcData = parseRmc(fields)
-                            }
-                            TYPE_GNGGA -> {
-                                ggaData = parseGga(fields)
-                            }
-                        }
-                    }
-                    handleDataPoint.invoke()
-                }
-            }
-            records
+            HistoryRecordData(
+                recordName = historyRecord.recordName,
+                realPoints = loadRecordFile(realFile),
+                pboxPoints = loadRecordFile(pboxFile)
+            )
         }
+    }
+
+    private fun loadRecordFile(recordFile: File): List<TrackingData> {
+        if (recordFile.exists().not()) return emptyList()
+
+        val records = mutableListOf<TrackingData>()
+        recordFile.source().use { source ->
+            source.buffer().use { bufferedSource ->
+                var rmcData: RmcData? = null
+                var ggaData: GgaData? = null
+
+                val handleDataPoint = {
+                    rmcData?.let {
+                        val record = mergeRmcAndGga(it, ggaData)
+                        records.add(record)
+                        rmcData = null
+                        ggaData = null
+                    }
+                }
+
+                while (true) {
+                    val line = bufferedSource.readUtf8Line() ?: break
+                    val fields = line.split(',')
+
+                    // This assumes RMC data always comes before GGA.
+                    when(fields.first()) {
+                        TYPE_GNRMC -> {
+                            handleDataPoint.invoke()
+                            rmcData = parseRmc(fields)
+                        }
+                        TYPE_GNGGA -> {
+                            ggaData = parseGga(fields)
+                        }
+                    }
+                }
+                handleDataPoint.invoke()
+            }
+        }
+        return records
     }
 
     private fun mergeRmcAndGga(rmcData: RmcData, ggaData: GgaData?): TrackingData {
@@ -117,8 +129,8 @@ object Tracking {
                 if (longitudeHemisphere == LongitudeHemisphere.West) {
                     longitude *= -1
                 }
-                val velocity = fields[7].toDouble()
-                val course = fields[8].toDouble()
+                val velocity = parseDouble(fields[7])
+                val course = parseDouble(fields[8])
                 val utcDate = parseUtcDate(fields[9])
                 RmcData(
                     utcTime = utcTime,
@@ -130,7 +142,7 @@ object Tracking {
                 )
             } else null
         } catch (e: Exception) {
-            Log.i("zcf", "$fields", e)
+            Log.e("zcf", "$fields", e)
             null
         }
     }
@@ -148,11 +160,11 @@ object Tracking {
             if (longitudeHemisphere == LongitudeHemisphere.West) {
                 longitude *= -1
             }
-            val gpsStatus = fields[6].toInt()
-            val satelliteNumber = fields[7].toInt()
-            val hdop = fields[8].toDouble()
-            val altitude = fields[9].toDouble()
-            val geoidHeight = fields[10].toDouble()
+            val gpsStatus = parseInt(fields[6])
+            val satelliteNumber = parseInt(fields[7])
+            val hdop = parseDouble(fields[8])
+            val altitude = parseDouble(fields[9])
+            val geoidHeight = parseDouble(fields[11])
             GgaData(
                 utcTime = utcTime,
                 latitude = latitude,
@@ -164,7 +176,7 @@ object Tracking {
                 geoidHeight = geoidHeight
             )
         } catch (e: Exception) {
-            Log.i("zcf", "$fields", e)
+            Log.e("zcf", "$fields", e)
             null
         }
     }
@@ -173,16 +185,15 @@ object Tracking {
      * UTC ime in [UTC_TIME_PATTERN] format
      */
     private fun parseUtcTime(input: String): LocalTime {
-        return LocalTime.parse(input, DateTimeFormatter.ofPattern(UTC_TIME_PATTERN))
+        return LocalTime.parse(input.substringBefore('.'), DateTimeFormatter.ofPattern(UTC_TIME_PATTERN))
     }
 
     /**
      * UTC date in [UTC_DATE_PATTERN] format
      */
     private fun parseUtcDate(input: String): LocalDate {
-        return LocalDate.parse(input, DateTimeFormatter.ofPattern(UTC_TIME_PATTERN))
+        return LocalDate.parse(input, DateTimeFormatter.ofPattern(UTC_DATE_PATTERN))
     }
-
 
     /**
      * @param input In 'ddmm.mmmm' format
@@ -193,9 +204,21 @@ object Tracking {
         return dd.toInt() + mms.toDouble()/60.0
     }
 
+    private fun parseDouble(input: String): Double? {
+        return if (input.isBlank()) null else input.toDouble()
+    }
+
+    private fun parseInt(input: String): Int? {
+        return if(input.isBlank()) null else input.toInt()
+    }
+
+    private const val DIR_HISTORY_RECORDS = "HistoryRecords"
+    private const val FILE_REAL = "real.txt"
+    private const val FILE_PBOX = "pbox.txt"
+
     const val TYPE_GNRMC = "\$GNRMC"
     const val TYPE_GNGGA = "\$GNGGA"
 
-    const val UTC_TIME_PATTERN = "HHmmss.SSS"
+    const val UTC_TIME_PATTERN = "HHmmss"
     const val UTC_DATE_PATTERN = "ddMMyy"
 }

@@ -129,4 +129,18 @@
         <item name="android:layout_width">80dp</item>
         <item name="android:layout_height">80dp</item>
     </style>
+
+<!--    Tracking Activity-->
+    <style name="TrackingActivity">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+    <style name="TrackPointInfoText">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="layout_constraintHorizontal_bias">0</item>
+    </style>
+    <style name="TrackPointInfoText.Value">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="layout_constraintHorizontal_bias">0</item>
+        <item name="android:layout_marginStart">16dp</item>
+    </style>
 </resources>

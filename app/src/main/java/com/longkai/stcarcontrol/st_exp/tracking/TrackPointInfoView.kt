@@ -16,10 +16,12 @@ class TrackPointInfoView(
 
     fun setData(data: TrackingData) {
         binding.apply {
-            time.text = data.utcTime.toString()
-//            speed.text = data.s
-            latitude.text = String.format("%.2f N", data.latitude)
-            longitude.text = String.format("%.2f S", data.longitude)
+            time.text = data.formatDateTime()
+            location.text = data.formatLocation()
+            dop.text = "0, ${data.hdop}, 0"
+            gpsStatus.text = "${data.gpsStatus}"
+            course.text = "${data.course}"
+            speed.text = "${data.velocity}"
         }
     }
 

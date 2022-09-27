@@ -2,6 +2,7 @@ package com.longkai.stcarcontrol.st_exp.tracking
 
 import java.time.LocalDate
 import java.time.LocalTime
+import kotlin.math.abs
 
 data class RmcData(
     val utcTime: LocalTime,
@@ -36,17 +37,28 @@ class TrackingData(
     val altitude: Double? = null,
     val geoidHeight: Double? = null
 ) {
+    fun formatTime() = utcTime.toString()
 
-    fun formatTime(): String {
-        return utcTime.toString()
+    fun formatDateTime(): String {
+        return "${utcDate.toString()} $utcTime"
     }
 
-    fun formatLat(): String {
-        return String.format("%.2f N", latitude)
+    fun formatLocation(): String {
+        val latStr = String.format("%.6f N", latitude)
+        val lngStr = String.format("%.6f E", longitude)
+        val altStr = String.format("%.6f m", altitude)
+        return "$latStr, $lngStr, $altStr"
     }
 
-    fun formatLng() {
-        String.format("%.2f N", latitude)
+    fun isSameTime(other: TrackingData): Boolean {
+        return utcTime == other.utcTime
+    }
+
+    /**
+     * Time difference in seconds
+     */
+    fun timeDiff(otherPoint: TrackingData): Int {
+        return abs(utcTime.toSecondOfDay() - otherPoint.utcTime.toSecondOfDay())
     }
 }
 

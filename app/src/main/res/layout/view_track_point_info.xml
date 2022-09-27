@@ -7,46 +7,145 @@
     android:padding="20dp"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticalGuideline"
+        style="@style/TrackPointInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4"/>
+
+    <TextView
+        android:id="@+id/timeLabel"
+        style="@style/TrackPointInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time (UTC)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toTopOf="@id/time"
+        app:layout_constraintBottom_toBottomOf="@id/time"/>
+
     <TextView
         android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="01:01:01" />
-
-    <TextView
-        android:id="@+id/speed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="100 km/s"
-        android:textColor="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/time" />
-
-    <TextView
-        android:id="@+id/latitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:textColor="@android:color/black"
-        app:layout_constraintEnd_toStartOf="@id/longitude"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/speed" />
-
-    <TextView
-        android:id="@+id/longitude"
+        style="@style/TrackPointInfoText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/latitude"
-        app:layout_constraintTop_toTopOf="@id/latitude" />
+        app:layout_constraintStart_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="01:01:01" />
+
+    <TextView
+        android:id="@+id/locationLabel"
+        style="@style/TrackPointInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LLA"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toTopOf="@id/location"
+        app:layout_constraintBottom_toBottomOf="@id/location"/>
+
+    <TextView
+        android:id="@+id/location"
+        style="@style/TrackPointInfoText.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toBottomOf="@id/time"
+        tools:text="31.3290 N, 121.0534 E, 3.1310 m" />
+
+    <TextView
+        android:id="@+id/dopLabel"
+        style="@style/TrackPointInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DOP(P,H,V)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toTopOf="@id/dop"
+        app:layout_constraintBottom_toBottomOf="@id/dop"/>
+
+    <TextView
+        android:id="@+id/dop"
+        style="@style/TrackPointInfoText.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toBottomOf="@id/location"
+        tools:text="01:01:01" />
+
+    <TextView
+        android:id="@+id/gpsStatusLabel"
+        style="@style/TrackPointInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GPS Quality"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toTopOf="@id/gpsStatus"
+        app:layout_constraintBottom_toBottomOf="@id/gpsStatus"/>
+
+    <TextView
+        android:id="@+id/gpsStatus"
+        style="@style/TrackPointInfoText.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toBottomOf="@id/dop"
+        tools:text="01:01:01" />
+
+    <TextView
+        android:id="@+id/courseLabel"
+        style="@style/TrackPointInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Course (True North)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toTopOf="@id/course"
+        app:layout_constraintBottom_toBottomOf="@id/course"/>
+
+    <TextView
+        android:id="@+id/course"
+        style="@style/TrackPointInfoText.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toBottomOf="@id/gpsStatus"
+        tools:text="01:01:01" />
+
+    <TextView
+        android:id="@+id/speedLabel"
+        style="@style/TrackPointInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Speed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toTopOf="@id/speed"
+        app:layout_constraintBottom_toBottomOf="@id/speed"/>
+
+    <TextView
+        android:id="@+id/speed"
+        style="@style/TrackPointInfoText.Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/verticalGuideline"
+        app:layout_constraintTop_toBottomOf="@id/course"
+        tools:text="01:01:01" />
 
 </merge>

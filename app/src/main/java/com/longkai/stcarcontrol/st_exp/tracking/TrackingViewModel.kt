@@ -8,14 +8,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-enum class SignalType {
-    Real, PBox, Other3, Other4
-}
-
 data class TrackingViewState(
     val inReviewMode: Boolean = false,
     val isRecording: Boolean = false,
-    val signalType: SignalType = SignalType.Real
+    val showRealTrack: Boolean = true,
+    val showPboxTrack: Boolean = true,
+    val historyRecordDataRefreshed: Boolean = false,
+    val historyRecordData: HistoryRecordData? = null
 )
 
 class TrackingViewModel : ViewModel() {
@@ -30,8 +29,16 @@ class TrackingViewModel : ViewModel() {
         return Tracking.loadHistoryRecords()
     }
 
-    suspend fun loadRecord(historyRecord: HistoryRecord): List<TrackingData> {
-        return Tracking.load(historyRecord)
+    fun loadRecord(historyRecord: HistoryRecord) {
+        viewModelScope.launch {
+            val historyRecordData = Tracking.load(historyRecord)
+            _uiState.update {
+                it.copy(
+                    historyRecordDataRefreshed = true,
+                    historyRecordData = historyRecordData
+                )
+            }
+        }
     }
 
     fun enterReviewMode() {
@@ -74,9 +81,11 @@ class TrackingViewModel : ViewModel() {
         }
     }
 
-    fun changeSignal(signalType: SignalType) {
-        _uiState.update { it.copy(signalType = signalType) }
+    fun switchRealTrack() {
+        _uiState.update { it.copy(showRealTrack = !it.showRealTrack) }
     }
 
-
+    fun switchPboxTrack() {
+        _uiState.update { it.copy(showPboxTrack = !it.showPboxTrack) }
+    }
 }

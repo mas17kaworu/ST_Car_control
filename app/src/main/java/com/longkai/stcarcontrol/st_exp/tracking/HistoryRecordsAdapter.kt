@@ -26,7 +26,7 @@ class HistoryRecordsAdapter(
 
     override fun onBindViewHolder(holder: HistoryRecordsVH, position: Int) {
         val item = data[position]
-        holder.name.text = item.fileName
+        holder.name.text = item.recordName
         holder.itemView.setOnClickListener { itemClickListener.invoke(item) }
     }
 
