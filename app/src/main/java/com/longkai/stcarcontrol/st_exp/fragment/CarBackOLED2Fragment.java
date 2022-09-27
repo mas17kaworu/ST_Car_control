@@ -10,6 +10,7 @@ import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDStopOLED;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDTurnLeft;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sBackOLEDTurnRight;
 
+import android.media.audiofx.Equalizer;
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -163,7 +164,11 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
                         handler.removeCallbacks(sendCMDTask);
                     }
                     if (!usingLocalSoundInfo) {
-                        visualizer.setEnabled(false);
+                        try {
+                            visualizer.setEnabled(false);
+                        } catch (Exception e) {
+
+                        }
                     }
                     doWhenStopPlaying();
                 }
@@ -175,6 +180,13 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
     private int sampleIndex = 0;
     private int waveSampleIndex = 0;
     private int waveMaxAmptitude = 0;
+    private int waveSumAmptitude = 0;
+
+    private int wave2Amptitude = 0;
+    private int wave3Amptitude = 0;
+    private int wave4Amptitude = 0;
+    private int wave5Amptitude = 0;
+
     //    private int waveMinAmptitude = 128;
     private long sumFrequency = 0;
     private long maxFrequency = 0;
@@ -185,29 +197,60 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
         @Override
         public void onWaveFormDataCapture(Visualizer visualizer, final byte[] waveform, int samplingRate) {
 //            Log.d(TAG, "waveform samplingRate " + samplingRate + " waveform length " + waveform.length);
-//            Log.d(TAG, "mean value = " + audioVisualConverter.meanWaveData(waveform));
+//            Log.d(TAG, "mean value = " + (audioVisualConverter.meanWaveData(waveform) - 128));
             int meanWaveData = Math.abs(audioVisualConverter.meanWaveData(waveform) - 128);
             if (meanWaveData > waveMaxAmptitude) waveMaxAmptitude = meanWaveData;
-//            if (meanWaveData < waveMinAmptitude) waveMinAmptitude = meanWaveData;
+
+            waveSumAmptitude += Math.abs(audioVisualConverter.meanWaveData(waveform) - 128);
+
+            // 最后方案最高5个取平均
+            if (meanWaveData > wave5Amptitude) {
+                wave5Amptitude =  meanWaveData;
+            }
+            if (meanWaveData > wave4Amptitude) {
+                wave5Amptitude =  wave4Amptitude;
+                wave4Amptitude = meanWaveData;
+            }
+
+            if (meanWaveData > wave3Amptitude) {
+                wave4Amptitude = wave3Amptitude;
+                wave3Amptitude = meanWaveData;
+            }
+            if (meanWaveData > wave2Amptitude) {
+                wave3Amptitude = wave2Amptitude;
+                wave2Amptitude = meanWaveData;
+            }
+            if (meanWaveData > waveMaxAmptitude) {
+                wave2Amptitude = waveMaxAmptitude;
+                waveMaxAmptitude = meanWaveData;
+            }
+
 
             waveSampleIndex++;
             if (waveSampleIndex == SAMPLES_COUNT_PER_500_MS) {
-                Log.d(TAG, String.format(Locale.getDefault(), "WaveForm %s", waveMaxAmptitude * 2)); // 0 ～ 255
+                //                Log.d(TAG, String.format(Locale.getDefault(), "WaveForm %s", waveMaxAmptitude * 2)); // 0 ～ 255
+                int wav = (waveMaxAmptitude + wave2Amptitude + wave3Amptitude + wave4Amptitude + wave5Amptitude) * 2 / 5;
+                Log.d(TAG, String.format(Locale.getDefault(), "WaveForm %s", wav)
+                ); // 0 ～ 255
+//                Log.d(TAG, String.format(Locale.getDefault(), "WaveForm %s", waveSumAmptitude / SAMPLES_COUNT_PER_500_MS * 2)); // 0 ～ 255
 
                 if (amptitudePushValue.get() == -1) { //
-                    amptitudePushValue.set(waveMaxAmptitude * 2);
+                    amptitudePushValue.set(wav);
                 }
                 sendSoundsInfo();
                 waveMaxAmptitude = 0;
                 waveSampleIndex = 0;
+                waveSumAmptitude = 0;
+                wave2Amptitude = 0;
+                wave3Amptitude = 0;
             }
         }
 
         @Override
         public void onFftDataCapture(Visualizer visualizer, final byte[] fft, int samplingRate) {
             int db = audioVisualConverter.getVoiceSizeGoogle(fft);
-//            Log.d(TAG, String.format(Locale.getDefault(), "当前分贝: %s db", db));
-            if (db > 100) db = 100;
+            Log.d(TAG, String.format(Locale.getDefault(), "当前分贝: %s db", db));
+//            if (db > 100) db = 100;
 //            Log.d(TAG, String.format(Locale.getDefault(), "normalize: %s", db /120f * 5 ));
 //            long stfrequncy = Math.round(db / 120f * 5.0);
             sumFrequency += db;
@@ -217,7 +260,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
                 double mean = sumFrequency * 1.0 / SAMPLES_COUNT_PER_500_MS;
 //                Log.d(TAG, String.format(Locale.getDefault(), "mean %s", mean));
                 long out = Math.round(mean / 100f * 5.0);
-                Log.d(TAG, String.format(Locale.getDefault(), "fft %s", out));
+//                Log.d(TAG, String.format(Locale.getDefault(), "fft %s", out));
                 if (frequencyPushValue.get() == -1) { //
                     frequencyPushValue.set((int)out);
 
@@ -276,6 +319,9 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
             if (visualizer != null) {
                 visualizer.release();
             }
+
+            Equalizer mEqualizer = new Equalizer(0, mediaPlayerId); // 防止波形根据音量变化
+            mEqualizer.setEnabled(true); // need to enable equalizer
             visualizer = new Visualizer(mediaPlayerId);
 
             int captureSize = Visualizer.getCaptureSizeRange()[0];
@@ -285,7 +331,7 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
 
             visualizer.setCaptureSize(captureSize);
             visualizer.setDataCaptureListener(dataCaptureListener, captureRate, true, true);
-            visualizer.setScalingMode(Visualizer.SCALING_MODE_AS_PLAYED); // SCALING_MODE_AS_PLAYED SCALING_MODE_NORMALIZED
+            visualizer.setScalingMode(Visualizer.SCALING_MODE_AS_PLAYED);  // SCALING_MODE_NORMALIZED 防止波形根据音量变化 // SCALING_MODE_AS_PLAYED SCALING_MODE_NORMALIZED
 //            visualizer.setMeasurementMode(Visualizer.MEASUREMENT_MODE_NONE);
             visualizer.setEnabled(true);
 //            visualizer.getWaveForm()

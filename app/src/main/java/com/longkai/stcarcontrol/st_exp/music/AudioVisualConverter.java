@@ -170,13 +170,16 @@ public class AudioVisualConverter {
     public int getVoiceSizeGoogle(byte[] data) {
         byte[] newData = readyFftDataByte(data);
         float maxMagnitude = 0;
+        double sumMagnitude = 0;
         for (int i = 0; i < newData.length; i += 2) {
             float magnitude = (float) Math.hypot(newData[i], newData[i+1]);
+            sumMagnitude +=  magnitude;
             if (maxMagnitude < magnitude) {
                 maxMagnitude = magnitude;
             }
         }
         return (int)maxMagnitude;
+//        return (int)sumMagnitude * 2 / newData.length;
     }
 
     public int getVoiceSTFrequency(byte[] data) {
