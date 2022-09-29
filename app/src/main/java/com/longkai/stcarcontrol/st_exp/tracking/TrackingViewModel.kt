@@ -1,12 +1,10 @@
 package com.longkai.stcarcontrol.st_exp.tracking
 
 import android.app.Application
-import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.longkai.stcarcontrol.st_exp.STCarApplication
 import com.longkai.stcarcontrol.st_exp.appPrefsDataStore
@@ -31,9 +29,14 @@ val PREF_HIDE_REAL_TRACK_UI = booleanPreferencesKey("hideRealTrackUI")
 val PREF_LABEL_INTERVAL = intPreferencesKey("labelInterval")
 const val DEFAULT_LABEL_INTERVAL = 10
 
+enum class RECORD_TYPE {
+    PBOX, REAL
+}
+
 class TrackingViewModel(application: Application) : AndroidViewModel(application) {
-    private var recordFilename: String = ""
-    private var recordData: MutableList<String> = mutableListOf()
+    private var recordPath: String = ""
+    private var recordDataReal: MutableList<String> = mutableListOf()
+    private var recordDataPbox: MutableList<String> = mutableListOf()
 
     private val _uiState = MutableStateFlow(TrackingViewState())
     val uiState: StateFlow<TrackingViewState> = _uiState
@@ -88,11 +91,14 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
         _uiState.update {
             it.copy(isRecording = true)
         }
-        recordFilename = LocalDateTime.now().toString()
+        recordPath = "${LocalDateTime.now()}"
     }
 
-    fun saveRecord(record: String) {
-        recordData.add(record)
+    fun saveRecord(record: String, recordType: RECORD_TYPE) {
+        when (recordType) {
+            RECORD_TYPE.PBOX -> recordDataPbox.add(record)
+            RECORD_TYPE.REAL -> recordDataReal.add(record)
+        }
     }
 
     fun stopRecording(onComplete: (fileName: String?) -> Unit) {
@@ -100,12 +106,13 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
             _uiState.update {
                 it.copy(isRecording = false)
             }
-            val fileName = recordFilename
-            if (fileName.isNotBlank() && recordData.isNotEmpty()) {
-                Tracking.saveRecording(fileName, recordData)
-                recordFilename = ""
-                recordData.clear()
-                onComplete.invoke(fileName)
+            val filePath = recordPath
+            if (filePath.isNotBlank() && recordDataPbox.isNotEmpty()) {
+                Tracking.saveRecording(filePath, recordDataPbox, recordDataReal)
+                recordPath = ""
+                recordDataPbox.clear()
+                recordDataReal.clear()
+                onComplete.invoke(filePath)
             } else {
                 onComplete.invoke(null)
             }

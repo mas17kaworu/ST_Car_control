@@ -23,11 +23,23 @@ object Tracking {
         println("Tracking data directory: $dataDir")
     }
 
-    suspend fun saveRecording(fileName: String, data: List<String>) {
+    suspend fun saveRecording(
+        filePath: String,
+        pboxData: List<String>,
+        realData: List<String>
+    ) {
         withContext(Dispatchers.IO) {
-            val recordFile = File(dataDir, fileName)
-            recordFile.sink().buffer().use { sink ->
-                data.forEach {
+            val recordPath = File(dataDir, filePath)
+            val pboxFile = File(recordPath, FILE_PBOX)
+            pboxFile.sink().buffer().use { sink ->
+                pboxData.forEach {
+                    sink.writeUtf8(it)
+                    sink.writeUtf8("\n")
+                }
+            }
+            val realFile = File(recordPath, FILE_REAL)
+            realFile.sink().buffer().use { sink ->
+                realData.forEach {
                     sink.writeUtf8(it)
                     sink.writeUtf8("\n")
                 }
