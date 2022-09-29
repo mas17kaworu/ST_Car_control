@@ -111,15 +111,14 @@ class TrackingActivity : ComponentActivity() {
             signalPbox.setOnClickListener { viewModel.switchPboxTrack() }
 
             historyRecordsBtn.setOnClickListener {
-                lifecycleScope.launch {
-                    val historyRecords = viewModel.loadHistoryRecords()
+                viewModel.loadHistoryRecords { historyRecords ->
                     binding.historyRecordsRV.adapter = HistoryRecordsAdapter(historyRecords) {
                         viewModel.enterReviewMode()
                         loadRecord(it)
                         hideHistoryRecordsLayout()
                     }
-                    binding.historyRecordsLayout.apply { isVisible = isVisible.not() }
                 }
+                binding.historyRecordsLayout.apply { isVisible = isVisible.not() }
             }
 
             settingsBtn.setOnClickListener {

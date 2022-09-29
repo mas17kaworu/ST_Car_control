@@ -53,8 +53,11 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    suspend fun loadHistoryRecords(): List<HistoryRecord> {
-        return Tracking.loadHistoryRecords()
+    fun loadHistoryRecords(onComplete: (List<HistoryRecord>) -> Unit) {
+        viewModelScope.launch {
+            val historyRecords = Tracking.loadHistoryRecords()
+            onComplete.invoke(historyRecords)
+        }
     }
 
     fun loadRecord(historyRecord: HistoryRecord) {
