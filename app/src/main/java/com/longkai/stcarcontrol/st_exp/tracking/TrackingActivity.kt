@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.amap.api.location.AMapLocationClient
 import com.google.android.material.snackbar.Snackbar
+import com.longkai.stcarcontrol.st_exp.Utils.hideSoftKeyboard
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentTrackingBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -48,7 +49,6 @@ class TrackingActivity : ComponentActivity() {
         )
 
         initUI()
-        initHistoryRecords()
     }
 
     override fun onDestroy() {
@@ -68,11 +68,20 @@ class TrackingActivity : ComponentActivity() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        val viewRect = Rect()
-        binding.historyRecordsLayout.getGlobalVisibleRect(viewRect)
-        if (binding.historyRecordsLayout.isVisible &&
-            !viewRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
-            binding.historyRecordsLayout.isVisible = false
+        fun touchInView(ev: MotionEvent, view: View): Boolean {
+            return if (view.isVisible) {
+                val viewRect = Rect()
+                view.getGlobalVisibleRect(viewRect)
+                viewRect.contains(ev.rawX.toInt(), ev.rawY.toInt())
+            } else false
+        }
+
+        if (binding.historyRecordsLayout.isVisible && !touchInView(ev, binding.historyRecordsLayout)) {
+            hideHistoryRecordsLayout()
+            return true
+        }
+        if (binding.trackSettingsView.isVisible && !touchInView(ev, binding.trackSettingsView)) {
+            hideTrackSettingsView()
             return true
         }
         return super.dispatchTouchEvent(ev)
@@ -83,24 +92,12 @@ class TrackingActivity : ComponentActivity() {
         mapView.onSaveInstanceState(outState)
     }
 
-    private fun initHistoryRecords() {
-        fun hideHistoryRecordsLayout() {
-            binding.historyRecordsLayout.isVisible = false
-        }
-
-        binding.historyRecordsBtn.setOnClickListener {
-            lifecycleScope.launch {
-                val historyRecords = viewModel.loadHistoryRecords()
-                binding.historyRecords.adapter = HistoryRecordsAdapter(historyRecords) {
-                    viewModel.enterReviewMode()
-                    loadRecord(it)
-                    hideHistoryRecordsLayout()
-                }
-                binding.historyRecordsLayout.apply { isVisible = isVisible.not() }
-            }
-        }
+    fun hideHistoryRecordsLayout() {
+        binding.historyRecordsLayout.isVisible = false
     }
-
+    fun hideTrackSettingsView() {
+        binding.trackSettingsView.isVisible = false
+    }
 
     private fun initUI() {
         aMapHelper.init()
@@ -109,25 +106,51 @@ class TrackingActivity : ComponentActivity() {
 //        binding.clearBtn.setOnClickListener { clearTrack() }
 //        binding.showTrackProgressBtn.setOnClickListener { showTrackProgress() }
 
-        binding.signalReal.setOnClickListener { viewModel.switchRealTrack() }
-        binding.signalPbox.setOnClickListener { viewModel.switchPboxTrack() }
+        binding.apply {
+            signalReal.setOnClickListener { viewModel.switchRealTrack() }
+            signalPbox.setOnClickListener { viewModel.switchPboxTrack() }
 
-        binding.replayBtn.setOnClickListener { aMapHelper.replayTrack() }
-        binding.exitReviewBtn.setOnClickListener {
-            aMapHelper.clearTrack()
-            viewModel.exitReviewMode()
-        }
-        binding.recordBtn.setOnClickListener {
-            if (viewModel.uiState.value.isRecording) {
-                viewModel.stopRecording { fileName ->
-                    if (fileName != null) {
-                        showSnackbar("Recording successfully saved to $fileName")
-                    } else {
-                        showSnackbar("No data saved")
+            historyRecordsBtn.setOnClickListener {
+                lifecycleScope.launch {
+                    val historyRecords = viewModel.loadHistoryRecords()
+                    binding.historyRecordsRV.adapter = HistoryRecordsAdapter(historyRecords) {
+                        viewModel.enterReviewMode()
+                        loadRecord(it)
+                        hideHistoryRecordsLayout()
                     }
+                    binding.historyRecordsLayout.apply { isVisible = isVisible.not() }
                 }
-            } else {
-                viewModel.startRecording()
+            }
+
+            settingsBtn.setOnClickListener {
+                trackSettingsView.apply { isVisible = isVisible.not() }
+            }
+            trackSettingsView.setListener(object : TrackSettingsView.Listener {
+                override fun onSaveSettings(hideRealTrack: Boolean, labelInterval: Int) {
+                    viewModel.saveSettings(hideRealTrack, labelInterval)
+                    hideTrackSettingsView()
+                    trackSettingsView.hideSoftKeyboard()
+                }
+            })
+
+            replayBtn.setOnClickListener { aMapHelper.replayTrack() }
+            exitReviewBtn.setOnClickListener {
+                aMapHelper.clearTrack()
+                viewModel.exitReviewMode()
+            }
+
+            recordBtn.setOnClickListener {
+                if (viewModel.uiState.value.isRecording) {
+                    viewModel.stopRecording { fileName ->
+                        if (fileName != null) {
+                            showSnackbar("Recording successfully saved to $fileName")
+                        } else {
+                            showSnackbar("No data saved")
+                        }
+                    }
+                } else {
+                    viewModel.startRecording()
+                }
             }
         }
 
@@ -149,13 +172,16 @@ class TrackingActivity : ComponentActivity() {
                         updateRecordBtnUI(uiState.isRecording)
                         trackPointInfo.isInvisible = uiState.inReviewMode.not()
 
+                        signalReal.isVisible = uiState.hideRealTrackUI.not()
                         signalReal.isSelected = uiState.showRealTrack
                         signalPbox.isSelected = uiState.showPboxTrack
+
+                        trackSettingsView.setData(uiState.hideRealTrackUI, uiState.labelInterval)
                     }
 
                     if (uiState.inReviewMode && uiState.historyRecordDataRefreshed && uiState.historyRecordData != null) {
                         aMapHelper.setHistoryRecordData(uiState.historyRecordData)
-                        aMapHelper.showTracks(uiState.showRealTrack, uiState.showPboxTrack)
+                        aMapHelper.showTracks(uiState.hideRealTrackUI.not() && uiState.showRealTrack, uiState.showPboxTrack)
                     }
                 }
             }

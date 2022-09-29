@@ -18,11 +18,12 @@
             android:id="@+id/signalReal"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_signal_real"
             android:scaleType="centerInside"
+            android:src="@drawable/ic_signal_real"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <ImageButton
             android:id="@+id/signalPbox"
             android:layout_width="60dp"
@@ -71,12 +72,12 @@
         android:layout_height="400dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_rounded_corner"
+        android:padding="20dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/actionBar"
-        android:background="@drawable/bg_rounded_corner"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:padding="20dp">
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/historyRecordsTitle"
@@ -86,20 +87,20 @@
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/historyRecordsRV"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:id="@+id/historyRecords"
             android:layout_marginTop="12dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/historyRecordsTitle"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/historyRecordsTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.longkai.stcarcontrol.st_exp.tracking.TrackPointInfoView
@@ -108,13 +109,25 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:minWidth="250dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/actionBar"
         android:background="@drawable/bg_rounded_corner"
+        android:minWidth="250dp"
+        android:padding="20dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/actionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <com.longkai.stcarcontrol.st_exp.tracking.TrackSettingsView
+        android:id="@+id/trackSettingsView"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
         android:visibility="gone"
         tools:visibility="visible"
-        android:padding="20dp"/>
+        android:background="@drawable/bg_rounded_corner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/actionBar" />
 
     <Button
         android:id="@+id/recordBtn"
@@ -122,13 +135,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:visibility="visible"
-        tools:visibility="visible"
-        android:text="Start Recording"
         android:drawableStart="@drawable/ic_dot"
         android:drawablePadding="8dp"
+        android:text="Start Recording"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/reviewModeBtns"
@@ -137,9 +150,9 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
 
         <!--        <Button-->
         <!--            android:id="@+id/moveCarBtn"-->

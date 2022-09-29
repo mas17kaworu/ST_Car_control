@@ -1,11 +1,19 @@
 package com.longkai.stcarcontrol.st_exp.tracking
 
+import android.app.Application
+import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
+import com.longkai.stcarcontrol.st_exp.STCarApplication
+import com.longkai.stcarcontrol.st_exp.appPrefsDataStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 data class TrackingViewState(
@@ -14,16 +22,36 @@ data class TrackingViewState(
     val showRealTrack: Boolean = true,
     val showPboxTrack: Boolean = true,
     val historyRecordDataRefreshed: Boolean = false,
-    val historyRecordData: HistoryRecordData? = null
+    val historyRecordData: HistoryRecordData? = null,
+    val hideRealTrackUI: Boolean = false,
+    val labelInterval: Int = DEFAULT_LABEL_INTERVAL
 )
 
-class TrackingViewModel : ViewModel() {
+val PREF_HIDE_REAL_TRACK_UI = booleanPreferencesKey("hideRealTrackUI")
+val PREF_LABEL_INTERVAL = intPreferencesKey("labelInterval")
+const val DEFAULT_LABEL_INTERVAL = 10
+
+class TrackingViewModel(application: Application) : AndroidViewModel(application) {
     private var recordFilename: String = ""
     private var recordData: MutableList<String> = mutableListOf()
 
     private val _uiState = MutableStateFlow(TrackingViewState())
     val uiState: StateFlow<TrackingViewState> = _uiState
 
+    init {
+        viewModelScope.launch {
+            application.applicationContext.appPrefsDataStore.data.collectLatest { prefs ->
+                val hideRealTrackUI = prefs[PREF_HIDE_REAL_TRACK_UI] ?: false
+                val labelInterval = prefs[PREF_LABEL_INTERVAL] ?: DEFAULT_LABEL_INTERVAL
+                _uiState.update {
+                    it.copy(
+                        hideRealTrackUI = hideRealTrackUI,
+                        labelInterval = labelInterval
+                    )
+                }
+            }
+        }
+    }
 
     suspend fun loadHistoryRecords(): List<HistoryRecord> {
         return Tracking.loadHistoryRecords()
@@ -87,5 +115,16 @@ class TrackingViewModel : ViewModel() {
 
     fun switchPboxTrack() {
         _uiState.update { it.copy(showPboxTrack = !it.showPboxTrack) }
+    }
+
+    fun saveSettings(hideRealTrack: Boolean, labelInterval: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                getApplication<STCarApplication>().applicationContext.appPrefsDataStore.edit { prefs ->
+                    prefs[PREF_HIDE_REAL_TRACK_UI] = hideRealTrack
+                    prefs[PREF_LABEL_INTERVAL] = labelInterval
+                }
+            }
+        }
     }
 }
