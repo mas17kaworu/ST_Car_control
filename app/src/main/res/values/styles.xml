@@ -131,7 +131,7 @@
     </style>
 
 <!--    Tracking Activity-->
-    <style name="TrackingActivity">
+    <style name="AppTheme.TrackingActivity">
         <item name="android:textColor">@android:color/black</item>
     </style>
     <style name="TrackPointInfoText">

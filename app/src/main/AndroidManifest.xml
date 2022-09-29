@@ -104,7 +104,7 @@
 
         <activity
             android:name=".tracking.TrackingActivity"
-            android:theme="@style/TrackingActivity"/>
+            android:theme="@style/AppTheme.TrackingActivity"/>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
