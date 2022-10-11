@@ -131,12 +131,12 @@ object Tracking {
             val utcTime = parseUtcTime(fields[1])
             val isValid = (fields[2] == "A")
             return if (isValid) {
-                var latitude = parseDegree(fields[3])
+                var latitude = parseLatitude(fields[3])
                 val latitudeHemisphere = LatitudeHemisphere.from(fields[4])
                 if (latitudeHemisphere == LatitudeHemisphere.South) {
                     latitude *= -1
                 }
-                var longitude = parseDegree(fields[5])
+                var longitude = parseLongitude(fields[5])
                 val longitudeHemisphere = LongitudeHemisphere.from(fields[6])
                 if (longitudeHemisphere == LongitudeHemisphere.West) {
                     longitude *= -1
@@ -162,12 +162,12 @@ object Tracking {
     private fun parseGga(fields: List<String>): GgaData? {
         return try {
             val utcTime = parseUtcTime(fields[1])
-            var latitude = parseDegree(fields[2])
+            var latitude = parseLatitude(fields[2])
             val latitudeHemisphere = LatitudeHemisphere.from(fields[3])
             if (latitudeHemisphere == LatitudeHemisphere.South) {
                 latitude *= -1
             }
-            var longitude = parseDegree(fields[4])
+            var longitude = parseLongitude(fields[4])
             val longitudeHemisphere = LongitudeHemisphere.from(fields[5])
             if (longitudeHemisphere == LongitudeHemisphere.West) {
                 longitude *= -1
@@ -210,9 +210,18 @@ object Tracking {
     /**
      * @param input In 'ddmm.mmmm' format
      */
-    private fun parseDegree(input: String): Double {
+    private fun parseLatitude(input: String): Double {
         val dd = input.substring(0, 2)
         val mms = input.substring(2)
+        return dd.toInt() + mms.toDouble()/60.0
+    }
+
+    /**
+     * @param input In 'dddmm.mmmm' format
+     */
+    private fun parseLongitude(input: String): Double {
+        val dd = input.substring(0, 3)
+        val mms = input.substring(3)
         return dd.toInt() + mms.toDouble()/60.0
     }
 

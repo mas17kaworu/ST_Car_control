@@ -19,10 +19,10 @@ data class TrackingViewState(
     val isRecording: Boolean = false,
     val showRealTrack: Boolean = true,
     val showPboxTrack: Boolean = true,
-    val historyRecordDataRefreshed: Boolean = false,
     val historyRecordData: HistoryRecordData? = null,
     val hideRealTrackUI: Boolean = false,
-    val labelInterval: Int = DEFAULT_LABEL_INTERVAL
+    val labelInterval: Int = DEFAULT_LABEL_INTERVAL,
+    val needRefreshTrack: Boolean = false,
 )
 
 val PREF_HIDE_REAL_TRACK_UI = booleanPreferencesKey("hideRealTrackUI")
@@ -49,7 +49,8 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
                 _uiState.update {
                     it.copy(
                         hideRealTrackUI = hideRealTrackUI,
-                        labelInterval = labelInterval
+                        labelInterval = labelInterval,
+                        needRefreshTrack = true
                     )
                 }
             }
@@ -68,10 +69,16 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
             val historyRecordData = Tracking.load(historyRecord)
             _uiState.update {
                 it.copy(
-                    historyRecordDataRefreshed = true,
-                    historyRecordData = historyRecordData
+                    historyRecordData = historyRecordData,
+                    needRefreshTrack = true
                 )
             }
+        }
+    }
+
+    fun clearRefreshFlag() {
+        _uiState.update {
+            it.copy(needRefreshTrack = false)
         }
     }
 
@@ -120,11 +127,11 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun switchRealTrack() {
-        _uiState.update { it.copy(showRealTrack = !it.showRealTrack) }
+        _uiState.update { it.copy(showRealTrack = !it.showRealTrack, needRefreshTrack = true) }
     }
 
     fun switchPboxTrack() {
-        _uiState.update { it.copy(showPboxTrack = !it.showPboxTrack) }
+        _uiState.update { it.copy(showPboxTrack = !it.showPboxTrack, needRefreshTrack = true) }
     }
 
     fun saveSettings(hideRealTrack: Boolean, labelInterval: Int) {

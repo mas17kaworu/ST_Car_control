@@ -178,9 +178,10 @@ class TrackingActivity : ComponentActivity() {
                         trackSettingsView.setData(uiState.hideRealTrackUI, uiState.labelInterval)
                     }
 
-                    if (uiState.inReviewMode && uiState.historyRecordDataRefreshed && uiState.historyRecordData != null) {
+                    if (uiState.inReviewMode && uiState.needRefreshTrack && uiState.historyRecordData != null) {
+                        viewModel.clearRefreshFlag()
                         aMapHelper.setHistoryRecordData(uiState.historyRecordData)
-                        aMapHelper.showTracks(uiState.hideRealTrackUI.not() && uiState.showRealTrack, uiState.showPboxTrack)
+                        aMapHelper.showTracks(uiState.hideRealTrackUI.not() && uiState.showRealTrack, uiState.showPboxTrack, uiState.labelInterval)
                     }
                 }
             }

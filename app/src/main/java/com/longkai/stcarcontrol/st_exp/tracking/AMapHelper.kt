@@ -10,6 +10,7 @@ import androidx.core.util.component1
 import com.amap.api.maps.AMap
 import com.amap.api.maps.AMapUtils
 import com.amap.api.maps.CameraUpdateFactory
+import com.amap.api.maps.CoordinateConverter
 import com.amap.api.maps.model.*
 import com.amap.api.maps.utils.SpatialRelationUtil
 import com.amap.api.maps.utils.overlay.MovingPointOverlay
@@ -21,12 +22,14 @@ import com.longkai.stcarcontrol.st_exp.databinding.ViewMarkerInfoBinding
 import kotlinx.coroutines.*
 import kotlin.math.atan2
 
+
 class AMapHelper(
     val context: Context,
     val aMap: AMap,
     val updateTrackPointInfo: (TrackingData) -> Unit,
     val showMessage: (String) -> Unit
 ) {
+    private val coordinateConverter = CoordinateConverter(context).apply { from(CoordinateConverter.CoordType.GPS) }
     private val replayTrackScope = CoroutineScope(Dispatchers.Main)
 
     private var historyRecordData: HistoryRecordData? = null
@@ -75,8 +78,10 @@ class AMapHelper(
         }
     }
 
-    fun showTracks(showRealTrack: Boolean, showPboxTrack: Boolean) {
+    fun showTracks(showRealTrack: Boolean, showPboxTrack: Boolean, labelInterval: Int) {
         ensureRecordLoaded() {
+            clearTrack()
+
             if (showRealTrack) {
                 if (realTrackPolyline == null) {
                     realTrackPolyline = showTrack(it.realPoints, R.color.colorCyan)
@@ -86,7 +91,7 @@ class AMapHelper(
             }
             if (showPboxTrack) {
                 if (pboxTrackPolyline == null) {
-                    showTrack(it.pboxPoints, R.color.colorBlue, updateBounds = true, showPoints = true, showLabelMarkers = true)
+                    showTrack(it.pboxPoints, R.color.colorBlue, updateBounds = true, showPoints = true, showLabelMarkers = true, labelInterval = labelInterval)
                 }
             } else {
                 pboxTrackPolyline?.let { it.isVisible = false }
@@ -99,7 +104,8 @@ class AMapHelper(
         @ColorRes trackColor: Int = R.color.colorCyan,
         updateBounds: Boolean = false,
         showPoints: Boolean = false,
-        showLabelMarkers: Boolean = false
+        showLabelMarkers: Boolean = false,
+        labelInterval: Int = DEFAULT_LABEL_INTERVAL
     ): Polyline {
         val mapPoints = trackPoints.map { it.toLatLng() }
 
@@ -120,7 +126,7 @@ class AMapHelper(
         }
 
         if (showLabelMarkers) {
-            addLabelMarkers(trackPoints)
+            addLabelMarkers(trackPoints, labelInterval)
             updateTrackPointInfo(trackPoints[0])
         }
 
@@ -133,11 +139,11 @@ class AMapHelper(
         }
     }
 
-    private fun addLabelMarkers(trackPoints: List<TrackingData>) {
+    private fun addLabelMarkers(trackPoints: List<TrackingData>, labelInterval: Int) {
         var lastPoint: TrackingData? = null
         trackPoints.forEachIndexed { index, trackingData ->
             val timeDiff = lastPoint?.let { trackingData.timeDiff(it) } ?: Int.MAX_VALUE
-            if (index == 0 || index == trackPoints.size - 1 || timeDiff >= MARKER_INTERVAL) {
+            if (index == 0 || index == trackPoints.size - 1 || timeDiff >= labelInterval) {
                 addLabelMarker(trackingData)
                 lastPoint = trackingData
             }
@@ -322,11 +328,12 @@ class AMapHelper(
 
     private fun Float.formatDistance() = String.format("%.2f", this) + "m"
 
+    private fun TrackingData.toLatLng(): LatLng {
+        coordinateConverter.coord(LatLng(latitude, longitude))
+        return coordinateConverter.convert()
+    }
+
     companion object {
         private const val MARKER_INTERVAL = 10 // in seconds
     }
 }
-
-const val mockPoint = true
-fun TrackingData.toLatLng() =
-    if (mockPoint) LatLng(latitude + 7, longitude + 94) else LatLng(latitude, longitude)
