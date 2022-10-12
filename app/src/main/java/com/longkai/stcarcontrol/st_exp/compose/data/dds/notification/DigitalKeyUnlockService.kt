@@ -51,7 +51,7 @@ class DigitalKeyUnlockService: Service() {
                 .distinctUntilChanged()
 
             combine(
-                ddsRepo.digitalKeyState.filter { it != DdsService.DigitalKeyState.Reset },
+                ddsRepo.digitalKeyState,
                 unlockServiceFlow,
                 lockServiceFlow
             ) { keyState, unlockService, lockService ->
