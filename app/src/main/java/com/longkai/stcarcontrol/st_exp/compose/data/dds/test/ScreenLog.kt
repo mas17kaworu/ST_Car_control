@@ -1,5 +1,6 @@
 package com.longkai.stcarcontrol.st_exp.compose.data.dds.test
 
+import android.util.Log
 import com.longkai.stcarcontrol.st_exp.compose.data.Result
 import com.longkai.stcarcontrol.st_exp.compose.data.Result.Loading
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction.OledAction
@@ -16,10 +17,12 @@ object ScreenLog {
   private val logHistory = mutableListOf<String>()
 
   fun log(log: String) {
+    Log.i("ScreenLog", log)
     log("", log)
   }
 
   fun log(tag: String, log: String) {
+    Log.i(tag, log)
     val newList = mutableListOf<String>()
     logHistory.add("$tag $log")
     newList.addAll(logHistory)

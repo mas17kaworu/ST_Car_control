@@ -14,10 +14,20 @@ import java.nio.charset.Charset
 
 interface DdsService {
 
+    enum class DigitalKeyState {
+        LockDoor, UnlockDoor, Reset
+    }
+
     interface TopicListener {
         fun onAvasDataAvailable(topicData: TopicData)
         fun onOledDataAvailable(topicData: TopicData)
-        fun onDigitalKeyStateChanged(unlocked: Boolean)
+        /**
+         * @param state
+         * 1 -- unlock door;
+         * 2 -- lock door;
+         * others -- clear state;
+         */
+        fun onDigitalKeyStateChanged(keyState: DigitalKeyState)
     }
 
     fun start()
@@ -96,7 +106,6 @@ class DdsServiceImpl(private val context: Context): DdsService {
             } catch (e: Throwable) {
                 ScreenLog.log("parse AvasData error")
             }
-            // topicListener?.onAvasDataAvailable(TopicData(1, listOf(TopicService(name = " test ", ByteArray(2)))))
         }
 
         val oledReader = createReader(domainParticipant, subscriber, ReaderTopic.OledService.topicName) { strData ->
@@ -109,10 +118,15 @@ class DdsServiceImpl(private val context: Context): DdsService {
             }
         }
         val dkeyReader = createReader(domainParticipant, subscriber, ReaderTopic.DkeyService.topicName) { strData ->
-            ScreenLog.log("onDigitalKeyStateChanged ")
+            ScreenLog.log("onDigitalKeyStateChanged, rawData: $strData")
             try {
-                val unlocked = strData[0].toInt() == 1
-                topicListener?.onDigitalKeyStateChanged(unlocked)
+                val state = strData[0].toInt()
+                val keyState = when (state) {
+                    1 -> DdsService.DigitalKeyState.UnlockDoor
+                    2 -> DdsService.DigitalKeyState.LockDoor
+                    else -> DdsService.DigitalKeyState.Reset
+                }
+                topicListener?.onDigitalKeyStateChanged(keyState)
             } catch (e: Throwable) {
                 ScreenLog.log("parse DigitalKey Data error")
             }

@@ -100,7 +100,7 @@ fun ExpressServicesScreen(
                         )
 
                         Row {
-                            if (focusedService.triggerCondition == TriggerCondition.DoubleClick) {
+                            if (focusedService.triggerCondition == TriggerCondition.ManuallySend) {
                                 Button(
                                     onClick = { ddsViewModel.executeExpressService(focusedService) }
                                 ) {

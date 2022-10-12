@@ -21,7 +21,7 @@ class MockDdsService(private val context: Context): DdsService {
             ScreenLog.log( "Send DDS mock data 1 ")
             listener.onAvasDataAvailable(fakeAvasActions.toAvasTopicData())
             listener.onOledDataAvailable(fakeOledActions.toOledTopicData())
-            listener.onDigitalKeyStateChanged(true)
+            listener.onDigitalKeyStateChanged(DdsService.DigitalKeyState.UnlockDoor)
         }
 
         Handler(Looper.getMainLooper()).postDelayed(4000) {
@@ -29,7 +29,7 @@ class MockDdsService(private val context: Context): DdsService {
             ScreenLog.log( "Send DDS mock data 2")
             listener.onAvasDataAvailable(fakeAvasActions.toAvasTopicData())
             listener.onOledDataAvailable(fakeOledActions.toOledTopicData())
-            listener.onDigitalKeyStateChanged(true)
+            listener.onDigitalKeyStateChanged(DdsService.DigitalKeyState.LockDoor)
         }
 
         Handler(Looper.getMainLooper()).postDelayed(6000) {
@@ -37,7 +37,7 @@ class MockDdsService(private val context: Context): DdsService {
             ScreenLog.log( "Send DDS mock data 3")
             listener.onAvasDataAvailable(fakeAvasActions.toAvasTopicData())
             listener.onOledDataAvailable(fakeOledActions.toOledTopicData())
-            listener.onDigitalKeyStateChanged(true)
+            listener.onDigitalKeyStateChanged(DdsService.DigitalKeyState.Reset)
         }
     }
 
@@ -49,7 +49,8 @@ class MockDdsService(private val context: Context): DdsService {
     }
 
     override fun sendOledAction(data: ByteArray) {
-        Log.i(TAG_DDS, "Oled action executed: ${data.toDebugString()}")
+        ScreenLog.log( "Oled action executed: ${data.toDebugString()}")
+//        Log.i(TAG_DDS, "Oled action executed: ${data.toDebugString()}")
     }
 }
 

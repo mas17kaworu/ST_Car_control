@@ -12,6 +12,8 @@ import androidx.core.app.NotificationCompat
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.STCarApplication
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.service.DdsService
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.test.ScreenLog
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.test.TAG_DDS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,17 +41,41 @@ class DigitalKeyUnlockService: Service() {
         scope.launch {
             val unlockServiceFlow = ddsRepo.expressServices()
                 .map { expressServices ->
-                    expressServices.firstOrNull() { it.triggerCondition == TriggerCondition.DigitalKeyUnlock }
+                    expressServices.firstOrNull { it.triggerCondition == TriggerCondition.DigitalKeyUnlock }
                 }
-                .filterNotNull()
                 .distinctUntilChanged()
+            val lockServiceFlow = ddsRepo.expressServices()
+                .map { expressServices ->
+                    expressServices.firstOrNull { it.triggerCondition == TriggerCondition.DigitalKeyLock }
+                }
+                .distinctUntilChanged()
+
             combine(
-                ddsRepo.digitalKeyUnlocked.filter { it },
-                unlockServiceFlow
-            ) { _, unlockService ->
-                Log.i(TAG_DDS, "execute unlock service")
-                ddsRepo.executeExpressService(unlockService)
+                ddsRepo.digitalKeyState.filter { it != DdsService.DigitalKeyState.Reset },
+                unlockServiceFlow,
+                lockServiceFlow
+            ) { keyState, unlockService, lockService ->
+                when (keyState) {
+                    DdsService.DigitalKeyState.LockDoor -> {
+                        Log.i(TAG_DDS, "unlock service: $unlockService")
+                        unlockService?.let {
+                            Log.i(TAG_DDS, "execute unlock service")
+                            ddsRepo.executeExpressService(unlockService)
+                        }
+                    }
+                    DdsService.DigitalKeyState.UnlockDoor -> {
+                        Log.i(TAG_DDS, "lock service: $lockService")
+                        lockService?.let {
+                            Log.i(TAG_DDS, "execute lock service")
+                            ddsRepo.executeExpressService(lockService)
+                        }
+                    }
+                    DdsService.DigitalKeyState.Reset -> {}
+                }
             }
+                .catch { e ->
+                    e.printStackTrace()
+                }
                 .collect()
         }
         return START_STICKY

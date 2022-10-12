@@ -51,7 +51,7 @@ fun ServiceDetailsScreen(
         Column(Modifier.weight(0.5f)) {
             if (currentService == null) {
                 CreateServiceCard(
-                    triggerOptions = TriggerCondition.values().toList(),
+                    triggerOptions = TriggerCondition.availableOptions(),
                     actionOptions = uiState.actionOptions,
                     onCreateService = {
                         ddsViewModel.createExpressService(it)
@@ -61,7 +61,7 @@ fun ServiceDetailsScreen(
                 )
             } else {
                 EditServiceCard(
-                    triggerOptions = TriggerCondition.values().toList(),
+                    triggerOptions = TriggerCondition.availableOptions(),
                     actionOptions = uiState.actionOptions,
                     serviceInReview = currentService,
                     onUpdateService = {

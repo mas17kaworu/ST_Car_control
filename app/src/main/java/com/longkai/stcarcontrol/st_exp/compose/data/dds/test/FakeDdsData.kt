@@ -32,7 +32,7 @@ val fakeExpressServices = listOf(
     ExpressService(
         id = 1,
         name = "Light 2 service",
-        triggerCondition = TriggerCondition.DoubleClick,
+        triggerCondition = TriggerCondition.ManuallySend,
         actions = listOf(
             fakeLightEffect2
         )
@@ -40,7 +40,7 @@ val fakeExpressServices = listOf(
     ExpressService(
         id = 2,
         name = "Sound 1 service",
-        triggerCondition = TriggerCondition.DoubleClick,
+        triggerCondition = TriggerCondition.ManuallySend,
         actions = listOf(
             fakeSoundEffect1
         )
