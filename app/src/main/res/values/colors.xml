@@ -13,6 +13,8 @@
     <color name="colorSelected">@color/colorAccent</color>
     <color name="colorBlue">#3abee5</color>
     <color name="colorWhite">#ffffffff</color>
+    <color name="colorWhite50">#88ffffff</color>
+    <color name="colorWhite80">#ccffffff</color>
     <color name="colorGray">#88888888</color>
     <color name="colorCyan">#FF00FFFF</color>
     <color name="colorMagenta">#FF00FF</color>
