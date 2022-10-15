@@ -33,10 +33,10 @@ class AMapHelper(
     private val replayTrackScope = CoroutineScope(Dispatchers.Main)
 
     private val realTrackColor = R.color.colorBlue
-    private val pboxTrackColor = R.color.colorCyan
-    private val carColor = R.color.colorRed
+    private val pboxTrackColor = R.color.colorYellow1
 
     private var historyRecordData: HistoryRecordData? = null
+    private var labelInterval: Int = DEFAULT_LABEL_INTERVAL
     private var realTrackPolyline: Polyline? = null
     private var pboxTrackPolyline: Polyline? = null
 
@@ -50,6 +50,10 @@ class AMapHelper(
         this.historyRecordData = historyRecordData
         realTrackPolyline = null
         pboxTrackPolyline = null
+    }
+
+    fun setLabelInterval(labelInterval: Int) {
+        this.labelInterval = labelInterval
     }
 
     fun setupInfoWindow() {
@@ -82,7 +86,7 @@ class AMapHelper(
         }
     }
 
-    fun showTracks(showRealTrack: Boolean, showPboxTrack: Boolean, labelInterval: Int) {
+    fun showTracks(showRealTrack: Boolean, showPboxTrack: Boolean) {
         ensureRecordLoaded() {
             clearTrack()
 
@@ -190,48 +194,62 @@ class AMapHelper(
         ensureRecordLoaded {
             val pointDelay: Long = 100
 
-            val trackPoints = it.pboxPoints
-            val mapPoints = trackPoints.map { it.toLatLng() }
-            val movingMarker = createMovingMarker()
-            val polyline = aMap.addPolyline(PolylineOptions().width(10f).color(context.getColor(pboxTrackColor)))
-
+            // Add real track
             val realTrackPoints = it.realPoints
             val realMapPoints = realTrackPoints.map { it.toLatLng() }
             val realPolyline = aMap.addPolyline(PolylineOptions().width(10f).color(context.getColor(realTrackColor)))
 
+            // Add pbox track
+            val pboxTrackPoints = it.pboxPoints
+            val pboxMapPoints = pboxTrackPoints.map { it.toLatLng() }
+            val pboxMovingMarker = createMovingMarker()
+            val pboxPolyline = aMap.addPolyline(PolylineOptions().width(10f).color(context.getColor(pboxTrackColor)))
+
             replayTrackScope.launch {
-                var index = 0
+                // Add real track points which are before pbox start
                 var realIndex = 0
-                while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyThan(trackPoints[0])) {
+                while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyThan(pboxTrackPoints[0])) {
                     realPolyline.options = realPolyline.options.add(realMapPoints[realIndex])
                     realIndex++
                     delay(pointDelay)
                 }
-                while (index < trackPoints.size) {
-                    val point = mapPoints[index]
-                    polyline.options = polyline.options.add(point)
 
-                    while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyOrEqual(trackPoints[index])) {
-                        realPolyline.options = realPolyline.options.add(realMapPoints[index])
+                var lastPoint: TrackingData? = null
+                var pboxIndex = 0
+                while (pboxIndex < pboxTrackPoints.size) {
+                    val pboxPoint = pboxMapPoints[pboxIndex]
+                    val pboxTrackPoint = pboxTrackPoints[pboxIndex]
+                    updateTrackPointInfo(pboxTrackPoints[pboxIndex])
+
+                    // Move car forward
+                    val previousPoint = if (pboxIndex == 0) null else pboxMapPoints[pboxIndex - 1]
+                    pboxMovingMarker.setPoints(mutableListOf(previousPoint, pboxPoint))
+                    previousPoint?.let {
+                        val angle = calculateAngle(previousPoint, pboxPoint).toFloat()
+                        pboxMovingMarker.setRotate(360 - angle)
+                    }
+                    pboxMovingMarker.setTotalDuration(pointDelay.toInt())
+                    pboxMovingMarker.startSmoothMove()
+
+                    // Move forward pbox track
+                    pboxPolyline.options = pboxPolyline.options.add(pboxPoint)
+                    // Move forward real track
+                    while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyOrEqual(pboxTrackPoint)) {
+                        realPolyline.options = realPolyline.options.add(realMapPoints[realIndex])
                         realIndex++
                     }
 
-                    updateTrackPointInfo(trackPoints[index])
-
-                    val previousPoint = if (index == 0) null else mapPoints[index - 1]
-                    movingMarker.setPoints(mutableListOf(previousPoint, point))
-                    previousPoint?.let {
-                        val angle = calculateAngle(previousPoint, point).toFloat()
-                        movingMarker.setRotate(360 - angle)
+                    // Add label markers on pbox track
+                    val timeDiff = lastPoint?.let { pboxTrackPoint.timeDiff(it) } ?: Int.MAX_VALUE
+                    if (pboxIndex == 0 || pboxIndex == pboxTrackPoints.size - 1 || timeDiff >= labelInterval) {
+                        addLabelMarker(pboxTrackPoint)
+                        lastPoint = pboxTrackPoint
                     }
 
-                    movingMarker.setTotalDuration(pointDelay.toInt())
-                    movingMarker.startSmoothMove()
-
-                    index++
-
+                    pboxIndex++
                     delay(pointDelay)
                 }
+                // Add real track points which are after pbox end
                 while(realIndex < realTrackPoints.size) {
                     realPolyline.options = realPolyline.options.add(realMapPoints[realIndex])
                     realIndex++

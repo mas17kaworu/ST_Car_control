@@ -17,4 +17,5 @@
     <color name="colorCyan">#FF00FFFF</color>
     <color name="colorMagenta">#FF00FF</color>
     <color name="colorRed">#FFFF0000</color>
+    <color name="colorYellow1">#FCB240</color>
 </resources>

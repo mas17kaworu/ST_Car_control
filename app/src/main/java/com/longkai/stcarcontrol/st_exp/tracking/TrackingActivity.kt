@@ -181,7 +181,8 @@ class TrackingActivity : ComponentActivity() {
                     if (uiState.inReviewMode && uiState.needRefreshTrack && uiState.historyRecordData != null) {
                         viewModel.clearRefreshFlag()
                         aMapHelper.setHistoryRecordData(uiState.historyRecordData)
-                        aMapHelper.showTracks(uiState.hideRealTrackUI.not() && uiState.showRealTrack, uiState.showPboxTrack, uiState.labelInterval)
+                        aMapHelper.setLabelInterval(uiState.labelInterval)
+                        aMapHelper.showTracks(uiState.hideRealTrackUI.not() && uiState.showRealTrack, uiState.showPboxTrack)
                     }
                 }
             }
