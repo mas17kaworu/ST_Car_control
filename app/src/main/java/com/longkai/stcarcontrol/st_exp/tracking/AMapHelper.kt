@@ -32,6 +32,10 @@ class AMapHelper(
     private val coordinateConverter = CoordinateConverter(context).apply { from(CoordinateConverter.CoordType.GPS) }
     private val replayTrackScope = CoroutineScope(Dispatchers.Main)
 
+    private val realTrackColor = R.color.colorBlue
+    private val pboxTrackColor = R.color.colorCyan
+    private val carColor = R.color.colorRed
+
     private var historyRecordData: HistoryRecordData? = null
     private var realTrackPolyline: Polyline? = null
     private var pboxTrackPolyline: Polyline? = null
@@ -84,14 +88,14 @@ class AMapHelper(
 
             if (showRealTrack) {
                 if (realTrackPolyline == null) {
-                    realTrackPolyline = showTrack(it.realPoints, R.color.colorCyan)
+                    realTrackPolyline = showTrack(it.realPoints, realTrackColor)
                 }
             } else {
                 realTrackPolyline?.let { it.isVisible = false }
             }
             if (showPboxTrack) {
                 if (pboxTrackPolyline == null) {
-                    showTrack(it.pboxPoints, R.color.colorBlue, updateBounds = true, showPoints = true, showLabelMarkers = true, labelInterval = labelInterval)
+                    showTrack(it.pboxPoints, pboxTrackColor, updateBounds = true, showPoints = true, showLabelMarkers = true, labelInterval = labelInterval)
                 }
             } else {
                 pboxTrackPolyline?.let { it.isVisible = false }
@@ -101,7 +105,7 @@ class AMapHelper(
 
     private fun showTrack(
         trackPoints: List<TrackingData>,
-        @ColorRes trackColor: Int = R.color.colorCyan,
+        @ColorRes trackColor: Int = pboxTrackColor,
         updateBounds: Boolean = false,
         showPoints: Boolean = false,
         showLabelMarkers: Boolean = false,
@@ -182,27 +186,55 @@ class AMapHelper(
     }
 
     fun replayTrack() {
+        clearTrack()
         ensureRecordLoaded {
+            val pointDelay: Long = 100
+
             val trackPoints = it.pboxPoints
             val mapPoints = trackPoints.map { it.toLatLng() }
+            val movingMarker = createMovingMarker()
+            val polyline = aMap.addPolyline(PolylineOptions().width(10f).color(context.getColor(pboxTrackColor)))
 
-            val pointDelay: Long = 1
-            val movingMarker = createMovingMarker(-90f)
-            val polyOptions = PolylineOptions().width(10f).color(Color.CYAN)
-            val polyline = aMap.addPolyline(polyOptions)
+            val realTrackPoints = it.realPoints
+            val realMapPoints = realTrackPoints.map { it.toLatLng() }
+            val realPolyline = aMap.addPolyline(PolylineOptions().width(10f).color(context.getColor(realTrackColor)))
 
             replayTrackScope.launch {
-                mapPoints.forEachIndexed { index, point ->
+                var index = 0
+                var realIndex = 0
+                while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyThan(trackPoints[0])) {
+                    realPolyline.options = realPolyline.options.add(realMapPoints[realIndex])
+                    realIndex++
+                    delay(pointDelay)
+                }
+                while (index < trackPoints.size) {
+                    val point = mapPoints[index]
+                    polyline.options = polyline.options.add(point)
+
+                    while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyOrEqual(trackPoints[index])) {
+                        realPolyline.options = realPolyline.options.add(realMapPoints[index])
+                        realIndex++
+                    }
+
                     updateTrackPointInfo(trackPoints[index])
 
                     val previousPoint = if (index == 0) null else mapPoints[index - 1]
                     movingMarker.setPoints(mutableListOf(previousPoint, point))
                     previousPoint?.let {
-                        movingMarker.setRotate(calculateAngle(previousPoint, point).toFloat())
+                        val angle = calculateAngle(previousPoint, point).toFloat()
+                        movingMarker.setRotate(360 - angle)
                     }
+
                     movingMarker.setTotalDuration(pointDelay.toInt())
                     movingMarker.startSmoothMove()
 
+                    index++
+
+                    delay(pointDelay)
+                }
+                while(realIndex < realTrackPoints.size) {
+                    realPolyline.options = realPolyline.options.add(realMapPoints[realIndex])
+                    realIndex++
                     delay(pointDelay)
                 }
             }
@@ -273,7 +305,7 @@ class AMapHelper(
             MarkerOptions()
                 .icon(
                     BitmapDescriptorFactory.fromBitmap(
-                        context.getBitmapFromVectorDrawable(R.drawable.ic_car_hatchback_blue)
+                        context.getBitmapFromVectorDrawable(R.drawable.ic_car_hatchback, pboxTrackColor)
                             .rotate(rotation)
                     )
                 )
@@ -285,7 +317,23 @@ class AMapHelper(
     private fun calculateAngle(from: LatLng, to: LatLng): Double {
         val diffX = to.longitude - from.longitude
         val diffY = to.latitude - from.latitude
-        return 360 * atan2(diffY, diffX) / (2 * Math.PI) + 90
+
+        return atan2(diffY, diffX) * 180 / Math.PI
+//        var angle = atan2(abs(diffY), abs(diffX))
+//        if (diffX >= 0) {
+//            if (diffY >= 0) {
+//
+//            } else {
+//                angle = Math.PI - angle
+//            }
+//        } else {
+//            if (diffY >= 0) {
+//                angle = 2 * Math.PI - angle
+//            } else {
+//                angle = Math.PI + angle
+//            }
+//        }
+//        return angle * 180.0 / Math.PI
     }
 
     private fun calcBounds(mapPoints: List<LatLng>): LatLngBounds {

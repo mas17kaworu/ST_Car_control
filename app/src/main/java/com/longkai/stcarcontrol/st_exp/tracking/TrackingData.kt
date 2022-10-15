@@ -54,6 +54,14 @@ class TrackingData(
         return utcTime == other.utcTime
     }
 
+    fun isEarlyThan(other: TrackingData): Boolean {
+        return utcTime.compareTo(other.utcTime) < 0
+    }
+
+    fun isEarlyOrEqual(other: TrackingData): Boolean {
+        return utcTime.compareTo(other.utcTime) <= 0
+    }
+
     /**
      * Time difference in seconds
      */
