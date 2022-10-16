@@ -172,7 +172,7 @@ class AMapHelper(
                     )
                 )
                 .title(trackingData.formatTime())
-                .snippet("${trackingData.calcDistanceError()?.formatDistance()}, ${trackingData.gpsStatus}")
+                .snippet("${trackingData.calcDistanceError()?.formatDistanceInCentimeters()}, ${trackingData.gpsStatus}")
         )
     }
 
@@ -185,7 +185,7 @@ class AMapHelper(
         aMap.addText(
             TextOptions()
                 .position(trackingData.toLatLng())
-                .text("${distanceError?.formatDistance()}, ${trackingData.gpsStatus}")
+                .text("${distanceError?.formatDistanceInCentimeters()}, ${trackingData.gpsStatus}")
         )
     }
 
@@ -238,6 +238,8 @@ class AMapHelper(
                         realPolyline.options = realPolyline.options.add(realMapPoints[realIndex])
                         realIndex++
                     }
+
+                    addMarker(pboxTrackPoint, R.drawable.ic_tracking_point, R.color.colorWhite)
 
                     // Add label markers on pbox track
                     val timeDiff = lastPoint?.let { pboxTrackPoint.timeDiff(it) } ?: Int.MAX_VALUE
@@ -392,7 +394,10 @@ class AMapHelper(
         }
     }
 
-    private fun Float.formatDistance() = String.format("%.2f", this) + "m"
+    private fun Float.formatDistanceInCentimeters(): String {
+        val cm = (this * 100).toInt()
+        return "${cm}cm"
+    }
 
     private fun TrackingData.toLatLng(): LatLng {
         coordinateConverter.coord(LatLng(latitude, longitude))
