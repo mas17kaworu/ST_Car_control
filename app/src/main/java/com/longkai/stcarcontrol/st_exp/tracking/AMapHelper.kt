@@ -127,7 +127,7 @@ class AMapHelper(
             )
         }
 
-        val polyline = aMap.addPolyline(PolylineOptions().addAll(mapPoints).width(10f).color(context.getColor(trackColor)))
+        val polyline = aMap.addPolyline(PolylineOptions().addAll(mapPoints).width(LINE_WIDTH).color(context.getColor(trackColor)))
 
         if (showPoints) {
             addPoints(trackPoints)
@@ -197,13 +197,13 @@ class AMapHelper(
             // Add real track
             val realTrackPoints = it.realPoints
             val realMapPoints = realTrackPoints.map { it.toLatLng() }
-            val realPolyline = aMap.addPolyline(PolylineOptions().width(10f).color(context.getColor(realTrackColor)))
+            val realPolyline = aMap.addPolyline(PolylineOptions().width(LINE_WIDTH).color(context.getColor(realTrackColor)))
 
             // Add pbox track
             val pboxTrackPoints = it.pboxPoints
             val pboxMapPoints = pboxTrackPoints.map { it.toLatLng() }
             val pboxMovingMarker = createMovingMarker()
-            val pboxPolyline = aMap.addPolyline(PolylineOptions().width(10f).color(context.getColor(pboxTrackColor)))
+            val pboxPolyline = aMap.addPolyline(PolylineOptions().width(LINE_WIDTH).color(context.getColor(pboxTrackColor)))
 
             replayTrackScope.launch {
                 // Add real track points which are before pbox start
@@ -289,7 +289,7 @@ class AMapHelper(
         val mapPoints = trackPoints.map { it.toLatLng() }
 
         val movingMarker = createMovingMarker(-90f)
-        val polyOptions = PolylineOptions().width(10f).color(Color.CYAN)
+        val polyOptions = PolylineOptions().width(LINE_WIDTH).color(Color.CYAN)
         val polyline = aMap.addPolyline(polyOptions)
 
         val pointDelay: Long = 1
@@ -401,5 +401,6 @@ class AMapHelper(
 
     companion object {
         private const val MARKER_INTERVAL = 10 // in seconds
+        private const val LINE_WIDTH = 4f
     }
 }
