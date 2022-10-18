@@ -3,6 +3,7 @@ package com.longkai.stcarcontrol.st_exp.tracking
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 data class RmcData(
     val utcTime: LocalTime,
@@ -41,6 +42,10 @@ class TrackingData(
 
     fun formatDateTime(): String {
         return "${utcDate.toString()} $utcTime"
+    }
+
+    fun formatSpeed(): String {
+        return String.format("%d m/s", velocity?.roundToInt())
     }
 
     fun formatLocation(): String {

@@ -143,7 +143,7 @@ class AMapHelper(
 
     private fun addPoints(trackPoints: List<TrackingData>) {
         trackPoints.forEachIndexed { index, trackingData ->
-            addMarker(trackingData, R.drawable.ic_tracking_point, R.color.colorWhite)
+            addMarker(index, trackingData, R.drawable.ic_tracking_point, R.color.colorWhite)
         }
     }
 
@@ -159,6 +159,7 @@ class AMapHelper(
     }
 
     private fun addMarker(
+        pointIndex: Int,
         trackingData: TrackingData,
         @DrawableRes drawableResId: Int = R.drawable.ic_tracking,
         @ColorRes colorResId: Int = R.color.colorWhite
@@ -171,8 +172,8 @@ class AMapHelper(
                         context.getBitmapFromVectorDrawable(drawableResId, colorResId)
                     )
                 )
-                .title(trackingData.formatTime())
-                .snippet("${trackingData.calcDistanceError()?.formatDistanceInCentimeters()}, ${trackingData.gpsStatus}")
+                .title("POINT $pointIndex")
+                .snippet("TIME: ${trackingData.formatTime()}\nSPEED: ${trackingData.formatSpeed()}\nLLA: ${trackingData.formatLocation()}\nERROR: ${trackingData.calcDistanceError()?.formatDistanceInCentimeters()}")
         )
     }
 
@@ -182,10 +183,11 @@ class AMapHelper(
         @ColorRes colorResId: Int = R.color.colorWhite
     ) {
         val distanceError = trackingData.calcDistanceError()
+        val text =
         aMap.addText(
             TextOptions()
                 .position(trackingData.toLatLng())
-                .text("${distanceError?.formatDistanceInCentimeters()}, ${trackingData.gpsStatus}")
+                .text("Error: ${distanceError?.formatDistanceInCentimeters()}, Status: ${trackingData.gpsStatus}")
         )
     }
 
@@ -239,7 +241,7 @@ class AMapHelper(
                         realIndex++
                     }
 
-                    addMarker(pboxTrackPoint, R.drawable.ic_tracking_point, R.color.colorWhite)
+                    addMarker(pboxIndex, pboxTrackPoint, R.drawable.ic_tracking_point, R.color.colorWhite)
 
                     // Add label markers on pbox track
                     val timeDiff = lastPoint?.let { pboxTrackPoint.timeDiff(it) } ?: Int.MAX_VALUE
