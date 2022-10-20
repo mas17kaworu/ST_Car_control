@@ -35,15 +35,57 @@
             app:layout_constraintTop_toBottomOf="@id/signalReal" />
 
         <ImageButton
+            android:id="@+id/replayPlayBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_play_circle_filled_24"
+            android:tint="@android:color/holo_green_dark"
+            app:layout_constraintBottom_toTopOf="@id/replayPauseBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <ImageButton
+            android:id="@+id/replayPauseBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_pause_circle_filled_24"
+            android:tint="@android:color/holo_green_dark"
+            app:layout_constraintBottom_toTopOf="@id/replayExitBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/replayPlayBtn" />
+
+        <ImageButton
+            android:id="@+id/replayExitBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_stop_circle_24"
+            android:tint="@android:color/holo_green_dark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/replayPauseBtn" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/replayControlBtns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="replayPlayBtn, replayPauseBtn, replayExitBtn"/>
+
+
+        <ImageButton
             android:id="@+id/historyRecordsBtn"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_baseline_folder_special_24"
+            android:tint="@color/colorYellow1"
             app:layout_constraintBottom_toTopOf="@id/settingsBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:tint="@color/colorYellow1"
             tools:ignore="UseAppTint" />
 
         <ImageButton
@@ -52,10 +94,10 @@
             android:layout_height="60dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_baseline_settings_24"
+            android:tint="@color/colorSkyBlue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:tint="@color/colorSkyBlue"
             tools:ignore="UseAppTint" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -124,11 +166,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:background="@drawable/bg_rounded_corner"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/actionBar" />
+        app:layout_constraintStart_toEndOf="@id/actionBar"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/recordBtn"

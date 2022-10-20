@@ -17,8 +17,6 @@ import java.time.LocalDateTime
 data class TrackingViewState(
     val inReviewMode: Boolean = false,
     val isRecording: Boolean = false,
-    val showRealTrack: Boolean = true,
-    val showPboxTrack: Boolean = true,
     val historyRecordData: HistoryRecordData? = null,
     val hideRealTrackUI: Boolean = false,
     val labelInterval: Int = DEFAULT_LABEL_INTERVAL,
@@ -40,6 +38,10 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
 
     private val _uiState = MutableStateFlow(TrackingViewState())
     val uiState: StateFlow<TrackingViewState> = _uiState
+    private val _showRealTrack = MutableStateFlow(true)
+    val showRealTrack: StateFlow<Boolean> = _showRealTrack
+    private val _showPboxTrack = MutableStateFlow(true)
+    val showPboxTrack: StateFlow<Boolean> = _showPboxTrack
 
     init {
         viewModelScope.launch {
@@ -127,11 +129,11 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun switchRealTrack() {
-        _uiState.update { it.copy(showRealTrack = !it.showRealTrack, needRefreshTrack = true) }
+        _showRealTrack.update { !it }
     }
 
     fun switchPboxTrack() {
-        _uiState.update { it.copy(showPboxTrack = !it.showPboxTrack, needRefreshTrack = true) }
+        _showPboxTrack.update { !it }
     }
 
     fun saveSettings(hideRealTrack: Boolean, labelInterval: Int) {

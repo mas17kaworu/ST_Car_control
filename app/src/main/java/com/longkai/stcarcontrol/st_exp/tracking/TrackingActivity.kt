@@ -132,7 +132,10 @@ class TrackingActivity : ComponentActivity() {
                 }
             })
 
-            replayBtn.setOnClickListener { aMapHelper.replayTrack() }
+            replayBtn.setOnClickListener {
+                binding.replayControlBtns.isVisible = true
+                aMapHelper.replayTrack()
+            }
             exitReviewBtn.setOnClickListener {
                 aMapHelper.clearTrack()
                 viewModel.exitReviewMode()
@@ -151,6 +154,19 @@ class TrackingActivity : ComponentActivity() {
                     viewModel.startRecording()
                 }
             }
+
+            replayPlayBtn.setOnClickListener {
+                aMapHelper.continueReplay()
+            }
+            replayPauseBtn.setOnClickListener {
+                aMapHelper.pauseReplay()
+            }
+            replayExitBtn.setOnClickListener {
+                aMapHelper.exitReplay()
+                binding.replayControlBtns.isVisible = false
+                aMapHelper.showTracks(viewModel.uiState.value.hideRealTrackUI.not())
+            }
+
         }
 
         aMapHelper.setupInfoWindow()
@@ -164,25 +180,38 @@ class TrackingActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collectLatest { uiState ->
-                    binding.apply {
-                        reviewModeBtns.isInvisible = uiState.inReviewMode.not()
-                        recordBtn.isInvisible = uiState.inReviewMode
-                        updateRecordBtnUI(uiState.isRecording)
-                        trackPointInfo.isInvisible = uiState.inReviewMode.not()
+                launch {
+                    viewModel.uiState.collectLatest { uiState ->
+                        binding.apply {
+                            reviewModeBtns.isVisible = uiState.inReviewMode
+                            replayControlBtns.isVisible = uiState.inReviewMode
+                            recordBtn.isVisible = uiState.inReviewMode.not()
+                            updateRecordBtnUI(uiState.isRecording)
+                            trackPointInfo.isVisible = uiState.inReviewMode
 
-                        signalReal.isVisible = uiState.hideRealTrackUI.not()
-                        signalReal.isSelected = uiState.showRealTrack
-                        signalPbox.isSelected = uiState.showPboxTrack
+                            signalReal.isVisible = uiState.hideRealTrackUI.not()
 
-                        trackSettingsView.setData(uiState.hideRealTrackUI, uiState.labelInterval)
+                            trackSettingsView.setData(uiState.hideRealTrackUI, uiState.labelInterval)
+                        }
+
+                        if (uiState.inReviewMode && uiState.needRefreshTrack && uiState.historyRecordData != null) {
+                            viewModel.clearRefreshFlag()
+                            aMapHelper.setHistoryRecordData(uiState.historyRecordData)
+                            aMapHelper.setLabelInterval(uiState.labelInterval)
+                            aMapHelper.showTracks(uiState.hideRealTrackUI.not())
+                        }
                     }
-
-                    if (uiState.inReviewMode && uiState.needRefreshTrack && uiState.historyRecordData != null) {
-                        viewModel.clearRefreshFlag()
-                        aMapHelper.setHistoryRecordData(uiState.historyRecordData)
-                        aMapHelper.setLabelInterval(uiState.labelInterval)
-                        aMapHelper.showTracks(uiState.hideRealTrackUI.not() && uiState.showRealTrack, uiState.showPboxTrack)
+                }
+                launch {
+                    viewModel.showRealTrack.collectLatest { showRealTrack ->
+                        binding.signalReal.isSelected = showRealTrack
+                        aMapHelper.switchRealTrackVisibility(showRealTrack)
+                    }
+                }
+                launch {
+                    viewModel.showPboxTrack.collectLatest { showPboxTrack ->
+                        binding.signalPbox.isSelected = showPboxTrack
+                        aMapHelper.switchPboxTrackVisibility(showPboxTrack)
                     }
                 }
             }
