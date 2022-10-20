@@ -78,8 +78,8 @@
     </style>
 
     <style name="ThemeOverlay.ModeSwitch" parent="">
-        <item name="colorSurface">@color/colorBlue</item>
-        <item name="colorOnSurface">@color/colorBlue</item>
+        <item name="colorSurface">@color/colorSkyBlue</item>
+        <item name="colorOnSurface">@color/colorSkyBlue</item>
         <item name="colorSecondary">@color/colorAccent</item>
     </style>
 

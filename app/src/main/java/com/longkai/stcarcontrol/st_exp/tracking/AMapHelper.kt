@@ -32,8 +32,8 @@ class AMapHelper(
     private val coordinateConverter = CoordinateConverter(context).apply { from(CoordinateConverter.CoordType.GPS) }
     private val replayTrackScope = CoroutineScope(Dispatchers.Main)
 
-    private val realTrackColor = R.color.colorBlue
-    private val pboxTrackColor = R.color.colorYellow1
+    private val realTrackColor = REAL_TRACK_COLOR
+    private val pboxTrackColor = PBOX_TRACK_COLOR
 
     private var historyRecordData: HistoryRecordData? = null
     private var labelInterval: Int = DEFAULT_LABEL_INTERVAL
@@ -133,7 +133,7 @@ class AMapHelper(
             addPoints(trackPoints)
         }
 
-        if (showLabelMarkers) {
+        if (showLabelMarkers && labelInterval > 0) {
             addLabelMarkers(trackPoints, labelInterval)
             updateTrackPointInfo(trackPoints[0])
         }
@@ -182,19 +182,30 @@ class AMapHelper(
         @DrawableRes drawableResId: Int = R.drawable.ic_tracking,
         @ColorRes colorResId: Int = R.color.colorWhite
     ) {
-        val distanceError = trackingData.calcDistanceError()
-        val text =
-        aMap.addText(
-            TextOptions()
-                .position(trackingData.toLatLng())
-                .text("Error: ${distanceError?.formatDistanceInCentimeters()}, Status: ${trackingData.gpsStatus}")
-        )
+        val (backgroundColor, text) = when (trackingData.gpsStatus) {
+            1 -> Pair(R.color.colorRed, "S")
+            2 -> Pair(R.color.colorBlue, "D")
+            4 -> Pair(R.color.colorGreen, "F")
+            5 -> Pair(R.color.colorYellow, "FL")
+            6 -> Pair(R.color.colorCyan, "I")
+            else -> Pair(R.color.transparent, "")
+        }
+        val fontColor = R.color.colorBlack
+        if (text.isNotBlank()) {
+            aMap.addText(
+                TextOptions()
+                    .position(trackingData.toLatLng())
+                    .text(text)
+                    .backgroundColor(context.getColor(backgroundColor))
+                    .fontColor(context.getColor(fontColor))
+            )
+        }
     }
 
     fun replayTrack() {
         clearTrack()
         ensureRecordLoaded {
-            val pointDelay: Long = 100
+            val pointDelay: Long = REPLAY_POINT_DELAY
 
             // Add real track
             val realTrackPoints = it.realPoints
@@ -219,6 +230,7 @@ class AMapHelper(
                 var lastPoint: TrackingData? = null
                 var pboxIndex = 0
                 while (pboxIndex < pboxTrackPoints.size) {
+
                     val pboxPoint = pboxMapPoints[pboxIndex]
                     val pboxTrackPoint = pboxTrackPoints[pboxIndex]
                     updateTrackPointInfo(pboxTrackPoints[pboxIndex])
@@ -244,10 +256,13 @@ class AMapHelper(
                     addMarker(pboxIndex, pboxTrackPoint, R.drawable.ic_tracking_point, R.color.colorWhite)
 
                     // Add label markers on pbox track
-                    val timeDiff = lastPoint?.let { pboxTrackPoint.timeDiff(it) } ?: Int.MAX_VALUE
-                    if (pboxIndex == 0 || pboxIndex == pboxTrackPoints.size - 1 || timeDiff >= labelInterval) {
-                        addLabelMarker(pboxTrackPoint)
-                        lastPoint = pboxTrackPoint
+                    if (labelInterval > 0) {
+                        val timeDiff =
+                            lastPoint?.let { pboxTrackPoint.timeDiff(it) } ?: Int.MAX_VALUE
+                        if (pboxIndex == 0 || pboxIndex == pboxTrackPoints.size - 1 || timeDiff >= labelInterval) {
+                            addLabelMarker(pboxTrackPoint)
+                            lastPoint = pboxTrackPoint
+                        }
                     }
 
                     pboxIndex++
@@ -332,6 +347,7 @@ class AMapHelper(
                     )
                 )
                 .anchor(0.5f, 0.5f)
+                .zIndex(100f)
         )
         return MovingPointOverlay(aMap, marker)
     }
@@ -407,7 +423,9 @@ class AMapHelper(
     }
 
     companion object {
-        private const val MARKER_INTERVAL = 10 // in seconds
         private const val LINE_WIDTH = 4f
+        private const val REPLAY_POINT_DELAY = 100L //milliseconds
+        private val REAL_TRACK_COLOR = R.color.colorWhite
+        private val PBOX_TRACK_COLOR = R.color.colorMagenta
     }
 }

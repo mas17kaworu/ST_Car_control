@@ -50,10 +50,11 @@ object Tracking {
     suspend fun loadHistoryRecords(): List<HistoryRecord> {
         return withContext(Dispatchers.IO) {
             dataDir.listFiles()
-                .filter {
+                ?.filter {
                     it.isDirectory && (File(it, FILE_REAL).exists() || File(it, FILE_PBOX).exists())
                 }
-                .map { HistoryRecord(it.name) }
+                ?.map { HistoryRecord(it.name) }
+                ?: emptyList()
         }
     }
 
