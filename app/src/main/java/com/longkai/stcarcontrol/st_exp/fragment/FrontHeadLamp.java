@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.longkai.stcarcontrol.st_exp.ConstantData;
@@ -32,6 +33,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampL
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDLEDHeadLampList.CMDLEDHeadLampTurnRight;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 
+import static com.longkai.stcarcontrol.st_exp.ConstantData.MainFragment.FRAGMENT_TRANSACTION_CAR_FRONT_BOTTOM_LIGHT;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sLampJinguangdengStatus;
 
 /**
@@ -41,7 +43,7 @@ import static com.longkai.stcarcontrol.st_exp.ConstantData.sLampJinguangdengStat
 public class FrontHeadLamp extends Fragment implements View.OnClickListener{
     private View mView;
     private ImageView ivLampDadeng, ivLampJingguangdeng, ivLampJiaodengRight, ivLampJiaodengLeft, ivLampRixingdeng, ivLampTurnLeft, ivLampTurnRight;
-
+    private ImageButton ibLeftBottomLight, ibRightBottomLight;
     private BTServer mBTServer;
 
     @Nullable
@@ -57,6 +59,8 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
         mView.findViewById(R.id.iv_lamp_turnright_click).setOnClickListener(this);
         mView.findViewById(R.id.iv_lamp_jump).setOnClickListener(this);
         mView.findViewById(R.id.tv_car_front_lamp).setOnClickListener(this);
+        mView.findViewById(R.id.ib_front_leftBottom_light).setOnClickListener(this);
+        mView.findViewById(R.id.ib_front_rightBottom_light).setOnClickListener(this);
 
         ivLampDadeng = (ImageView) mView.findViewById(R.id.iv_lamp_dadeng_on);
         ivLampJingguangdeng = (ImageView) mView.findViewById(R.id.iv_lamp_jinguangdeng_on);
@@ -117,7 +121,7 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                     BaseCommand commandtmp = new CMDLEDHeadLampPosition();
                     commandtmp.turnOn();
                     ServiceManager.getInstance().sendCommandToCar(commandtmp, new CommandListenerAdapter());
-                }else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] == 1) {
+                } else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] == 1) {
                     ivLampRixingdeng.setImageResource(R.mipmap.ic_lamp_rixingdeng_on);
                     ivLampRixingdeng.setVisibility(View.VISIBLE);
                     ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] = 2;
@@ -129,7 +133,7 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                     BaseCommand commandtmp2 = new CMDLEDHeadLampDRLLight();
                     commandtmp2.turnOn();
                     ServiceManager.getInstance().sendCommandToCar(commandtmp2, new CommandListenerAdapter());
-                }else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] == 2) {
+                } else if (ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] == 2) {
                     ivLampRixingdeng.setVisibility(View.INVISIBLE);
                     ConstantData.sFrontLampFragmentStatus[ConstantData.sLampRixingdengStatus] = 0;
 
@@ -155,6 +159,10 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
                 break;
             case R.id.tv_Head_Lamp_diagram:
                 ((MainActivity)getActivity()).showDiagram(ConstantData.HL_DIAGRAM);
+                break;
+            case R.id.ib_front_leftBottom_light:
+            case R.id.ib_front_rightBottom_light:
+                ((MainActivity)getActivity()).setSelect(FRAGMENT_TRANSACTION_CAR_FRONT_BOTTOM_LIGHT);
                 break;
         }
     }

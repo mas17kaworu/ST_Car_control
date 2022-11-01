@@ -13,6 +13,14 @@
   <string name="high_beam_Parking">Parking Light</string>
   <string name="high_beam_Energy_saving">Energy-saving Light</string>
 
+  <string name="c11_mode_1">行人过马路</string>
+  <string name="c11_mode_2">宠物迎宾</string>
+  <string name="c11_mode_3">电量显示</string>
+  <string name="c11_mode_4">掉头指示</string>
+  <string name="c11_mode_5">转向指示</string>
+  <string name="c11_mode_6">ST Logo</string>
+  <string name="c11_mode_7">Arrow Logo</string>
+
 
   <string name="vcu_gysd_btn">高压回路上电</string>
   <string name="vcu_gyxd_btn">高压回路下电</string>

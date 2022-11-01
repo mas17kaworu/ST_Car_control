@@ -42,6 +42,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.CarBackOLED2Fragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CarBackOLEDFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.CenterControlFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.DoorFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.FrontBottomLight;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLamp;
 import com.longkai.stcarcontrol.st_exp.fragment.FrontHeadLampTest2;
 import com.longkai.stcarcontrol.st_exp.fragment.HighBeamLight;
@@ -61,6 +62,7 @@ import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.MainFragment.FRAGMENT_TRANSACTION_CAR_BACK_OLED;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.MainFragment.FRAGMENT_TRANSACTION_CAR_BACK_OLED2;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.MainFragment.FRAGMENT_TRANSACTION_CAR_FRONT_BOTTOM_LIGHT;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -70,6 +72,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
   private FrontHeadLamp mFrontLampFragment;
   private SeatFragment mSeatFragment;
   private HighBeamLight mHighBeamLight;
+  private FrontBottomLight mFrontBottomLight;
   private DoorFragment mDoorFragment;
   private CenterControlFragment mCenterControlFragment;
   private CarBackLampFragment mCarBackFragment;
@@ -425,6 +428,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
           carBackOLED2Fragment = new CarBackOLED2Fragment();
         }
         transaction.replace(R.id.main_fragment_content, carBackOLED2Fragment);
+        break;
+      case FRAGMENT_TRANSACTION_CAR_FRONT_BOTTOM_LIGHT:
+        if (mFrontBottomLight == null) {
+          mFrontBottomLight = new FrontBottomLight();
+        }
+        transaction.replace(R.id.main_fragment_content, mFrontBottomLight);
         break;
       default:
         break;
