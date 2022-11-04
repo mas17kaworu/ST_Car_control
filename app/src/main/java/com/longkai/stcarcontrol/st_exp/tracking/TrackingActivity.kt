@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -53,7 +52,7 @@ class TrackingActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        aMapHelper.clearTrack()
+        aMapHelper.clearAllTracks()
         mapView.onDestroy()
     }
 
@@ -125,8 +124,8 @@ class TrackingActivity : ComponentActivity() {
                 trackSettingsView.apply { isVisible = isVisible.not() }
             }
             trackSettingsView.setListener(object : TrackSettingsView.Listener {
-                override fun onSaveSettings(hideRealTrack: Boolean, labelInterval: Int) {
-                    viewModel.saveSettings(hideRealTrack, labelInterval)
+                override fun onSaveSettings(hideRealTrack: Boolean, labelInterval: Int, replaySpeed: Int) {
+                    viewModel.saveSettings(hideRealTrack, labelInterval, replaySpeed)
                     hideTrackSettingsView()
                     trackSettingsView.hideSoftKeyboard()
                 }
@@ -138,7 +137,7 @@ class TrackingActivity : ComponentActivity() {
             }
             exitReviewBtn.setOnClickListener {
                 binding.replayControlBtns.isVisible = false
-                aMapHelper.clearTrack()
+                aMapHelper.clearAllTracks()
                 viewModel.exitReviewMode()
             }
 
@@ -167,7 +166,11 @@ class TrackingActivity : ComponentActivity() {
                 binding.replayControlBtns.isVisible = false
                 aMapHelper.showTracks(viewModel.uiState.value.hideRealTrackUI.not())
             }
-
+            replayClearBtn.setOnClickListener {
+                aMapHelper.pauseReplay()
+                aMapHelper.clearAllTracks()
+                aMapHelper.continueReplay()
+            }
         }
 
         aMapHelper.setupInfoWindow()
@@ -192,13 +195,13 @@ class TrackingActivity : ComponentActivity() {
 
                             signalReal.isVisible = uiState.hideRealTrackUI.not()
 
-                            trackSettingsView.setData(uiState.hideRealTrackUI, uiState.labelInterval)
+                            trackSettingsView.setData(uiState.hideRealTrackUI, uiState.labelInterval, uiState.replaySpeed)
                         }
 
                         if (uiState.inReviewMode && uiState.needRefreshTrack && uiState.historyRecordData != null) {
                             viewModel.clearRefreshFlag()
                             aMapHelper.setHistoryRecordData(uiState.historyRecordData)
-                            aMapHelper.setLabelInterval(uiState.labelInterval)
+                            aMapHelper.setConfig(uiState.labelInterval, uiState.replaySpeed)
                             aMapHelper.showTracks(uiState.hideRealTrackUI.not())
                         }
                     }

@@ -20,12 +20,15 @@ data class TrackingViewState(
     val historyRecordData: HistoryRecordData? = null,
     val hideRealTrackUI: Boolean = false,
     val labelInterval: Int = DEFAULT_LABEL_INTERVAL,
+    val replaySpeed: Int = DEFAULT_REPLAY_SPEED,
     val needRefreshTrack: Boolean = false,
 )
 
 val PREF_HIDE_REAL_TRACK_UI = booleanPreferencesKey("hideRealTrackUI")
 val PREF_LABEL_INTERVAL = intPreferencesKey("labelInterval")
+val PREF_REPLAY_SPEED = intPreferencesKey("replaySpeed")
 const val DEFAULT_LABEL_INTERVAL = 10
+const val DEFAULT_REPLAY_SPEED = 1
 
 enum class RECORD_TYPE {
     PBOX, REAL
@@ -48,10 +51,12 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
             application.applicationContext.appPrefsDataStore.data.collectLatest { prefs ->
                 val hideRealTrackUI = prefs[PREF_HIDE_REAL_TRACK_UI] ?: false
                 val labelInterval = prefs[PREF_LABEL_INTERVAL] ?: DEFAULT_LABEL_INTERVAL
+                val replaySpeed = prefs[PREF_REPLAY_SPEED] ?: DEFAULT_REPLAY_SPEED
                 _uiState.update {
                     it.copy(
                         hideRealTrackUI = hideRealTrackUI,
                         labelInterval = labelInterval,
+                        replaySpeed = replaySpeed,
                         needRefreshTrack = true
                     )
                 }
@@ -136,12 +141,13 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
         _showPboxTrack.update { !it }
     }
 
-    fun saveSettings(hideRealTrack: Boolean, labelInterval: Int) {
+    fun saveSettings(hideRealTrack: Boolean, labelInterval: Int, replaySpeed: Int) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 getApplication<STCarApplication>().applicationContext.appPrefsDataStore.edit { prefs ->
                     prefs[PREF_HIDE_REAL_TRACK_UI] = hideRealTrack
                     prefs[PREF_LABEL_INTERVAL] = labelInterval
+                    prefs[PREF_REPLAY_SPEED] = replaySpeed
                 }
             }
         }

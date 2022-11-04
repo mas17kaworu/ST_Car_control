@@ -21,7 +21,8 @@ class TrackSettingsView(
         binding.saveBtn.setOnClickListener {
             listener?.onSaveSettings(
                 hideRealTrack = binding.hideRealTrackSwitch.isChecked,
-                labelInterval = binding.labelIntervalEditText.text.toString().toIntOrNull() ?:0
+                labelInterval = binding.labelIntervalEditText.text.toString().toIntOrNull() ?: 0,
+                replaySpeed = binding.replaySpeedEditText.text.toString().toIntOrNull() ?: 0
             )
         }
     }
@@ -30,14 +31,15 @@ class TrackSettingsView(
         this.listener = listener
     }
 
-    fun setData(hideRealTrack: Boolean, labelInterval: Int) {
+    fun setData(hideRealTrack: Boolean, labelInterval: Int, replaySpeed: Int) {
         binding.apply {
             hideRealTrackSwitch.isChecked = hideRealTrack
             labelIntervalEditText.setText(labelInterval.toString())
+            replaySpeedEditText.setText(replaySpeed.toString())
         }
     }
 
     interface Listener {
-        fun onSaveSettings(hideRealTrack: Boolean, labelInterval: Int)
+        fun onSaveSettings(hideRealTrack: Boolean, labelInterval: Int, replaySpeed: Int)
     }
 }

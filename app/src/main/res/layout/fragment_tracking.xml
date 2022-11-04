@@ -20,6 +20,7 @@
             android:layout_height="60dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_signal_real"
+            android:tooltipText="Real"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,6 +31,7 @@
             android:layout_height="60dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_signal_pbox"
+            android:tooltipText="P-Box"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/signalReal" />
@@ -38,26 +40,26 @@
             android:id="@+id/replayBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="Replay"
             android:src="@drawable/ic_baseline_replay_24"
             android:tint="@android:color/holo_green_dark"
+            android:tooltipText="Replay"
+            app:layout_constraintBottom_toTopOf="@id/exitReviewBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintBottom_toTopOf="@id/exitReviewBtn"/>
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <ImageButton
             android:id="@+id/exitReviewBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="Exit"
             android:src="@drawable/ic_baseline_exit_24"
             android:tint="@android:color/holo_green_dark"
+            android:tooltipText="Exit"
+            app:layout_constraintBottom_toTopOf="@id/replayPlayBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/replayBtn"
-            app:layout_constraintBottom_toTopOf="@id/replayPlayBtn"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <androidx.constraintlayout.widget.Group
@@ -65,16 +67,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:constraint_referenced_ids="replayBtn, exitReviewBtn"/>
+            app:constraint_referenced_ids="replayBtn, exitReviewBtn"
+            tools:visibility="visible" />
 
         <ImageButton
             android:id="@+id/replayPlayBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:src="@drawable/ic_baseline_play_circle_filled_24"
             android:tint="@android:color/holo_green_dark"
-            android:layout_marginTop="30dp"
+            android:tooltipText="Play"
             app:layout_constraintBottom_toTopOf="@id/replayPauseBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,6 +90,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_pause_circle_filled_24"
             android:tint="@android:color/holo_green_dark"
+            android:tooltipText="Pause"
             app:layout_constraintBottom_toTopOf="@id/replayExitBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -98,18 +102,31 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_stop_circle_24"
             android:tint="@android:color/holo_green_dark"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:tooltipText="Exit"
+            app:layout_constraintBottom_toTopOf="@id/replayClearBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/replayPauseBtn" />
+
+        <ImageButton
+            android:id="@+id/replayClearBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_clear_all_24"
+            android:tint="@android:color/holo_green_dark"
+            android:tooltipText="Clear"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/replayExitBtn" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/replayControlBtns"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:constraint_referenced_ids="replayPlayBtn, replayPauseBtn, replayExitBtn"/>
+            app:constraint_referenced_ids="replayPlayBtn, replayPauseBtn, replayExitBtn, replayClearBtn"
+            tools:visibility="visible" />
 
         <ImageButton
             android:id="@+id/historyRecordsBtn"
@@ -118,6 +135,7 @@
             android:scaleType="centerInside"
             android:src="@drawable/ic_baseline_folder_special_24"
             android:tint="@color/colorYellow1"
+            android:tooltipText="History records"
             app:layout_constraintBottom_toTopOf="@id/settingsBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -130,6 +148,7 @@
             android:scaleType="centerInside"
             android:src="@drawable/ic_baseline_settings_24"
             android:tint="@color/colorSkyBlue"
+            android:tooltipText="Settings"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

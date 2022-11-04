@@ -34,6 +34,7 @@ class AMapHelper(
 
     private var historyRecordData: HistoryRecordData? = null
     private var labelInterval: Int = DEFAULT_LABEL_INTERVAL
+    private var replaySpeed: Int = DEFAULT_REPLAY_SPEED
     private var realTrackPolyline: Polyline? = null
     private var pboxTrackPolyline: Polyline? = null
     //For replay
@@ -51,12 +52,15 @@ class AMapHelper(
 
     fun setHistoryRecordData(historyRecordData: HistoryRecordData) {
         this.historyRecordData = historyRecordData
-        clearTrack()
+        clearAllTracks()
     }
 
-    fun setLabelInterval(labelInterval: Int) {
-        this.labelInterval = labelInterval
-        clearTrack()
+    fun setConfig(labelInterval: Int, replaySpeed: Int) {
+        if (this.labelInterval != labelInterval) {
+            this.labelInterval = labelInterval
+            clearAllTracks()
+        }
+        this.replaySpeed = replaySpeed
     }
 
     fun setupInfoWindow() {
@@ -90,7 +94,7 @@ class AMapHelper(
     }
 
     fun showTracks(showRealTrack: Boolean) {
-        clearTrack()
+        clearAllTracks()
         ensureRecordLoaded() {
             if (showRealTrack) {
                 realTrackPolyline = showTrack(it.realPoints, REAL_TRACK_COLOR)
@@ -153,15 +157,23 @@ class AMapHelper(
     private fun addMarker(
         pointIndex: Int,
         trackingData: TrackingData,
-        @DrawableRes drawableResId: Int = R.drawable.ic_tracking,
+        @DrawableRes drawableResId: Int = R.drawable.ic_tracking_point,
         @ColorRes colorResId: Int = R.color.colorWhite
     ) {
+        val (backgroundColor, text) = when (trackingData.gpsStatus) {
+            1 -> Pair(R.color.colorRed, "S")
+            2 -> Pair(R.color.colorBlue, "D")
+            4 -> Pair(R.color.colorGreen, "F")
+            5 -> Pair(R.color.colorYellow, "FL")
+            6 -> Pair(R.color.colorCyan, "I")
+            else -> Pair(R.color.transparent, "")
+        }
         aMap.addMarker(
             MarkerOptions()
                 .position(trackingData.toLatLng())
                 .icon(
                     BitmapDescriptorFactory.fromBitmap(
-                        context.getBitmapFromVectorDrawable(drawableResId, colorResId)
+                        context.getBitmapFromVectorDrawable(drawableResId, backgroundColor)
                     )
                 )
                 .title("POINT $pointIndex")
@@ -188,7 +200,6 @@ class AMapHelper(
                 TextOptions()
                     .position(trackingData.toLatLng())
                     .text(text)
-                    .backgroundColor(context.getColor(backgroundColor))
                     .fontColor(context.getColor(fontColor))
             )
         }
@@ -207,16 +218,14 @@ class AMapHelper(
 
     fun exitReplay() {
         replayPaused = false
-        clearTrack()
+        clearAllTracks()
     }
 
     fun replayTrack(restart: Boolean = true) {
         if (restart) {
-            clearTrack()
+            clearAllTracks()
         }
         ensureRecordLoaded {
-            val pointDelay: Long = REPLAY_POINT_DELAY
-
             // Add real track
             val realTrackPoints = it.realPoints
             val realMapPoints = realTrackPoints.map { it.toLatLng() }
@@ -240,6 +249,8 @@ class AMapHelper(
             }
 
             replayTrackScope.launch {
+                val pointDelay: Long = ONE_SECOND / replaySpeed
+
                 // Add real track points which are before pbox start
                 while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyThan(pboxTrackPoints[0])) {
                     if (replayPaused) {
@@ -309,7 +320,12 @@ class AMapHelper(
         }
     }
 
-    fun clearTrack() {
+    fun clearReplayedTracks() {
+        replayTrackScope.coroutineContext.cancelChildren()
+        aMap.clear()
+    }
+
+    fun clearAllTracks() {
         replayTrackScope.coroutineContext.cancelChildren()
         aMap.clear()
         realTrackPolyline = null
@@ -376,11 +392,12 @@ class AMapHelper(
     }
 
     private fun createMovingMarker(rotation: Float = 0f): MovingPointOverlay {
+        val carSize = dp2px(context, 36f)
         val marker = aMap.addMarker(
             MarkerOptions()
                 .icon(
                     BitmapDescriptorFactory.fromBitmap(
-                        context.getBitmapFromVectorDrawable(CAR_ICON, CAR_COLOR)
+                        context.getBitmapFromVectorDrawable(CAR_ICON, CAR_COLOR, carSize)
                             .rotate(rotation)
                     )
                 )
@@ -462,10 +479,10 @@ class AMapHelper(
 
     companion object {
         private const val LINE_WIDTH = 4f
-        private const val REPLAY_POINT_DELAY = 100L //milliseconds
+        private const val ONE_SECOND = 1000L //milliseconds
         private val REAL_TRACK_COLOR = R.color.colorWhite
         private val PBOX_TRACK_COLOR = R.color.colorMagenta
-        private val CAR_ICON = R.drawable.ic_car_hatchback
-        private val CAR_COLOR = R.color.colorRed
+        private val CAR_ICON = R.drawable.ic_car_top_view
+        private val CAR_COLOR = R.color.colorWhite
     }
 }
