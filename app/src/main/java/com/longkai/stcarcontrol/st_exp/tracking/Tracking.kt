@@ -95,14 +95,12 @@ object Tracking {
                     val fields = line.split(',')
 
                     // This assumes RMC data always comes before GGA.
-                    when(fields.first()) {
-                        TYPE_GNRMC -> {
-                            handleDataPoint.invoke()
-                            rmcData = parseRmc(fields)
-                        }
-                        TYPE_GNGGA -> {
-                            ggaData = parseGga(fields)
-                        }
+                    val firstField = fields.first()
+                    if (firstField.isRMCFlag()) {
+                        handleDataPoint.invoke()
+                        rmcData = parseRmc(fields)
+                    } else if (firstField.isGGAFlag()) {
+                        ggaData = parseGga(fields)
                     }
                 }
                 handleDataPoint.invoke()
@@ -233,6 +231,9 @@ object Tracking {
     private fun parseInt(input: String): Int? {
         return if(input.isBlank()) null else input.toInt()
     }
+
+    private fun String.isRMCFlag() = startsWith('$') && endsWith("RMC")
+    private fun String.isGGAFlag() = startsWith('$') && endsWith("GGA")
 
     private const val DIR_HISTORY_RECORDS = "HistoryRecords"
     private const val FILE_REAL = "real.txt"

@@ -137,6 +137,7 @@ class TrackingActivity : ComponentActivity() {
                 aMapHelper.replayTrack()
             }
             exitReviewBtn.setOnClickListener {
+                binding.replayControlBtns.isVisible = false
                 aMapHelper.clearTrack()
                 viewModel.exitReviewMode()
             }
@@ -184,7 +185,7 @@ class TrackingActivity : ComponentActivity() {
                     viewModel.uiState.collectLatest { uiState ->
                         binding.apply {
                             reviewModeBtns.isVisible = uiState.inReviewMode
-                            replayControlBtns.isVisible = uiState.inReviewMode
+                            if (uiState.inReviewMode.not()) replayControlBtns.visibility = View.GONE
                             recordBtn.isVisible = uiState.inReviewMode.not()
                             updateRecordBtnUI(uiState.isRecording)
                             trackPointInfo.isVisible = uiState.inReviewMode

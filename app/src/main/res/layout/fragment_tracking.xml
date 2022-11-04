@@ -35,15 +35,50 @@
             app:layout_constraintTop_toBottomOf="@id/signalReal" />
 
         <ImageButton
+            android:id="@+id/replayBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="Replay"
+            android:src="@drawable/ic_baseline_replay_24"
+            android:tint="@android:color/holo_green_dark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@id/exitReviewBtn"/>
+
+        <ImageButton
+            android:id="@+id/exitReviewBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="Exit"
+            android:src="@drawable/ic_baseline_exit_24"
+            android:tint="@android:color/holo_green_dark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/replayBtn"
+            app:layout_constraintBottom_toTopOf="@id/replayPlayBtn"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/reviewModeBtns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:constraint_referenced_ids="replayBtn, exitReviewBtn"/>
+
+        <ImageButton
             android:id="@+id/replayPlayBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_play_circle_filled_24"
             android:tint="@android:color/holo_green_dark"
+            android:layout_marginTop="30dp"
             app:layout_constraintBottom_toTopOf="@id/replayPauseBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/exitReviewBtn"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <ImageButton
@@ -73,8 +108,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            tools:visibility="visible"
             app:constraint_referenced_ids="replayPlayBtn, replayPauseBtn, replayExitBtn"/>
-
 
         <ImageButton
             android:id="@+id/historyRecordsBtn"
@@ -185,47 +220,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
-
-    <LinearLayout
-        android:id="@+id/reviewModeBtns"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
-
-        <!--        <Button-->
-        <!--            android:id="@+id/moveCarBtn"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="Move car" />-->
-
-        <!--        <Button-->
-        <!--            android:id="@+id/clearBtn"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="Clear" />-->
-
-        <!--        <Button-->
-        <!--            android:id="@+id/showTrackProgressBtn"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="Show track progress" />-->
-
-        <Button
-            android:id="@+id/replayBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Replay" />
-
-        <Button
-            android:id="@+id/exitReviewBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Exit" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
