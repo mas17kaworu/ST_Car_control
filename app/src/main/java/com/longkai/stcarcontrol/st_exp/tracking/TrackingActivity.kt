@@ -112,6 +112,7 @@ class TrackingActivity : ComponentActivity() {
             historyRecordsBtn.setOnClickListener {
                 viewModel.loadHistoryRecords { historyRecords ->
                     binding.historyRecordsRV.adapter = HistoryRecordsAdapter(historyRecords) {
+                        binding.replayControlBtns.isVisible = false
                         viewModel.enterReviewMode()
                         loadRecord(it)
                         hideHistoryRecordsLayout()

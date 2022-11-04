@@ -125,11 +125,14 @@ fun Bitmap.rotate(degrees: Float): Bitmap {
 fun Context.getBitmapFromVectorDrawable(
     @DrawableRes resId: Int,
     @ColorRes tintColor: Int? = null,
-    sizePx: Int? = null
+    widthPx: Int? = null,
+    heightPx: Int? = null
 ): Bitmap {
     val drawable = AppCompatResources.getDrawable(this, resId)!!
     tintColor?.let { drawable.setTint(getColor(it)) }
-    return sizePx?.let {
-        drawable.toBitmap(sizePx, sizePx)
-    } ?: drawable.toBitmap()
+    return if (widthPx != null && heightPx != null) {
+        drawable.toBitmap(widthPx, heightPx)
+    } else {
+        drawable.toBitmap()
+    }
 }

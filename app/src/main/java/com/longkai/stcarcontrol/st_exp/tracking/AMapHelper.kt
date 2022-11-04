@@ -235,7 +235,7 @@ class AMapHelper(
             val pboxTrackPoints = it.pboxPoints
             val pboxMapPoints = pboxTrackPoints.map { it.toLatLng() }
             val pboxPolyline = replayPboxLine ?: aMap.addPolyline(PolylineOptions().width(LINE_WIDTH).color(context.getColor(PBOX_TRACK_COLOR)))
-            val pboxMovingMarker = replayCar ?: createMovingMarker()
+            val pboxMovingMarker = replayCar ?: createMovingMarker(90f)
 
             var realIndex = replayRealIndex
             var pboxIndex = replayPboxIndex
@@ -341,7 +341,7 @@ class AMapHelper(
      * Animate car moving on track
      */
     private fun moveCar(trackPoints: List<TrackingData>) {
-        val movingMarker = createMovingMarker(-90f)
+        val movingMarker = createMovingMarker()
 
         val mapPoints = trackPoints.map { it.toLatLng() }
         val mutablePoints = mapPoints.toMutableList()
@@ -361,7 +361,7 @@ class AMapHelper(
     private fun showTrackProgress(trackPoints: List<TrackingData>) {
         val mapPoints = trackPoints.map { it.toLatLng() }
 
-        val movingMarker = createMovingMarker(-90f)
+        val movingMarker = createMovingMarker()
         val polyOptions = PolylineOptions().width(LINE_WIDTH).color(Color.CYAN)
         val polyline = aMap.addPolyline(polyOptions)
 
@@ -392,12 +392,13 @@ class AMapHelper(
     }
 
     private fun createMovingMarker(rotation: Float = 0f): MovingPointOverlay {
-        val carSize = dp2px(context, 36f)
+        val carWidth = dp2px(context, 30f)
+        val carHeight = dp2px(context, 50f)
         val marker = aMap.addMarker(
             MarkerOptions()
                 .icon(
                     BitmapDescriptorFactory.fromBitmap(
-                        context.getBitmapFromVectorDrawable(CAR_ICON, CAR_COLOR, carSize)
+                        context.getBitmapFromVectorDrawable(CAR_ICON, CAR_COLOR, carWidth, carHeight)
                             .rotate(rotation)
                     )
                 )
@@ -482,7 +483,7 @@ class AMapHelper(
         private const val ONE_SECOND = 1000L //milliseconds
         private val REAL_TRACK_COLOR = R.color.colorWhite
         private val PBOX_TRACK_COLOR = R.color.colorMagenta
-        private val CAR_ICON = R.drawable.ic_car_top_view
+        private val CAR_ICON = R.drawable.ic_car_top_view_white
         private val CAR_COLOR = R.color.colorWhite
     }
 }
