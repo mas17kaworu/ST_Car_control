@@ -30,7 +30,7 @@ class AMapHelper(
     val showMessage: (String) -> Unit
 ) {
     private val coordinateConverter = CoordinateConverter(context).apply { from(CoordinateConverter.CoordType.GPS) }
-    private val replayTrackScope = CoroutineScope(Dispatchers.Main)
+    private val mainScope = CoroutineScope(Dispatchers.Main)
 
     private var historyRecordData: HistoryRecordData? = null
     private var labelInterval: Int = DEFAULT_LABEL_INTERVAL
@@ -44,6 +44,7 @@ class AMapHelper(
     private var replayRealIndex: Int = 0
     private var replayPboxIndex: Int = 0
     private var replayPaused = false
+    private var isReplaying = false
 
     fun init(){
         aMap.mapType = AMap.MAP_TYPE_SATELLITE
@@ -221,6 +222,17 @@ class AMapHelper(
         clearAllTracks()
     }
 
+    fun clearReplay() {
+        mainScope.launch {
+            replayPaused = true
+            while (isReplaying) {
+                delay(10)
+            }
+            clearReplayedTracks()
+            continueReplay()
+        }
+    }
+
     fun replayTrack(restart: Boolean = true) {
         if (restart) {
             clearAllTracks()
@@ -235,7 +247,7 @@ class AMapHelper(
             val pboxTrackPoints = it.pboxPoints
             val pboxMapPoints = pboxTrackPoints.map { it.toLatLng() }
             val pboxPolyline = replayPboxLine ?: aMap.addPolyline(PolylineOptions().width(LINE_WIDTH).color(context.getColor(PBOX_TRACK_COLOR)))
-            val pboxMovingMarker = replayCar ?: createMovingMarker(90f)
+            val pboxCar = replayCar ?: createMovingMarker(90f)
 
             var realIndex = replayRealIndex
             var pboxIndex = replayPboxIndex
@@ -243,12 +255,14 @@ class AMapHelper(
             fun saveStateWhenPaused() {
                 replayRealLine = realPolyline
                 replayPboxLine = pboxPolyline
-                replayCar = pboxMovingMarker
+                replayCar = pboxCar
                 replayRealIndex = realIndex
                 replayPboxIndex = pboxIndex
+                isReplaying = false
             }
 
-            replayTrackScope.launch {
+            mainScope.launch {
+                isReplaying = true
                 val pointDelay: Long = ONE_SECOND / replaySpeed
 
                 // Add real track points which are before pbox start
@@ -274,14 +288,14 @@ class AMapHelper(
                     updateTrackPointInfo(pboxTrackPoints[pboxIndex])
 
                     // Move car forward
-                    val previousPoint = if (pboxIndex == 0) null else pboxMapPoints[pboxIndex - 1]
-                    pboxMovingMarker.setPoints(mutableListOf(previousPoint, pboxPoint))
+                    val previousPoint = if (pboxCar.position == null) null else pboxMapPoints[pboxIndex - 1]
+                    pboxCar.setPoints(mutableListOf(previousPoint, pboxPoint))
                     previousPoint?.let {
                         val angle = calculateAngle(previousPoint, pboxPoint).toFloat()
-                        pboxMovingMarker.setRotate(360 - angle)
+                        pboxCar.setRotate(360 - angle)
                     }
-                    pboxMovingMarker.setTotalDuration(pointDelay.toInt())
-                    pboxMovingMarker.startSmoothMove()
+                    pboxCar.setTotalDuration(pointDelay.toInt())
+                    pboxCar.startSmoothMove()
 
                     // Move forward pbox track
                     pboxPolyline.options = pboxPolyline.options.add(pboxPoint)
@@ -321,12 +335,17 @@ class AMapHelper(
     }
 
     fun clearReplayedTracks() {
-        replayTrackScope.coroutineContext.cancelChildren()
+        mainScope.coroutineContext.cancelChildren()
         aMap.clear()
+        realTrackPolyline = null
+        pboxTrackPolyline = null
+        replayRealLine = null
+        replayPboxLine = null
+        replayCar = null
     }
 
     fun clearAllTracks() {
-        replayTrackScope.coroutineContext.cancelChildren()
+        mainScope.coroutineContext.cancelChildren()
         aMap.clear()
         realTrackPolyline = null
         pboxTrackPolyline = null
@@ -335,6 +354,7 @@ class AMapHelper(
         replayCar = null
         replayRealIndex = 0
         replayPboxIndex = 0
+        replayPaused = false
     }
 
     /**
@@ -366,7 +386,7 @@ class AMapHelper(
         val polyline = aMap.addPolyline(polyOptions)
 
         val pointDelay: Long = 1
-        replayTrackScope.launch {
+        mainScope.launch {
             mapPoints.forEachIndexed { index, point ->
                 if (index == 0) {
                     aMap.animateCamera(CameraUpdateFactory.newLatLng(point))

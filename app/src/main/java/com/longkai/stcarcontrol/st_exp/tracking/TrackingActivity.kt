@@ -169,9 +169,7 @@ class TrackingActivity : BaseActivity() {
                 aMapHelper.showTracks(viewModel.uiState.value.hideRealTrackUI.not())
             }
             replayClearBtn.setOnClickListener {
-                aMapHelper.pauseReplay()
-                aMapHelper.clearAllTracks()
-                aMapHelper.continueReplay()
+                aMapHelper.clearReplay()
             }
         }
 
