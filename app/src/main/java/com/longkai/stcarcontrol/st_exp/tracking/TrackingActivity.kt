@@ -15,11 +15,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.amap.api.location.AMapLocationClient
 import com.google.android.material.snackbar.Snackbar
 import com.longkai.stcarcontrol.st_exp.Utils.hideSoftKeyboard
+import com.longkai.stcarcontrol.st_exp.activity.BaseActivity
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentTrackingBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class TrackingActivity : ComponentActivity() {
+class TrackingActivity : BaseActivity() {
 
     private val viewModel: TrackingViewModel by viewModels()
 
