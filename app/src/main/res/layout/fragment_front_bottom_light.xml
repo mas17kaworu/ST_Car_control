@@ -120,6 +120,20 @@
             android:text="@string/c11_mode_7"
             android:textColor="@drawable/selector_text_color_highbeam"
             android:textSize="28sp" />
+
+
+        <RadioButton
+            android:id="@+id/rdoBtn_invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/c11_mode_7"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="28sp"
+            android:visibility="invisible"/>
     </RadioGroup>
 
     <ImageView

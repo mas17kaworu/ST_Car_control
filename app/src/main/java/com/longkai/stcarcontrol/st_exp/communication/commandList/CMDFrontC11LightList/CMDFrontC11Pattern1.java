@@ -7,12 +7,13 @@ public class CMDFrontC11Pattern1 extends CMDFrontC11Light {
    }
    @Override
 	public void turnOn(){
-          payload[0] |= CMDFrontC11Light.Pattern1;
-          refreshDataPayload();
+       payload[0] = 0;
+       payload[0] |= CMDFrontC11Light.Pattern1;
+       refreshDataPayload();
    }
    @Override
 	public void turnOff(){
-          payload[0] &= ~(CMDFrontC11Light.Pattern1);
-          refreshDataPayload();
+       payload[0] = 0;
+       refreshDataPayload();
    }
 }

@@ -40,7 +40,7 @@ import pl.droidsonroids.gif.GifImageView;
 public class FrontBottomLight extends Fragment implements View.OnClickListener{
     private View mView;
 
-    RadioButton rdoUrban, rdoHighway, rdoCountry, rdoCurve, rdoParking, rdoEnergySaving, rdoC11Pattern7;
+    RadioButton rdoUrban, rdoHighway, rdoCountry, rdoCurve, rdoParking, rdoEnergySaving, rdoC11Pattern7, rdoBtnInvisible;
     private GifImageView gif_view_high_beam;
     @Nullable
     @Override
@@ -62,6 +62,7 @@ public class FrontBottomLight extends Fragment implements View.OnClickListener{
         rdoEnergySaving.setOnClickListener(this);
         rdoC11Pattern7 = (RadioButton) mView.findViewById(R.id.rdoBtn_c11_pattern_7);
         rdoC11Pattern7.setOnClickListener(this);
+        rdoBtnInvisible = (RadioButton) mView.findViewById(R.id.rdoBtn_invisible);
         mView.findViewById(R.id.iv_high_beam_back).setOnClickListener(this);
 
 
@@ -101,8 +102,9 @@ public class FrontBottomLight extends Fragment implements View.OnClickListener{
     }
 
     private void clickTask(RadioButton rb, int num, int gifResId, BaseCommand command){
+//        return;
         if (highBeamStatus == num) {
-            rb.setChecked(false);
+            rdoBtnInvisible.setChecked(true);
             highBeamStatus = 0;
             releaseGifView();
             //send command
@@ -121,7 +123,7 @@ public class FrontBottomLight extends Fragment implements View.OnClickListener{
                 }
             });
         } else {
-            rb.setChecked(true);
+//            rb.setChecked(true);
             highBeamStatus = num;
             loadGif(gifResId);
 
