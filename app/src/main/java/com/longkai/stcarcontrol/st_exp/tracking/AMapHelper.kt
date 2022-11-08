@@ -155,28 +155,30 @@ class AMapHelper(
         }
     }
 
+    val colorDots = listOf(R.color.colorRed, R.color.colorBlue, R.color.colorGreen, R.color.colorYellow, R.color.colorCyan, R.color.transparent)
+        .map { colorRes ->
+            BitmapDescriptorFactory.fromBitmap(context.getBitmapFromVectorDrawable(R.drawable.ic_tracking_point, colorRes))
+        }
+
     private fun addMarker(
         pointIndex: Int,
         trackingData: TrackingData,
         @DrawableRes drawableResId: Int = R.drawable.ic_tracking_point,
         @ColorRes colorResId: Int = R.color.colorWhite
     ) {
-        val (backgroundColor, text) = when (trackingData.gpsStatus) {
-            1 -> Pair(R.color.colorRed, "S")
-            2 -> Pair(R.color.colorBlue, "D")
-            4 -> Pair(R.color.colorGreen, "F")
-            5 -> Pair(R.color.colorYellow, "FL")
-            6 -> Pair(R.color.colorCyan, "I")
-            else -> Pair(R.color.transparent, "")
+        val (colorDot, text) = when (trackingData.gpsStatus) {
+            1 -> Pair(colorDots[0], "S")
+            2 -> Pair(colorDots[1], "D")
+            4 -> Pair(colorDots[2], "F")
+            5 -> Pair(colorDots[3], "FL")
+            6 -> Pair(colorDots[4], "I")
+            else -> Pair(colorDots[5], "")
         }
+
         aMap.addMarker(
             MarkerOptions()
                 .position(trackingData.toLatLng())
-                .icon(
-                    BitmapDescriptorFactory.fromBitmap(
-                        context.getBitmapFromVectorDrawable(drawableResId, backgroundColor)
-                    )
-                )
+                .icon(colorDot)
                 .title("POINT $pointIndex")
                 .snippet("TIME: ${trackingData.formatTime()}\nSPEED: ${trackingData.formatSpeed()}\nLLA: ${trackingData.formatLocation()}\nERROR: ${trackingData.calcDistanceError()?.formatDistanceInCentimeters()}")
         )

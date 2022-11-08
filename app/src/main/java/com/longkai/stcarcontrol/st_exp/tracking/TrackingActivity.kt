@@ -127,9 +127,9 @@ class TrackingActivity : BaseActivity() {
             }
             trackSettingsView.setListener(object : TrackSettingsView.Listener {
                 override fun onSaveSettings(hideRealTrack: Boolean, labelInterval: Int, replaySpeed: Int) {
-                    viewModel.saveSettings(hideRealTrack, labelInterval, replaySpeed)
                     hideTrackSettingsView()
                     trackSettingsView.hideSoftKeyboard()
+                    viewModel.saveSettings(hideRealTrack, labelInterval, replaySpeed)
                 }
             })
 
