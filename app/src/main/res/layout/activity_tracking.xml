@@ -203,7 +203,7 @@
             app:layout_constraintTop_toBottomOf="@+id/historyRecordsTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.longkai.stcarcontrol.st_exp.tracking.TrackPointInfoView
+    <com.longkai.stcarcontrol.st_exp.pbox.TrackPointInfoView
         android:id="@+id/trackPointInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -214,7 +214,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <com.longkai.stcarcontrol.st_exp.tracking.TrackSettingsView
+    <com.longkai.stcarcontrol.st_exp.pbox.TrackSettingsView
         android:id="@+id/trackSettingsView"
         android:layout_width="400dp"
         android:layout_height="wrap_content"

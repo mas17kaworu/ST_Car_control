@@ -22,7 +22,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.compose.DdsActivity;
-import com.longkai.stcarcontrol.st_exp.tracking.TrackingActivity;
+import com.longkai.stcarcontrol.st_exp.pbox.TrackingActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;

@@ -111,7 +111,6 @@ public class ConstantData {
       public static final int FRAGMENT_TRANSACTION_AVAS = 8;
       public static final int FRAGMENT_TRANSACTION_SOUND = 9;
       public static final int FRAGMENT_TRANSACTION_KEY_PAIR = 10;
-      public static final int FRAGMENT_TRANSACTION_TRACKING = 11;
 
       public static final int FRAGMENT_TRANSACTION_CAR_BACK_OLED = 105;
       public static final int FRAGMENT_TRANSACTION_CAR_BACK_OLED2 = 106;

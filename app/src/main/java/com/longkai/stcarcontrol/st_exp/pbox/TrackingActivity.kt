@@ -1,4 +1,4 @@
-package com.longkai.stcarcontrol.st_exp.tracking
+package com.longkai.stcarcontrol.st_exp.pbox
 
 import android.content.res.ColorStateList
 import android.graphics.Rect
@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -16,7 +15,7 @@ import com.amap.api.location.AMapLocationClient
 import com.google.android.material.snackbar.Snackbar
 import com.longkai.stcarcontrol.st_exp.Utils.hideSoftKeyboard
 import com.longkai.stcarcontrol.st_exp.activity.BaseActivity
-import com.longkai.stcarcontrol.st_exp.databinding.FragmentTrackingBinding
+import com.longkai.stcarcontrol.st_exp.databinding.ActivityTrackingBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -24,7 +23,7 @@ class TrackingActivity : BaseActivity() {
 
     private val viewModel: TrackingViewModel by viewModels()
 
-    private lateinit var binding: FragmentTrackingBinding
+    private lateinit var binding: ActivityTrackingBinding
     private val mapView get() = binding.mapView
     private lateinit var aMapHelper: AMapHelper
 
@@ -32,7 +31,7 @@ class TrackingActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         Tracking.init(this)
 
-        binding = FragmentTrackingBinding.inflate(layoutInflater)
+        binding = ActivityTrackingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         AMapLocationClient.updatePrivacyShow(this, true, true);
