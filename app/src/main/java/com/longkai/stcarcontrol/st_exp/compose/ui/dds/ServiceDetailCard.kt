@@ -213,18 +213,10 @@ fun ServiceDetailCard(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Column(
-                modifier = Modifier.width(IntrinsicSize.Min)
+            Button(
+                onClick = { actionItems = actionItems + actionItemOptions[0] }
             ) {
-                Text(
-                    text = "Add another action ...",
-                    modifier = Modifier
-                        .width(IntrinsicSize.Max)
-                        .clickable {
-                            actionItems = actionItems + actionItemOptions[0]
-                        }
-                        .fillMaxWidth()
-                )
+                Text(text = "Add another action ...")
             }
 
             Spacer(modifier = Modifier.height(24.dp))

@@ -12,12 +12,22 @@ data class ExpressService(
     val imageUri: String? = null
 )
 
+@Serializable(with = TriggerConditionSerializer::class)
 enum class TriggerCondition(val description: String) {
-    DoubleClick("Double click service card"),
+    /**
+     * Replaced by ManuallySend
+     */
+    DoubleClick("Double click to execute service"),
+    ManuallySend("Manually send service"),
+    DigitalKeyLock("Digital key lock door"),
     DigitalKeyUnlock("Digital key unlock door");
 
     override fun toString(): String {
         return description
+    }
+
+    companion object {
+        fun availableOptions() = values().filter { it != DoubleClick }.toList()
     }
 }
 

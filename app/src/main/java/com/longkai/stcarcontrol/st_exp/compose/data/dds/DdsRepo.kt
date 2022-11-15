@@ -10,6 +10,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.*
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction.AvasAction
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction.OledAction
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.service.DdsService
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.service.DdsService.DigitalKeyState
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.service.TopicData
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.test.ScreenLog
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,7 @@ interface DdsRepo {
     fun expressServices(): Flow<List<ExpressService>>
     val avasActions: StateFlow<Result<List<AvasAction>>>
     val oledActions: StateFlow<Result<List<OledAction>>>
-    val digitalKeyUnlocked: StateFlow<Boolean>
+    val digitalKeyState: StateFlow<DigitalKeyState>
     suspend fun createExpressService(serviceParam: ExpressServiceParam): ExpressService
     suspend fun updateExpressService(service: ExpressService)
     suspend fun deleteExpressService(service: ExpressService)
@@ -46,8 +47,8 @@ class DdsRepoImpl(
     private val _oledActions = MutableStateFlow<Result<List<OledAction>>>(Result.Loading)
     override val oledActions: StateFlow<Result<List<OledAction>>> = _oledActions
 
-    private val _digitalKeyUnlocked = MutableStateFlow<Boolean>(false)
-    override val digitalKeyUnlocked: StateFlow<Boolean> = _digitalKeyUnlocked
+    private val _digitalKeyState = MutableStateFlow(DigitalKeyState.Reset)
+    override val digitalKeyState: StateFlow<DigitalKeyState> = _digitalKeyState
 
     init {
         ddsService.start()
@@ -62,9 +63,9 @@ class DdsRepoImpl(
                 _oledActions.update { Result.Success(topicData.toOledActions()) }
             }
 
-            override fun onDigitalKeyStateChanged(unlocked: Boolean) {
-                ScreenLog.log( "onDigitalKeyStateChanged")
-                _digitalKeyUnlocked.update { unlocked }
+            override fun onDigitalKeyStateChanged(keyState: DigitalKeyState) {
+                ScreenLog.log( "onDigitalKeyStateChanged: $keyState")
+                _digitalKeyState.update { keyState }
             }
 
         })
@@ -84,28 +85,6 @@ class DdsRepoImpl(
                 Json.decodeFromString<List<ExpressService>>(it)
             } ?: emptyList()
         }
-
-//    override suspend fun avasActions(): Result<List<AvasAction>> {
-//        return withContext(Dispatchers.IO) {
-//            delay(800)
-//            if (shouldRandomlyFail()) {
-//                Result.Error(IllegalStateException())
-//            } else {
-//                Result.Success(fakeAvasActions)
-//            }
-//        }
-//    }
-//
-//    override suspend fun oledActions(): Result<List<OledAction>> {
-//        return withContext(Dispatchers.IO) {
-//            delay(800)
-//            if (shouldRandomlyFail()) {
-//                Result.Error(IllegalStateException())
-//            } else {
-//                Result.Success(fakeOledActions)
-//            }
-//        }
-//    }
 
     override suspend fun createExpressService(serviceParam: ExpressServiceParam): ExpressService {
         return withContext(Dispatchers.IO) {
