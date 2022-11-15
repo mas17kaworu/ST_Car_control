@@ -56,14 +56,14 @@ class DigitalKeyUnlockService: Service() {
                 lockServiceFlow
             ) { keyState, unlockService, lockService ->
                 when (keyState) {
-                    DdsService.DigitalKeyState.LockDoor -> {
+                    DdsService.DigitalKeyState.UnlockDoor -> {
                         Log.i(TAG_DDS, "unlock service: $unlockService")
                         unlockService?.let {
                             Log.i(TAG_DDS, "execute unlock service")
                             ddsRepo.executeExpressService(unlockService)
                         }
                     }
-                    DdsService.DigitalKeyState.UnlockDoor -> {
+                    DdsService.DigitalKeyState.LockDoor -> {
                         Log.i(TAG_DDS, "lock service: $lockService")
                         lockService?.let {
                             Log.i(TAG_DDS, "execute lock service")
