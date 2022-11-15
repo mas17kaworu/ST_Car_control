@@ -10,7 +10,7 @@ data class RmcData(
     val latitude: Double,
     val longitude: Double,
     val velocity: Double? = null,
-    val course: Double? = null,
+    val direction: Double? = null,
     val utcDate: LocalDate? = null
 )
 
@@ -30,7 +30,7 @@ class TrackingData(
     val latitude: Double,
     val longitude: Double,
     val velocity: Double? = null,
-    val course: Double? = null,
+    val direction: Double? = null,
     val utcDate: LocalDate? = null,
     val gpsStatus: Int? = null,
     val satelliteNumber: Int? = null,

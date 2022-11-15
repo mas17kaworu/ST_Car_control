@@ -115,7 +115,7 @@ object Tracking {
             latitude = rmcData.latitude,
             longitude = rmcData.longitude,
             velocity = rmcData.velocity,
-            course = rmcData.course,
+            direction = rmcData.direction,
             utcDate = rmcData.utcDate,
             gpsStatus = ggaData?.gpsStatus,
             satelliteNumber = ggaData?.satelliteNumber,
@@ -141,14 +141,14 @@ object Tracking {
                     longitude *= -1
                 }
                 val velocity = parseDouble(fields[7])
-                val course = parseDouble(fields[8])
+                val direction = parseDouble(fields[8])
                 val utcDate = parseUtcDate(fields[9])
                 RmcData(
                     utcTime = utcTime,
                     latitude = latitude,
                     longitude = longitude,
                     velocity = velocity,
-                    course = course,
+                    direction = direction,
                     utcDate = utcDate
                 )
             } else null

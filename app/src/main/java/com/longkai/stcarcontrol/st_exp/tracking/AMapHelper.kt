@@ -293,9 +293,12 @@ class AMapHelper(
                     // Move car forward
                     val previousPoint = if (pboxCar.position == null) null else pboxMapPoints[pboxIndex - 1]
                     pboxCar.setPoints(mutableListOf(previousPoint, pboxPoint))
-                    previousPoint?.let {
-                        val angle = calculateAngle(previousPoint, pboxPoint).toFloat()
-                        pboxCar.setRotate(360 - angle)
+//                    previousPoint?.let {
+//                        val angle = calculateAngle(previousPoint, pboxPoint).toFloat()
+//                        pboxCar.setRotate(360 - angle)
+//                    }
+                    pboxTrackPoint.direction?.let {
+                        pboxCar.setRotate(it.toFloat() - 90)
                     }
                     pboxCar.setTotalDuration(pointDelay.toInt())
                     pboxCar.startSmoothMove()
