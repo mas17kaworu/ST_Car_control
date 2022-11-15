@@ -34,6 +34,7 @@ class TrackPointInfoView(
             gpsStatus.text = "${data.gpsStatus}"
             course.text = "${data.course}"
             speed.text = "${data.velocity}"
+            error.text = data.formatError()
         }
     }
 

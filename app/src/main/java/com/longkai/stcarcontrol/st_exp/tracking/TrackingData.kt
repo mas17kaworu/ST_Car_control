@@ -38,6 +38,8 @@ class TrackingData(
     val altitude: Double? = null,
     val geoidHeight: Double? = null
 ) {
+    var error: Float? = null
+
     fun formatTime() = utcTime.toString()
 
     fun formatDateTime(): String {
@@ -53,6 +55,10 @@ class TrackingData(
         val lngStr = String.format("%.6f E", longitude)
         val altStr = String.format("%.6f m", altitude)
         return "$latStr, $lngStr, $altStr"
+    }
+
+    fun formatError(): String {
+        return error?.let { (it * 100).toInt() }?.let { "${it}cm" } ?: ""
     }
 
     fun isSameTime(other: TrackingData): Boolean {

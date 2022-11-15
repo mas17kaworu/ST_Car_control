@@ -53,6 +53,7 @@ class AMapHelper(
 
     fun setHistoryRecordData(historyRecordData: HistoryRecordData) {
         this.historyRecordData = historyRecordData
+        historyRecordData.calculateErrors()
         clearAllTracks()
     }
 
@@ -180,7 +181,7 @@ class AMapHelper(
                 .position(trackingData.toLatLng())
                 .icon(colorDot)
                 .title("POINT $pointIndex")
-                .snippet("TIME: ${trackingData.formatTime()}\nSPEED: ${trackingData.formatSpeed()}\nLLA: ${trackingData.formatLocation()}\nERROR: ${trackingData.calcDistanceError()?.formatDistanceInCentimeters()}")
+                .snippet("TIME: ${trackingData.formatTime()}\nSPEED: ${trackingData.formatSpeed()}\nLLA: ${trackingData.formatLocation()}\nERROR: ${trackingData.formatError()}")
         )
     }
 
@@ -466,18 +467,6 @@ class AMapHelper(
         return LatLngBounds(LatLng(latLow, longLow), LatLng(latHigh, longHigh))
     }
 
-    private fun TrackingData.calcDistanceError(): Float? {
-        return ensureRecordLoaded<Float> {
-            val refPoints = it.realPoints
-            val matchPoint = refPoints.firstOrNull {
-                this.isSameTime(it)
-            }
-            matchPoint?.let {
-                AMapUtils.calculateLineDistance(this.toLatLng(), it.toLatLng())
-            }
-        }
-    }
-
     private fun ensureRecordLoaded(action: (HistoryRecordData) -> Unit) {
         historyRecordData?.let {
             action.invoke(it)
@@ -490,14 +479,21 @@ class AMapHelper(
         }
     }
 
-    private fun Float.formatDistanceInCentimeters(): String {
-        val cm = (this * 100).toInt()
-        return "${cm}cm"
-    }
-
     private fun TrackingData.toLatLng(): LatLng {
         coordinateConverter.coord(LatLng(latitude, longitude))
         return coordinateConverter.convert()
+    }
+
+    private fun HistoryRecordData.calculateErrors() {
+        pboxPoints.forEach { pboxPoint ->
+            val matchPoint = realPoints.firstOrNull {
+                pboxPoint.isSameTime(it)
+            }
+            val error = matchPoint?.let {
+                AMapUtils.calculateLineDistance(pboxPoint.toLatLng(), it.toLatLng())
+            }
+            pboxPoint.error = error
+        }
     }
 
     companion object {
