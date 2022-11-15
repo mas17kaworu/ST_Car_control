@@ -20,9 +20,12 @@ class TrackSettingsView(
 
         binding.saveBtn.setOnClickListener {
             listener?.onSaveSettings(
-                hideRealTrack = binding.hideRealTrackSwitch.isChecked,
-                labelInterval = binding.labelIntervalEditText.text.toString().toIntOrNull() ?: 0,
-                replaySpeed = binding.replaySpeedEditText.text.toString().toIntOrNull() ?: 0
+                TrackSettings(
+                    hideRealTrackUI = binding.hideRealTrackSwitch.isChecked,
+                    labelInterval = binding.labelIntervalEditText.text.toString().toIntOrNull() ?: 0,
+                    replaySpeed = binding.replaySpeedEditText.text.toString().toIntOrNull() ?: 0,
+                    replayCameraFollowCar = binding.replayCameraFollowCarSwitch.isChecked
+                )
             )
         }
     }
@@ -31,15 +34,16 @@ class TrackSettingsView(
         this.listener = listener
     }
 
-    fun setData(hideRealTrack: Boolean, labelInterval: Int, replaySpeed: Int) {
+    fun setData(trackSettings: TrackSettings) {
         binding.apply {
-            hideRealTrackSwitch.isChecked = hideRealTrack
-            labelIntervalEditText.setText(labelInterval.toString())
-            replaySpeedEditText.setText(replaySpeed.toString())
+            hideRealTrackSwitch.isChecked = trackSettings.hideRealTrackUI
+            labelIntervalEditText.setText(trackSettings.labelInterval.toString())
+            replaySpeedEditText.setText(trackSettings.replaySpeed.toString())
+            replayCameraFollowCarSwitch.isChecked = trackSettings.replayCameraFollowCar
         }
     }
 
     interface Listener {
-        fun onSaveSettings(hideRealTrack: Boolean, labelInterval: Int, replaySpeed: Int)
+        fun onSaveSettings(trackSettings: TrackSettings)
     }
 }

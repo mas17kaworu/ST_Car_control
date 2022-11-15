@@ -10,15 +10,16 @@
     <Switch
         android:id="@+id/hideRealTrackSwitch"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="Hide Real Track"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/labelIntervalLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@id/hideRealTrackSwitch">
 
         <TextView
@@ -40,8 +41,9 @@
     <LinearLayout
         android:id="@+id/replaySpeedLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@id/labelIntervalLayout">
 
         <TextView
@@ -60,12 +62,19 @@
             android:maxLength="3" />
     </LinearLayout>
 
+    <Switch
+        android:id="@+id/replayCameraFollowCarSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Camera follow car when replay"
+        app:layout_constraintTop_toBottomOf="@id/replaySpeedLayout"/>
+
     <Button
         android:id="@+id/saveBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Save"
-        app:layout_constraintTop_toBottomOf="@id/replaySpeedLayout" />
+        app:layout_constraintTop_toBottomOf="@id/replayCameraFollowCarSwitch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

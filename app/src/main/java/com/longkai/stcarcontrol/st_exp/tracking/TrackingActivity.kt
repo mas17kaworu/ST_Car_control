@@ -126,10 +126,10 @@ class TrackingActivity : BaseActivity() {
                 trackSettingsView.apply { isVisible = isVisible.not() }
             }
             trackSettingsView.setListener(object : TrackSettingsView.Listener {
-                override fun onSaveSettings(hideRealTrack: Boolean, labelInterval: Int, replaySpeed: Int) {
+                override fun onSaveSettings(trackSettings: TrackSettings) {
                     hideTrackSettingsView()
                     trackSettingsView.hideSoftKeyboard()
-                    viewModel.saveSettings(hideRealTrack, labelInterval, replaySpeed)
+                    viewModel.saveSettings(trackSettings)
                 }
             })
 
@@ -166,7 +166,7 @@ class TrackingActivity : BaseActivity() {
             replayExitBtn.setOnClickListener {
                 aMapHelper.exitReplay()
                 binding.replayControlBtns.isVisible = false
-                aMapHelper.showTracks(viewModel.uiState.value.hideRealTrackUI.not())
+                aMapHelper.showTracks()
             }
             replayClearBtn.setOnClickListener {
                 aMapHelper.clearReplay()
@@ -193,16 +193,16 @@ class TrackingActivity : BaseActivity() {
                             updateRecordBtnUI(uiState.isRecording)
                             trackPointInfo.isVisible = uiState.inReviewMode
 
-                            signalReal.isVisible = uiState.hideRealTrackUI.not()
+                            signalReal.isVisible = uiState.trackSettings.hideRealTrackUI.not()
 
-                            trackSettingsView.setData(uiState.hideRealTrackUI, uiState.labelInterval, uiState.replaySpeed)
+                            trackSettingsView.setData(uiState.trackSettings)
                         }
 
                         if (uiState.inReviewMode && uiState.needRefreshTrack && uiState.historyRecordData != null) {
                             viewModel.clearRefreshFlag()
                             aMapHelper.setHistoryRecordData(uiState.historyRecordData)
-                            aMapHelper.setConfig(uiState.labelInterval, uiState.replaySpeed)
-                            aMapHelper.showTracks(uiState.hideRealTrackUI.not())
+                            aMapHelper.setConfig(uiState.trackSettings)
+                            aMapHelper.showTracks()
                         }
                     }
                 }

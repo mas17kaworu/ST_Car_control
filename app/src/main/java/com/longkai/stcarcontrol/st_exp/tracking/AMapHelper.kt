@@ -33,8 +33,7 @@ class AMapHelper(
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
     private var historyRecordData: HistoryRecordData? = null
-    private var labelInterval: Int = DEFAULT_LABEL_INTERVAL
-    private var replaySpeed: Int = DEFAULT_REPLAY_SPEED
+    private var trackSettings: TrackSettings = TrackSettings()
     private var realTrackPolyline: Polyline? = null
     private var pboxTrackPolyline: Polyline? = null
     //For replay
@@ -57,12 +56,11 @@ class AMapHelper(
         clearAllTracks()
     }
 
-    fun setConfig(labelInterval: Int, replaySpeed: Int) {
-        if (this.labelInterval != labelInterval) {
-            this.labelInterval = labelInterval
+    fun setConfig(trackSettings: TrackSettings) {
+        if (this.trackSettings.labelInterval != trackSettings.labelInterval) {
             clearAllTracks()
         }
-        this.replaySpeed = replaySpeed
+        this.trackSettings = trackSettings
     }
 
     fun setupInfoWindow() {
@@ -95,18 +93,18 @@ class AMapHelper(
         }
     }
 
-    fun showTracks(showRealTrack: Boolean) {
+    fun showTracks() {
         clearAllTracks()
         ensureRecordLoaded() {
-            if (showRealTrack) {
+            if (!trackSettings.hideRealTrackUI) {
                 realTrackPolyline = showTrack(it.realPoints, REAL_TRACK_COLOR)
             }
             pboxTrackPolyline = showTrack(it.pboxPoints, PBOX_TRACK_COLOR, updateBounds = true)
 
             addPoints(it.pboxPoints)
 
-            if (labelInterval > 0) {
-                addLabelMarkers(it.pboxPoints, labelInterval)
+            if (trackSettings.labelInterval > 0) {
+                addLabelMarkers(it.pboxPoints, trackSettings.labelInterval)
                 updateTrackPointInfo(it.pboxPoints[0])
             }
         }
@@ -266,7 +264,7 @@ class AMapHelper(
 
             mainScope.launch {
                 isReplaying = true
-                val pointDelay: Long = ONE_SECOND / replaySpeed
+                val pointDelay: Long = ONE_SECOND / trackSettings.replaySpeed
 
                 // Add real track points which are before pbox start
                 while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyThan(pboxTrackPoints[0])) {
@@ -290,6 +288,14 @@ class AMapHelper(
                     val pboxTrackPoint = pboxTrackPoints[pboxIndex]
                     updateTrackPointInfo(pboxTrackPoints[pboxIndex])
 
+                    // Move camera
+                    if (trackSettings.replayCameraFollowCar) {
+                        if (pboxIndex == 0) {
+                            aMap.animateCamera(CameraUpdateFactory.newLatLng(pboxPoint))
+                        } else {
+                            aMap.moveCamera(CameraUpdateFactory.newLatLng(pboxPoint))
+                        }
+                    }
                     // Move car forward
                     val previousPoint = if (pboxCar.position == null) null else pboxMapPoints[pboxIndex - 1]
                     pboxCar.setPoints(mutableListOf(previousPoint, pboxPoint))
@@ -314,10 +320,10 @@ class AMapHelper(
                     addMarker(pboxIndex, pboxTrackPoint, R.drawable.ic_tracking_point, R.color.colorWhite)
 
                     // Add label markers on pbox track
-                    if (labelInterval > 0) {
+                    if (trackSettings.labelInterval > 0) {
                         val timeDiff =
                             lastPoint?.let { pboxTrackPoint.timeDiff(it) } ?: Int.MAX_VALUE
-                        if (pboxIndex == 0 || pboxIndex == pboxTrackPoints.size - 1 || timeDiff >= labelInterval) {
+                        if (pboxIndex == 0 || pboxIndex == pboxTrackPoints.size - 1 || timeDiff >= trackSettings.labelInterval) {
                             addLabelMarker(pboxTrackPoint)
                             lastPoint = pboxTrackPoint
                         }

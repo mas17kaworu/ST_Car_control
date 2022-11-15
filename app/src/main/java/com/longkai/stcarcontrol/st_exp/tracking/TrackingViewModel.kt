@@ -18,15 +18,21 @@ data class TrackingViewState(
     val inReviewMode: Boolean = false,
     val isRecording: Boolean = false,
     val historyRecordData: HistoryRecordData? = null,
+    val trackSettings: TrackSettings = TrackSettings(),
+    val needRefreshTrack: Boolean = false,
+)
+
+data class TrackSettings(
     val hideRealTrackUI: Boolean = false,
     val labelInterval: Int = DEFAULT_LABEL_INTERVAL,
     val replaySpeed: Int = DEFAULT_REPLAY_SPEED,
-    val needRefreshTrack: Boolean = false,
+    val replayCameraFollowCar: Boolean = false
 )
 
 val PREF_HIDE_REAL_TRACK_UI = booleanPreferencesKey("hideRealTrackUI")
 val PREF_LABEL_INTERVAL = intPreferencesKey("labelInterval")
 val PREF_REPLAY_SPEED = intPreferencesKey("replaySpeed")
+val PREF_REPLAY_CAMERA_FOLLOW_CAR = booleanPreferencesKey("replayCameraFollowCar")
 const val DEFAULT_LABEL_INTERVAL = 10
 const val DEFAULT_REPLAY_SPEED = 1
 
@@ -52,11 +58,15 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
                 val hideRealTrackUI = prefs[PREF_HIDE_REAL_TRACK_UI] ?: false
                 val labelInterval = prefs[PREF_LABEL_INTERVAL] ?: DEFAULT_LABEL_INTERVAL
                 val replaySpeed = prefs[PREF_REPLAY_SPEED] ?: DEFAULT_REPLAY_SPEED
+                val replayCameraFollowCar = prefs[PREF_REPLAY_CAMERA_FOLLOW_CAR] ?: false
                 _uiState.update {
                     it.copy(
-                        hideRealTrackUI = hideRealTrackUI,
-                        labelInterval = labelInterval,
-                        replaySpeed = replaySpeed,
+                        trackSettings = TrackSettings(
+                            hideRealTrackUI = hideRealTrackUI,
+                            labelInterval = labelInterval,
+                            replaySpeed = replaySpeed,
+                            replayCameraFollowCar = replayCameraFollowCar
+                        ),
                         needRefreshTrack = true
                     )
                 }
@@ -141,13 +151,14 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
         _showPboxTrack.update { !it }
     }
 
-    fun saveSettings(hideRealTrack: Boolean, labelInterval: Int, replaySpeed: Int) {
+    fun saveSettings(trackSettings: TrackSettings) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 getApplication<STCarApplication>().applicationContext.appPrefsDataStore.edit { prefs ->
-                    prefs[PREF_HIDE_REAL_TRACK_UI] = hideRealTrack
-                    prefs[PREF_LABEL_INTERVAL] = labelInterval
-                    prefs[PREF_REPLAY_SPEED] = replaySpeed
+                    prefs[PREF_HIDE_REAL_TRACK_UI] = trackSettings.hideRealTrackUI
+                    prefs[PREF_LABEL_INTERVAL] = trackSettings.labelInterval
+                    prefs[PREF_REPLAY_SPEED] = trackSettings.replaySpeed
+                    prefs[PREF_REPLAY_CAMERA_FOLLOW_CAR] = trackSettings.replayCameraFollowCar
                 }
             }
         }
