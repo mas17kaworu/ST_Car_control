@@ -91,10 +91,10 @@ class TrackingActivity : BaseActivity() {
         mapView.onSaveInstanceState(outState)
     }
 
-    fun hideHistoryRecordsLayout() {
+    private fun hideHistoryRecordsLayout() {
         binding.historyRecordsLayout.isVisible = false
     }
-    fun hideTrackSettingsView() {
+    private fun hideTrackSettingsView() {
         binding.trackSettingsView.isVisible = false
     }
 
@@ -228,10 +228,6 @@ class TrackingActivity : BaseActivity() {
     private fun updateTrackPointInfo(trackingData: TrackingData) {
         binding.trackPointInfo.visibility = View.VISIBLE
         binding.trackPointInfo.setData(trackingData)
-    }
-
-    private fun hideTrackPointInfo() {
-        binding.trackPointInfo.visibility = View.INVISIBLE
     }
 
     private fun showSnackbar(msg: String) {

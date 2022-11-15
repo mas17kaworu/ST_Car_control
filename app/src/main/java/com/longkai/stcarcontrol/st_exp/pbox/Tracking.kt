@@ -239,9 +239,6 @@ object Tracking {
     private const val FILE_REAL = "real.txt"
     private const val FILE_PBOX = "pbox.txt"
 
-    const val TYPE_GNRMC = "\$GNRMC"
-    const val TYPE_GNGGA = "\$GNGGA"
-
     const val UTC_TIME_PATTERN = "HHmmss"
     const val UTC_DATE_PATTERN = "ddMMyy"
 }

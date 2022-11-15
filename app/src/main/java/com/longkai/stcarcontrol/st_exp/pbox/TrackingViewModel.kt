@@ -37,7 +37,7 @@ val PREF_REPLAY_CAMERA_FOLLOW_CAR = booleanPreferencesKey("replayCameraFollowCar
 const val DEFAULT_LABEL_INTERVAL = 10
 const val DEFAULT_REPLAY_SPEED = 1
 
-enum class RECORD_TYPE {
+enum class RecordType {
     PBOX, REAL
 }
 
@@ -142,10 +142,10 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
         recordPath = "${LocalDateTime.now()}"
     }
 
-    fun saveRecord(record: String, recordType: RECORD_TYPE) {
+    fun saveRecord(record: String, recordType: RecordType) {
         when (recordType) {
-            RECORD_TYPE.PBOX -> recordDataPbox.add(record)
-            RECORD_TYPE.REAL -> recordDataReal.add(record)
+            RecordType.PBOX -> recordDataPbox.add(record)
+            RecordType.REAL -> recordDataReal.add(record)
         }
     }
 

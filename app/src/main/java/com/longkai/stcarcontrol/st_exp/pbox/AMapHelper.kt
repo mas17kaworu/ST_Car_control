@@ -22,20 +22,21 @@ import com.longkai.stcarcontrol.st_exp.databinding.ViewMarkerInfoBinding
 import kotlinx.coroutines.*
 import kotlin.math.atan2
 
-
 class AMapHelper(
     val context: Context,
     val aMap: AMap,
     val updateTrackPointInfo: (TrackingData) -> Unit,
     val showMessage: (String) -> Unit
 ) {
-    private val coordinateConverter = CoordinateConverter(context).apply { from(CoordinateConverter.CoordType.GPS) }
+    private val coordinateConverter =
+        CoordinateConverter(context).apply { from(CoordinateConverter.CoordType.GPS) }
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
     private var historyRecordData: HistoryRecordData? = null
     private var trackSettings: TrackSettings = TrackSettings()
     private var realTrackPolyline: Polyline? = null
     private var pboxTrackPolyline: Polyline? = null
+
     //For replay
     private var replayRealLine: Polyline? = null
     private var replayPboxLine: Polyline? = null
@@ -45,7 +46,7 @@ class AMapHelper(
     private var replayPaused = false
     private var isReplaying = false
 
-    fun init(){
+    fun init() {
         aMap.mapType = AMap.MAP_TYPE_SATELLITE
         aMap.animateCamera(CameraUpdateFactory.zoomTo(10f))
     }
@@ -95,7 +96,7 @@ class AMapHelper(
 
     fun showTracks() {
         clearAllTracks()
-        ensureRecordLoaded() {
+        ensureRecordLoaded {
             if (!trackSettings.hideRealTrackUI) {
                 realTrackPolyline = showTrack(it.realPoints, REAL_TRACK_COLOR)
             }
@@ -113,6 +114,7 @@ class AMapHelper(
     fun switchRealTrackVisibility(showRealTrack: Boolean) {
         realTrackPolyline?.let { it.isVisible = showRealTrack }
     }
+
     fun switchPboxTrackVisibility(showPboxTrack: Boolean) {
         pboxTrackPolyline?.let { it.isVisible = showPboxTrack }
     }
@@ -134,7 +136,10 @@ class AMapHelper(
             )
         }
 
-        return aMap.addPolyline(PolylineOptions().addAll(mapPoints).width(LINE_WIDTH).color(context.getColor(trackColor)))
+        return aMap.addPolyline(
+            PolylineOptions().addAll(mapPoints).width(LINE_WIDTH)
+                .color(context.getColor(trackColor))
+        )
     }
 
     private fun addPoints(trackPoints: List<TrackingData>) {
@@ -154,9 +159,21 @@ class AMapHelper(
         }
     }
 
-    val colorDots = listOf(R.color.colorRed, R.color.colorBlue, R.color.colorGreen, R.color.colorYellow, R.color.colorCyan, R.color.transparent)
+    private val colorDots = listOf(
+        R.color.colorRed,
+        R.color.colorBlue,
+        R.color.colorGreen,
+        R.color.colorYellow,
+        R.color.colorCyan,
+        R.color.transparent
+    )
         .map { colorRes ->
-            BitmapDescriptorFactory.fromBitmap(context.getBitmapFromVectorDrawable(R.drawable.ic_tracking_point, colorRes))
+            BitmapDescriptorFactory.fromBitmap(
+                context.getBitmapFromVectorDrawable(
+                    R.drawable.ic_tracking_point,
+                    colorRes
+                )
+            )
         }
 
     private fun addMarker(
@@ -238,16 +255,20 @@ class AMapHelper(
         if (restart) {
             clearAllTracks()
         }
-        ensureRecordLoaded {
+        ensureRecordLoaded { historyRecordData ->
             // Add real track
-            val realTrackPoints = it.realPoints
+            val realTrackPoints = historyRecordData.realPoints
             val realMapPoints = realTrackPoints.map { it.toLatLng() }
-            val realPolyline = replayRealLine ?: aMap.addPolyline(PolylineOptions().width(LINE_WIDTH).color(context.getColor(REAL_TRACK_COLOR)))
+            val realPolyline = replayRealLine ?: aMap.addPolyline(
+                PolylineOptions().width(LINE_WIDTH).color(context.getColor(REAL_TRACK_COLOR))
+            )
 
             // Add pbox track
-            val pboxTrackPoints = it.pboxPoints
+            val pboxTrackPoints = historyRecordData.pboxPoints
             val pboxMapPoints = pboxTrackPoints.map { it.toLatLng() }
-            val pboxPolyline = replayPboxLine ?: aMap.addPolyline(PolylineOptions().width(LINE_WIDTH).color(context.getColor(PBOX_TRACK_COLOR)))
+            val pboxPolyline = replayPboxLine ?: aMap.addPolyline(
+                PolylineOptions().width(LINE_WIDTH).color(context.getColor(PBOX_TRACK_COLOR))
+            )
             val pboxCar = replayCar ?: createMovingMarker(90f)
 
             var realIndex = replayRealIndex
@@ -267,7 +288,10 @@ class AMapHelper(
                 val pointDelay: Long = ONE_SECOND / trackSettings.replaySpeed
 
                 // Add real track points which are before pbox start
-                while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyThan(pboxTrackPoints[0])) {
+                while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyThan(
+                        pboxTrackPoints[0]
+                    )
+                ) {
                     if (replayPaused) {
                         saveStateWhenPaused()
                         break
@@ -297,7 +321,8 @@ class AMapHelper(
                         }
                     }
                     // Move car forward
-                    val previousPoint = if (pboxCar.position == null) null else pboxMapPoints[pboxIndex - 1]
+                    val previousPoint =
+                        if (pboxCar.position == null) null else pboxMapPoints[pboxIndex - 1]
                     pboxCar.setPoints(mutableListOf(previousPoint, pboxPoint))
 //                    previousPoint?.let {
 //                        val angle = calculateAngle(previousPoint, pboxPoint).toFloat()
@@ -312,12 +337,20 @@ class AMapHelper(
                     // Move forward pbox track
                     pboxPolyline.options = pboxPolyline.options.add(pboxPoint)
                     // Move forward real track
-                    while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyOrEqual(pboxTrackPoint)) {
+                    while (realIndex < realTrackPoints.size && realTrackPoints[realIndex].isEarlyOrEqual(
+                            pboxTrackPoint
+                        )
+                    ) {
                         realPolyline.options = realPolyline.options.add(realMapPoints[realIndex])
                         realIndex++
                     }
 
-                    addMarker(pboxIndex, pboxTrackPoint, R.drawable.ic_tracking_point, R.color.colorWhite)
+                    addMarker(
+                        pboxIndex,
+                        pboxTrackPoint,
+                        R.drawable.ic_tracking_point,
+                        R.color.colorWhite
+                    )
 
                     // Add label markers on pbox track
                     if (trackSettings.labelInterval > 0) {
@@ -333,7 +366,7 @@ class AMapHelper(
                     delay(pointDelay)
                 }
                 // Add real track points which are after pbox end
-                while(realIndex < realTrackPoints.size) {
+                while (realIndex < realTrackPoints.size) {
                     if (replayPaused) {
                         saveStateWhenPaused()
                         break
@@ -346,7 +379,7 @@ class AMapHelper(
         }
     }
 
-    fun clearReplayedTracks() {
+    private fun clearReplayedTracks() {
         mainScope.coroutineContext.cancelChildren()
         aMap.clear()
         realTrackPolyline = null
@@ -430,7 +463,12 @@ class AMapHelper(
             MarkerOptions()
                 .icon(
                     BitmapDescriptorFactory.fromBitmap(
-                        context.getBitmapFromVectorDrawable(CAR_ICON, CAR_COLOR, carWidth, carHeight)
+                        context.getBitmapFromVectorDrawable(
+                            CAR_ICON,
+                            CAR_COLOR,
+                            carWidth,
+                            carHeight
+                        )
                             .rotate(rotation)
                     )
                 )
@@ -508,9 +546,9 @@ class AMapHelper(
     companion object {
         private const val LINE_WIDTH = 4f
         private const val ONE_SECOND = 1000L //milliseconds
-        private val REAL_TRACK_COLOR = R.color.colorWhite
-        private val PBOX_TRACK_COLOR = R.color.colorMagenta
-        private val CAR_ICON = R.drawable.ic_car_top_view_white
-        private val CAR_COLOR = R.color.colorWhite
+        private const val REAL_TRACK_COLOR = R.color.colorWhite
+        private const val PBOX_TRACK_COLOR = R.color.colorMagenta
+        private const val CAR_ICON = R.drawable.ic_car_top_view_white
+        private const val CAR_COLOR = R.color.colorWhite
     }
 }
