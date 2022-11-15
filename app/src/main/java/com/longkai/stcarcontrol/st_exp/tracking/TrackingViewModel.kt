@@ -16,6 +16,7 @@ import java.time.LocalDateTime
 
 data class TrackingViewState(
     val inReviewMode: Boolean = false,
+    val inReplayMode: Boolean = false,
     val isRecording: Boolean = false,
     val historyRecordData: HistoryRecordData? = null,
     val trackSettings: TrackSettings = TrackSettings(),
@@ -67,6 +68,7 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
                             replaySpeed = replaySpeed,
                             replayCameraFollowCar = replayCameraFollowCar
                         ),
+                        inReplayMode = false,
                         needRefreshTrack = true
                     )
                 }
@@ -101,13 +103,35 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
 
     fun enterReviewMode() {
         _uiState.update {
-            it.copy(inReviewMode = true)
+            it.copy(
+                inReviewMode = true,
+                inReplayMode = false
+            )
         }
     }
 
     fun exitReviewMode() {
         _uiState.update {
-            it.copy(inReviewMode = false)
+            it.copy(
+                inReviewMode = false,
+                inReplayMode = false
+            )
+        }
+    }
+
+    fun enterReplayMode() {
+        if (_uiState.value.inReviewMode) {
+            _uiState.update {
+                it.copy(inReplayMode = true)
+            }
+        }
+    }
+
+    fun exitReplayMode() {
+        if (_uiState.value.inReviewMode) {
+            _uiState.update {
+                it.copy(inReplayMode = false)
+            }
         }
     }
 

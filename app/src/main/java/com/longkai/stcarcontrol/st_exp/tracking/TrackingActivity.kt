@@ -113,7 +113,6 @@ class TrackingActivity : BaseActivity() {
             historyRecordsBtn.setOnClickListener {
                 viewModel.loadHistoryRecords { historyRecords ->
                     binding.historyRecordsRV.adapter = HistoryRecordsAdapter(historyRecords) {
-                        binding.replayControlBtns.isVisible = false
                         viewModel.enterReviewMode()
                         loadRecord(it)
                         hideHistoryRecordsLayout()
@@ -134,11 +133,10 @@ class TrackingActivity : BaseActivity() {
             })
 
             replayBtn.setOnClickListener {
-                binding.replayControlBtns.isVisible = true
+                viewModel.enterReplayMode()
                 aMapHelper.replayTrack()
             }
             exitReviewBtn.setOnClickListener {
-                binding.replayControlBtns.isVisible = false
                 aMapHelper.clearAllTracks()
                 viewModel.exitReviewMode()
             }
@@ -164,8 +162,8 @@ class TrackingActivity : BaseActivity() {
                 aMapHelper.pauseReplay()
             }
             replayExitBtn.setOnClickListener {
+                viewModel.exitReplayMode()
                 aMapHelper.exitReplay()
-                binding.replayControlBtns.isVisible = false
                 aMapHelper.showTracks()
             }
             replayClearBtn.setOnClickListener {
@@ -188,7 +186,8 @@ class TrackingActivity : BaseActivity() {
                     viewModel.uiState.collectLatest { uiState ->
                         binding.apply {
                             reviewModeBtns.isVisible = uiState.inReviewMode
-                            if (uiState.inReviewMode.not()) replayControlBtns.visibility = View.GONE
+                            replayControlBtns.isVisible = uiState.inReviewMode && uiState.inReplayMode
+
                             recordBtn.isVisible = uiState.inReviewMode.not()
                             updateRecordBtnUI(uiState.isRecording)
                             trackPointInfo.isVisible = uiState.inReviewMode
