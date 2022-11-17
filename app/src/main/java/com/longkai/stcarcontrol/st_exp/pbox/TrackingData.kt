@@ -9,7 +9,7 @@ data class RmcData(
     val utcTime: LocalTime,
     val latitude: Double,
     val longitude: Double,
-    val velocity: Double? = null,
+    val speed: Double? = null,
     val direction: Double? = null,
     val utcDate: LocalDate? = null
 )
@@ -29,7 +29,7 @@ class TrackingData(
     val utcTime: LocalTime,
     val latitude: Double,
     val longitude: Double,
-    val velocity: Double? = null,
+    val speed: Double? = null,
     val direction: Double? = null,
     val utcDate: LocalDate? = null,
     val gpsStatus: Int? = null,
@@ -47,18 +47,18 @@ class TrackingData(
     }
 
     fun formatSpeed(): String {
-        return String.format("%d m/s", velocity?.roundToInt())
+        return speed?.let { String.format("%.2f m/s", it) } ?: ""
     }
 
     fun formatLocation(): String {
-        val latStr = String.format("%.6f N", latitude)
-        val lngStr = String.format("%.6f E", longitude)
-        val altStr = String.format("%.6f m", altitude)
+        val latStr = String.format("%.7f N", latitude)
+        val lngStr = String.format("%.7f E", longitude)
+        val altStr = String.format("%.3f m", altitude)
         return "$latStr, $lngStr, $altStr"
     }
 
     fun formatError(): String {
-        return error?.let { (it * 100).toInt() }?.let { "${it}cm" } ?: ""
+        return error?.let { String.format("%.2fcm", it * 100) } ?: ""
     }
 
     fun isSameTime(other: TrackingData): Boolean {

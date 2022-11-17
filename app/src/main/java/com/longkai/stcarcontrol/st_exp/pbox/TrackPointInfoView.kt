@@ -33,7 +33,7 @@ class TrackPointInfoView(
             dop.text = "0, ${data.hdop}, 0"
             gpsStatus.text = "${data.gpsStatus}"
             course.text = "${data.direction}"
-            speed.text = "${data.velocity}"
+            speed.text = "${data.formatSpeed()}"
             error.text = data.formatError()
         }
     }

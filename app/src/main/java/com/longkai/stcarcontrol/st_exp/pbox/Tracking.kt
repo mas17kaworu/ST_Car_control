@@ -114,7 +114,7 @@ object Tracking {
             utcTime = rmcData.utcTime,
             latitude = rmcData.latitude,
             longitude = rmcData.longitude,
-            velocity = rmcData.velocity,
+            speed = rmcData.speed,
             direction = rmcData.direction,
             utcDate = rmcData.utcDate,
             gpsStatus = ggaData?.gpsStatus,
@@ -140,14 +140,14 @@ object Tracking {
                 if (longitudeHemisphere == LongitudeHemisphere.West) {
                     longitude *= -1
                 }
-                val velocity = parseDouble(fields[7])
+                val speed = parseSpeed(fields[7])
                 val direction = parseDouble(fields[8])
                 val utcDate = parseUtcDate(fields[9])
                 RmcData(
                     utcTime = utcTime,
                     latitude = latitude,
                     longitude = longitude,
-                    velocity = velocity,
+                    speed = speed,
                     direction = direction,
                     utcDate = utcDate
                 )
@@ -222,6 +222,11 @@ object Tracking {
         val dd = input.substring(0, 3)
         val mms = input.substring(3)
         return dd.toInt() + mms.toDouble()/60.0
+    }
+
+    private fun parseSpeed(input: String): Double? {
+        val rawSpeed = parseDouble(input)
+        return rawSpeed?.let { it * 1.852 / 3.6  }
     }
 
     private fun parseDouble(input: String): Double? {
