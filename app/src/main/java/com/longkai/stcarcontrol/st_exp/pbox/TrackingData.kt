@@ -61,6 +61,10 @@ class TrackingData(
         return error?.let { String.format("%.2fcm", it * 100) } ?: ""
     }
 
+    fun formatErrorWithoutUnit(): String {
+        return error?.let { String.format("%.2f", it * 100) } ?: ""
+    }
+
     fun isSameTime(other: TrackingData): Boolean {
         return utcTime == other.utcTime
     }

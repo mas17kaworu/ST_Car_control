@@ -218,7 +218,7 @@ class AMapHelper(
             aMap.addText(
                 TextOptions()
                     .position(trackingData.toLatLng())
-                    .text(text)
+                    .text("${text}${trackingData.formatErrorWithoutUnit()}")
                     .fontColor(context.getColor(fontColor))
             )
         }
