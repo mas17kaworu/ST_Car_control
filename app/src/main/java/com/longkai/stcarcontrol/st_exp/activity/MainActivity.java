@@ -237,6 +237,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         R.drawable.main_activity_bottom_avas,
         R.drawable.main_activity_bottom_sound,
         R.drawable.main_activity_bottom_key_pair,
+        R.drawable.ic_tracking
     };
 
     hListViewAdapter = new HorizontalListViewAdapter(getApplicationContext(), ids);

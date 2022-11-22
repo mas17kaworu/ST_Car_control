@@ -26,39 +26,32 @@
         app:layout_constraintLeft_toRightOf="@+id/iv_chooseactivity_lost_bluetooth"
         app:layout_constraintTop_toTopOf="@+id/iv_chooseactivity_lost_bluetooth" />
 
+    <androidx.constraintlayout.helper.widget.Flow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:constraint_referenced_ids="btn_choose_function, btn_choose_VCU, btn_choose_entertainment, btn_choose_dds, btn_choose_tracking"
+        app:flow_horizontalGap="30dp"
+        app:flow_verticalGap="30dp"
+        android:layout_marginHorizontal="50dp"
+        app:flow_wrapMode="aligned" />
 
     <ImageButton
         android:id="@+id/btn_choose_function"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:background="@mipmap/ic_choose_page_democar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_choose_VCU"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        android:background="@mipmap/ic_choose_page_democar" />
 
     <ImageButton
         android:id="@+id/btn_choose_VCU"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        android:background="@mipmap/ic_choose_page_vcu"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_choose_entertainment"
-        app:layout_constraintStart_toEndOf="@id/btn_choose_function"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@mipmap/ic_choose_page_vcu" />
 
     <ImageButton
         android:id="@+id/btn_choose_entertainment"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        android:background="@mipmap/ic_choose_page_entertainment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_choose_dds"
-        app:layout_constraintStart_toEndOf="@id/btn_choose_VCU"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@mipmap/ic_choose_page_entertainment" />
 
     <TextView
         android:id="@+id/btn_choose_dds"
@@ -68,11 +61,17 @@
         android:gravity="center"
         android:text="DDS"
         android:textColor="@color/colorWhite"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btn_choose_entertainment"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/btn_choose_tracking"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/bg_circle"
+        android:gravity="center"
+        android:text="P-Box"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/tv_choose_activity_version"

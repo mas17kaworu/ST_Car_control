@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <Switch
+        android:id="@+id/hideRealTrackSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Hide Real Track"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/labelIntervalLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/hideRealTrackSwitch">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Time interval to show point label (seconds): " />
+
+        <EditText
+            android:id="@+id/labelIntervalEditText"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:autofillHints="5, 10"
+            android:gravity="center_horizontal"
+            android:inputType="numberDecimal"
+            android:maxLength="3" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/replaySpeedLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/labelIntervalLayout">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Points to draw in one second during replay: " />
+
+        <EditText
+            android:id="@+id/replaySpeedEditText"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:autofillHints="5, 10"
+            android:gravity="center_horizontal"
+            android:inputType="numberDecimal"
+            android:maxLength="3" />
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/replayCameraFollowCarSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Camera follow car when replay"
+        app:layout_constraintTop_toBottomOf="@id/replaySpeedLayout"/>
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Save"
+        app:layout_constraintTop_toBottomOf="@id/replayCameraFollowCarSwitch" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

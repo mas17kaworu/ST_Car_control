@@ -120,8 +120,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/volumeSlider"
-        app:thumbColor="@color/colorBlue"
-        app:trackColorActive="@color/colorBlue" />
+        app:thumbColor="@color/colorSkyBlue"
+        app:trackColorActive="@color/colorSkyBlue" />
 
     <TextView
         android:id="@+id/speedTitle"
