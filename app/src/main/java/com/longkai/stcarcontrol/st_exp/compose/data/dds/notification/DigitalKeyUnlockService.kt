@@ -23,6 +23,8 @@ import kotlinx.coroutines.launch
 
 class DigitalKeyUnlockService: Service() {
 
+    private var isRunning = false
+
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
@@ -32,10 +34,40 @@ class DigitalKeyUnlockService: Service() {
         if (intent?.action.equals(ACTION_CANCEL)) {
             stopForeground(true)
             stopSelf()
+            isRunning = false
             return START_NOT_STICKY
         }
 
-        startForeground()
+        if (!isRunning) {
+            isRunning = true
+            startForeground()
+            registerServiceActions()
+        }
+
+        return START_STICKY
+    }
+
+    private fun startForeground() {
+        val cancelIntent = Intent(this, DigitalKeyUnlockService::class.java)
+            .let { notificationIntent ->
+                notificationIntent.action = ACTION_CANCEL
+                getService(this, 0, notificationIntent, FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT)
+            }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel()
+        }
+
+        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+            .setContentText("Digital key unlock service is running")
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .addAction(android.R.drawable.ic_delete, "Cancel", cancelIntent)
+            .build()
+
+        startForeground(NOTIFICATION_ID, notification)
+    }
+
+    private fun registerServiceActions() {
 
         val ddsRepo = (application as STCarApplication).appContainer.ddsRepo
         scope.launch {
@@ -78,27 +110,6 @@ class DigitalKeyUnlockService: Service() {
                 }
                 .collect()
         }
-        return START_STICKY
-    }
-
-    private fun startForeground() {
-        val cancelIntent = Intent(this, DigitalKeyUnlockService::class.java)
-            .let { notificationIntent ->
-                notificationIntent.action = ACTION_CANCEL
-                getService(this, 0, notificationIntent, FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT)
-            }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannel()
-        }
-
-        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setContentText("Digital key unlock service is running")
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .addAction(android.R.drawable.ic_delete, "Cancel", cancelIntent)
-            .build()
-
-        startForeground(NOTIFICATION_ID, notification)
     }
 
 
@@ -115,6 +126,7 @@ class DigitalKeyUnlockService: Service() {
 
     override fun onDestroy() {
         job.cancel()
+        isRunning = false
         super.onDestroy()
     }
 
