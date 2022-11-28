@@ -479,6 +479,4 @@ public class CarBackOLED2Fragment extends Fragment implements View.OnClickListen
                 (cmdPayload[0] & CMDOLEDBase.TurnRight) != 0
         );
     }
-
-
 }
