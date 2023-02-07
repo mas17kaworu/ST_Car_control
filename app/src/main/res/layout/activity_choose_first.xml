@@ -63,11 +63,11 @@
         android:textColor="@color/colorWhite"
         android:textSize="24sp" />
 
-    <TextView
+    <ImageButton
         android:id="@+id/btn_choose_tracking"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:background="@drawable/bg_circle"
+        android:background="@mipmap/ic_choose_page_pbox"
         android:gravity="center"
         android:text="P-Box"
         android:textColor="@color/colorWhite"
