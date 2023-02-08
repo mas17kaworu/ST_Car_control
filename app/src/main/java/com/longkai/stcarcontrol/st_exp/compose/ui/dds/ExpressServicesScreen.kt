@@ -37,20 +37,25 @@ fun ExpressServicesScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Row {
-        ServiceListCard(
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .fillMaxHeight(),
-            services = uiState.expressServices,
-            onClickService = {
-                ddsViewModel.onSelectService(it)
-            },
-            onClickCreateService = {
-                ddsViewModel.onSelectService(null)
-                onCreateService()
-            },
-            selectedServiceId = focusedService?.id
-        )
+        Column {
+            ServiceListCard(
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .weight(1.0f),
+                services = uiState.expressServices,
+                onClickService = {
+                    ddsViewModel.onSelectService(it)
+                },
+                onClickCreateService = {
+                    ddsViewModel.onSelectService(null)
+                    onCreateService()
+                },
+                selectedServiceId = focusedService?.id
+            )
+            MusicPlayer(
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
 
         val imageUri = focusedService?.imageUri?.let {
             try {
