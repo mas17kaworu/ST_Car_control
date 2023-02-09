@@ -114,6 +114,7 @@ public class ConstantData {
 
       public static final int FRAGMENT_TRANSACTION_CAR_BACK_OLED = 105;
       public static final int FRAGMENT_TRANSACTION_CAR_BACK_OLED2 = 106;
+      public static final int FRAGMENT_TRANSACTION_CAR_FRONT_BOTTOM_LIGHT = 107;
     }
 
     public ConstantData(){

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/ic_fragment_background">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="30dp"
+        android:text="OLED C11"
+        android:textColor="#ffffff"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifv_high_beam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_highbeam_car"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radioButtonGroup"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/gifv_high_beam"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4">
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_urban"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/c11_mode_1"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="28sp" />
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_highway"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/c11_mode_2"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="28sp" />
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_country"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/c11_mode_3"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="28sp" />
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_curve"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/c11_mode_4"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="28sp" />
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_parking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/c11_mode_5"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="28sp" />
+
+        <RadioButton
+            android:id="@+id/rdoBtn_high_beam_energy_saving"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/c11_mode_6"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="28sp" />
+
+        <RadioButton
+            android:id="@+id/rdoBtn_c11_pattern_7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/c11_mode_7"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="28sp" />
+
+
+        <RadioButton
+            android:id="@+id/rdoBtn_invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@drawable/choose_btn_high_beam"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/c11_mode_7"
+            android:textColor="@drawable/selector_text_color_highbeam"
+            android:textSize="28sp"
+            android:visibility="invisible"/>
+    </RadioGroup>
+
+    <ImageView
+        android:id="@+id/iv_high_beam_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/high_beam_back"
+        app:layout_constraintEnd_toStartOf="@id/radioButtonGroup"
+        app:layout_constraintTop_toBottomOf="@id/radioButtonGroup" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
