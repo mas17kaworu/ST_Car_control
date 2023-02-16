@@ -1,13 +1,11 @@
 package com.longkai.stcarcontrol.st_exp.fragment
 
-import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
 import android.widget.RadioButton
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -26,6 +24,8 @@ import pl.droidsonroids.gif.GifImageView
  * Created by Administrator on 2017/7/10.
  */
 class FrontBottomLight : Fragment(), View.OnClickListener {
+    private val TAG = "C11"
+
     private lateinit var binding: FragmentFrontBottomLightBinding
     private val rdoUrban: RadioButton by lazy { binding.rdoBtnHighBeamUrban }
     private val rdoHighway: RadioButton by lazy { binding.rdoBtnHighBeamHighway }
@@ -234,8 +234,51 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
     }
 
     private fun sendLightCommand(lightMode: LightMode) {
-        println("zcf send light mode: $lightMode")
+        if (this.lightMode != lightMode) {
+            Log.i(TAG, "Turn on light mode: $lightMode")
+            this.lightMode = lightMode
+            val command = lightMode.command()
+            command.turnOn()
+            ServiceManager.getInstance()
+                .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
+                    override fun onSuccess(response: BaseResponse) {
+                        super.onSuccess(response)
+                        Log.i(TAG, "onSuccess")
+                    }
+
+                    override fun onTimeout() {
+                        super.onTimeout()
+                        Log.i(TAG, "onTimeout")
+                    }
+                })
+        } else {
+            Log.i(TAG, "Turn off light mode: $lightMode")
+            this.lightMode = null
+            val command = lightMode.command()
+            command.turnOff()
+            ServiceManager.getInstance()
+                .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
+                    override fun onSuccess(response: BaseResponse) {
+                        super.onSuccess(response)
+                        Log.i(TAG, "onSuccess")
+                    }
+
+                    override fun onTimeout() {
+                        super.onTimeout()
+                        Log.i(TAG, "onTimeout")
+                    }
+                })
+        }
     }
+
+    private fun LightMode.command() = when (this) {
+        LightMode.CHRISTMAS -> CMDFrontC11Mode1()
+        LightMode.FIREWORK -> CMDFrontC11Mode2()
+        LightMode.ROSE -> CMDFrontC11Mode3()
+        LightMode.MID_AUTUMN -> CMDFrontC11Mode4()
+    }
+
+    private var lightMode: LightMode? = null
 
     private enum class LightMode {
         CHRISTMAS, FIREWORK, ROSE, MID_AUTUMN

@@ -19,6 +19,11 @@ public class CMDFrontC11Light extends BaseCommand {
     protected static final byte Pattern2 = (byte)0x02;
     protected static final byte Pattern1 = (byte)0x01;
 
+    protected static final byte Mode1 = (byte)0x80;
+    protected static final byte Mode2 = (byte)0x40;
+    protected static final byte Mode3 = (byte)0x20;
+    protected static final byte Mode4 = (byte)0x10;
+
     protected static byte[] payload = new byte[256];
 
     public CMDFrontC11Light(){
