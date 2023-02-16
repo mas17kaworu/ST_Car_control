@@ -153,8 +153,13 @@
         <item name="trackThickness">20dp</item>
     </style>
 
-    <style name="FrontBottomLight_SoundSwitch">
-
+    <style name="FrontBottomLight_LightModeSwitch">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:background">#99ffffff</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
     <!--FrontBottomLight screen END-->
 

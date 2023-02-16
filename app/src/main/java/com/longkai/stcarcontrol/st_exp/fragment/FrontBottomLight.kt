@@ -37,6 +37,9 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
     private val rdoBtnInvisible: RadioButton by lazy { binding.rdoBtnInvisible }
     private val gif_view_high_beam: GifImageView by lazy { binding.gifvHighBeam }
 
+    private var highBeamStatus = 0
+    private var lightMode: LightMode? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,7 +59,6 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
         return binding.root
     }
 
-    private var highBeamStatus = 0
     override fun onClick(v: View) {
         when (v.id) {
             R.id.rdoBtn_high_beam_urban ->                 //new command 的时候已经自动清零
@@ -167,70 +169,88 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
     }
 
     private fun setupSoundSwitchs() {
-        val switchCUnlockAnimator = ValueAnimator.ofInt(100, 0).setDuration(3000)
-        binding.switchCLock.setOnClickListener {
-            if (binding.switchCUnlockProgress.progress != 100) return@setOnClickListener
-            switchCUnlockAnimator.addUpdateListener {
-                binding.switchCUnlockProgress.progress = it.animatedValue as Int
+        val lightModeCUnlockAnimator = ValueAnimator.ofInt(100, 0).setDuration(3000)
+        binding.lightModeCLock.setOnClickListener {
+            if (binding.lightModeCUnlockProgress.progress != 100) return@setOnClickListener
+            lightModeCUnlockAnimator.addUpdateListener {
+                binding.lightModeCUnlockProgress.progress = it.animatedValue as Int
                 if (it.animatedValue == 0) {
-                    binding.switchCLock.isVisible = false
-                    binding.switchCUnlockProgress.isVisible = false
-                    lightCUnlocked = true
+                    binding.lightModeCLock.isVisible = false
+                    binding.lightModeCUnlockProgress.isVisible = false
+                    lightModeCUnlocked = true
                 }
             }
-            switchCUnlockAnimator.start()
+            lightModeCUnlockAnimator.start()
         }
-        val switchDUnlockAnimator = ValueAnimator.ofInt(100, 0).setDuration(3000)
-        binding.switchDLock.setOnClickListener {
-            if (binding.switchDUnlockProgress.progress != 100) return@setOnClickListener
-            switchDUnlockAnimator.addUpdateListener {
-                binding.switchDUnlockProgress.progress = it.animatedValue as Int
+        val lightModeDUnlockAnimator = ValueAnimator.ofInt(100, 0).setDuration(3000)
+        binding.lightModeDLock.setOnClickListener {
+            if (binding.lightModeDUnlockProgress.progress != 100) return@setOnClickListener
+            lightModeDUnlockAnimator.addUpdateListener {
+                binding.lightModeDUnlockProgress.progress = it.animatedValue as Int
                 if (it.animatedValue == 0) {
-                    binding.switchDLock.isVisible = false
-                    binding.switchDUnlockProgress.isVisible = false
-                    lightDUnlocked = true
+                    binding.lightModeDLock.isVisible = false
+                    binding.lightModeDUnlockProgress.isVisible = false
+                    lightModeDUnlocked = true
                 }
             }
-            switchDUnlockAnimator.start()
+            lightModeDUnlockAnimator.start()
         }
 
-        binding.switchsResetBtn.setOnClickListener {
-            switchCUnlockAnimator.cancel()
-            binding.switchCLock.isVisible = true
-            binding.switchCUnlockProgress.isVisible = true
-            binding.switchCUnlockProgress.progress = 100
-            switchDUnlockAnimator.cancel()
-            binding.switchDLock.isVisible = true
-            binding.switchDUnlockProgress.isVisible = true
-            binding.switchDUnlockProgress.progress = 100
+        binding.lightModesResetBtn.setOnClickListener {
+            lightModeCUnlockAnimator.cancel()
+            binding.lightModeCLock.isVisible = true
+            binding.lightModeCUnlockProgress.isVisible = true
+            binding.lightModeCUnlockProgress.progress = 100
+            lightModeDUnlockAnimator.cancel()
+            binding.lightModeDLock.isVisible = true
+            binding.lightModeDUnlockProgress.isVisible = true
+            binding.lightModeDUnlockProgress.progress = 100
         }
 
-        if (lightCUnlocked) {
-            binding.switchCLock.isVisible = false
-            binding.switchCUnlockProgress.isVisible = false
+        if (lightModeCUnlocked) {
+            binding.lightModeCLock.isVisible = false
+            binding.lightModeCUnlockProgress.isVisible = false
         } else {
-            binding.switchCLock.isVisible = true
-            binding.switchCUnlockProgress.isVisible = true
-            binding.switchCUnlockProgress.progress = 100
+            binding.lightModeCLock.isVisible = true
+            binding.lightModeCUnlockProgress.isVisible = true
+            binding.lightModeCUnlockProgress.progress = 100
         }
 
-        if (lightDUnlocked) {
-            binding.switchDLock.isVisible = false
-            binding.switchDUnlockProgress.isVisible = false
+        if (lightModeDUnlocked) {
+            binding.lightModeDLock.isVisible = false
+            binding.lightModeDUnlockProgress.isVisible = false
         } else {
-            binding.switchDLock.isVisible = true
-            binding.switchDUnlockProgress.isVisible = true
-            binding.switchDUnlockProgress.progress = 100
+            binding.lightModeDLock.isVisible = true
+            binding.lightModeDUnlockProgress.isVisible = true
+            binding.lightModeDUnlockProgress.progress = 100
         }
 
-        binding.switchA.setOnClickListener { sendLightCommand(LightMode.CHRISTMAS) }
-        binding.switchB.setOnClickListener { sendLightCommand(LightMode.FIREWORK) }
-        binding.switchC.setOnClickListener {
-            if (lightCUnlocked) sendLightCommand(LightMode.ROSE)
+        binding.lightModeA.setOnClickListener {
+            setLightMode(LightMode.CHRISTMAS)
         }
-        binding.switchD.setOnClickListener {
-            if (lightDUnlocked) sendLightCommand(LightMode.MID_AUTUMN)
+        binding.lightModeB.setOnClickListener {
+            setLightMode(LightMode.FIREWORK)
         }
+        binding.lightModeC.setOnClickListener {
+            if (lightModeCUnlocked) setLightMode(LightMode.ROSE)
+        }
+        binding.lightModeD.setOnClickListener {
+            if (lightModeDUnlocked) setLightMode(LightMode.MID_AUTUMN)
+        }
+    }
+
+    private fun setLightMode(lightMode: LightMode) {
+        sendLightCommand(lightMode)
+        setLightSwitchState()
+    }
+
+    private fun setLightSwitchState() {
+        val selectedColor = requireContext().getColor(R.color.colorAccent)
+        val deselectedColor = requireContext().getColor(R.color.colorBlack)
+        binding.lightModeA.setColorFilter(if (lightMode == LightMode.CHRISTMAS) selectedColor else deselectedColor)
+        binding.lightModeB.setColorFilter(if (lightMode == LightMode.FIREWORK) selectedColor else deselectedColor)
+        binding.lightModeC.setColorFilter(if (lightMode == LightMode.ROSE) selectedColor else deselectedColor)
+        binding.lightModeD.setColorFilter(if (lightMode == LightMode.MID_AUTUMN) selectedColor else deselectedColor)
     }
 
     private fun sendLightCommand(lightMode: LightMode) {
@@ -278,12 +298,10 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
         LightMode.MID_AUTUMN -> CMDFrontC11Mode4()
     }
 
-    private var lightMode: LightMode? = null
-
     private enum class LightMode {
         CHRISTMAS, FIREWORK, ROSE, MID_AUTUMN
     }
 }
 
-private var lightCUnlocked = false
-private var lightDUnlocked = false
+private var lightModeCUnlocked = false
+private var lightModeDUnlocked = false

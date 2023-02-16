@@ -29,7 +29,7 @@
         android:id="@+id/radioButtonGroup"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="40dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/gifv_high_beam"
@@ -132,15 +132,15 @@
             android:text="@string/c11_mode_7"
             android:textColor="@drawable/selector_text_color_highbeam"
             android:textSize="20sp"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
     </RadioGroup>
 
     <ImageView
         android:id="@+id/iv_high_beam_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/high_beam_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/radioButtonGroup" />
@@ -153,109 +153,105 @@
         app:layout_constraintStart_toStartOf="@id/radioButtonGroup"
         app:layout_constraintTop_toBottomOf="@id/radioButtonGroup">
 
-        <TextView
-            android:id="@+id/switchA"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:text="AAA"
-            android:textColor="@color/colorWhite"
+        <ImageView
+            android:id="@+id/lightModeA"
+            style="@style/FrontBottomLight_LightModeSwitch"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_christmas_tree"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/lightModeB"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/switchB"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <TextView
-            android:id="@+id/switchB"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:text="BBB"
-            android:textColor="@color/colorWhite"
-            app:layout_constraintStart_toEndOf="@id/switchA"
-            app:layout_constraintEnd_toStartOf="@id/switchC"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <TextView
-            android:id="@+id/switchC"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:text="CCC"
-            android:textColor="@color/colorWhite"
-            app:layout_constraintStart_toEndOf="@id/switchB"
-            app:layout_constraintEnd_toStartOf="@id/switchD"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/switchCUnlockProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Widget.App.CircularProgressIndicator"
-            app:indicatorColor="@color/colorGray"
-            android:progress="100"
-            app:layout_constraintTop_toTopOf="@id/switchC"
-            app:layout_constraintBottom_toBottomOf="@id/switchC"
-            app:layout_constraintStart_toStartOf="@id/switchC"
-            app:layout_constraintEnd_toEndOf="@id/switchC"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/switchCLock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_outline_lock_24"
-            app:layout_constraintTop_toTopOf="@id/switchC"
-            app:layout_constraintBottom_toBottomOf="@id/switchC"
-            app:layout_constraintStart_toStartOf="@id/switchC"
-            app:layout_constraintEnd_toEndOf="@id/switchC"/>
-
-        <TextView
-            android:id="@+id/switchD"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:text="DDD"
-            android:textColor="@color/colorWhite"
-            app:layout_constraintStart_toEndOf="@id/switchC"
-            app:layout_constraintEnd_toStartOf="@id/switchsResetBtn"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/switchDUnlockProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Widget.App.CircularProgressIndicator"
-            app:indicatorColor="@color/colorGray"
-            android:progress="100"
-            app:layout_constraintTop_toTopOf="@id/switchD"
-            app:layout_constraintBottom_toBottomOf="@id/switchD"
-            app:layout_constraintStart_toStartOf="@id/switchD"
-            app:layout_constraintEnd_toEndOf="@id/switchD"/>
+            android:id="@+id/lightModeB"
+            style="@style/FrontBottomLight_LightModeSwitch"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_fireworks"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/lightModeC"
+            app:layout_constraintStart_toEndOf="@id/lightModeA"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/switchDLock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/lightModeC"
+            style="@style/FrontBottomLight_LightModeSwitch"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_rose"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/lightModeD"
+            app:layout_constraintStart_toEndOf="@id/lightModeB"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/lightModeCUnlockProgress"
+            style="@style/Widget.App.CircularProgressIndicator"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:progress="100"
+            app:indicatorColor="@color/colorNormal"
+            app:layout_constraintBottom_toBottomOf="@id/lightModeC"
+            app:layout_constraintEnd_toEndOf="@id/lightModeC"
+            app:layout_constraintStart_toStartOf="@id/lightModeC"
+            app:layout_constraintTop_toTopOf="@id/lightModeC" />
+
+        <ImageView
+            android:id="@+id/lightModeCLock"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_outline_lock_24"
-            app:layout_constraintTop_toTopOf="@id/switchD"
-            app:layout_constraintBottom_toBottomOf="@id/switchD"
-            app:layout_constraintStart_toStartOf="@id/switchD"
-            app:layout_constraintEnd_toEndOf="@id/switchD"/>
+            app:layout_constraintBottom_toBottomOf="@id/lightModeC"
+            app:layout_constraintEnd_toEndOf="@id/lightModeC"
+            app:layout_constraintStart_toStartOf="@id/lightModeC"
+            app:layout_constraintTop_toTopOf="@id/lightModeC" />
+
+        <ImageView
+            android:id="@+id/lightModeD"
+            style="@style/FrontBottomLight_LightModeSwitch"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_rabbit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/lightModesResetBtn"
+            app:layout_constraintStart_toEndOf="@id/lightModeC"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/lightModeDUnlockProgress"
+            style="@style/Widget.App.CircularProgressIndicator"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:progress="100"
+            app:indicatorColor="@color/colorNormal"
+            app:layout_constraintBottom_toBottomOf="@id/lightModeD"
+            app:layout_constraintEnd_toEndOf="@id/lightModeD"
+            app:layout_constraintStart_toStartOf="@id/lightModeD"
+            app:layout_constraintTop_toTopOf="@id/lightModeD" />
+
+        <ImageView
+            android:id="@+id/lightModeDLock"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_outline_lock_24"
+            app:layout_constraintBottom_toBottomOf="@id/lightModeD"
+            app:layout_constraintEnd_toEndOf="@id/lightModeD"
+            app:layout_constraintStart_toStartOf="@id/lightModeD"
+            app:layout_constraintTop_toTopOf="@id/lightModeD" />
 
         <TextView
-            android:id="@+id/switchsResetBtn"
+            android:id="@+id/lightModesResetBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
             android:text="Reset"
             android:textColor="@color/colorWhite"
-            android:layout_marginStart="30dp"
-            app:layout_constraintStart_toEndOf="@id/switchD"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/lightModeD"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
