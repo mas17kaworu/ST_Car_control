@@ -1,11 +1,15 @@
 package com.longkai.stcarcontrol.st_exp.fragment
 
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import android.widget.RadioButton
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity
@@ -47,6 +51,8 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
         rdoEnergySaving.setOnClickListener(this)
         rdoC11Pattern7.setOnClickListener(this)
         binding.ivHighBeamBack.setOnClickListener(this)
+
+        setupSoundSwitchs()
         return binding.root
     }
 
@@ -159,4 +165,43 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
             e.printStackTrace()
         }
     }
+
+    private fun setupSoundSwitchs() {
+        val switchCUnlockAnimator = ValueAnimator.ofInt(100, 0).setDuration(3000)
+        binding.switchCLock.setOnClickListener {
+            switchCUnlockAnimator.addUpdateListener {
+                binding.switchCUnlockProgress.progress = it.animatedValue as Int
+                if (it.animatedValue == 0) {
+                    binding.switchCLock.isVisible = false
+                    binding.switchCUnlockProgress.isVisible = false
+                }
+            }
+            switchCUnlockAnimator.start()
+        }
+        val switchDUnlockAnimator = ValueAnimator.ofInt(100, 0).setDuration(3000)
+        binding.switchDLock.setOnClickListener {
+
+            switchDUnlockAnimator.addUpdateListener {
+                binding.switchDUnlockProgress.progress = it.animatedValue as Int
+                if (it.animatedValue == 0) {
+                    binding.switchDLock.isVisible = false
+                    binding.switchDUnlockProgress.isVisible = false
+                }
+            }
+            switchDUnlockAnimator.start()
+        }
+
+        binding.switchsResetBtn.setOnClickListener {
+            switchCUnlockAnimator.cancel()
+            binding.switchCLock.isVisible = true
+            binding.switchCUnlockProgress.isVisible = true
+            binding.switchCUnlockProgress.progress = 100
+            switchDUnlockAnimator.cancel()
+            binding.switchDLock.isVisible = true
+            binding.switchDUnlockProgress.isVisible = true
+            binding.switchDUnlockProgress.progress = 100
+        }
+
+    }
+
 }

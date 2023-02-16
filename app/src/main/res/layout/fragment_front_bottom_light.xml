@@ -44,10 +44,10 @@
             android:layout_weight="1"
             android:button="@drawable/choose_btn_high_beam"
             android:gravity="center"
-            android:padding="15dp"
+            android:padding="12dp"
             android:text="@string/c11_mode_1"
             android:textColor="@drawable/selector_text_color_highbeam"
-            android:textSize="28sp" />
+            android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/rdoBtn_high_beam_highway"
@@ -56,10 +56,10 @@
             android:layout_weight="1"
             android:button="@drawable/choose_btn_high_beam"
             android:gravity="center"
-            android:padding="15dp"
+            android:padding="12dp"
             android:text="@string/c11_mode_2"
             android:textColor="@drawable/selector_text_color_highbeam"
-            android:textSize="28sp" />
+            android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/rdoBtn_high_beam_country"
@@ -68,10 +68,10 @@
             android:layout_weight="1"
             android:button="@drawable/choose_btn_high_beam"
             android:gravity="center"
-            android:padding="15dp"
+            android:padding="12dp"
             android:text="@string/c11_mode_3"
             android:textColor="@drawable/selector_text_color_highbeam"
-            android:textSize="28sp" />
+            android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/rdoBtn_high_beam_curve"
@@ -80,10 +80,10 @@
             android:layout_weight="1"
             android:button="@drawable/choose_btn_high_beam"
             android:gravity="center"
-            android:padding="15dp"
+            android:padding="12dp"
             android:text="@string/c11_mode_4"
             android:textColor="@drawable/selector_text_color_highbeam"
-            android:textSize="28sp" />
+            android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/rdoBtn_high_beam_parking"
@@ -92,10 +92,10 @@
             android:layout_weight="1"
             android:button="@drawable/choose_btn_high_beam"
             android:gravity="center"
-            android:padding="15dp"
+            android:padding="12dp"
             android:text="@string/c11_mode_5"
             android:textColor="@drawable/selector_text_color_highbeam"
-            android:textSize="28sp" />
+            android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/rdoBtn_high_beam_energy_saving"
@@ -104,10 +104,10 @@
             android:layout_weight="1"
             android:button="@drawable/choose_btn_high_beam"
             android:gravity="center"
-            android:padding="15dp"
+            android:padding="12dp"
             android:text="@string/c11_mode_6"
             android:textColor="@drawable/selector_text_color_highbeam"
-            android:textSize="28sp" />
+            android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/rdoBtn_c11_pattern_7"
@@ -116,11 +116,10 @@
             android:layout_weight="1"
             android:button="@drawable/choose_btn_high_beam"
             android:gravity="center"
-            android:padding="15dp"
+            android:padding="12dp"
             android:text="@string/c11_mode_7"
             android:textColor="@drawable/selector_text_color_highbeam"
-            android:textSize="28sp" />
-
+            android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/rdoBtn_invisible"
@@ -129,10 +128,10 @@
             android:layout_weight="1"
             android:button="@drawable/choose_btn_high_beam"
             android:gravity="center"
-            android:padding="15dp"
+            android:padding="12dp"
             android:text="@string/c11_mode_7"
             android:textColor="@drawable/selector_text_color_highbeam"
-            android:textSize="28sp"
+            android:textSize="20sp"
             android:visibility="invisible"/>
     </RadioGroup>
 
@@ -140,9 +139,125 @@
         android:id="@+id/iv_high_beam_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
         android:src="@drawable/high_beam_back"
-        app:layout_constraintEnd_toStartOf="@id/radioButtonGroup"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/radioButtonGroup" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/switchsGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/radioButtonGroup"
+        app:layout_constraintTop_toBottomOf="@id/radioButtonGroup">
+
+        <TextView
+            android:id="@+id/switchA"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="AAA"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/switchB"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/switchB"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="BBB"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintStart_toEndOf="@id/switchA"
+            app:layout_constraintEnd_toStartOf="@id/switchC"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/switchC"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="CCC"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintStart_toEndOf="@id/switchB"
+            app:layout_constraintEnd_toStartOf="@id/switchD"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/switchCUnlockProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.App.CircularProgressIndicator"
+            app:indicatorColor="@color/colorGray"
+            android:progress="100"
+            app:layout_constraintTop_toTopOf="@id/switchC"
+            app:layout_constraintBottom_toBottomOf="@id/switchC"
+            app:layout_constraintStart_toStartOf="@id/switchC"
+            app:layout_constraintEnd_toEndOf="@id/switchC"/>
+
+        <ImageView
+            android:id="@+id/switchCLock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_outline_lock_24"
+            app:layout_constraintTop_toTopOf="@id/switchC"
+            app:layout_constraintBottom_toBottomOf="@id/switchC"
+            app:layout_constraintStart_toStartOf="@id/switchC"
+            app:layout_constraintEnd_toEndOf="@id/switchC"/>
+
+        <TextView
+            android:id="@+id/switchD"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="DDD"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintStart_toEndOf="@id/switchC"
+            app:layout_constraintEnd_toStartOf="@id/switchsResetBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/switchDUnlockProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.App.CircularProgressIndicator"
+            app:indicatorColor="@color/colorGray"
+            android:progress="100"
+            app:layout_constraintTop_toTopOf="@id/switchD"
+            app:layout_constraintBottom_toBottomOf="@id/switchD"
+            app:layout_constraintStart_toStartOf="@id/switchD"
+            app:layout_constraintEnd_toEndOf="@id/switchD"/>
+
+        <ImageView
+            android:id="@+id/switchDLock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_outline_lock_24"
+            app:layout_constraintTop_toTopOf="@id/switchD"
+            app:layout_constraintBottom_toBottomOf="@id/switchD"
+            app:layout_constraintStart_toStartOf="@id/switchD"
+            app:layout_constraintEnd_toEndOf="@id/switchD"/>
+
+        <TextView
+            android:id="@+id/switchsResetBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset"
+            android:textColor="@color/colorWhite"
+            android:layout_marginStart="30dp"
+            app:layout_constraintStart_toEndOf="@id/switchD"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

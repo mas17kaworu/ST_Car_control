@@ -143,4 +143,20 @@
         <item name="layout_constraintHorizontal_bias">0</item>
         <item name="android:layout_marginStart">16dp</item>
     </style>
+
+    <!--FrontBottomLight screen-->
+    <style name="ThemeOverlay.App.CircularProgressIndicator" parent="">
+        <item name="colorPrimary">@color/colorGreen</item>
+    </style>
+    <style name="Widget.App.CircularProgressIndicator" parent="Widget.MaterialComponents.CircularProgressIndicator">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.CircularProgressIndicator</item>
+        <item name="trackThickness">20dp</item>
+    </style>
+
+    <style name="FrontBottomLight_SoundSwitch">
+
+    </style>
+    <!--FrontBottomLight screen END-->
+
+
 </resources>
