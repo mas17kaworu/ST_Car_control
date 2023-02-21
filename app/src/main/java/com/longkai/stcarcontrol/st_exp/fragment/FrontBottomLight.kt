@@ -6,13 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
-import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFrontC11LightList.*
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
@@ -23,21 +21,12 @@ import pl.droidsonroids.gif.GifImageView
 /**
  * Created by Administrator on 2017/7/10.
  */
-class FrontBottomLight : Fragment(), View.OnClickListener {
+class FrontBottomLight : Fragment() {
     private val TAG = "C11"
 
     private lateinit var binding: FragmentFrontBottomLightBinding
-    private val rdoUrban: RadioButton by lazy { binding.rdoBtnHighBeamUrban }
-    private val rdoHighway: RadioButton by lazy { binding.rdoBtnHighBeamHighway }
-    private val rdoCountry: RadioButton by lazy { binding.rdoBtnHighBeamCountry }
-    private val rdoCurve: RadioButton by lazy { binding.rdoBtnHighBeamCurve }
-    private val rdoParking: RadioButton by lazy { binding.rdoBtnHighBeamParking }
-    private val rdoEnergySaving: RadioButton by lazy { binding.rdoBtnHighBeamEnergySaving }
-    private val rdoC11Pattern7: RadioButton by lazy { binding.rdoBtnC11Pattern7 }
-    private val rdoBtnInvisible: RadioButton by lazy { binding.rdoBtnInvisible }
-    private val gif_view_high_beam: GifImageView by lazy { binding.gifvHighBeam }
 
-    private var highBeamStatus = 0
+    private var lightPattern: LightPattern? = null
     private var lightMode: LightMode? = null
 
     override fun onCreateView(
@@ -46,101 +35,74 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFrontBottomLightBinding.inflate(inflater, container, false)
-        rdoUrban.setOnClickListener(this)
-        rdoHighway.setOnClickListener(this)
-        rdoCountry.setOnClickListener(this)
-        rdoCurve.setOnClickListener(this)
-        rdoParking.setOnClickListener(this)
-        rdoEnergySaving.setOnClickListener(this)
-        rdoC11Pattern7.setOnClickListener(this)
-        binding.ivHighBeamBack.setOnClickListener(this)
 
-        setupSoundSwitchs()
+        setupLightPatterns()
+        setupLightModes()
         return binding.root
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.rdoBtn_high_beam_urban ->                 //new command 的时候已经自动清零
-                clickTask(rdoUrban, 1, R.mipmap.gif_high_beam_urban, CMDFrontC11Pattern1())
-            R.id.rdoBtn_high_beam_highway -> clickTask(
-                rdoHighway,
-                2,
-                R.mipmap.gif_high_beam_highway,
-                CMDFrontC11Pattern2()
-            )
-            R.id.rdoBtn_high_beam_country -> clickTask(
-                rdoCountry,
-                3,
-                R.mipmap.gif_high_beam_country,
-                CMDFrontC11Pattern3()
-            )
-            R.id.rdoBtn_high_beam_curve -> clickTask(
-                rdoCurve,
-                4,
-                R.mipmap.gif_high_beam_curve,
-                CMDFrontC11Pattern4()
-            )
-            R.id.rdoBtn_high_beam_parking -> clickTask(
-                rdoParking,
-                5,
-                R.mipmap.gif_high_beam_park,
-                CMDFrontC11Pattern5()
-            )
-            R.id.rdoBtn_high_beam_energy_saving -> clickTask(
-                rdoEnergySaving,
-                6,
-                R.mipmap.gif_high_beam_energy_saving,
-                CMDFrontC11Pattern6()
-            )
-            R.id.rdoBtn_c11_pattern_7 -> clickTask(
-                rdoC11Pattern7,
-                7,
-                R.mipmap.gif_high_beam_energy_saving,
-                CMDFrontC11Pattern7()
-            )
-            R.id.iv_high_beam_back -> (activity as MainActivity?)!!.setSelect(1)
+    private fun setupLightPatterns() {
+        binding.apply {
+            rdoBtnHighBeamUrban.setOnClickListener { setLightPattern(LightPattern.Pattern1) }
+            rdoBtnHighBeamHighway.setOnClickListener { setLightPattern(LightPattern.Pattern2) }
+            rdoBtnHighBeamCountry.setOnClickListener { setLightPattern(LightPattern.Pattern3) }
+            rdoBtnHighBeamCurve.setOnClickListener { setLightPattern(LightPattern.Pattern4) }
+            rdoBtnHighBeamParking.setOnClickListener { setLightPattern(LightPattern.Pattern5) }
+            rdoBtnHighBeamEnergySaving.setOnClickListener { setLightPattern(LightPattern.Pattern6) }
+            rdoBtnC11Pattern7.setOnClickListener { setLightPattern(LightPattern.Pattern7) }
+            ivHighBeamBack.setOnClickListener { (activity as MainActivity?)!!.setSelect(1) }
         }
     }
 
-    private fun clickTask(rb: RadioButton?, num: Int, gifResId: Int, command: BaseCommand) {
-//        return;
-        if (highBeamStatus == num) {
-            rdoBtnInvisible!!.isChecked = true
-            highBeamStatus = 0
-            releaseGifView()
-            //send command
-            command.turnOff()
-            ServiceManager.getInstance()
-                .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
-                    override fun onSuccess(response: BaseResponse) {
-                        super.onSuccess(response)
-                        Log.i("C11", "onSuccess")
-                    }
+    private enum class LightPattern {
+        Pattern1, Pattern2, Pattern3, Pattern4, Pattern5, Pattern6, Pattern7
+    }
 
-                    override fun onTimeout() {
-                        super.onTimeout()
-                        Log.i("C11", "onTimeout")
-                    }
-                })
-        } else {
-//            rb.setChecked(true);
-            highBeamStatus = num
-            loadGif(gifResId)
+    private fun LightPattern.gifResId() = when (this) {
+        LightPattern.Pattern1 -> R.mipmap.gif_high_beam_urban
+        LightPattern.Pattern2 -> R.mipmap.gif_high_beam_highway
+        LightPattern.Pattern3 -> R.mipmap.gif_high_beam_country
+        LightPattern.Pattern4 -> R.mipmap.gif_high_beam_curve
+        LightPattern.Pattern5 -> R.mipmap.gif_high_beam_park
+        LightPattern.Pattern6 -> R.mipmap.gif_high_beam_energy_saving
+        LightPattern.Pattern7 -> R.mipmap.gif_high_beam_energy_saving
+    }
+
+    private fun LightPattern.command() = when (this) {
+        LightPattern.Pattern1 -> CMDFrontC11Pattern1()
+        LightPattern.Pattern2 -> CMDFrontC11Pattern2()
+        LightPattern.Pattern3 -> CMDFrontC11Pattern3()
+        LightPattern.Pattern4 -> CMDFrontC11Pattern4()
+        LightPattern.Pattern5 -> CMDFrontC11Pattern5()
+        LightPattern.Pattern6 -> CMDFrontC11Pattern6()
+        LightPattern.Pattern7 -> CMDFrontC11Pattern7()
+    }
+
+    private fun setLightPattern(lightPattern: LightPattern) {
+        val command = lightPattern.command()
+        if (this.lightPattern != lightPattern) {
+            this.lightPattern = lightPattern
+            loadGif(lightPattern.gifResId())
             command.turnOn()
-            ServiceManager.getInstance()
-                .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
-                    override fun onSuccess(response: BaseResponse) {
-                        super.onSuccess(response)
-                        Log.i("C11", "onSuccess")
-                    }
-
-                    override fun onTimeout() {
-                        super.onTimeout()
-                        Log.i("C11", "onTimeout")
-                    }
-                })
+        } else {
+            binding.rdoBtnInvisible.isChecked = true
+            this.lightPattern = null
+            releaseGifView()
+            command.turnOff()
         }
+
+        ServiceManager.getInstance()
+            .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
+                override fun onSuccess(response: BaseResponse) {
+                    super.onSuccess(response)
+                    Log.i("C11", "onSuccess")
+                }
+
+                override fun onTimeout() {
+                    super.onTimeout()
+                    Log.i("C11", "onTimeout")
+                }
+            })
     }
 
     private fun loadGif(resID: Int) {
@@ -150,7 +112,7 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
             val gifDrawable = GifDrawable(resources, resID)
 
             // gif1加载一个动态图gif
-            gif_view_high_beam!!.setImageDrawable(gifDrawable)
+            binding.gifvHighBeam.setImageDrawable(gifDrawable)
 
             // 如果是普通的图片资源，就像Android的ImageView set图片资源一样简单设置进去即可。
             // gif2加载一个普通的图片（如png，bmp，jpeg等等）
@@ -161,14 +123,16 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
 
     private fun releaseGifView() {
         try {
-            gif_view_high_beam!!.setImageDrawable(null)
-            gif_view_high_beam!!.setImageResource(R.mipmap.ic_highbeam_car)
+            binding.gifvHighBeam.apply {
+                setImageDrawable(null)
+                setImageResource(R.mipmap.ic_highbeam_car)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun setupSoundSwitchs() {
+    private fun setupLightModes() {
         val lightModeCUnlockAnimator = ValueAnimator.ofInt(100, 0).setDuration(3000)
         binding.lightModeCLock.setOnClickListener {
             if (binding.lightModeCUnlockProgress.progress != 100) return@setOnClickListener
@@ -240,8 +204,30 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
     }
 
     private fun setLightMode(lightMode: LightMode) {
-        sendLightCommand(lightMode)
         setLightSwitchState()
+
+        val command = lightMode.command()
+        if (this.lightMode != lightMode) {
+            Log.i(TAG, "Turn on light mode: $lightMode")
+            this.lightMode = lightMode
+            command.turnOn()
+        } else {
+            Log.i(TAG, "Turn off light mode: $lightMode")
+            this.lightMode = null
+            command.turnOff()
+        }
+        ServiceManager.getInstance()
+            .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
+                override fun onSuccess(response: BaseResponse) {
+                    super.onSuccess(response)
+                    Log.i(TAG, "onSuccess")
+                }
+
+                override fun onTimeout() {
+                    super.onTimeout()
+                    Log.i(TAG, "onTimeout")
+                }
+            })
     }
 
     private fun setLightSwitchState() {
@@ -253,42 +239,8 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
         binding.lightModeD.setColorFilter(if (lightMode == LightMode.MID_AUTUMN) selectedColor else deselectedColor)
     }
 
-    private fun sendLightCommand(lightMode: LightMode) {
-        if (this.lightMode != lightMode) {
-            Log.i(TAG, "Turn on light mode: $lightMode")
-            this.lightMode = lightMode
-            val command = lightMode.command()
-            command.turnOn()
-            ServiceManager.getInstance()
-                .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
-                    override fun onSuccess(response: BaseResponse) {
-                        super.onSuccess(response)
-                        Log.i(TAG, "onSuccess")
-                    }
-
-                    override fun onTimeout() {
-                        super.onTimeout()
-                        Log.i(TAG, "onTimeout")
-                    }
-                })
-        } else {
-            Log.i(TAG, "Turn off light mode: $lightMode")
-            this.lightMode = null
-            val command = lightMode.command()
-            command.turnOff()
-            ServiceManager.getInstance()
-                .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
-                    override fun onSuccess(response: BaseResponse) {
-                        super.onSuccess(response)
-                        Log.i(TAG, "onSuccess")
-                    }
-
-                    override fun onTimeout() {
-                        super.onTimeout()
-                        Log.i(TAG, "onTimeout")
-                    }
-                })
-        }
+    private enum class LightMode {
+        CHRISTMAS, FIREWORK, ROSE, MID_AUTUMN
     }
 
     private fun LightMode.command() = when (this) {
@@ -296,10 +248,6 @@ class FrontBottomLight : Fragment(), View.OnClickListener {
         LightMode.FIREWORK -> CMDFrontC11Mode2()
         LightMode.ROSE -> CMDFrontC11Mode3()
         LightMode.MID_AUTUMN -> CMDFrontC11Mode4()
-    }
-
-    private enum class LightMode {
-        CHRISTMAS, FIREWORK, ROSE, MID_AUTUMN
     }
 }
 
