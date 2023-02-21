@@ -16,7 +16,6 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFrontC11Ligh
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentFrontBottomLightBinding
 import pl.droidsonroids.gif.GifDrawable
-import pl.droidsonroids.gif.GifImageView
 
 /**
  * Created by Administrator on 2017/7/10.
@@ -78,31 +77,48 @@ class FrontBottomLight : Fragment() {
         LightPattern.Pattern7 -> CMDFrontC11Pattern7()
     }
 
-    private fun setLightPattern(lightPattern: LightPattern) {
-        val command = lightPattern.command()
-        if (this.lightPattern != lightPattern) {
-            this.lightPattern = lightPattern
-            loadGif(lightPattern.gifResId())
-            command.turnOn()
-        } else {
-            binding.rdoBtnInvisible.isChecked = true
-            this.lightPattern = null
-            releaseGifView()
-            command.turnOff()
+    private fun setLightPattern(lightPattern: LightPattern?) {
+        if (lightMode != null) {
+            setLightMode(null)
         }
 
-        ServiceManager.getInstance()
-            .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
-                override fun onSuccess(response: BaseResponse) {
-                    super.onSuccess(response)
-                    Log.i("C11", "onSuccess")
-                }
+        val command: CMDFrontC11Light?
+        if (this.lightPattern != lightPattern && lightPattern != null) {
+            command = lightPattern.command()
+            command.turnOn()
+            this.lightPattern = lightPattern
 
-                override fun onTimeout() {
-                    super.onTimeout()
-                    Log.i("C11", "onTimeout")
-                }
-            })
+        } else {
+            command = this.lightPattern?.command()
+            command?.turnOff()
+            this.lightPattern = null
+        }
+
+        setLightPatternState(this.lightPattern)
+
+        if (command != null) {
+            ServiceManager.getInstance()
+                .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
+                    override fun onSuccess(response: BaseResponse) {
+                        super.onSuccess(response)
+                        Log.i(TAG, "onSuccess")
+                    }
+
+                    override fun onTimeout() {
+                        super.onTimeout()
+                        Log.i(TAG, "onTimeout")
+                    }
+                })
+        }
+    }
+
+    private fun setLightPatternState(lightPattern: LightPattern?) {
+        if (lightPattern != null) {
+            loadGif(lightPattern.gifResId())
+        } else {
+            releaseGifView()
+            binding.rdoBtnInvisible.isChecked = true
+        }
     }
 
     private fun loadGif(resID: Int) {
@@ -203,34 +219,42 @@ class FrontBottomLight : Fragment() {
         }
     }
 
-    private fun setLightMode(lightMode: LightMode) {
-        setLightSwitchState()
-
-        val command = lightMode.command()
-        if (this.lightMode != lightMode) {
-            Log.i(TAG, "Turn on light mode: $lightMode")
-            this.lightMode = lightMode
-            command.turnOn()
-        } else {
-            Log.i(TAG, "Turn off light mode: $lightMode")
-            this.lightMode = null
-            command.turnOff()
+    private fun setLightMode(lightMode: LightMode?) {
+        if (this.lightPattern != null) {
+            setLightPattern(null)
         }
-        ServiceManager.getInstance()
-            .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
-                override fun onSuccess(response: BaseResponse) {
-                    super.onSuccess(response)
-                    Log.i(TAG, "onSuccess")
-                }
 
-                override fun onTimeout() {
-                    super.onTimeout()
-                    Log.i(TAG, "onTimeout")
-                }
-            })
+        val command: CMDFrontC11Light?
+        if (this.lightMode != lightMode && lightMode != null) {
+            command = lightMode.command()
+            command.turnOn()
+            this.lightMode = lightMode
+        } else {
+            command = this.lightMode?.command()
+            command?.turnOff()
+            this.lightMode = null
+        }
+
+        setLightModeState(this.lightMode)
+
+        if (command != null) {
+            ServiceManager.getInstance()
+                .sendCommandToCar(command, object : CommandListenerAdapter<BaseResponse>() {
+                    override fun onSuccess(response: BaseResponse) {
+                        super.onSuccess(response)
+                        Log.i(TAG, "onSuccess")
+                    }
+
+                    override fun onTimeout() {
+                        super.onTimeout()
+                        Log.i(TAG, "onTimeout")
+                    }
+                })
+        }
+
     }
 
-    private fun setLightSwitchState() {
+    private fun setLightModeState(lightMode: LightMode?) {
         val selectedColor = requireContext().getColor(R.color.colorAccent)
         val deselectedColor = requireContext().getColor(R.color.colorBlack)
         binding.lightModeA.setColorFilter(if (lightMode == LightMode.CHRISTMAS) selectedColor else deselectedColor)
