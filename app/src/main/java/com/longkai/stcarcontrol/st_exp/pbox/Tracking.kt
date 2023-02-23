@@ -12,6 +12,7 @@ import java.lang.Exception
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 object Tracking {
 
@@ -196,7 +197,13 @@ object Tracking {
      * UTC ime in [UTC_TIME_PATTERN] format
      */
     private fun parseUtcTime(input: String): LocalTime {
-        return LocalTime.parse(input.substringBefore('.'), DateTimeFormatter.ofPattern(UTC_TIME_PATTERN))
+        val (timeStr, timePattern) = when (input.length) {
+            UTC_TIME_PATTERN_SSS.length -> input to UTC_TIME_PATTERN_SSS
+            UTC_TIME_PATTERN_SS.length -> input to UTC_TIME_PATTERN_SS
+            UTC_DATE_PATTERN.length -> input to UTC_TIME_PATTERN
+            else -> input.substringBefore('.') to UTC_TIME_PATTERN
+        }
+        return LocalTime.parse(timeStr, DateTimeFormatter.ofPattern(timePattern))
     }
 
     /**
@@ -244,6 +251,9 @@ object Tracking {
     private const val FILE_REAL = "real.txt"
     private const val FILE_PBOX = "pbox.txt"
 
+
     const val UTC_TIME_PATTERN = "HHmmss"
+    const val UTC_TIME_PATTERN_SSS = "HHmmss.SSS"
+    const val UTC_TIME_PATTERN_SS = "HHmmss.SS"
     const val UTC_DATE_PATTERN = "ddMMyy"
 }
