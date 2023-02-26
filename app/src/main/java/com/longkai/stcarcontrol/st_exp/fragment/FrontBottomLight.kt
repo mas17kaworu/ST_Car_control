@@ -15,6 +15,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFrontC11LightList.*
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentFrontBottomLightBinding
+import com.longkai.stcarcontrol.st_exp.music.STPlayer
 import pl.droidsonroids.gif.GifDrawable
 
 /**
@@ -37,6 +38,7 @@ class FrontBottomLight : Fragment() {
 
         setupLightPatterns()
         setupLightModes()
+        stPlayer = STPlayer(requireContext())
         return binding.root
     }
 
@@ -50,6 +52,9 @@ class FrontBottomLight : Fragment() {
             rdoBtnHighBeamEnergySaving.setOnClickListener { setLightPattern(LightPattern.Pattern6) }
             rdoBtnC11Pattern7.setOnClickListener { setLightPattern(LightPattern.Pattern7) }
             ivHighBeamBack.setOnClickListener { (activity as MainActivity?)!!.setSelect(1) }
+            btnPlayAudio.setOnClickListener{ playOrPause() }
+            btnPlayPrevious.setOnClickListener{ stPlayer.previous() }
+            btnPlayNext.setOnClickListener { stPlayer.next() }
         }
     }
 
@@ -272,6 +277,18 @@ class FrontBottomLight : Fragment() {
         LightMode.FIREWORK -> CMDFrontC11Mode2()
         LightMode.ROSE -> CMDFrontC11Mode3()
         LightMode.MID_AUTUMN -> CMDFrontC11Mode4()
+    }
+
+
+    private lateinit var stPlayer: STPlayer
+    private fun playOrPause() {
+        if (stPlayer.isPlaying()) {
+            stPlayer.stop()
+            binding.btnPlayAudio.setImageResource(R.mipmap.ic_play)
+        } else {
+            stPlayer.playMusic()
+            binding.btnPlayAudio.setImageResource(R.mipmap.ic_stop)
+        }
     }
 }
 
