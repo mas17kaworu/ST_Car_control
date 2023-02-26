@@ -36,6 +36,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListener
 import static com.longkai.stcarcontrol.st_exp.ConstantData.MainFragment.FRAGMENT_TRANSACTION_CAR_FRONT_BOTTOM_LIGHT;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.sLampJinguangdengStatus;
 
+
 /**
  * Created by Administrator on 2017/7/10.
  */
@@ -72,7 +73,6 @@ public class FrontHeadLamp extends Fragment implements View.OnClickListener{
         mView.findViewById(R.id.tv_Head_Lamp_diagram).setOnClickListener(this);
         refreshUI();
         mBTServer = ((BaseActivity)getActivity()).mBtServer;
-
         return mView;
     }
 

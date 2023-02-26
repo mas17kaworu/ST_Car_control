@@ -65,6 +65,8 @@ class STPlayer constructor(
         }
     }
 
+    fun isPlaying() = isPlaying
+
     fun stop() {
         mediaPlayer.stop()
     }
