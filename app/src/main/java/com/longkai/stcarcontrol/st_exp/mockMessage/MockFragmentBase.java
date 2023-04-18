@@ -15,6 +15,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFOTAList.CMD
 public abstract class MockFragmentBase implements Runnable {
     protected Handler handler;
     protected ProtocolMessageDispatch dispatcher;
+    protected Boolean isStopped = false;
 
     public MockFragmentBase(Handler handler){
         this.handler = handler;

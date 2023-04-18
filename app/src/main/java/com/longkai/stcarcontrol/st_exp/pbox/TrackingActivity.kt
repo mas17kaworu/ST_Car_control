@@ -112,8 +112,9 @@ class TrackingActivity : BaseActivity() {
             historyRecordsBtn.setOnClickListener {
                 viewModel.loadHistoryRecords { historyRecords ->
                     binding.historyRecordsRV.adapter = HistoryRecordsAdapter(historyRecords) {
+                        stopRecording()
                         viewModel.enterReviewMode()
-                        loadRecord(it)
+                        viewModel.loadRecord(it)
                         hideHistoryRecordsLayout()
                     }
                 }
@@ -141,15 +142,10 @@ class TrackingActivity : BaseActivity() {
             }
 
             recordBtn.setOnClickListener {
-                if (viewModel.uiState.value.isRecording) {
-                    viewModel.stopRecording { fileName ->
-                        if (fileName != null) {
-                            showSnackbar("Recording successfully saved to $fileName")
-                        } else {
-                            showSnackbar("No data saved")
-                        }
-                    }
+                if (viewModel.recordingState.value.isRecording) {
+                    stopRecording()
                 } else {
+                    aMapHelper.clearAllTracks()
                     viewModel.startRecording()
                 }
             }
@@ -188,7 +184,6 @@ class TrackingActivity : BaseActivity() {
                             replayControlBtns.isVisible = uiState.inReviewMode && uiState.inReplayMode
 
                             recordBtn.isVisible = uiState.inReviewMode.not()
-                            updateRecordBtnUI(uiState.isRecording)
                             trackPointInfo.isVisible = uiState.inReviewMode
 
                             signalReal.isVisible = uiState.trackSettings.hideRealTrackUI.not()
@@ -201,6 +196,14 @@ class TrackingActivity : BaseActivity() {
                             aMapHelper.setHistoryRecordData(uiState.historyRecordData)
                             aMapHelper.setConfig(uiState.trackSettings)
                             aMapHelper.showTracks()
+                        }
+                    }
+                }
+                launch {
+                    viewModel.recordingState.collectLatest { state ->
+                        updateRecordBtnUI(state.isRecording)
+                        if (state.isRecording && state.recordingPoint != null) {
+                            aMapHelper.updateRecording(state.recordingPoint)
                         }
                     }
                 }
@@ -220,9 +223,14 @@ class TrackingActivity : BaseActivity() {
         }
     }
 
-    private fun loadRecord(historyRecord: HistoryRecord) {
-        viewModel.loadRecord(historyRecord)
-        viewModel.enterReviewMode()
+    private fun stopRecording() {
+        viewModel.stopRecording { fileName ->
+            if (fileName != null) {
+                showSnackbar("Recording successfully saved to $fileName")
+            } else {
+                showSnackbar("No data saved")
+            }
+        }
     }
 
     private fun updateTrackPointInfo(trackingData: TrackingData) {

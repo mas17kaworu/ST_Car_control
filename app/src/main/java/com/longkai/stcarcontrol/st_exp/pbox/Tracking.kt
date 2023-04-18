@@ -31,7 +31,10 @@ object Tracking {
     ) {
         withContext(Dispatchers.IO) {
             val recordPath = File(dataDir, filePath)
+            recordPath.mkdir()
+
             val pboxFile = File(recordPath, FILE_PBOX)
+            pboxFile.createNewFile()
             pboxFile.sink().buffer().use { sink ->
                 pboxData.forEach {
                     sink.writeUtf8(it)
@@ -39,6 +42,7 @@ object Tracking {
                 }
             }
             val realFile = File(recordPath, FILE_REAL)
+            realFile.createNewFile()
             realFile.sink().buffer().use { sink ->
                 realData.forEach {
                     sink.writeUtf8(it)
@@ -77,38 +81,53 @@ object Tracking {
         if (recordFile.exists().not()) return emptyList()
 
         val records = mutableListOf<TrackingData>()
+        val lineRecordProcessor = LineRecordProcessor()
+
         recordFile.source().use { source ->
             source.buffer().use { bufferedSource ->
-                var rmcData: RmcData? = null
-                var ggaData: GgaData? = null
-
-                val handleDataPoint = {
-                    rmcData?.let {
-                        val record = mergeRmcAndGga(it, ggaData)
-                        records.add(record)
-                        rmcData = null
-                        ggaData = null
-                    }
-                }
-
                 while (true) {
                     val line = bufferedSource.readUtf8Line() ?: break
-                    val fields = line.split(',')
-
-                    // This assumes RMC data always comes before GGA.
-                    val firstField = fields.first()
-                    if (firstField.isRMCFlag()) {
-                        handleDataPoint.invoke()
-                        rmcData = parseRmc(fields)
-                    } else if (firstField.isGGAFlag()) {
-                        ggaData = parseGga(fields)
+                    lineRecordProcessor.processLine(line) {
+                        records.add(it)
                     }
                 }
-                handleDataPoint.invoke()
             }
         }
         return records
     }
+
+    private const val DIR_HISTORY_RECORDS = "HistoryRecords"
+    private const val FILE_REAL = "real.txt"
+    private const val FILE_PBOX = "pbox.txt"
+
+}
+
+
+class LineRecordProcessor() {
+    private var rmcData: RmcData? = null
+    private var ggaData: GgaData? = null
+
+    fun processLine(
+        line: String,
+        onNewRecord: (TrackingData) -> Unit
+    ) {
+        val fields = line.split(',')
+
+        // This assumes RMC data always comes before GGA.
+        val firstField = fields.first()
+        if (firstField.isRMCFlag()) {
+            rmcData?.let {
+                val record = mergeRmcAndGga(it, ggaData)
+                onNewRecord.invoke(record)
+                rmcData = null
+                ggaData = null
+            }
+            rmcData = parseRmc(fields)
+        } else if (firstField.isGGAFlag()) {
+            ggaData = parseGga(fields)
+        }
+    }
+
 
     private fun mergeRmcAndGga(rmcData: RmcData, ggaData: GgaData?): TrackingData {
         return TrackingData(
@@ -247,13 +266,11 @@ object Tracking {
     private fun String.isRMCFlag() = startsWith('$') && endsWith("RMC")
     private fun String.isGGAFlag() = startsWith('$') && endsWith("GGA")
 
-    private const val DIR_HISTORY_RECORDS = "HistoryRecords"
-    private const val FILE_REAL = "real.txt"
-    private const val FILE_PBOX = "pbox.txt"
 
-
-    const val UTC_TIME_PATTERN = "HHmmss"
-    const val UTC_TIME_PATTERN_SSS = "HHmmss.SSS"
-    const val UTC_TIME_PATTERN_SS = "HHmmss.SS"
-    const val UTC_DATE_PATTERN = "ddMMyy"
+    companion object {
+        const val UTC_TIME_PATTERN = "HHmmss"
+        const val UTC_TIME_PATTERN_SSS = "HHmmss.SSS"
+        const val UTC_TIME_PATTERN_SS = "HHmmss.SS"
+        const val UTC_DATE_PATTERN = "ddMMyy"
+    }
 }

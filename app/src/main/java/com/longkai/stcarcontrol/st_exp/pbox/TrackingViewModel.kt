@@ -1,6 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.pbox
 
 import android.app.Application
+import android.util.Log
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -8,6 +9,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.longkai.stcarcontrol.st_exp.STCarApplication
 import com.longkai.stcarcontrol.st_exp.appPrefsDataStore
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDPBox.CMDPBox
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.CommandPBoxMock
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,10 +23,19 @@ import java.time.LocalDateTime
 data class TrackingViewState(
     val inReviewMode: Boolean = false,
     val inReplayMode: Boolean = false,
-    val isRecording: Boolean = false,
     val historyRecordData: HistoryRecordData? = null,
     val trackSettings: TrackSettings = TrackSettings(),
-    val needRefreshTrack: Boolean = false,
+    val needRefreshTrack: Boolean = false
+)
+
+data class RecordingState(
+    val isRecording: Boolean = false,
+    val recordingPoint: RecordingPoint? = null
+)
+
+data class RecordingPoint(
+    val realPoint: TrackingData? = null,
+    val pboxPoint: TrackingData? = null
 )
 
 data class TrackSettings(
@@ -41,10 +56,13 @@ enum class RecordType {
     PBOX, REAL
 }
 
-class TrackingViewModel(application: Application) : AndroidViewModel(application) {
+class TrackingViewModel(private val application: Application) : AndroidViewModel(application) {
+    private val TAG = this.javaClass.simpleName
+
     private var recordPath: String = ""
     private var recordDataReal: MutableList<String> = mutableListOf()
     private var recordDataPbox: MutableList<String> = mutableListOf()
+    private val lineRecordProcessor = LineRecordProcessor()
 
     private val _uiState = MutableStateFlow(TrackingViewState())
     val uiState: StateFlow<TrackingViewState> = _uiState
@@ -52,6 +70,8 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
     val showRealTrack: StateFlow<Boolean> = _showRealTrack
     private val _showPboxTrack = MutableStateFlow(true)
     val showPboxTrack: StateFlow<Boolean> = _showPboxTrack
+    private val _recordingState = MutableStateFlow(RecordingState())
+    val recordingState: StateFlow<RecordingState> = _recordingState
 
     init {
         viewModelScope.launch {
@@ -136,24 +156,70 @@ class TrackingViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun startRecording() {
-        _uiState.update {
-            it.copy(isRecording = true)
+        _recordingState.update {
+            it.copy(isRecording = true, recordingPoint = null)
         }
         recordPath = "${LocalDateTime.now()}"
+
+        fun CMDPBox.DataType.toRecordType() = when (this) {
+            CMDPBox.DataType.Real -> RecordType.REAL
+            CMDPBox.DataType.PBox -> RecordType.PBOX
+            CMDPBox.DataType.Reserved1 -> throw java.lang.IllegalArgumentException()
+            CMDPBox.DataType.Reserved2 -> throw java.lang.IllegalArgumentException()
+        }
+
+        val command = CMDPBox()
+        ServiceManager.getInstance().sendCommandToCar(command, CommandListenerAdapter<CMDPBox.Response>())
+        ServiceManager.getInstance().registerRegularlyCommand(
+            command,
+            object : CommandListenerAdapter<CMDPBox.Response>() {
+                override fun onSuccess(response: CMDPBox.Response?) {
+                    Log.i(TAG, "onSuccess, response: ${response?.dataType}, ${response?.content}")
+                    response?.also {
+                        saveRecord(response.content, response.dataType.toRecordType())
+                    }
+                }
+
+                override fun onTimeout() { }
+            }
+        )
+        MockMessageServiceImpl.getService().StopService(CommandPBoxMock::class.java.toString())
+        MockMessageServiceImpl.getService().StartService(CommandPBoxMock::class.java.toString(), application)
     }
 
-    fun saveRecord(record: String, recordType: RecordType) {
+    private fun saveRecord(record: String, recordType: RecordType) {
+        if (!_recordingState.value.isRecording) return
         when (recordType) {
-            RecordType.PBOX -> recordDataPbox.add(record)
-            RecordType.REAL -> recordDataReal.add(record)
+            RecordType.PBOX -> {
+                recordDataPbox.add(record)
+                lineRecordProcessor.processLine(record) { trackingData ->
+                    _recordingState.update {
+                        it.copy(
+                            recordingPoint = RecordingPoint(pboxPoint = trackingData)
+                        )
+                    }
+                }
+            }
+            RecordType.REAL -> {
+                recordDataReal.add(record)
+                lineRecordProcessor.processLine(record) { trackingData ->
+                    _recordingState.update {
+                        it.copy(
+                            recordingPoint = RecordingPoint(realPoint = trackingData)
+                        )
+                    }
+                }
+            }
         }
     }
 
     fun stopRecording(onComplete: (fileName: String?) -> Unit) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(isRecording = false)
+            _recordingState.update {
+                it.copy(isRecording = false, recordingPoint = null)
             }
+            ServiceManager.getInstance().unregisterRegularlyCommand(CMDPBox())
+            MockMessageServiceImpl.getService().StopService(CommandPBoxMock::class.java.toString())
             val filePath = recordPath
             if (filePath.isNotBlank() && recordDataPbox.isNotEmpty()) {
                 Tracking.saveRecording(filePath, recordDataPbox, recordDataReal)

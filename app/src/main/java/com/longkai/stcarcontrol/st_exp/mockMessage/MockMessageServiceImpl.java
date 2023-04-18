@@ -1,5 +1,6 @@
 package com.longkai.stcarcontrol.st_exp.mockMessage;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 
@@ -10,6 +11,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUOBCDemoFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.CommandPBoxMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.KeyCheckFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.KeyPairFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.NFCFragmentMock;
@@ -30,6 +32,8 @@ public class MockMessageServiceImpl implements MockMessageService {
 
   private static Handler doBackgroundHandler;
 
+  private MockFragmentBase runnable = null;
+
   public static MockMessageService getService() {
     if (instance == null) {
       instance = new MockMessageServiceImpl();
@@ -47,7 +51,6 @@ public class MockMessageServiceImpl implements MockMessageService {
   @Override
   public void StartService(String fragmentClass) {
     if (inUIDebugMode) {
-      Runnable runnable = null;
       if (fragmentClass.equalsIgnoreCase(VCUMCUFragment.class.toString())) {
         runnable = new VCUMCUFragmentMock(doBackgroundHandler);
       } else if (fragmentClass.equalsIgnoreCase(VCUBMSFragment.class.toString())) {
@@ -68,8 +71,20 @@ public class MockMessageServiceImpl implements MockMessageService {
   }
 
   @Override
+  public void StartService(String fragmentClass, Context context) {
+    if (inUIDebugMode) {
+      if (fragmentClass.equalsIgnoreCase(CommandPBoxMock.class.toString())) {
+        runnable = new CommandPBoxMock(doBackgroundHandler, context);
+      }
+      doBackgroundHandler.post(runnable);
+    }
+  }
+
+  @Override
   public void StopService(String fragmentClass) {
+    if (runnable != null) {
+      runnable.isStopped = true;
+    }
     doBackgroundHandler.removeCallbacksAndMessages(null);
-    //        doBackgroundHandler.getLooper().quit();
   }
 }

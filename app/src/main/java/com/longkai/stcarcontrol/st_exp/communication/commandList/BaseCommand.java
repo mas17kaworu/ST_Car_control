@@ -66,6 +66,7 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_KEY_CHECK       = 0x32;
     protected static final byte COMMAND_SOUNDS_LED      = 0x33;
     protected static final byte COMMAND_C11_LIGHT       = 0x34;
+    protected static final byte COMMAND_PBOX            = 0x33;
 
 
 
