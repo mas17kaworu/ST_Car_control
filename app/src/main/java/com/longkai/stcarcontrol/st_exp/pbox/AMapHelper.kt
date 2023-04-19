@@ -55,17 +55,7 @@ class AMapHelper(
         val realTrackPoints: MutableList<TrackingData> = mutableListOf(),
         val pboxMapPoints: MutableList<LatLng> = mutableListOf(),
         val realMapPoints: MutableList<LatLng> = mutableListOf()
-    ) {
-        fun addPboxPoint(trackPoint: TrackingData, mapPoint: LatLng) {
-            pboxTrackPoints.add(trackPoint)
-            pboxMapPoints.add(mapPoint)
-        }
-
-        fun addRealPoint(trackPoint: TrackingData, mapPoint: LatLng) {
-            realTrackPoints.add(trackPoint)
-            realMapPoints.add(mapPoint)
-        }
-    }
+    )
 
     fun init() {
         aMap.mapType = AMap.MAP_TYPE_SATELLITE
@@ -640,9 +630,37 @@ class AMapHelper(
                 pboxPoint.isSameTime(it)
             }
             val error = matchPoint?.let {
-                AMapUtils.calculateLineDistance(pboxPoint.toLatLng(), it.toLatLng())
+                calculatePointError(pboxPoint.toLatLng(), it.toLatLng())
             }
             pboxPoint.error = error
+        }
+    }
+
+    private fun calculatePointError(pboxMapPoint: LatLng, realMapPoint: LatLng): Float {
+        return AMapUtils.calculateLineDistance(pboxMapPoint, realMapPoint)
+    }
+
+    private fun RecordingData.addPboxPoint(trackPoint: TrackingData, mapPoint: LatLng) {
+        pboxTrackPoints.add(trackPoint)
+        pboxMapPoints.add(mapPoint)
+        calculateLastPointError()
+    }
+
+    private fun RecordingData.addRealPoint(trackPoint: TrackingData, mapPoint: LatLng) {
+        realTrackPoints.add(trackPoint)
+        realMapPoints.add(mapPoint)
+        calculateLastPointError()
+    }
+
+    private fun RecordingData.calculateLastPointError() {
+        val lastPboxPoint = pboxTrackPoints.lastOrNull()
+        val lastRealPoint = realTrackPoints.lastOrNull()
+        if (lastPboxPoint != null
+            && lastRealPoint != null
+            && lastPboxPoint.error != null
+            && lastPboxPoint.isSameTime(lastRealPoint)
+        ) {
+            lastPboxPoint.error = calculatePointError(lastPboxPoint.toLatLng(), lastRealPoint.toLatLng())
         }
     }
 
