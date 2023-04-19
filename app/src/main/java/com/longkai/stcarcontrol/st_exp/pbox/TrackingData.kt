@@ -70,11 +70,15 @@ class TrackingData(
     }
 
     fun isEarlyThan(other: TrackingData): Boolean {
-        return utcTime.compareTo(other.utcTime) < 0
+        return utcTime < other.utcTime
     }
 
     fun isEarlyOrEqual(other: TrackingData): Boolean {
-        return utcTime.compareTo(other.utcTime) <= 0
+        return utcTime <= other.utcTime
+    }
+
+    fun isLaterThan(other: TrackingData): Boolean {
+        return utcTime > other.utcTime
     }
 
     /**

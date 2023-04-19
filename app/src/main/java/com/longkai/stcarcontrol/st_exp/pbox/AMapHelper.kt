@@ -625,12 +625,11 @@ class AMapHelper(
     }
 
     private fun HistoryRecordData.calculateErrors() {
-        pboxPoints.forEach { pboxPoint ->
-            val matchPoint = realPoints.firstOrNull {
-                pboxPoint.isSameTime(it)
-            }
-            val error = matchPoint?.let {
-                calculatePointError(pboxPoint.toLatLng(), it.toLatLng())
+        pboxPoints.forEachIndexed { index, pboxPoint ->
+            val matchPointIndex = realPoints.findMatchPointIndex(pboxPoint, index)
+            val error = matchPointIndex?.let {
+                val matchPoint = realPoints[matchPointIndex]
+                calculatePointError(pboxPoint.toLatLng(), matchPoint.toLatLng())
             }
             pboxPoint.error = error
         }
@@ -655,13 +654,31 @@ class AMapHelper(
     private fun RecordingData.calculateLastPointError() {
         val lastPboxPoint = pboxTrackPoints.lastOrNull()
         val lastRealPoint = realTrackPoints.lastOrNull()
-        if (lastPboxPoint != null
-            && lastRealPoint != null
-            && lastPboxPoint.error != null
-            && lastPboxPoint.isSameTime(lastRealPoint)
-        ) {
-            lastPboxPoint.error = calculatePointError(lastPboxPoint.toLatLng(), lastRealPoint.toLatLng())
+
+        if (lastPboxPoint != null && lastRealPoint != null) {
+            if (lastPboxPoint.isEarlyOrEqual(lastRealPoint)) {
+                val matchPointIndex = realTrackPoints.findMatchPointIndex(lastPboxPoint, realTrackPoints.size)
+                if (matchPointIndex != null) {
+                    lastPboxPoint.error = calculatePointError(pboxMapPoints.last(), realMapPoints[matchPointIndex])
+                }
+            }
         }
+    }
+
+    private fun List<TrackingData>.findMatchPointIndex(point: TrackingData, startIndex: Int): Int? {
+        var iterator = this.listIterator(startIndex)
+        while(iterator.hasPrevious()) {
+            val element = iterator.previous()
+            if (element.isSameTime(point)) return iterator.nextIndex()
+            if (element.isEarlyThan(point)) break
+        }
+        iterator = this.listIterator(startIndex)
+        while(iterator.hasNext()) {
+            val element = iterator.next()
+            if (element.isSameTime(point)) return iterator.previousIndex()
+            if (element.isLaterThan(point)) break
+        }
+        return null
     }
 
     companion object {
