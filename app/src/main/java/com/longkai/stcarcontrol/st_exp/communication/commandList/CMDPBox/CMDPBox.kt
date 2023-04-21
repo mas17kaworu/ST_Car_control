@@ -15,7 +15,7 @@ class CMDPBox : BaseCommand() {
     }
 
     enum class DataType(val uartNumber: Int) {
-        Real(0), PBox(1), Reserved1(2), Reserved2(3);
+        Real(1), PBox(2), Reserved1(3), Reserved2(4);
 
         companion object {
             fun from(uartNumber: Int): DataType {

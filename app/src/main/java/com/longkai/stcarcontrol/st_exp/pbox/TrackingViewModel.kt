@@ -52,6 +52,10 @@ val PREF_REPLAY_CAMERA_FOLLOW_CAR = booleanPreferencesKey("replayCameraFollowCar
 const val DEFAULT_LABEL_INTERVAL = 10
 const val DEFAULT_REPLAY_SPEED = 1
 
+// Control screen logs and max log number
+const val SHOW_LOGS = true
+const val LOG_MAX_LINES = 10
+
 enum class RecordType {
     PBOX, REAL
 }
@@ -72,6 +76,9 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
     val showPboxTrack: StateFlow<Boolean> = _showPboxTrack
     private val _recordingState = MutableStateFlow(RecordingState())
     val recordingState: StateFlow<RecordingState> = _recordingState
+
+    private val _logs = MutableStateFlow(listOf<String>())
+    val logs: StateFlow<List<String>> = _logs
 
     init {
         viewModelScope.launch {
@@ -159,6 +166,10 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
         _recordingState.update {
             it.copy(isRecording = true, recordingPoint = null)
         }
+        if (SHOW_LOGS) {
+            _logs.update { listOf() }
+        }
+
         recordPath = "${LocalDateTime.now()}"
 
         fun CMDPBox.DataType.toRecordType() = when (this) {
@@ -210,6 +221,11 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
                     }
                 }
             }
+        }
+
+        if (SHOW_LOGS) {
+            val log = "$recordType: $record"
+            _logs.update { it.plus(log).takeLast(LOG_MAX_LINES) }
         }
     }
 

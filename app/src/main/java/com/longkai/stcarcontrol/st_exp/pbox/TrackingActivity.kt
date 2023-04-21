@@ -207,6 +207,19 @@ class TrackingActivity : BaseActivity() {
                         }
                     }
                 }
+                if (SHOW_LOGS) {
+                    launch {
+                        viewModel.logs.collectLatest { logs ->
+                            binding.logTextView.apply {
+                                val hasLogs = logs.isNotEmpty()
+                                isVisible = hasLogs
+                                if (hasLogs) {
+                                    text = logs.joinToString("\n")
+                                }
+                            }
+                        }
+                    }
+                }
                 launch {
                     viewModel.showRealTrack.collectLatest { showRealTrack ->
                         binding.signalReal.isSelected = showRealTrack
