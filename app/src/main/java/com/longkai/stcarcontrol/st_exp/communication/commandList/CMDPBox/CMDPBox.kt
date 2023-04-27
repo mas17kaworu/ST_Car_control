@@ -25,7 +25,7 @@ class CMDPBox : BaseCommand() {
     }
 
     override fun toResponse(data: ByteArray): BaseResponse {
-        val contentLength = data[2] - 2
+        val contentLength = data[2].toUByte().toInt() - 2
         val uartNumber = data[4].toInt()
         val content = String(data.sliceArray(5 until(5 + contentLength)))
         return Response(DataType.from(uartNumber), content)

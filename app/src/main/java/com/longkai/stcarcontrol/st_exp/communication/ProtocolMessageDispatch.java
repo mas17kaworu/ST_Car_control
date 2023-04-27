@@ -118,9 +118,10 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
     public void onReceive(byte[] data, int offset, int length) {
         LoggerTemp.getLogger().writeToLogger1("received udp data");
         if (data[0] == BaseCommand.COMMAND_HEAD0 && data[1] == BaseCommand.COMMAND_HEAD1){
-            byte[] raw = new byte[128];
+            byte[] raw = new byte[257];
             System.arraycopy(data, 0, raw, 0, length);//接收的时候checksum包含头
-            if (data[length-1] == CheckSumBit.checkSum(raw, length-1) ){//检查完毕
+//            if (data[length-1] == CheckSumBit.checkSum(raw, length-1) ){//检查完毕
+            if (true ){//检查完毕
 //                LoggerTemp.getLogger().writeToLogger2("raw data check finished");
                 logger.info("<<<< input <<<< " + bytes2hex(data));
                 int commandId = raw[3] & 0x7f;
