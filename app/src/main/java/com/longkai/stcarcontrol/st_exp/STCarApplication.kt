@@ -12,12 +12,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.longkai.stcarcontrol.st_exp.STCarApplication
+import com.longkai.stcarcontrol.st_exp.Utils.CustomExceptionHandler
 import com.longkai.stcarcontrol.st_exp.Utils.FileUtils
 import com.longkai.stcarcontrol.st_exp.compose.data.AppContainer
 import com.longkai.stcarcontrol.st_exp.compose.data.AppContainerImpl
 import org.apache.log4j.Level
 import java.io.File
-import java.lang.Exception
+import kotlin.Exception
 
 /**
  * Created by Administrator on 2017/12/10.
@@ -31,6 +32,9 @@ class STCarApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Thread.setDefaultUncaughtExceptionHandler(CustomExceptionHandler(this))
+
         // CrashHandler.getsInstance().init(this)
 
 //        Log.i("longkai", "Karl test isExternalStorageWritable = " + FileUtils.isExternalStorageWritable());
