@@ -162,7 +162,7 @@ public class ProtocolMessageDispatch implements MessageReceivedListener{
         }
     }
 
-    public SparseArray<Command> getSentCommandList(){
+    public SparseArray<Command> getSentCommandList() {
         return mSentCommandList;
     }
 
