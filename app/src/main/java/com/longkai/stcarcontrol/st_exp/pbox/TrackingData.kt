@@ -25,6 +25,13 @@ data class GgaData(
     val geoidHeight: Double? = null
 )
 
+data class AlarmData(
+    val utcTime: LocalTime,
+    val antennaSign: Int?,
+    val fraudSign: Int?,
+    val interfereSign: Int?
+)
+
 class TrackingData(
     val utcTime: LocalTime,
     val latitude: Double,

@@ -241,6 +241,60 @@
         tools:visibility="visible" />
 
     <TextView
+        android:id="@+id/antennaSign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="Antenna"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/baseline_error_24"
+        app:layout_constraintBottom_toBottomOf="@id/recordBtn"
+        app:layout_constraintEnd_toStartOf="@id/fraudSign"
+        app:layout_constraintTop_toTopOf="@id/recordBtn" />
+
+    <TextView
+        android:id="@+id/fraudSign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="Fraud"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/baseline_error_24"
+        app:layout_constraintBottom_toBottomOf="@id/recordBtn"
+        app:layout_constraintEnd_toStartOf="@id/interfereSign"
+        app:layout_constraintTop_toTopOf="@id/recordBtn" />
+
+    <TextView
+        android:id="@+id/interfereSign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="Interfere"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/baseline_error_24"
+        app:layout_constraintBottom_toBottomOf="@id/recordBtn"
+        app:layout_constraintEnd_toStartOf="@id/errorSignBarrier"
+        app:layout_constraintTop_toTopOf="@id/recordBtn" />
+
+    <View
+        android:id="@+id/errorSignBarrier"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/recordBtn"
+        app:layout_constraintEnd_toStartOf="@id/recordBtn"
+        app:layout_constraintTop_toTopOf="@id/recordBtn" />
+
+    <TextView
         android:id="@+id/logTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

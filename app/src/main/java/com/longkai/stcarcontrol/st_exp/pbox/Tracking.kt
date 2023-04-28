@@ -87,9 +87,7 @@ object Tracking {
             source.buffer().use { bufferedSource ->
                 while (true) {
                     val line = bufferedSource.readUtf8Line() ?: break
-                    lineRecordProcessor.processLine(line) {
-                        records.add(it)
-                    }
+                    lineRecordProcessor.processLine(line){ records.add(it) }
                 }
             }
         }
@@ -109,7 +107,8 @@ class LineRecordProcessor() {
 
     fun processLine(
         line: String,
-        onNewRecord: (TrackingData) -> Unit
+        onNewAlarmData: (AlarmData) -> Unit = {},
+        onNewRecord: (TrackingData) -> Unit,
     ) {
         val fields = line.split(',')
 
@@ -125,6 +124,11 @@ class LineRecordProcessor() {
             rmcData = parseRmc(fields)
         } else if (firstField.isGGAFlag()) {
             ggaData = parseGga(fields)
+        } else if (firstField.isALARMFlag()) {
+            val alarmData = parseAlarm(fields)
+            alarmData?.let {
+                onNewAlarmData(it)
+            }
         }
     }
 
@@ -212,6 +216,24 @@ class LineRecordProcessor() {
         }
     }
 
+    private fun parseAlarm(fields: List<String>): AlarmData? {
+        return try {
+            val utcTime = parseUtcTime(fields[1])
+            val antennaSign = parseInt(fields[2])
+            val fraudSign = parseInt(fields[3])
+            val interfereSign = parseInt(fields[4])
+            AlarmData(
+                utcTime = utcTime,
+                antennaSign = antennaSign,
+                fraudSign = fraudSign,
+                interfereSign = interfereSign
+            )
+        } catch (e: Exception) {
+            Log.e("zcf", "$fields", e)
+            null
+        }
+    }
+
     /**
      * UTC ime in [UTC_TIME_PATTERN] format
      */
@@ -265,6 +287,7 @@ class LineRecordProcessor() {
 
     private fun String.isRMCFlag() = startsWith('$') && endsWith("RMC")
     private fun String.isGGAFlag() = startsWith('$') && endsWith("GGA")
+    private fun String.isALARMFlag() = startsWith('$') && endsWith("ALARM")
 
 
     companion object {
