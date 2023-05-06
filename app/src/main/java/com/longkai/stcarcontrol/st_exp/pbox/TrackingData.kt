@@ -3,7 +3,6 @@ package com.longkai.stcarcontrol.st_exp.pbox
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 data class RmcData(
     val utcTime: LocalTime,
@@ -27,9 +26,11 @@ data class GgaData(
 
 data class AlarmData(
     val utcTime: LocalTime,
+    val antennaStatus: Int?,
     val antennaSign: Int?,
-    val fraudSign: Int?,
-    val interfereSign: Int?
+    val wbiSign: Int?,
+    val nbiSign: Int?,
+    val spoofingSign: Int?
 )
 
 class TrackingData(

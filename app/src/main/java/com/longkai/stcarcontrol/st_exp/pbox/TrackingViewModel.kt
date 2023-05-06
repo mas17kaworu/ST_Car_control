@@ -40,8 +40,9 @@ data class RecordingPoint(
 
 data class AlarmState(
     val antennaSign: Boolean = false,
-    val fraudSign: Boolean = false,
-    val interfereSign: Boolean = false
+    val wbiSign: Boolean = false,
+    val nbiSign: Boolean = false,
+    val spoofingSign: Boolean = false
 )
 
 data class TrackSettings(
@@ -85,7 +86,7 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
     private val _recordingState = MutableStateFlow(RecordingState())
     val recordingState: StateFlow<RecordingState> = _recordingState
 
-    private val _alarmState = MutableStateFlow(AlarmState(true, true, true))
+    private val _alarmState = MutableStateFlow(AlarmState())
     val alarmState: StateFlow<AlarmState> = _alarmState
 
     private val _logs = MutableStateFlow(listOf<String>())
@@ -252,8 +253,9 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
         _alarmState.update {
             it.copy(
                 antennaSign = alarmData.antennaSign?.equals(0)?.not() ?: false,
-                fraudSign = alarmData.fraudSign?.equals(0)?.not() ?: false,
-                interfereSign = alarmData.interfereSign?.equals(0)?.not() ?: false
+                wbiSign = alarmData.wbiSign?.equals(0)?.not() ?: false,
+                nbiSign = alarmData.nbiSign?.equals(0)?.not() ?: false,
+                spoofingSign = alarmData.spoofingSign?.equals(0)?.not() ?: false
             )
         }
     }

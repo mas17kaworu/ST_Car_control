@@ -178,8 +178,9 @@ class TrackingActivity : BaseActivity() {
         fun updateAlarmStateUI(state: AlarmState) {
             binding.apply {
                 antennaSign.isVisible = state.antennaSign
-                fraudSign.isVisible = state.fraudSign
-                interfereSign.isVisible = state.interfereSign
+                wbiSign.isVisible = state.wbiSign
+                nbiSign.isVisible = state.nbiSign
+                spoofingSign.isVisible = state.spoofingSign
             }
         }
 

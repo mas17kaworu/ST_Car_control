@@ -252,38 +252,57 @@
         android:visibility="gone"
         app:drawableTopCompat="@drawable/baseline_error_24"
         app:layout_constraintBottom_toBottomOf="@id/recordBtn"
-        app:layout_constraintEnd_toStartOf="@id/fraudSign"
-        app:layout_constraintTop_toTopOf="@id/recordBtn" />
+        app:layout_constraintEnd_toStartOf="@id/wbiSign"
+        app:layout_constraintTop_toTopOf="@id/recordBtn"
+        tools:visibility="visible" />
 
     <TextView
-        android:id="@+id/fraudSign"
+        android:id="@+id/wbiSign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
         android:gravity="center"
         android:padding="4dp"
-        android:text="Fraud"
+        android:text="WBI"
         android:textColor="@android:color/white"
         android:visibility="gone"
         app:drawableTopCompat="@drawable/baseline_error_24"
         app:layout_constraintBottom_toBottomOf="@id/recordBtn"
-        app:layout_constraintEnd_toStartOf="@id/interfereSign"
-        app:layout_constraintTop_toTopOf="@id/recordBtn" />
+        app:layout_constraintEnd_toStartOf="@id/nbiSign"
+        app:layout_constraintTop_toTopOf="@id/recordBtn"
+        tools:visibility="visible" />
 
     <TextView
-        android:id="@+id/interfereSign"
+        android:id="@+id/nbiSign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
         android:gravity="center"
         android:padding="4dp"
-        android:text="Interfere"
+        android:text="NBI"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/baseline_error_24"
+        app:layout_constraintBottom_toBottomOf="@id/recordBtn"
+        app:layout_constraintEnd_toStartOf="@id/spoofingSign"
+        app:layout_constraintTop_toTopOf="@id/recordBtn"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/spoofingSign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="Spoof"
         android:textColor="@android:color/white"
         android:visibility="gone"
         app:drawableTopCompat="@drawable/baseline_error_24"
         app:layout_constraintBottom_toBottomOf="@id/recordBtn"
         app:layout_constraintEnd_toStartOf="@id/errorSignBarrier"
-        app:layout_constraintTop_toTopOf="@id/recordBtn" />
+        app:layout_constraintTop_toTopOf="@id/recordBtn"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/errorSignBarrier"

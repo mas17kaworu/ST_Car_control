@@ -12,7 +12,6 @@ import java.lang.Exception
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
 object Tracking {
 
@@ -110,7 +109,7 @@ class LineRecordProcessor() {
         onNewAlarmData: (AlarmData) -> Unit = {},
         onNewRecord: (TrackingData) -> Unit,
     ) {
-        val fields = line.split(',')
+        val fields = line.split(',', '*')
 
         // This assumes RMC data always comes before GGA.
         val firstField = fields.first()
@@ -219,14 +218,18 @@ class LineRecordProcessor() {
     private fun parseAlarm(fields: List<String>): AlarmData? {
         return try {
             val utcTime = parseUtcTime(fields[1])
-            val antennaSign = parseInt(fields[2])
-            val fraudSign = parseInt(fields[3])
-            val interfereSign = parseInt(fields[4])
+            val antennaStatus = parseInt(fields[5])
+            val antennaSign = parseInt(fields[6])
+            val wbiSign = parseInt(fields[7])
+            val nbiSign = parseInt(fields[8])
+            val spoofingSign = parseInt(fields[9])
             AlarmData(
                 utcTime = utcTime,
+                antennaStatus = antennaStatus,
                 antennaSign = antennaSign,
-                fraudSign = fraudSign,
-                interfereSign = interfereSign
+                wbiSign = wbiSign,
+                nbiSign = nbiSign,
+                spoofingSign = spoofingSign
             )
         } catch (e: Exception) {
             Log.e("zcf", "$fields", e)
