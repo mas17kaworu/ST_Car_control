@@ -666,6 +666,7 @@ class AMapHelper(
     }
 
     private fun List<TrackingData>.findMatchPointIndex(point: TrackingData, startIndex: Int): Int? {
+        if (startIndex < 0 || startIndex > this.size) return null
         var iterator = this.listIterator(startIndex)
         while(iterator.hasPrevious()) {
             val element = iterator.previous()

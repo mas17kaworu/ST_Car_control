@@ -110,29 +110,48 @@ class LineRecordProcessor() {
         onNewRecord: (TrackingData) -> Unit,
     ) {
         val fields = line.split(',', '*')
-
-        // This assumes RMC data always comes before GGA.
         val firstField = fields.first()
-        if (firstField.isRMCFlag()) {
-            rmcData?.let {
-                val record = mergeRmcAndGga(it, ggaData)
-                onNewRecord.invoke(record)
-                rmcData = null
-                ggaData = null
-            }
-            rmcData = parseRmc(fields)
-        } else if (firstField.isGGAFlag()) {
-            ggaData = parseGga(fields)
-        } else if (firstField.isALARMFlag()) {
+
+        if (firstField.isALARMFlag()) {
             val alarmData = parseAlarm(fields)
             alarmData?.let {
                 onNewAlarmData(it)
             }
+            return
+        }
+
+        if (firstField.isRMCFlag()) {
+            rmcData = parseRmc(fields)
+        } else if (firstField.isGGAFlag()) {
+            ggaData = parseGga(fields)
+        }
+
+        // Requires both RMC data and GGA data to be present and at the same time, otherwise discard old data
+        if (rmcData != null && ggaData != null) {
+            if (rmcData!!.utcTime == ggaData!!.utcTime) {
+                val record = mergeRmcAndGga(rmcData!!, ggaData!!)
+                onNewRecord(record)
+                rmcData = null
+                ggaData = null
+            } else if (rmcData!!.utcTime > ggaData!!.utcTime) {
+                ggaData = null
+            } else {
+                rmcData = null
+            }
         }
     }
 
+    fun processLines(
+        lines: List<String>,
+        onNewAlarmData: (AlarmData) -> Unit = {},
+        onNewRecord: (TrackingData) -> Unit,
+    ) {
+        lines.forEach {
+            processLine(it, onNewAlarmData, onNewRecord)
+        }
+    }
 
-    private fun mergeRmcAndGga(rmcData: RmcData, ggaData: GgaData?): TrackingData {
+    private fun mergeRmcAndGga(rmcData: RmcData, ggaData: GgaData): TrackingData {
         return TrackingData(
             utcTime = rmcData.utcTime,
             latitude = rmcData.latitude,
@@ -140,11 +159,11 @@ class LineRecordProcessor() {
             speed = rmcData.speed,
             direction = rmcData.direction,
             utcDate = rmcData.utcDate,
-            gpsStatus = ggaData?.gpsStatus,
-            satelliteNumber = ggaData?.satelliteNumber,
-            hdop = ggaData?.hdop,
-            altitude = ggaData?.altitude,
-            geoidHeight = ggaData?.geoidHeight
+            gpsStatus = ggaData.gpsStatus,
+            satelliteNumber = ggaData.satelliteNumber,
+            hdop = ggaData.hdop,
+            altitude = ggaData.altitude,
+            geoidHeight = ggaData.geoidHeight
         )
     }
 

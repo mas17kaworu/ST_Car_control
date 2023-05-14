@@ -254,8 +254,6 @@ class TrackingActivity : BaseActivity() {
         viewModel.stopRecording { fileName ->
             if (fileName != null) {
                 showSnackbar("Recording successfully saved to $fileName")
-            } else {
-                showSnackbar("No data saved")
             }
         }
     }

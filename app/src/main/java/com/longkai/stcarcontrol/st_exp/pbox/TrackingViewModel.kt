@@ -212,11 +212,15 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
 
     private fun saveRecord(record: String, recordType: RecordType) {
         if (!_recordingState.value.isRecording) return
+
+        System.lineSeparator()
+
+        val lines = record.split("\r\n")
         when (recordType) {
             RecordType.PBOX -> {
                 recordDataPbox.add(record)
-                lineRecordProcessor.processLine(
-                    line = record,
+                lineRecordProcessor.processLines(
+                    lines = lines,
                     onNewAlarmData = { updateAlarmState(it) },
                     onNewRecord = { trackingData ->
                         _recordingState.update {
@@ -229,8 +233,8 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
             }
             RecordType.REAL -> {
                 recordDataReal.add(record)
-                lineRecordProcessor.processLine(
-                    line = record,
+                lineRecordProcessor.processLines(
+                    lines = lines,
                     onNewAlarmData = { updateAlarmState(it) },
                     onNewRecord = { trackingData ->
                         _recordingState.update {
