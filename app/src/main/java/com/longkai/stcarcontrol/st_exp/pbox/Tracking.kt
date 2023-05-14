@@ -12,7 +12,6 @@ import java.lang.Exception
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
 object Tracking {
 
@@ -87,9 +86,7 @@ object Tracking {
             source.buffer().use { bufferedSource ->
                 while (true) {
                     val line = bufferedSource.readUtf8Line() ?: break
-                    lineRecordProcessor.processLine(line) {
-                        records.add(it)
-                    }
+                    lineRecordProcessor.processLine(line){ records.add(it) }
                 }
             }
         }
@@ -109,9 +106,10 @@ class LineRecordProcessor() {
 
     fun processLine(
         line: String,
-        onNewRecord: (TrackingData) -> Unit
+        onNewAlarmData: (AlarmData) -> Unit = {},
+        onNewRecord: (TrackingData) -> Unit,
     ) {
-        val fields = line.split(',')
+        val fields = line.split(',', '*')
 
         // This assumes RMC data always comes before GGA.
         val firstField = fields.first()
@@ -125,6 +123,11 @@ class LineRecordProcessor() {
             rmcData = parseRmc(fields)
         } else if (firstField.isGGAFlag()) {
             ggaData = parseGga(fields)
+        } else if (firstField.isALARMFlag()) {
+            val alarmData = parseAlarm(fields)
+            alarmData?.let {
+                onNewAlarmData(it)
+            }
         }
     }
 
@@ -212,6 +215,28 @@ class LineRecordProcessor() {
         }
     }
 
+    private fun parseAlarm(fields: List<String>): AlarmData? {
+        return try {
+            val utcTime = parseUtcTime(fields[1])
+            val antennaStatus = parseInt(fields[5])
+            val antennaSign = parseInt(fields[6])
+            val wbiSign = parseInt(fields[7])
+            val nbiSign = parseInt(fields[8])
+            val spoofingSign = parseInt(fields[9])
+            AlarmData(
+                utcTime = utcTime,
+                antennaStatus = antennaStatus,
+                antennaSign = antennaSign,
+                wbiSign = wbiSign,
+                nbiSign = nbiSign,
+                spoofingSign = spoofingSign
+            )
+        } catch (e: Exception) {
+            Log.e("zcf", "$fields", e)
+            null
+        }
+    }
+
     /**
      * UTC ime in [UTC_TIME_PATTERN] format
      */
@@ -265,6 +290,7 @@ class LineRecordProcessor() {
 
     private fun String.isRMCFlag() = startsWith('$') && endsWith("RMC")
     private fun String.isGGAFlag() = startsWith('$') && endsWith("GGA")
+    private fun String.isALARMFlag() = startsWith('$') && endsWith("ALARM")
 
 
     companion object {

@@ -175,6 +175,15 @@ class TrackingActivity : BaseActivity() {
             binding.recordBtn.compoundDrawableTintList = ColorStateList.valueOf(getColor(tintColor))
         }
 
+        fun updateAlarmStateUI(state: AlarmState) {
+            binding.apply {
+                antennaSign.isVisible = state.antennaSign
+                wbiSign.isVisible = state.wbiSign
+                nbiSign.isVisible = state.nbiSign
+                spoofingSign.isVisible = state.spoofingSign
+            }
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -205,6 +214,11 @@ class TrackingActivity : BaseActivity() {
                         if (state.isRecording && state.recordingPoint != null) {
                             aMapHelper.updateRecording(state.recordingPoint)
                         }
+                    }
+                }
+                launch {
+                    viewModel.alarmState.collectLatest { state ->
+                        updateAlarmStateUI(state)
                     }
                 }
                 if (SHOW_LOGS) {

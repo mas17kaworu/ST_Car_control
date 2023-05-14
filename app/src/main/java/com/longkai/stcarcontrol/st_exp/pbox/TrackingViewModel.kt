@@ -38,6 +38,13 @@ data class RecordingPoint(
     val pboxPoint: TrackingData? = null
 )
 
+data class AlarmState(
+    val antennaSign: Boolean = false,
+    val wbiSign: Boolean = false,
+    val nbiSign: Boolean = false,
+    val spoofingSign: Boolean = false
+)
+
 data class TrackSettings(
     val hideRealTrackUI: Boolean = false,
     val labelInterval: Int = DEFAULT_LABEL_INTERVAL,
@@ -70,12 +77,17 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
 
     private val _uiState = MutableStateFlow(TrackingViewState())
     val uiState: StateFlow<TrackingViewState> = _uiState
+
     private val _showRealTrack = MutableStateFlow(true)
     val showRealTrack: StateFlow<Boolean> = _showRealTrack
     private val _showPboxTrack = MutableStateFlow(true)
     val showPboxTrack: StateFlow<Boolean> = _showPboxTrack
+
     private val _recordingState = MutableStateFlow(RecordingState())
     val recordingState: StateFlow<RecordingState> = _recordingState
+
+    private val _alarmState = MutableStateFlow(AlarmState())
+    val alarmState: StateFlow<AlarmState> = _alarmState
 
     private val _logs = MutableStateFlow(listOf<String>())
     val logs: StateFlow<List<String>> = _logs
@@ -203,29 +215,48 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
         when (recordType) {
             RecordType.PBOX -> {
                 recordDataPbox.add(record)
-                lineRecordProcessor.processLine(record) { trackingData ->
-                    _recordingState.update {
-                        it.copy(
-                            recordingPoint = RecordingPoint(pboxPoint = trackingData)
-                        )
-                    }
-                }
+                lineRecordProcessor.processLine(
+                    line = record,
+                    onNewAlarmData = { updateAlarmState(it) },
+                    onNewRecord = { trackingData ->
+                        _recordingState.update {
+                            it.copy(
+                                recordingPoint = RecordingPoint(pboxPoint = trackingData)
+                            )
+                        }
+                    },
+                )
             }
             RecordType.REAL -> {
                 recordDataReal.add(record)
-                lineRecordProcessor.processLine(record) { trackingData ->
-                    _recordingState.update {
-                        it.copy(
-                            recordingPoint = RecordingPoint(realPoint = trackingData)
-                        )
+                lineRecordProcessor.processLine(
+                    line = record,
+                    onNewAlarmData = { updateAlarmState(it) },
+                    onNewRecord = { trackingData ->
+                        _recordingState.update {
+                            it.copy(
+                                recordingPoint = RecordingPoint(realPoint = trackingData)
+                            )
+                        }
                     }
-                }
+                )
             }
         }
 
         if (SHOW_LOGS) {
             val log = "$recordType: $record"
             _logs.update { it.plus(log).takeLast(LOG_MAX_LINES) }
+        }
+    }
+
+    private fun updateAlarmState(alarmData: AlarmData) {
+        _alarmState.update {
+            it.copy(
+                antennaSign = alarmData.antennaSign?.equals(0)?.not() ?: false,
+                wbiSign = alarmData.wbiSign?.equals(0)?.not() ?: false,
+                nbiSign = alarmData.nbiSign?.equals(0)?.not() ?: false,
+                spoofingSign = alarmData.spoofingSign?.equals(0)?.not() ?: false
+            )
         }
     }
 
