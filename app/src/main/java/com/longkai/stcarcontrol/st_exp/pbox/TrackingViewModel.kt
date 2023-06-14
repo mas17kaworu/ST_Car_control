@@ -62,8 +62,8 @@ val PREF_SHOW_RECORDING_LOGS = booleanPreferencesKey("showRecordingLogs")
 val PREF_SHOW_RECORDING_ALARMS = booleanPreferencesKey("showRecordingAlarms")
 const val DEFAULT_LABEL_INTERVAL = 10
 const val DEFAULT_REPLAY_SPEED = 1
-const val DEFAULT_SHOW_RECORDING_LOGS = true
-const val DEFAULT_SHOW_RECORDING_ALARMS = true
+const val DEFAULT_SHOW_RECORDING_LOGS = false
+const val DEFAULT_SHOW_RECORDING_ALARMS = false
 
 // Control screen logs and max log number
 const val SHOW_LOGS = true
