@@ -198,6 +198,9 @@ class TrackingActivity : BaseActivity() {
                             signalReal.isVisible = uiState.trackSettings.hideRealTrackUI.not()
 
                             trackSettingsView.setData(uiState.trackSettings)
+
+                            logTextView.isVisible = uiState.trackSettings.showRecordingLogs
+                            alarmsGroup.isVisible = uiState.trackSettings.showRecordingAlarms
                         }
 
                         if (uiState.inReviewMode && uiState.needRefreshTrack && uiState.historyRecordData != null) {
@@ -221,15 +224,13 @@ class TrackingActivity : BaseActivity() {
                         updateAlarmStateUI(state)
                     }
                 }
-                if (SHOW_LOGS) {
-                    launch {
-                        viewModel.logs.collectLatest { logs ->
-                            binding.logTextView.apply {
-                                val hasLogs = logs.isNotEmpty()
-                                isVisible = hasLogs
-                                if (hasLogs) {
-                                    text = logs.joinToString("\n")
-                                }
+                launch {
+                    viewModel.logs.collectLatest { logs ->
+                        binding.logTextView.apply {
+                            val hasLogs = logs.isNotEmpty()
+                            isVisible = hasLogs
+                            if (hasLogs) {
+                                text = logs.joinToString("\n")
                             }
                         }
                     }

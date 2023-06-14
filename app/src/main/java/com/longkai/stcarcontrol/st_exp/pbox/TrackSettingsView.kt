@@ -24,7 +24,9 @@ class TrackSettingsView(
                     hideRealTrackUI = binding.hideRealTrackSwitch.isChecked,
                     labelInterval = binding.labelIntervalEditText.text.toString().toIntOrNull() ?: 0,
                     replaySpeed = binding.replaySpeedEditText.text.toString().toIntOrNull() ?: 0,
-                    replayCameraFollowCar = binding.replayCameraFollowCarSwitch.isChecked
+                    replayCameraFollowCar = binding.replayCameraFollowCarSwitch.isChecked,
+                    showRecordingLogs = binding.showRecordingLogsSwitch.isChecked,
+                    showRecordingAlarms = binding.showRecordingAlarmsSwitch.isChecked
                 )
             )
         }
@@ -40,6 +42,8 @@ class TrackSettingsView(
             labelIntervalEditText.setText(trackSettings.labelInterval.toString())
             replaySpeedEditText.setText(trackSettings.replaySpeed.toString())
             replayCameraFollowCarSwitch.isChecked = trackSettings.replayCameraFollowCar
+            showRecordingLogsSwitch.isChecked = trackSettings.showRecordingLogs
+            showRecordingAlarmsSwitch.isChecked = trackSettings.showRecordingAlarms
         }
     }
 

@@ -49,15 +49,21 @@ data class TrackSettings(
     val hideRealTrackUI: Boolean = false,
     val labelInterval: Int = DEFAULT_LABEL_INTERVAL,
     val replaySpeed: Int = DEFAULT_REPLAY_SPEED,
-    val replayCameraFollowCar: Boolean = false
+    val replayCameraFollowCar: Boolean = false,
+    val showRecordingLogs: Boolean = DEFAULT_SHOW_RECORDING_LOGS,
+    val showRecordingAlarms: Boolean = DEFAULT_SHOW_RECORDING_ALARMS
 )
 
 val PREF_HIDE_REAL_TRACK_UI = booleanPreferencesKey("hideRealTrackUI")
 val PREF_LABEL_INTERVAL = intPreferencesKey("labelInterval")
 val PREF_REPLAY_SPEED = intPreferencesKey("replaySpeed")
 val PREF_REPLAY_CAMERA_FOLLOW_CAR = booleanPreferencesKey("replayCameraFollowCar")
+val PREF_SHOW_RECORDING_LOGS = booleanPreferencesKey("showRecordingLogs")
+val PREF_SHOW_RECORDING_ALARMS = booleanPreferencesKey("showRecordingAlarms")
 const val DEFAULT_LABEL_INTERVAL = 10
 const val DEFAULT_REPLAY_SPEED = 1
+const val DEFAULT_SHOW_RECORDING_LOGS = true
+const val DEFAULT_SHOW_RECORDING_ALARMS = true
 
 // Control screen logs and max log number
 const val SHOW_LOGS = true
@@ -99,13 +105,17 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
                 val labelInterval = prefs[PREF_LABEL_INTERVAL] ?: DEFAULT_LABEL_INTERVAL
                 val replaySpeed = prefs[PREF_REPLAY_SPEED] ?: DEFAULT_REPLAY_SPEED
                 val replayCameraFollowCar = prefs[PREF_REPLAY_CAMERA_FOLLOW_CAR] ?: false
+                val showRecordingLogs = prefs[PREF_SHOW_RECORDING_LOGS] ?: DEFAULT_SHOW_RECORDING_LOGS
+                val showRecordingAlarms = prefs[PREF_SHOW_RECORDING_ALARMS] ?: DEFAULT_SHOW_RECORDING_ALARMS
                 _uiState.update {
                     it.copy(
                         trackSettings = TrackSettings(
                             hideRealTrackUI = hideRealTrackUI,
                             labelInterval = labelInterval,
                             replaySpeed = replaySpeed,
-                            replayCameraFollowCar = replayCameraFollowCar
+                            replayCameraFollowCar = replayCameraFollowCar,
+                            showRecordingLogs = showRecordingLogs,
+                            showRecordingAlarms = showRecordingAlarms
                         ),
                         inReplayMode = false,
                         needRefreshTrack = true
@@ -178,7 +188,7 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
         _recordingState.update {
             it.copy(isRecording = true, recordingPoint = null)
         }
-        if (SHOW_LOGS) {
+        if (uiState.value.trackSettings.showRecordingLogs) {
             _logs.update { listOf() }
         }
 
@@ -247,20 +257,22 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
             }
         }
 
-        if (SHOW_LOGS) {
+        if (uiState.value.trackSettings.showRecordingLogs) {
             val log = "$recordType: $record"
             _logs.update { it.plus(log).takeLast(LOG_MAX_LINES) }
         }
     }
 
     private fun updateAlarmState(alarmData: AlarmData) {
-        _alarmState.update {
-            it.copy(
-                antennaSign = alarmData.antennaSign?.equals(0)?.not() ?: false,
-                wbiSign = alarmData.wbiSign?.equals(0)?.not() ?: false,
-                nbiSign = alarmData.nbiSign?.equals(0)?.not() ?: false,
-                spoofingSign = alarmData.spoofingSign?.equals(0)?.not() ?: false
-            )
+        if (uiState.value.trackSettings.showRecordingAlarms) {
+            _alarmState.update {
+                it.copy(
+                    antennaSign = alarmData.antennaSign?.equals(0)?.not() ?: false,
+                    wbiSign = alarmData.wbiSign?.equals(0)?.not() ?: false,
+                    nbiSign = alarmData.nbiSign?.equals(0)?.not() ?: false,
+                    spoofingSign = alarmData.spoofingSign?.equals(0)?.not() ?: false
+                )
+            }
         }
     }
 
@@ -300,6 +312,8 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
                     prefs[PREF_LABEL_INTERVAL] = trackSettings.labelInterval
                     prefs[PREF_REPLAY_SPEED] = trackSettings.replaySpeed
                     prefs[PREF_REPLAY_CAMERA_FOLLOW_CAR] = trackSettings.replayCameraFollowCar
+                    prefs[PREF_SHOW_RECORDING_LOGS] = trackSettings.showRecordingLogs
+                    prefs[PREF_SHOW_RECORDING_ALARMS] = trackSettings.showRecordingAlarms
                 }
             }
         }

@@ -313,6 +313,12 @@
         app:layout_constraintEnd_toStartOf="@id/recordBtn"
         app:layout_constraintTop_toTopOf="@id/recordBtn" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/alarmsGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="antennaSign, wbiSign, nbiSign, spoofingSign"/>
+
     <TextView
         android:id="@+id/logTextView"
         android:layout_width="wrap_content"

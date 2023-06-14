@@ -426,12 +426,10 @@ class AMapHelper(
         updateTrackPointInfo(pboxTrackPoint)
 
         // Move camera
-        if (trackSettings.replayCameraFollowCar) {
-            if (isFirstPoint) {
-                aMap.animateCamera(CameraUpdateFactory.newLatLng(pboxMapPoint))
-            } else {
-                aMap.moveCamera(CameraUpdateFactory.newLatLng(pboxMapPoint))
-            }
+        if (isFirstPoint) {
+            aMap.animateCamera(CameraUpdateFactory.newLatLng(pboxMapPoint))
+        } else {
+            aMap.moveCamera(CameraUpdateFactory.newLatLng(pboxMapPoint))
         }
 
         // Move car forward

@@ -7,11 +7,11 @@
     android:padding="20dp"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/hideRealTrackSwitch"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="Hide Real Track"
+        android:text="Hide real track"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -62,12 +62,27 @@
             android:maxLength="3" />
     </LinearLayout>
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/replayCameraFollowCarSwitch"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:text="Camera follow car when replay"
         app:layout_constraintTop_toBottomOf="@id/replaySpeedLayout"/>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/showRecordingLogsSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Show recording logs"
+        app:layout_constraintTop_toBottomOf="@id/replayCameraFollowCarSwitch"/>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/showRecordingAlarmsSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Show recording alarms"
+        app:layout_constraintTop_toBottomOf="@id/showRecordingLogsSwitch"/>
+
 
     <Button
         android:id="@+id/saveBtn"
@@ -75,6 +90,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Save"
-        app:layout_constraintTop_toBottomOf="@id/replayCameraFollowCarSwitch" />
+        app:layout_constraintTop_toBottomOf="@id/showRecordingAlarmsSwitch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
