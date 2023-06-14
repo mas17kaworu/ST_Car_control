@@ -200,7 +200,11 @@ class TrackingActivity : BaseActivity() {
                             trackSettingsView.setData(uiState.trackSettings)
 
                             logTextView.isVisible = uiState.trackSettings.showRecordingLogs
-                            alarmsGroup.isVisible = uiState.trackSettings.showRecordingAlarms
+
+                            antennaSign.isVisible = uiState.trackSettings.showAntennaAlarm
+                            wbiSign.isVisible = uiState.trackSettings.showWBIAlarm
+                            nbiSign.isVisible = uiState.trackSettings.showNBIAlarm
+                            spoofingSign.isVisible = uiState.trackSettings.showSpoofingAlarm
                         }
 
                         if (uiState.inReviewMode && uiState.needRefreshTrack && uiState.historyRecordData != null) {

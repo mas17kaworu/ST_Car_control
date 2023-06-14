@@ -18,8 +18,8 @@
         android:id="@+id/labelIntervalLayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/hideRealTrackSwitch">
 
         <TextView
@@ -42,8 +42,8 @@
         android:id="@+id/replaySpeedLayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/labelIntervalLayout">
 
         <TextView
@@ -67,21 +67,52 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:text="Camera follow car when replay"
-        app:layout_constraintTop_toBottomOf="@id/replaySpeedLayout"/>
+        app:layout_constraintTop_toBottomOf="@id/replaySpeedLayout" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/showRecordingLogsSwitch"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:text="Show recording logs"
-        app:layout_constraintTop_toBottomOf="@id/replayCameraFollowCarSwitch"/>
+        app:layout_constraintTop_toBottomOf="@id/replayCameraFollowCarSwitch" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/showRecordingAlarmsSwitch"
-        android:layout_width="match_parent"
+        android:id="@+id/showAntennaAlarmSwitch"
+        android:layout_width="0dp"
         android:layout_height="40dp"
-        android:text="Show recording alarms"
-        app:layout_constraintTop_toBottomOf="@id/showRecordingLogsSwitch"/>
+        android:text="Show antenna alarm"
+        app:layout_constraintEnd_toStartOf="@id/showWbiAlarmSwitch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/showRecordingLogsSwitch" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/showWbiAlarmSwitch"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:text="Show WBI alarm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/showAntennaAlarmSwitch"
+        app:layout_constraintTop_toBottomOf="@id/showRecordingLogsSwitch" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/showNbiAlarmSwitch"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:text="Show NBI alarm"
+        app:layout_constraintEnd_toStartOf="@id/showSpoofingAlarmSwitch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/showAntennaAlarmSwitch" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/showSpoofingAlarmSwitch"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:text="Show spoofing alarm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/showNbiAlarmSwitch"
+        app:layout_constraintTop_toBottomOf="@id/showAntennaAlarmSwitch" />
 
 
     <Button
@@ -90,6 +121,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Save"
-        app:layout_constraintTop_toBottomOf="@id/showRecordingAlarmsSwitch" />
+        app:layout_constraintTop_toBottomOf="@id/showNbiAlarmSwitch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

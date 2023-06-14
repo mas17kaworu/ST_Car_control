@@ -26,7 +26,10 @@ class TrackSettingsView(
                     replaySpeed = binding.replaySpeedEditText.text.toString().toIntOrNull() ?: 0,
                     replayCameraFollowCar = binding.replayCameraFollowCarSwitch.isChecked,
                     showRecordingLogs = binding.showRecordingLogsSwitch.isChecked,
-                    showRecordingAlarms = binding.showRecordingAlarmsSwitch.isChecked
+                    showAntennaAlarm = binding.showAntennaAlarmSwitch.isChecked,
+                    showWBIAlarm = binding.showWbiAlarmSwitch.isChecked,
+                    showNBIAlarm = binding.showNbiAlarmSwitch.isChecked,
+                    showSpoofingAlarm = binding.showSpoofingAlarmSwitch.isChecked
                 )
             )
         }
@@ -43,7 +46,10 @@ class TrackSettingsView(
             replaySpeedEditText.setText(trackSettings.replaySpeed.toString())
             replayCameraFollowCarSwitch.isChecked = trackSettings.replayCameraFollowCar
             showRecordingLogsSwitch.isChecked = trackSettings.showRecordingLogs
-            showRecordingAlarmsSwitch.isChecked = trackSettings.showRecordingAlarms
+            showAntennaAlarmSwitch.isChecked = trackSettings.showAntennaAlarm
+            showWbiAlarmSwitch.isChecked = trackSettings.showWBIAlarm
+            showNbiAlarmSwitch.isChecked = trackSettings.showNBIAlarm
+            showSpoofingAlarmSwitch.isChecked = trackSettings.showSpoofingAlarm
         }
     }
 
