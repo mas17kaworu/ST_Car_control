@@ -79,7 +79,8 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
     private var recordPath: String = ""
     private var recordDataReal: MutableList<String> = mutableListOf()
     private var recordDataPbox: MutableList<String> = mutableListOf()
-    private val lineRecordProcessor = LineRecordProcessor()
+    private val pboxLineRecordProcessor = LineRecordProcessor()
+    private val realLineRecordProcessor = LineRecordProcessor()
 
     private val _uiState = MutableStateFlow(TrackingViewState())
     val uiState: StateFlow<TrackingViewState> = _uiState
@@ -229,7 +230,7 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
         when (recordType) {
             RecordType.PBOX -> {
                 recordDataPbox.add(record)
-                lineRecordProcessor.processLines(
+                pboxLineRecordProcessor.processLines(
                     lines = lines,
                     onNewAlarmData = { updateAlarmState(it) },
                     onNewRecord = { trackingData ->
@@ -243,7 +244,7 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
             }
             RecordType.REAL -> {
                 recordDataReal.add(record)
-                lineRecordProcessor.processLines(
+                realLineRecordProcessor.processLines(
                     lines = lines,
                     onNewAlarmData = { updateAlarmState(it) },
                     onNewRecord = { trackingData ->

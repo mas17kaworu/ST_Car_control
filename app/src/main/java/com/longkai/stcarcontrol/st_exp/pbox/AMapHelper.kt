@@ -410,13 +410,15 @@ class AMapHelper(
         val pboxTrackPoint = pboxTrackPoints.last()
         val pboxMapPoint = pboxMapPoints.last()
 
-        val bounds = calcBounds(pboxMapPoints)
-        aMap.animateCamera(
-            CameraUpdateFactory.newLatLngBounds(
-                bounds,
-                50.dp2px(context)
-            )
-        )
+//        if (pboxMapPoints.size % 50 == 0) {
+//            val bounds = calcBounds(pboxMapPoints)
+//            aMap.animateCamera(
+//                CameraUpdateFactory.newLatLngBounds(
+//                    bounds,
+//                    50.dp2px(context)
+//                )
+//            )
+//        }
 
         val pboxPolyline = playingPboxLine ?: aMap.addPolyline(
             PolylineOptions().width(LINE_WIDTH).color(context.getColor(PBOX_TRACK_COLOR))
@@ -427,7 +429,7 @@ class AMapHelper(
 
         // Move camera
         if (isFirstPoint) {
-            aMap.animateCamera(CameraUpdateFactory.newLatLng(pboxMapPoint))
+            aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pboxMapPoint, 50f))
         } else {
             aMap.moveCamera(CameraUpdateFactory.newLatLng(pboxMapPoint))
         }
