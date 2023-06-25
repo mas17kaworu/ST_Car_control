@@ -17,7 +17,7 @@ import com.longkai.stcarcontrol.st_exp.Utils.FileUtils
 import com.longkai.stcarcontrol.st_exp.Utils.FileUtils10.getFilesUnderDownloadST
 import com.longkai.stcarcontrol.st_exp.Utils.FileUtils10.readSoundsInfoFile
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
-import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLED2
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDAuto1
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDAuto2
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDOLEDBackList.CMDOLEDAuto3
@@ -37,12 +37,11 @@ import com.longkai.stcarcontrol.st_exp.music.AudioVisualConverter
 import com.longkai.stcarcontrol.st_exp.music.MyMediaPlayer
 import com.longkai.stcarcontrol.st_exp.music.MyMediaPlayer.PlayState
 import com.longkai.stcarcontrol.st_exp.music.MyMediaPlayer.PlayStateListener
-import java.util.LinkedList
 import java.util.Locale
+import kotlin.experimental.and
 
 class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentCarBackOled2Binding
-    private val mView get() = binding.root
     private val ivReversing get() = binding.btnBackOledReversing
     private val ivBrake get() = binding.btnBackOledBreak
     private val ivPosition get() = binding.btnBackOledPosition
@@ -87,14 +86,29 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
         ivPlayPrevious.setOnClickListener(this)
         ivPlayNext.setOnClickListener(this)
         ivStop.setOnClickListener(this)
-
-        oledController = OLED2Controller(this, ivReversing, ivBrake, ivPosition)
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
-        refreshUI()
+        oledController = OLED2Controller(
+            this,
+            binding.icBackOledBackground.ivOledReverse,
+            binding.icBackOledBackground.ivOledBreak,
+            binding.icBackOledBackground.ivOledPosition
+        )
+
+        refreshUI(OledStatus(CMDOLEDBase.getPayload().first()))
+
+        ServiceManager.getInstance().registerRegularlyCommand(
+            CMDOLED2(),
+            object : CommandListenerAdapter<CMDOLED2.Response>() {
+                override fun onSuccess(response: CMDOLED2.Response) {
+                    Log.i(TAG, "onSuccess, response status: ${response.payload}")
+                    refreshUI(OledStatus(response.payload))
+                }
+            })
+
         soundsList = getFilesUnderDownloadST(requireContext()).toMutableList()
         try {
             soundsList.add(
@@ -177,14 +191,23 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        unregisterCommand()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        super.onDestroy()
+
         if (visualizer != null) {
             visualizer!!.release()
         }
         mediaPlayer.stop()
         mediaPlayer.release()
+    }
+
+    private fun unregisterCommand() {
+        ServiceManager.getInstance().unregisterRegularlyCommand(CMDOLED2())
     }
 
     private fun initVisualizer() {
@@ -259,7 +282,7 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
                 CMDOLEDStopAll()
             )
         }
-        refreshUI()
+        refreshUI(OledStatus(CMDOLEDBase.getPayload().first()))
     }
 
     private fun clickBtn(index: Int, view: ImageView?, command: CMDOLEDBase) {
@@ -279,59 +302,58 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
         ServiceManager.getInstance().sendCommandToCar(command, CommandListenerAdapter<CMDOLEDBase.Response>())
     }
 
-    private fun refreshUI() {
-        oledController.updateState(updateStateByCMD())
-        val cmdPayload = CMDOLEDBase.getPayload()
-        if (cmdPayload[0].toInt() and CMDOLEDBase.Reversing.toInt() != 0) {
+    private fun refreshUI(oledStatus: OledStatus) {
+        oledController.updateState(updateStateByOledStatus(oledStatus))
+        if (oledStatus.isReversingOn()) {
             ivReversing.isSelected = true
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDReverse] = 1
         } else {
             ivReversing.isSelected = false
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDReverse] = 0
         }
-        if (cmdPayload[0].toInt() and CMDOLEDBase.Brake.toInt() != 0) {
+        if (oledStatus.isBrakeOn()) {
             ivBrake.isSelected = true
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDBreak] = 1
         } else {
             ivBrake.isSelected = false
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDBreak] = 0
         }
-        if (cmdPayload[0].toInt() and CMDOLEDBase.Position.toInt() != 0) {
+        if (oledStatus.isPositionOn()) {
             ivPosition.isSelected = true
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDPosition] = 1
         } else {
             ivPosition.isSelected = false
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDPosition] = 0
         }
-        if (cmdPayload[0].toInt() and CMDOLEDBase.TurnLeft.toInt() != 0) {
+        if (oledStatus.isTurnLeftOn()) {
             ivTurnLeft.isSelected = true
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDTurnLeft] = 1
         } else {
             ivTurnLeft.isSelected = false
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDTurnLeft] = 0
         }
-        if (cmdPayload[0].toInt() and CMDOLEDBase.TurnRight.toInt() != 0) {
+        if (oledStatus.isTurnRightOn()) {
             ivTurnRight.isSelected = true
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDTurnRight] = 1
         } else {
             ivTurnRight.isSelected = false
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDTurnRight] = 0
         }
-        if (cmdPayload[0].toInt() and CMDOLEDBase.AutoRun1.toInt() != 0) {
+        if (oledStatus.isAutoRun1On()) {
             ivAuto1.isSelected = true
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDAuto1] = 1
         } else {
             ivAuto1.isSelected = false
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDAuto1] = 0
         }
-        if (cmdPayload[0].toInt() and CMDOLEDBase.AutoRun2.toInt() != 0) {
+        if (oledStatus.isAutoRun2On()) {
             ivAuto2.isSelected = true
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDAuto2] = 1
         } else {
             ivAuto2.isSelected = false
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDAuto2] = 0
         }
-        if (cmdPayload[0].toInt() and CMDOLEDBase.AutoRun3.toInt() != 0) {
+        if (oledStatus.isAutoRun3On()) {
             ivAuto3.isSelected = true
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDAuto3] = 1
         } else {
@@ -361,14 +383,12 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
     }
 
     private fun doWhenStartPlaying() {
-        mView.post { ivPlayOrPause.setImageResource(R.mipmap.ic_stop) }
+        view?.post { ivPlayOrPause.setImageResource(R.mipmap.ic_stop) }
     }
 
     private fun doWhenStopPlaying() {
         isPlaying = false
-        if (view != null) {
-            mView.post { ivPlayOrPause.setImageResource(R.mipmap.ic_play) }
-        }
+        view?.post { ivPlayOrPause.setImageResource(R.mipmap.ic_play) }
     }
 
     private fun playNext() {
@@ -431,15 +451,27 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
      *
      * @return
      */
-    private fun updateStateByCMD(): OLED2Controller.OLEDState {
-        val cmdPayload = CMDOLEDBase.getPayload()
+    private fun updateStateByOledStatus(oledStatus: OledStatus): OLED2Controller.OLEDState {
         return OLED2Controller.OLEDState(
-            cmdPayload[0].toInt() and CMDOLEDBase.Reversing.toInt() != 0,
-            cmdPayload[0].toInt() and CMDOLEDBase.Brake.toInt() != 0,
-            cmdPayload[0].toInt() and CMDOLEDBase.Position.toInt() != 0,
-            cmdPayload[0].toInt() and CMDOLEDBase.TurnLeft.toInt() != 0,
-            cmdPayload[0].toInt() and CMDOLEDBase.TurnRight.toInt() != 0
+            oledStatus.isReversingOn(),
+            oledStatus.isBrakeOn(),
+            oledStatus.isPositionOn(),
+            oledStatus.isTurnLeftOn(),
+            oledStatus.isTurnRightOn()
         )
+    }
+
+    data class OledStatus(val payload: Byte) {
+        private val zero = 0.toByte()
+
+        fun isAutoRun1On() = payload.and(CMDOLEDBase.AutoRun1) != zero
+        fun isAutoRun2On() = payload.and(CMDOLEDBase.AutoRun2) != zero
+        fun isAutoRun3On() = payload.and(CMDOLEDBase.AutoRun3) != zero
+        fun isTurnLeftOn() = payload.and(CMDOLEDBase.TurnLeft) != zero
+        fun isTurnRightOn() = payload.and(CMDOLEDBase.TurnRight) != zero
+        fun isPositionOn() = payload.and(CMDOLEDBase.Position) != zero
+        fun isBrakeOn() = payload.and(CMDOLEDBase.Brake) != zero
+        fun isReversingOn() = payload.and(CMDOLEDBase.Reversing) != zero
     }
 
     companion object {

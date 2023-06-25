@@ -45,7 +45,7 @@ public class OLED2Controller {
         //leftRightState = OLEDLeftRightState.ALL_OFF;
       }
 
-      if (state.breakState) {
+      if (state.brakeState) {
         breakIV.setVisibility(View.VISIBLE);
         positionIV.setImageResource(R.mipmap.ic_back_oled2_position_state1);
         positionIV.setVisibility(View.VISIBLE);
@@ -63,7 +63,7 @@ public class OLED2Controller {
         handler.postDelayed(runner, 500);
       } else {
         handler.removeCallbacks(runner);
-        if (!state.breakState) { // break 也是关的
+        if (!state.brakeState) { // break 也是关的
           breakIV.setVisibility(View.INVISIBLE);
           positionIV.setVisibility(View.INVISIBLE);
         }
@@ -89,17 +89,17 @@ public class OLED2Controller {
 
   public static class OLEDState {
     boolean reverseState;
-    boolean breakState;
+    boolean brakeState;
     boolean positionState;
     boolean turnLeftState;
     boolean turnRightState;
 
     public OLEDState(boolean reverseState,
-        boolean breakState,
+        boolean brakeState,
         boolean positionState,
         boolean turnLeftState,
         boolean turnRightState){
-      this.breakState = breakState;
+      this.brakeState = brakeState;
       this.positionState = positionState;
       this.reverseState = reverseState;
       this.turnLeftState = turnLeftState;
