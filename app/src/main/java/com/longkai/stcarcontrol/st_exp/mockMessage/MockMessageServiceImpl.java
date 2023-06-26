@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import com.longkai.stcarcontrol.st_exp.fragment.CarBackOLED2Fragment;
 import com.longkai.stcarcontrol.st_exp.fragment.KeyCheckFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.KeyPairFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.NFCFragment;
@@ -11,6 +12,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUOBCDemoFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.CarBackOLED2FragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.CommandPBoxMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.KeyCheckFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.KeyPairFragmentMock;
@@ -65,6 +67,8 @@ public class MockMessageServiceImpl implements MockMessageService {
         runnable = new KeyPairFragmentMock(doBackgroundHandler);
       } else if (fragmentClass.equalsIgnoreCase(KeyCheckFragment.class.toString())) {
         runnable = new KeyCheckFragmentMock(doBackgroundHandler);
+      } else if (fragmentClass.equalsIgnoreCase(CarBackOLED2Fragment.class.toString())) {
+        runnable = new CarBackOLED2FragmentMock(doBackgroundHandler);
       }
       doBackgroundHandler.post(runnable);
     }

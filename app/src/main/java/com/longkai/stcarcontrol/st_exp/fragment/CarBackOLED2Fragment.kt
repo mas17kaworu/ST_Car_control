@@ -8,8 +8,10 @@ import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.longkai.stcarcontrol.st_exp.ConstantData
 import com.longkai.stcarcontrol.st_exp.R
@@ -32,15 +34,18 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDSound.CMDSou
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.customView.oled2.OLED2Controller
 import com.longkai.stcarcontrol.st_exp.databinding.FragmentCarBackOled2Binding
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl
 import com.longkai.stcarcontrol.st_exp.model.SoundsInfo
 import com.longkai.stcarcontrol.st_exp.music.AudioVisualConverter
 import com.longkai.stcarcontrol.st_exp.music.MyMediaPlayer
 import com.longkai.stcarcontrol.st_exp.music.MyMediaPlayer.PlayState
 import com.longkai.stcarcontrol.st_exp.music.MyMediaPlayer.PlayStateListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.Locale
 import kotlin.experimental.and
 
-class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
+class CarBackOLED2Fragment : Fragment(), View.OnClickListener, OnLongClickListener {
     private lateinit var binding: FragmentCarBackOled2Binding
     private val ivReversing get() = binding.btnBackOledReversing
     private val ivBrake get() = binding.btnBackOledBreak
@@ -54,6 +59,11 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
     private val ivPlayNext get() = binding.btnPlayNext
     private val ivPlayPrevious get() = binding.btnPlayPrevious
     private val ivStop get() = binding.btnBackOledStop
+    private val titleView get() = binding.oled2Title
+
+    private var enableLog = false
+
+    private val logText get() = binding.oled2Log
 
     private lateinit var oledController: OLED2Controller
     private lateinit var mediaPlayer: MyMediaPlayer
@@ -86,6 +96,7 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
         ivPlayPrevious.setOnClickListener(this)
         ivPlayNext.setOnClickListener(this)
         ivStop.setOnClickListener(this)
+        titleView.setOnLongClickListener(this)
         return binding.root
     }
 
@@ -105,6 +116,7 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
             object : CommandListenerAdapter<CMDOLED2.Response>() {
                 override fun onSuccess(response: CMDOLED2.Response) {
                     Log.i(TAG, "onSuccess, response status: ${response.payload}")
+                    logText.append(response.payload.toString() + "\n")
                     refreshUI(OledStatus(response.payload))
                 }
             })
@@ -123,6 +135,9 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
         } catch (e: Exception) {
             println(e)
         }
+
+        // Test
+        MockMessageServiceImpl.getService().StartService(CarBackOLED2Fragment::class.java.toString())
     }
 
     private var sendCMDTask: SendSoundsInfoRegular? = null
@@ -238,6 +253,20 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
         }
     }
 
+    override fun onLongClick(v: View?): Boolean {
+        if (v?.id == R.id.oled2Title) {
+            enableLog = !enableLog
+            Toast.makeText(activity, "Log $enableLog", Toast.LENGTH_SHORT).show()
+            if (enableLog) {
+                logText.visibility = View.VISIBLE
+            } else {
+                logText.visibility = View.GONE
+            }
+            return true
+        }
+        return false
+    }
+
     override fun onClick(view: View) {
         when (view.id) {
             R.id.btn_back_oled_reversing -> clickBtn(
@@ -303,7 +332,10 @@ class CarBackOLED2Fragment : Fragment(), View.OnClickListener {
     }
 
     private fun refreshUI(oledStatus: OledStatus) {
-        oledController.updateState(updateStateByOledStatus(oledStatus))
+        activity?.runOnUiThread {
+            oledController.updateState(updateStateByOledStatus(oledStatus))
+        }
+
         if (oledStatus.isReversingOn()) {
             ivReversing.isSelected = true
             ConstantData.sBackOLEDStatus[ConstantData.sBackOLEDReverse] = 1
