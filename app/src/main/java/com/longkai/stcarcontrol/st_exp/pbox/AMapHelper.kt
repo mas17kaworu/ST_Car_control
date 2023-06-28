@@ -410,6 +410,11 @@ class AMapHelper(
         val pboxTrackPoint = pboxTrackPoints.last()
         val pboxMapPoint = pboxMapPoints.last()
 
+        // Use last point error if current point doesn't have error yet.
+        if (pboxTrackPoint.error == null) {
+            pboxTrackPoint.error = pboxTrackPoints.let { it[it.lastIndex - 1].error }
+        }
+
 //        if (pboxMapPoints.size % 50 == 0) {
 //            val bounds = calcBounds(pboxMapPoints)
 //            aMap.animateCamera(
