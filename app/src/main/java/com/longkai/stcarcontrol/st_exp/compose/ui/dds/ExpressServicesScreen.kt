@@ -107,7 +107,10 @@ fun ExpressServicesScreen(
                         Row {
                             if (focusedService.triggerCondition == TriggerCondition.ManuallySend) {
                                 Button(
-                                    onClick = { ddsViewModel.executeExpressService(focusedService) }
+                                    onClick = {
+                                        ddsViewModel.executeExpressService(focusedService)
+                                        showSnackbar("Service ${focusedService.name} sent")
+                                    }
                                 ) {
                                     Text(text = "Send")
                                 }

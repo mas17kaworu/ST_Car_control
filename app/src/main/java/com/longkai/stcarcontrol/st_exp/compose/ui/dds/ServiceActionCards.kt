@@ -20,7 +20,7 @@ fun AvasServiceActionCard(
     actions: List<ServiceAction.AvasAction>
 ) {
     ServiceActionsCard(
-        header = "AVAS service actions",
+        header = "DDS Service Group 1",
         actions = actions.map { it.name }
     )
 }
@@ -30,7 +30,7 @@ fun OledServiceActionCard(
     actions: List<ServiceAction.OledAction>
 ) {
     ServiceActionsCard(
-        header = "OLED service actions",
+        header = "DDS Service Group 2",
         actions = actions.map { it.name }
     )
 }
@@ -42,7 +42,10 @@ fun ServiceActionsCard(
 ) {
     CorneredContainer {
         Column(Modifier.padding(24.dp)) {
-            HeaderText(text = header)
+            HeaderText(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                text = header
+            )
 
             Divider(
                 modifier = Modifier.padding(vertical = 12.dp),
