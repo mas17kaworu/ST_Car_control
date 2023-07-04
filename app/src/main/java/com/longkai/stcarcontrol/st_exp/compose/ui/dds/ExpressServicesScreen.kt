@@ -13,12 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ExpressServicesScreen(
@@ -66,66 +70,83 @@ fun ExpressServicesScreen(
         }
         imageUri?.let { uri ->
             println("zcf imageUri: $uri")
-            CorneredContainer(
-                modifier = Modifier.fillMaxSize(),
-                cornerSize = 24.dp
-            ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    verticalArrangement = Arrangement.Center
+            var feedbackMessage by remember { mutableStateOf("") }
+            val feedbackMessageScope = rememberCoroutineScope()
+            Column {
+                CorneredContainer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    cornerSize = 24.dp
                 ) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current).apply {
-                            fallback(R.drawable.ic_pick_image)
-                            error(R.drawable.ic_image_error)
-                            data(uri)
-                        }.build(),
-                        contentDescription = "Service image",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_delete),
-                            contentDescription = "Delete service",
+                        Spacer(modifier = Modifier.height(8.dp))
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current).apply {
+                                fallback(R.drawable.ic_pick_image)
+                                error(R.drawable.ic_image_error)
+                                data(uri)
+                            }.build(),
+                            contentDescription = "Service image",
                             modifier = Modifier
-                                .clickable {
-                                    showDeleteDialog = true
-                                }
-                                .padding(4.dp)
+                                .fillMaxWidth()
+                                .weight(1f)
                         )
 
-                        Row {
-                            if (focusedService.triggerCondition == TriggerCondition.ManuallySend) {
-                                Button(
-                                    onClick = {
-                                        ddsViewModel.executeExpressService(focusedService)
-                                        showSnackbar("Service ${focusedService.name} sent")
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_delete),
+                                contentDescription = "Delete service",
+                                modifier = Modifier
+                                    .clickable {
+                                        showDeleteDialog = true
                                     }
-                                ) {
-                                    Text(text = "Send")
+                                    .padding(4.dp)
+                            )
+
+                            Row {
+                                if (focusedService.triggerCondition == TriggerCondition.ManuallySend) {
+                                    Button(
+                                        onClick = {
+                                            ddsViewModel.executeExpressService(focusedService)
+                                            feedbackMessage = "Service ${focusedService.name} sent!"
+                                            feedbackMessageScope.coroutineContext.cancelChildren()
+                                            feedbackMessageScope.launch {
+                                                delay(2000)
+                                                feedbackMessage = ""
+                                            }
+                                        }
+                                    ) {
+                                        Text(text = "Send")
+                                    }
                                 }
-                            }
 
-                            Spacer(modifier = Modifier.width(12.dp))
+                                Spacer(modifier = Modifier.width(12.dp))
 
-                            Button(
-                                onClick = { onViewServiceDetails(focusedService.id) }
-                            ) {
-                                Text(text = "View service details")
+                                Button(
+                                    onClick = { onViewServiceDetails(focusedService.id) }
+                                ) {
+                                    Text(text = "View service details")
+                                }
                             }
                         }
                     }
                 }
+                Text(
+                    text = feedbackMessage,
+                    modifier = Modifier.fillMaxWidth(),
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                )
             }
         }
     }
