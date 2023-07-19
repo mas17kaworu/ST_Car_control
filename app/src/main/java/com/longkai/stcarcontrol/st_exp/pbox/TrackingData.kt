@@ -26,11 +26,12 @@ data class GgaData(
 
 data class AlarmData(
     val utcTime: LocalTime,
-    val antennaStatus: Int?,
-    val antennaSign: Int?,
-    val wbiSign: Int?,
-    val nbiSign: Int?,
-    val spoofingSign: Int?
+    val alarmMask: Int?,
+    val ppsAlarm: Int?,
+    val antennaAlarm: Int?,
+    val wbiAlarm: Int?,
+    val nbiAlarm: Int?,
+    val spoofingAlarm: Int?
 )
 
 class TrackingData(

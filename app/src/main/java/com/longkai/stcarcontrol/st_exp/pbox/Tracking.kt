@@ -237,18 +237,20 @@ class LineRecordProcessor() {
     private fun parseAlarm(fields: List<String>): AlarmData? {
         return try {
             val utcTime = parseUtcTime(fields[1])
-            val antennaStatus = parseInt(fields[5])
-            val antennaSign = parseInt(fields[6])
-            val wbiSign = parseInt(fields[7])
-            val nbiSign = parseInt(fields[8])
-            val spoofingSign = parseInt(fields[9])
+            val alarmMask = parseInt(fields[4])
+            val ppsAlarm = parseInt(fields[5])
+            val antennaAlarm = parseInt(fields[6])
+            val wbiAlarm = parseInt(fields[7])
+            val nbiAlarm = parseInt(fields[8])
+            val spoofingAlarm = parseInt(fields[9])
             AlarmData(
                 utcTime = utcTime,
-                antennaStatus = antennaStatus,
-                antennaSign = antennaSign,
-                wbiSign = wbiSign,
-                nbiSign = nbiSign,
-                spoofingSign = spoofingSign
+                alarmMask = alarmMask,
+                ppsAlarm = ppsAlarm,
+                antennaAlarm = antennaAlarm,
+                wbiAlarm = wbiAlarm,
+                nbiAlarm = nbiAlarm,
+                spoofingAlarm = spoofingAlarm
             )
         } catch (e: Exception) {
             Log.e("zcf", "$fields", e)

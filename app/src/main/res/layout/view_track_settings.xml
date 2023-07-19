@@ -73,54 +73,57 @@
         android:id="@+id/showRecordingLogsSwitch"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_marginTop="20dp"
         android:text="Show recording logs"
         app:layout_constraintTop_toBottomOf="@id/replayCameraFollowCarSwitch" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/alarmsGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="showPpsAlarmSwitch, showAntennaAlarmSwitch, showWbiAlarmSwitch, showNbiAlarmSwitch, showSpoofingAlarmSwitch"
+        app:flow_horizontalGap="16dp"
+        app:flow_maxElementsWrap="2"
+        app:flow_verticalStyle="packed"
+        app:flow_wrapMode="aligned"
+        app:layout_constraintTop_toBottomOf="@id/showRecordingLogsSwitch" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/showPpsAlarmSwitch"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:text="Show PPS alarm" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/showAntennaAlarmSwitch"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:text="Show antenna alarm"
-        app:layout_constraintEnd_toStartOf="@id/showWbiAlarmSwitch"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/showRecordingLogsSwitch" />
+        android:text="Show antenna alarm" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/showWbiAlarmSwitch"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:text="Show WBI alarm"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/showAntennaAlarmSwitch"
-        app:layout_constraintTop_toBottomOf="@id/showRecordingLogsSwitch" />
+        android:text="Show WBI alarm" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/showNbiAlarmSwitch"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:text="Show NBI alarm"
-        app:layout_constraintEnd_toStartOf="@id/showSpoofingAlarmSwitch"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/showAntennaAlarmSwitch" />
+        android:text="Show NBI alarm" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/showSpoofingAlarmSwitch"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:text="Show spoofing alarm"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/showNbiAlarmSwitch"
-        app:layout_constraintTop_toBottomOf="@id/showAntennaAlarmSwitch" />
-
+        android:text="Show spoofing alarm" />
 
     <Button
         android:id="@+id/saveBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:text="Save"
-        app:layout_constraintTop_toBottomOf="@id/showNbiAlarmSwitch" />
+        app:layout_constraintTop_toBottomOf="@id/alarmsGroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

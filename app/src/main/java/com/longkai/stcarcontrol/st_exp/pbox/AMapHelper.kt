@@ -411,7 +411,7 @@ class AMapHelper(
         val pboxMapPoint = pboxMapPoints.last()
 
         // Use last point error if current point doesn't have error yet.
-        if (pboxTrackPoint.error == null) {
+        if (pboxTrackPoint.error == null && !isFirstPoint) {
             pboxTrackPoint.error = pboxTrackPoints.let { it[it.lastIndex - 1].error }
         }
 

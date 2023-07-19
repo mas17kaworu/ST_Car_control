@@ -175,12 +175,15 @@ class TrackingActivity : BaseActivity() {
             binding.recordBtn.compoundDrawableTintList = ColorStateList.valueOf(getColor(tintColor))
         }
 
-        fun updateAlarmStateUI(state: AlarmState) {
+        fun updateAlarmsUI() {
+            val alarmState = viewModel.alarmState.value
+            val trackSettings = viewModel.uiState.value.trackSettings
             binding.apply {
-                antennaSign.isVisible = state.antennaSign
-                wbiSign.isVisible = state.wbiSign
-                nbiSign.isVisible = state.nbiSign
-                spoofingSign.isVisible = state.spoofingSign
+                ppsAlarm.isVisible = alarmState.ppsAlarm && trackSettings.showPPSAlarm
+                antennaAlarm.isVisible = alarmState.antennaAlarm && trackSettings.showAntennaAlarm
+                wbiAlarm.isVisible = alarmState.wbiAlarm && trackSettings.showWBIAlarm
+                nbiAlarm.isVisible = alarmState.nbiAlarm && trackSettings.showNBIAlarm
+                spoofingAlarm.isVisible = alarmState.spoofingAlarm && trackSettings.showSpoofingAlarm
             }
         }
 
@@ -201,10 +204,7 @@ class TrackingActivity : BaseActivity() {
 
                             logTextView.isVisible = uiState.trackSettings.showRecordingLogs
 
-                            antennaSign.isVisible = uiState.trackSettings.showAntennaAlarm
-                            wbiSign.isVisible = uiState.trackSettings.showWBIAlarm
-                            nbiSign.isVisible = uiState.trackSettings.showNBIAlarm
-                            spoofingSign.isVisible = uiState.trackSettings.showSpoofingAlarm
+                            updateAlarmsUI()
                         }
 
                         if (uiState.inReviewMode && uiState.needRefreshTrack && uiState.historyRecordData != null) {
@@ -224,8 +224,8 @@ class TrackingActivity : BaseActivity() {
                     }
                 }
                 launch {
-                    viewModel.alarmState.collectLatest { state ->
-                        updateAlarmStateUI(state)
+                    viewModel.alarmState.collectLatest {
+                        updateAlarmsUI()
                     }
                 }
                 launch {

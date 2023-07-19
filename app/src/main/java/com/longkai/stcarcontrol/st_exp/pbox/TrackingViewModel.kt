@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.longkai.stcarcontrol.st_exp.STCarApplication
@@ -18,6 +20,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.time.LocalDateTime
 
 data class TrackingViewState(
@@ -39,33 +45,28 @@ data class RecordingPoint(
 )
 
 data class AlarmState(
-    val antennaSign: Boolean = false,
-    val wbiSign: Boolean = false,
-    val nbiSign: Boolean = false,
-    val spoofingSign: Boolean = false
+    val ppsAlarm: Boolean = false,
+    val antennaAlarm: Boolean = false,
+    val wbiAlarm: Boolean = false,
+    val nbiAlarm: Boolean = false,
+    val spoofingAlarm: Boolean = false
 )
 
+@Serializable
 data class TrackSettings(
     val hideRealTrackUI: Boolean = false,
     val labelInterval: Int = DEFAULT_LABEL_INTERVAL,
     val replaySpeed: Int = DEFAULT_REPLAY_SPEED,
     val replayCameraFollowCar: Boolean = false,
     val showRecordingLogs: Boolean = DEFAULT_SHOW_RECORDING_LOGS,
+    val showPPSAlarm: Boolean = false,
     val showAntennaAlarm: Boolean = false,
     val showWBIAlarm: Boolean = false,
     val showNBIAlarm: Boolean = false,
     val showSpoofingAlarm: Boolean = false
 )
 
-val PREF_HIDE_REAL_TRACK_UI = booleanPreferencesKey("hideRealTrackUI")
-val PREF_LABEL_INTERVAL = intPreferencesKey("labelInterval")
-val PREF_REPLAY_SPEED = intPreferencesKey("replaySpeed")
-val PREF_REPLAY_CAMERA_FOLLOW_CAR = booleanPreferencesKey("replayCameraFollowCar")
-val PREF_SHOW_RECORDING_LOGS = booleanPreferencesKey("showRecordingLogs")
-val PREF_SHOW_ANTENNA_ALARM = booleanPreferencesKey("showAntennaAlarm")
-val PREF_SHOW_WBI_ALARM = booleanPreferencesKey("showWBIAlarm")
-val PREF_SHOW_NBI_ALARM = booleanPreferencesKey("showNBIAlarm")
-val PREF_SHOW_SPOOFING_ALARM = booleanPreferencesKey("showSpoofingAlarm")
+val PREF_TRACK_SETTINGS = stringPreferencesKey("trackSettings")
 const val DEFAULT_LABEL_INTERVAL = 10
 const val DEFAULT_REPLAY_SPEED = 1
 const val DEFAULT_SHOW_RECORDING_LOGS = false
@@ -107,28 +108,11 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
     init {
         viewModelScope.launch {
             application.applicationContext.appPrefsDataStore.data.collectLatest { prefs ->
-                val hideRealTrackUI = prefs[PREF_HIDE_REAL_TRACK_UI] ?: false
-                val labelInterval = prefs[PREF_LABEL_INTERVAL] ?: DEFAULT_LABEL_INTERVAL
-                val replaySpeed = prefs[PREF_REPLAY_SPEED] ?: DEFAULT_REPLAY_SPEED
-                val replayCameraFollowCar = prefs[PREF_REPLAY_CAMERA_FOLLOW_CAR] ?: false
-                val showRecordingLogs = prefs[PREF_SHOW_RECORDING_LOGS] ?: DEFAULT_SHOW_RECORDING_LOGS
-                val showAntennaAlarm = prefs[PREF_SHOW_ANTENNA_ALARM] ?: false
-                val showWBIAlarm = prefs[PREF_SHOW_WBI_ALARM] ?: false
-                val showNBIAlarm = prefs[PREF_SHOW_NBI_ALARM] ?: false
-                val showSpoofingAlarm = prefs[PREF_SHOW_SPOOFING_ALARM] ?: false
+                val trackSettingsString = prefs[PREF_TRACK_SETTINGS]
+                val trackSettings = trackSettingsString?.let { Json.decodeFromString<TrackSettings>(it) } ?: TrackSettings()
                 _uiState.update {
                     it.copy(
-                        trackSettings = TrackSettings(
-                            hideRealTrackUI = hideRealTrackUI,
-                            labelInterval = labelInterval,
-                            replaySpeed = replaySpeed,
-                            replayCameraFollowCar = replayCameraFollowCar,
-                            showRecordingLogs = showRecordingLogs,
-                            showAntennaAlarm = showAntennaAlarm,
-                            showWBIAlarm = showWBIAlarm,
-                            showNBIAlarm = showNBIAlarm,
-                            showSpoofingAlarm = showSpoofingAlarm
-                        ),
+                        trackSettings = trackSettings,
                         inReplayMode = false,
                         needRefreshTrack = true
                     )
@@ -278,10 +262,11 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
     private fun updateAlarmState(alarmData: AlarmData) {
         _alarmState.update {
             it.copy(
-                antennaSign = alarmData.antennaSign?.equals(0)?.not() ?: false,
-                wbiSign = alarmData.wbiSign?.equals(0)?.not() ?: false,
-                nbiSign = alarmData.nbiSign?.equals(0)?.not() ?: false,
-                spoofingSign = alarmData.spoofingSign?.equals(0)?.not() ?: false
+                ppsAlarm = alarmData.ppsAlarm?.equals(0)?.not() ?: false,
+                antennaAlarm = alarmData.antennaAlarm?.equals(0)?.not() ?: false,
+                wbiAlarm = alarmData.wbiAlarm?.equals(0)?.not() ?: false,
+                nbiAlarm = alarmData.nbiAlarm?.equals(0)?.not() ?: false,
+                spoofingAlarm = alarmData.spoofingAlarm?.equals(0)?.not() ?: false
             )
         }
     }
@@ -318,15 +303,7 @@ class TrackingViewModel(private val application: Application) : AndroidViewModel
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 getApplication<STCarApplication>().applicationContext.appPrefsDataStore.edit { prefs ->
-                    prefs[PREF_HIDE_REAL_TRACK_UI] = trackSettings.hideRealTrackUI
-                    prefs[PREF_LABEL_INTERVAL] = trackSettings.labelInterval
-                    prefs[PREF_REPLAY_SPEED] = trackSettings.replaySpeed
-                    prefs[PREF_REPLAY_CAMERA_FOLLOW_CAR] = trackSettings.replayCameraFollowCar
-                    prefs[PREF_SHOW_RECORDING_LOGS] = trackSettings.showRecordingLogs
-                    prefs[PREF_SHOW_ANTENNA_ALARM] = trackSettings.showAntennaAlarm
-                    prefs[PREF_SHOW_WBI_ALARM] = trackSettings.showWBIAlarm
-                    prefs[PREF_SHOW_NBI_ALARM] = trackSettings.showNBIAlarm
-                    prefs[PREF_SHOW_SPOOFING_ALARM] = trackSettings.showSpoofingAlarm
+                    prefs[PREF_TRACK_SETTINGS] = Json.encodeToString(trackSettings)
                 }
             }
         }
