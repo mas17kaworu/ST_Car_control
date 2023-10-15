@@ -25,6 +25,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDGetVersion;
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter;
 import com.longkai.stcarcontrol.st_exp.customView.HorizontalListView;
+import com.longkai.stcarcontrol.st_exp.fragment.CarInfoFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSMonitorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUChargeFragment;
@@ -53,6 +54,7 @@ import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_OBC;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_OBC_DEMO;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_TBOX;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_TMP;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_TORQUE;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_VCUVCU;
@@ -77,6 +79,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     private VCUOBCFragment vcuobcFragment;
     private VCUUpdateFirmwareFragment vcuUpdateFirmwareFragment;
     private VCUOBCDemoFragment vcuobcDemoFragment;
+    private CarInfoFragment mCarInfoFragment;
 
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
@@ -139,8 +142,8 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         hListView = (HorizontalListView) findViewById(R.id.vcu_horizon_listview);
         final int[] ids = {
                 R.drawable.vcu_activity_bottom_home,
+                R.drawable.vcu_activity_bottom_gyhlsd,
                 R.drawable.vcu_activity_bottom_vcu,
-//                R.drawable.vcu_activity_bottom_gyhlsd,
                 R.drawable.vcu_activity_bottom_obc,
                 R.drawable.vcu_activity_bottom_bms,
                 R.drawable.vcu_activity_bottom_mcu,
@@ -179,6 +182,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
             case MCU:
             case UPDATE:
             case HomeScreen:
+            case CARINFO:
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
                 break;
             case BMS:
@@ -489,6 +493,13 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 transaction.replace(R.id.vcu_main_fragment_content, mVCUVCUCFragment);
                 updateDrawer(VCUState.VCU);
                 break;
+            case FRAGMENT_TRANSACTION_TMP:
+                if (mCarInfoFragment == null){
+                    mCarInfoFragment = new CarInfoFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, mCarInfoFragment);
+                updateDrawer(VCUState.CARINFO);
+                break;
             case 200:
                 if (mVCUGYHLSDFragment == null){
                     mVCUGYHLSDFragment = new VCUGYHLSDFragment();
@@ -598,6 +609,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
 
     public enum VCUState{
         HomeScreen,
+        CARINFO,
         VCU,
         BMS,
         MCU,

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="46dp"
+    android:layout_height="16dp">
+    <com.longkai.stcarcontrol.st_exp.view.BatteryView
+        android:id="@+id/battery"
+        android:layout_centerVertical="true"
+        android:layout_width="8dp"
+        android:layout_height="16dp"/>
+
+    <TextView
+        android:layout_toRightOf="@id/battery"
+        android:id="@+id/temperature_text"
+        android:textColor="#FFFFFFFF"
+        android:layout_marginLeft="4dp"
+        android:textSize="6sp"
+        android:text="温度 3℃"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <TextView
+        android:layout_below="@id/temperature_text"
+        android:layout_toRightOf="@id/battery"
+        android:id="@+id/electric_text"
+        android:textColor="#FFFFFFFF"
+        android:textSize="5sp"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="4dp"
+        android:text="单体电压8 mv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</merge>

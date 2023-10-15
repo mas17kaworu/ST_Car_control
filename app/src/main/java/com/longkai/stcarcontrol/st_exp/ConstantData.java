@@ -87,20 +87,21 @@ public class ConstantData {
     public static final int FRAGMENT_TRANSACTION_BMS_HOME = 0;
 
     //VCU
+    //VCU
     public static final int FRAGMENT_TRANSACTION_HOME = 0;
-    public static final int FRAGMENT_TRANSACTION_VCUVCU = 1;
-    public static final int FRAGMENT_TRANSACTION_OBC_DEMO = 2;
-    public static final int FRAGMENT_TRANSACTION_BMS = 3;
-    public static final int FRAGMENT_TRANSACTION_MCU = 4;
-    public static final int FRAGMENT_TRANSACTION_TBOX = 5;
+    public static final int FRAGMENT_TRANSACTION_TMP = FRAGMENT_TRANSACTION_HOME + 1;
+    public static final int FRAGMENT_TRANSACTION_VCUVCU = FRAGMENT_TRANSACTION_TMP + 1;
+    public static final int FRAGMENT_TRANSACTION_OBC_DEMO = FRAGMENT_TRANSACTION_VCUVCU + 1;
+    public static final int FRAGMENT_TRANSACTION_BMS = FRAGMENT_TRANSACTION_OBC_DEMO + 1;
+    public static final int FRAGMENT_TRANSACTION_MCU = FRAGMENT_TRANSACTION_BMS + 1;
+    public static final int FRAGMENT_TRANSACTION_TBOX = FRAGMENT_TRANSACTION_MCU + 1;
 
-    public static final int FRAGMENT_TRANSACTION_GYHLSD = 6;
-    public static final int FRAGMENT_TRANSACTION_CHARGE = 7;
-    public static final int FRAGMENT_TRANSACTION_TORQUE = 8;
-    public static final int FRAGMENT_TRANSACTION_MONITOR = 9;
+    public static final int FRAGMENT_TRANSACTION_GYHLSD = FRAGMENT_TRANSACTION_TBOX + 1;
+    public static final int FRAGMENT_TRANSACTION_CHARGE = FRAGMENT_TRANSACTION_GYHLSD + 1;
+    public static final int FRAGMENT_TRANSACTION_TORQUE = FRAGMENT_TRANSACTION_CHARGE + 1;
+    public static final int FRAGMENT_TRANSACTION_MONITOR = FRAGMENT_TRANSACTION_TORQUE + 1;
+    public static final int FRAGMENT_TRANSACTION_OBC = FRAGMENT_TRANSACTION_MONITOR + 1;
 
-
-    public static final int FRAGMENT_TRANSACTION_OBC = 10;
 
     public static final int FRAGMENT_TRANSACTION_UPDATE_FIRMWARE = 104;
 

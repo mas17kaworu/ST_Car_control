@@ -162,6 +162,30 @@
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
     <!--FrontBottomLight screen END-->
+    <declare-styleable name="AppGrid">
+        <attr name="space" format="dimension" />
+        <attr name="space_mid" format="dimension" />
+        <attr name="space_bottom" format="dimension" />
+        <attr name="column" format="integer" />
+        <attr name="row" format="integer" />
+        <attr name="paddingLeft" format="dimension"/>
+        <attr name="paddingRight" format="dimension"/>
+    </declare-styleable>
 
 
+    <declare-styleable name="Indicator">
+        <attr name="tipText" format="string" />
+        <attr name="color" format="color"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="SixLayout">
+        <attr name="showIndicator" format="boolean" />
+        <attr name="title" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="DrawView">
+        <attr name="drawStyle" format="integer" />
+        <attr name="drawDesc" format="string" />
+        <attr name="drawBgColor" format="color" />
+    </declare-styleable>
 </resources>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#434d55">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/car_info_top"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="74dp"
+            android:layout_marginEnd="24dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/carinfo_circle_bg">
+                <FrameLayout
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/carinfo_first_circle_bg"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+                    <ImageView
+                        android:layout_marginTop="18dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginBottom="19dp"
+                        android:background="@drawable/lcarinfo_ogo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </FrameLayout>
+
+<!--                <com.longkai.stcarcontrol.st_exp.view.AppProgressView-->
+<!--                    android:id="@+id/car_info_top1"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:visibility="gone"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_weight="1" />-->
+
+                <com.longkai.stcarcontrol.st_exp.view.FirstTextsLayout
+                    android:id="@+id/car_info_top2"
+                    android:layout_marginTop="17dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+
+            <com.longkai.stcarcontrol.st_exp.view.AppsInfoLayout
+                android:layout_width="0dp"
+                android:id="@+id/apps_info"
+                android:layout_height="200dp"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:background="@drawable/carinfo_circle_bg"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/car_info_center"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@id/car_info_top"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/carinfo_circle_bg"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.longkai.stcarcontrol.st_exp.view.VcuTruckInfoLayout
+                    android:id="@+id/car_info_layout_1"
+                    android:layout_width="0dp"
+                    android:layout_height="175dp"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:state_selected="true"
+                    android:background="@drawable/carinfo_layout_bg">
+
+                </com.longkai.stcarcontrol.st_exp.view.VcuTruckInfoLayout>
+
+                <com.longkai.stcarcontrol.st_exp.view.VcuCarInfoLayout
+                    android:id="@+id/car_info_layout_2"
+                    android:layout_width="0dp"
+                    android:layout_height="175dp"
+                    android:layout_marginLeft="17dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginRight="17dp"
+                    android:clickable="true"
+                    android:layout_weight="1"
+                    android:background="@drawable/carinfo_layout_bg">
+
+                </com.longkai.stcarcontrol.st_exp.view.VcuCarInfoLayout>
+
+                <com.longkai.stcarcontrol.st_exp.view.BmsLayout
+                    android:id="@+id/car_info_layout_3"
+                    android:layout_width="0dp"
+                    android:layout_height="175dp"
+                    android:paddingTop="17dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="18dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/carinfo_layout_bg">
+
+                </com.longkai.stcarcontrol.st_exp.view.BmsLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="16dp">
+
+                <com.longkai.stcarcontrol.st_exp.view.OBCLayout
+                    android:id="@+id/car_info_layout_4"
+                    android:layout_width="0dp"
+                    android:layout_height="175dp"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/carinfo_layout_bg">
+
+                </com.longkai.stcarcontrol.st_exp.view.OBCLayout>
+
+                <com.longkai.stcarcontrol.st_exp.view.DcdcLayout
+                    android:id="@+id/car_info_layout_5"
+                    app:showIndicator="false"
+                    app:title="DC/DC"
+                    android:layout_width="0dp"
+                    android:layout_height="175dp"
+                    android:layout_marginLeft="17dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="17dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/carinfo_layout_bg">
+
+                </com.longkai.stcarcontrol.st_exp.view.DcdcLayout>
+
+                <com.longkai.stcarcontrol.st_exp.view.NinthLayout
+                    android:id="@+id/car_info_layout_6"
+                    android:layout_width="0dp"
+                    android:layout_height="175dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="18dp"
+                    app:column="7"
+                    android:layout_weight="1"
+                    android:background="@drawable/carinfo_layout_bg">
+
+                </com.longkai.stcarcontrol.st_exp.view.NinthLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="34dp"
+            android:background="#030405"></View>
+    </LinearLayout>
+</ScrollView>

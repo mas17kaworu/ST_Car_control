@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/vcu_car_icon"
+        android:layout_width="132dp"
+        android:layout_marginBottom="16dp"
+        android:layout_height="110dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="49dp"
+        android:background="@drawable/car_engine" />
+
+
+    <Switch
+        android:id="@+id/vcu_car_switch_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Motor"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
+
+
+    <Switch
+        android:layout_below="@id/vcu_car_switch_1"
+        android:id="@+id/vcu_car_switch_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Resolver optimize"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
+    <LinearLayout
+        android:textColor="#ffffff"
+        android:id="@+id/drawLayout_1"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="212dp"
+        android:layout_below="@id/vcu_car_switch_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal">
+        <TextView
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:text="Core"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <com.longkai.stcarcontrol.st_exp.view.DrawView
+            android:layout_marginLeft="8dp"
+            app:drawDesc="FOC"
+            app:drawStyle="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <com.longkai.stcarcontrol.st_exp.view.DrawView
+            app:drawDesc="SVPWM"
+            app:drawStyle="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.longkai.stcarcontrol.st_exp.view.DrawView
+            app:drawDesc="RDC"
+            app:drawStyle="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="208dp"
+        android:layout_below="@id/drawLayout_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal">
+        <TextView
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:text="DSPL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <com.longkai.stcarcontrol.st_exp.view.DrawView
+            android:layout_marginLeft="8dp"
+            app:drawDesc="FOC"
+            app:drawStyle="0"
+            app:drawBgColor="#373839"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/vcu_car_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Traction Inverter"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+</merge>

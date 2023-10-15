@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="76dp"
+        android:layout_below="@id/title_vcu"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="37dp"
+        android:background="@drawable/carinfo_bsj_car_logo" />
+
+    <Switch
+        android:id="@+id/vcu_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Power"
+        android:textColor="#ffffff"
+        android:trackTint="#3051ff"></Switch>
+
+    <TextView
+        android:id="@+id/title_vcu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="VCU"
+        android:textColor="#ffffff"
+        android:textSize="24sp"></TextView>
+
+    <TextView
+        android:id="@+id/vcu_status"
+        android:layout_width="82dp"
+        android:layout_height="24dp"
+        android:layout_below="@id/vcu_switch"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/vcu_truck_text_bg"
+        android:gravity="center"
+        android:text="Ready"
+        android:textColor="#ff00ff0a"
+        android:textSize="14sp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vcu_status"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="13dp"
+        android:layout_marginRight="16dp"
+        android:text="Power on/noff management\nTorque management\nCharge management\nAccessory management"
+        android:textColor="#ffffff"
+        android:textSize="10sp" />
+
+</merge>
