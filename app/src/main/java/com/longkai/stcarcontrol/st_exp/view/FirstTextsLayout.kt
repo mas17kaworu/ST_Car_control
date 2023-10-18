@@ -68,7 +68,7 @@ class FirstTextsLayout : View {
 
 //            drawLineY += lineHeight
             drawSmallText(canvas, 0f, drawLineY + gapTextView + textHeight, "Drivers")
-            drawSmallText(canvas, start2X, drawLineY + gapTextView + textHeight, "_9965A,L9965T,L9965C,L9965P")
+            drawSmallText(canvas, start2X, drawLineY + gapTextView + textHeight, "L9965A,L9965T,L9965C,L9965P")
             drawLineY += gapLine + textHeight + gapTextView +lineHeight
             drawLine(canvas, 0f, drawLineY)
 

@@ -49,12 +49,12 @@ class CarInfoFragment : Fragment() {
 
     private fun initAppInfo(): List<AppProgressViewBean> {
         var list = ArrayList<AppProgressViewBean>()
-        list.add(AppProgressViewBean(text = "APP #1", percent = 0.10f, des = "VCU"))
-        list.add(AppProgressViewBean("APP #2", percent = 0.20f, des = "Traction"))
-        list.add(AppProgressViewBean("APP #3", percent = 0.30f, des = "BMS"))
-        list.add(AppProgressViewBean("APP #4", percent = 0.50f, des = "OBC"))
-        list.add(AppProgressViewBean("APP #5", percent = 0.60f, des = "DC/DC"))
-        list.add(AppProgressViewBean("APP #6", percent = 0.80f, des = "AutoSAR & FuSa"))
+        list.add(AppProgressViewBean(text = "APP #1", percent = 0.15f, des = "VCU", maxRand = 10))
+        list.add(AppProgressViewBean("APP #2", percent = 0.40f, des = "Traction", maxRand = 20, needCheckResolver = true))
+        list.add(AppProgressViewBean("APP #3", percent = 0.50f, des = "BMS", maxRand = 20, needCheckDFA = true))
+        list.add(AppProgressViewBean("APP #4", percent = 0.35f, des = "OBC", overlap = false,maxRand = 10))
+        list.add(AppProgressViewBean("APP #5", percent = 0.07f, des = "DC/DC", overlap = false, maxRand = 6))
+        list.add(AppProgressViewBean("APP #6", percent = 0.16f, des = "AutoSAR & FuSa", maxRand = 8))
         return list;
     }
 

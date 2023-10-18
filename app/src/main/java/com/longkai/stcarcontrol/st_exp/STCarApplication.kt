@@ -45,7 +45,7 @@ class STCarApplication : Application() {
     }
 
     companion object {
-        const val inUIDebugMode = true
+        const val inUIDebugMode = false
         @JvmStatic
         fun logConfig() {
             val logConfigurator = LogConfigurator()

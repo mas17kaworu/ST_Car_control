@@ -57,7 +57,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="13dp"
         android:layout_marginRight="16dp"
-        android:text="Power on/noff management\nTorque management\nCharge management\nAccessory management"
+        android:text="Power on/off management\nTorque management\nCharge management\nAccessory management"
         android:textColor="#ffffff"
         android:textSize="10sp" />
 

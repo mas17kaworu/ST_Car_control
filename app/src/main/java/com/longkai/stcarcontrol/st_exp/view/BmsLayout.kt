@@ -3,6 +3,7 @@ package com.longkai.stcarcontrol.st_exp.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.CompoundButton
 import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.RelativeLayout
@@ -22,7 +23,9 @@ class BmsLayout:RelativeLayout {
         bmsSwitch = findViewById<Switch?>(R.id.vcu_car_switch_2)?.apply {
             setOnCheckedChangeListener(object:OnCheckedChangeListener{
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                    TractionStatus.DFA = isChecked
                     batteryChange(isChecked)
+                    (this@BmsLayout.parent as View)?.invalidate()
                 }
             })
         }

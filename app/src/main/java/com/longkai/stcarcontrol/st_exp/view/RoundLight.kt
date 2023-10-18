@@ -76,7 +76,7 @@ class IndicatorView : View {
         roundBean?.let {
             circleColor = it.circleColor
             invalidate()
-            postDelayed( {  hideCircle() },800)
+//            postDelayed( {  hideCircle() },800)
         }
 
     }
@@ -115,7 +115,7 @@ class IndicatorView : View {
         roundBean?.let {
             textWidth = paint.measureText(it.tips)
             setMeasuredDimension((textWidth + padding + circleRadius * 2).toInt(),
-                textHeight.toInt()+2.dp2px(context))
+                (textHeight*1.5f).toInt())
 
         }
     }

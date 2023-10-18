@@ -28,7 +28,7 @@
 
     <Switch
         android:layout_below="@id/vcu_car_switch_1"
-        android:id="@+id/vcu_car_switch_2"
+        android:id="@+id/vcu_car_switch_optimize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -42,7 +42,7 @@
         android:id="@+id/drawLayout_1"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="212dp"
-        android:layout_below="@id/vcu_car_switch_2"
+        android:layout_below="@id/vcu_car_switch_optimize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -69,6 +69,7 @@
         <com.longkai.stcarcontrol.st_exp.view.DrawView
             app:drawDesc="RDC"
             app:drawStyle="1"
+            android:id="@+id/vcu_car_rdc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -89,7 +90,8 @@
             android:layout_height="wrap_content"/>
         <com.longkai.stcarcontrol.st_exp.view.DrawView
             android:layout_marginLeft="8dp"
-            app:drawDesc="FOC"
+            app:drawDesc="RDC"
+            android:id="@+id/vcu_car_rdc2"
             app:drawStyle="0"
             app:drawBgColor="#373839"
             android:layout_width="wrap_content"

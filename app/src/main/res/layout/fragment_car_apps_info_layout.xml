@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
         android:layout_marginLeft="16dp"
-        android:text="(MCU) StellarPx"
+        android:text="MCU SR6P6 (6 cores)"
         android:id="@+id/apps_title"
         android:textSize="18sp"
         android:layout_marginStart="16dp"
@@ -22,6 +23,7 @@
         android:layout_marginTop="13dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        app:row="2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

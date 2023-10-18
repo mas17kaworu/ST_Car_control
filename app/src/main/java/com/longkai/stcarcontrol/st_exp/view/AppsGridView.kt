@@ -25,6 +25,7 @@ import com.longkai.stcarcontrol.st_exp.Utils.dp2px
          attributeSet?.let {
             var a= context?.obtainStyledAttributes(it,R.styleable.AppGrid)?.apply {
                 column = getInteger(R.styleable.AppGrid_column, 3)
+                row = getInteger(R.styleable.AppGrid_row, -1)
                 space_mid = getDimension(R.styleable.AppGrid_space_mid,8.dp2px(context).toFloat()).toInt()
                 space_bottom = getDimension(R.styleable.AppGrid_space_bottom,5.dp2px(context).toFloat()).toInt()
              }
@@ -33,9 +34,15 @@ import com.longkai.stcarcontrol.st_exp.Utils.dp2px
      }
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
+        val height = MeasureSpec.getSize(heightMeasureSpec)
         val cellWidth = (width - _paddingLeft - _paddingRight -space_mid *(column -1)) / column
+        var cellHeight = 0
+        if(row > 0){
+            cellHeight = (height/row -space_bottom)
+        }
+
         val childWidthSpec = MeasureSpec.makeMeasureSpec(cellWidth, MeasureSpec.EXACTLY)
-        val childHeightSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE shr 1, MeasureSpec.UNSPECIFIED)
+        val childHeightSpec = if(row > 0) MeasureSpec.makeMeasureSpec(cellHeight, MeasureSpec.EXACTLY)  else MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE shr 1, MeasureSpec.UNSPECIFIED)
         val count = childCount
         noGoneCount = 0
         var itemVisibleHeight = 0
@@ -53,7 +60,7 @@ import com.longkai.stcarcontrol.st_exp.Utils.dp2px
             notGoneRows = row
         }
         setMeasuredDimension(cellWidth * col + _paddingLeft + _paddingRight +space_mid *(column -1)
-            , itemVisibleHeight * notGoneRows + space * notGoneRows + space_mid +space_bottom *(notGoneRows -1))
+            , itemVisibleHeight * notGoneRows  +space_bottom *notGoneRows)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {

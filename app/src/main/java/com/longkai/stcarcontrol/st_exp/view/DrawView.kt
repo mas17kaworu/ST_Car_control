@@ -29,6 +29,11 @@ class DrawView : View {
         initView(attributeSet)
     }
 
+    public fun changeBgColor(color:Int){
+        bgColor = color
+        invalidate()
+    }
+
     private fun initView(attributeSet: AttributeSet?){
         attributeSet?.let {
             var a = context?.obtainStyledAttributes(it, R.styleable.DrawView)?.apply {

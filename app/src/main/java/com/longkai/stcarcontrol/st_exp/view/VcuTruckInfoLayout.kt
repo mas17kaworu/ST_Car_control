@@ -10,9 +10,9 @@ import android.widget.RelativeLayout
 import android.widget.Switch
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
-import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDResponse
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDSEND
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDSTATUS
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 
 class VcuTruckInfoLayout:RelativeLayout {
@@ -41,12 +41,8 @@ class VcuTruckInfoLayout:RelativeLayout {
         mPower?.let {
             it.setOnCheckedChangeListener(object :OnCheckedChangeListener{
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                    var comment = CMDSEND()
-                    if (isChecked) {
-                        comment.turnOn()
-                    } else {
-                        comment.turnOff()
-                    }
+                    CMDSTATUS.sPower = isChecked
+                    var comment = CMDSEND(isChecked, CMDSTATUS.sMotor)
                     sendMsg(comment)
                 }
             })

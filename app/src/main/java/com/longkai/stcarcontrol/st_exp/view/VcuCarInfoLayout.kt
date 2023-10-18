@@ -1,6 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.view
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDResponse
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDSEND
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDSTATUS
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 
 class VcuCarInfoLayout : RelativeLayout {
@@ -21,6 +23,8 @@ class VcuCarInfoLayout : RelativeLayout {
     private var crash: IndicatorView? = null
     private var dc_c: IndicatorView? = null
     private var ac_charge: IndicatorView? = null
+    private var optimize:Switch? = null
+    private var rdcTextView:DrawView? = null
 
     constructor(context: Context) : super(context) {
         initLayout()
@@ -36,18 +40,24 @@ class VcuCarInfoLayout : RelativeLayout {
         motor = findViewById<Switch?>(R.id.vcu_car_switch_1)?.apply {
             setOnCheckedChangeListener(object : OnCheckedChangeListener {
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                    var comment = CMDSEND()
-                    if (isChecked) {
-                        comment.turnOn()
-                    } else {
-                        comment.turnOff()
-                    }
+                    CMDSTATUS.sMotor = isChecked
+                    var comment = CMDSEND(CMDSTATUS.sPower,isChecked)
                     sendMsg(comment)
                 }
 
             })
         }
 
+        rdcTextView = findViewById(R.id.vcu_car_rdc2)
+        optimize = findViewById<Switch?>(R.id.vcu_car_switch_optimize)?.apply {
+            setOnCheckedChangeListener(object : OnCheckedChangeListener {
+                override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                    rdcTextView?.changeBgColor(if(isChecked) Color.parseColor("#293b92") else Color.parseColor("#373839"))
+                    TractionStatus.resolver = isChecked
+                    (this@VcuCarInfoLayout.parent as View)?.invalidate()
+                }
+            })
+        }
 
         post {
             crash = (parent as View)?.findViewById(R.id.carinfo_crash)

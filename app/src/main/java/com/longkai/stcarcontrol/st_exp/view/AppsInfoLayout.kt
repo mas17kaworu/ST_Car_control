@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.longkai.stcarcontrol.st_exp.R
-import com.longkai.stcarcontrol.st_exp.Utils.sp2px
 
 class AppsInfoLayout : RelativeLayout {
 
@@ -33,18 +32,13 @@ class AppsInfoLayout : RelativeLayout {
         gridLayout.removeAllViews()
         views.clear()
         for ((index, viewBean) in viewBeans.withIndex()) {
-            var layout =
-                LayoutInflater.from(context).inflate(R.layout.fragment_car_app_item_layout, null)
-            layout.findViewById<TextView>(R.id.app_title)?.text =
-                viewBean.text + " " + (viewBean.percent * 100).toInt() + "%"
-            var tx = viewBean.des
-            layout.findViewById<TextView>(R.id.app_desc).text
-            layout.findViewById<TextView>(R.id.app_desc)?.apply {
-                text = tx
-                if (text.length > 8) {
-                    textSize = 12f
-                }
+            var layout =AppInfoItemLayout(context)
+            if (viewBean.overlap) {
+                layout.setBackgroundResource(R.drawable.app_item_bg_overlap)
+            } else {
+                layout.setBackgroundResource(R.drawable.app_item_bg)
             }
+            layout.setData(viewBean)
             layout.setOnClickListener() {
                 selectView = it
                 updateSelect()
@@ -68,14 +62,14 @@ class AppsInfoLayout : RelativeLayout {
         }
     }
 
-    public fun updateSelectByIndex(index: Int){
+    public fun updateSelectByIndex(index: Int) {
         var viewIndex = 0
-        for(view in views){
+        for (view in views) {
             view.isSelected = viewIndex++ == index
         }
     }
 
-    public fun setClickListener(appInfoClick: AppInfoClick){
+    public fun setClickListener(appInfoClick: AppInfoClick) {
         this.appInfoClick = appInfoClick
     }
 
