@@ -42,7 +42,7 @@ class VcuTruckInfoLayout:RelativeLayout {
             it.setOnCheckedChangeListener(object :OnCheckedChangeListener{
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                     CMDSTATUS.sPower = isChecked
-                    var comment = CMDSEND(isChecked, CMDSTATUS.sMotor)
+                    var comment = CMDSEND(isChecked, CMDSTATUS.sMotor,1)
                     sendMsg(comment)
                 }
             })

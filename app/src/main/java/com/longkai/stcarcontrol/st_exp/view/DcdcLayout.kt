@@ -13,7 +13,7 @@ import java.text.DecimalFormat
 class DcdcLayout : RelativeLayout {
     private var image: ImageView? = null
     private var vTextView: TextView? = null
-    private var starV = 13.2f
+    private var starV = 13f
 
 
     constructor(context: Context) : super(context)
