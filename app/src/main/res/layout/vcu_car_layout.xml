@@ -69,7 +69,8 @@
         <com.longkai.stcarcontrol.st_exp.view.DrawView
             app:drawDesc="RDC"
             app:drawStyle="1"
-            android:id="@+id/vcu_car_rdc"
+            android:id="@+id/vcu_car_rdc1"
+            app:drawBgColor="#373839"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -93,7 +94,6 @@
             app:drawDesc="RDC"
             android:id="@+id/vcu_car_rdc2"
             app:drawStyle="0"
-            app:drawBgColor="#373839"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>

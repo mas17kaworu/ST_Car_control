@@ -9,10 +9,12 @@ import com.longkai.stcarcontrol.st_exp.Utils.decimalFormat
 
 class OBCLayout : SixLayout {
     private var voltage: TextView? = null
+    private var voltage2: TextView? = null
     private var mA: TextView? = null
     private var mA2: TextView? = null
-    private var km:TextView? = null
-    private var km2:TextView? = null
+    private var km: TextView? = null
+    private var km2: TextView? = null
+    private var voltage2Number = 790
 
     constructor(context: Context) : super(context)
 
@@ -21,6 +23,7 @@ class OBCLayout : SixLayout {
 
     init {
         voltage = findViewById<TextView?>(R.id.content01_text_01)
+        voltage2 = findViewById<TextView?>(R.id.content02_text_01)
         mA = findViewById<TextView?>(R.id.content01_text_02)
         mA2 = findViewById<TextView?>(R.id.content02_text_02)
         km = findViewById<TextView?>(R.id.content01_text_03)
@@ -29,6 +32,7 @@ class OBCLayout : SixLayout {
             it.setImageResource(R.drawable.carinfo_icon_obc)
         }
         refreshTexView()
+        refreshVoltage2Number()
     }
 
 
@@ -41,8 +45,18 @@ class OBCLayout : SixLayout {
             mA?.text = "Current: ${decimalFormat.format(tmp2)}A"
             mA2?.text = "Current: ${decimalFormat.format(tmp3)}A"
             km?.text = "Power: ${decimalFormat.format(tmp1 * tmp2)}KW"
-            km2?.text = "Power: ${decimalFormat.format(802 * tmp3)}KW"
+            km2?.text = "Power: ${decimalFormat.format(voltage2Number * tmp3)}KW"
             postDelayed({ refreshTexView() }, 1000)
+        }
+    }
+
+    private fun refreshVoltage2Number() {
+        voltage2?.let {
+            if (voltage2Number > 820) {
+                return
+            }
+            it.text = "Voltage : ${decimalFormat.format(voltage2Number++)}V"
+            postDelayed({ refreshVoltage2Number() }, 1000 * 60)
         }
     }
 

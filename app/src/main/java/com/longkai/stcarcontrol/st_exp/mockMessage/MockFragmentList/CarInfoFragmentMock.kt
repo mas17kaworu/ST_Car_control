@@ -12,12 +12,12 @@ class CarInfoFragmentMock(handler: Handler?) : MockFragmentBase(handler){
     }
 
     private fun runLooper(){
-        while (true){
-            Thread.sleep(300)
-            var response =CMDResponse(ByteArray(1))
-            var mockByte = response.mockResponse()
-            dispatcher.onReceive(mockByte, 0, mockByte.size)
-            Log.d(TAG,"runLooper")
-        }
+//        while (true){
+//            Thread.sleep(300)
+//            var response =CMDResponse(ByteArray(1))
+//            var mockByte = response.mockResponse()
+//            dispatcher.onReceive(mockByte, 0, mockByte.size)
+//            Log.d(TAG,"runLooper")
+//        }
     }
 }

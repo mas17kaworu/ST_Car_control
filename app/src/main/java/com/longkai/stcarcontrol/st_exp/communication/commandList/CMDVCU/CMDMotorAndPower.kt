@@ -7,7 +7,8 @@ object CMDSTATUS{
     var sPower:Boolean = false
     var sMotor:Boolean = false
 }
-class CMDResponse(var data: ByteArray?):BaseResponse(){
+class CMDResponse(var command: Byte):BaseResponse(command){
+    var success = false
     override fun mockResponse(): ByteArray {
         var byteArray = ByteArray(3)
         byteArray[2] = 0x03
@@ -15,10 +16,12 @@ class CMDResponse(var data: ByteArray?):BaseResponse(){
         return byteArray
     }
 }
-class CMDSEND(power: Boolean, motor: Boolean,commandIndex:Int) : BaseCommand() {
-    private var commandId = 0x37
+class CMDMotorPower(power: Boolean, motor: Boolean) : BaseCommand() {
+    private var commandId = COMMAND_XPDC1
     override fun toResponse(data: ByteArray?): BaseResponse {
-        return CMDResponse(data)
+        var response = CMDResponse(COMMAND_XPDC1)
+        return response
+
     }
     override fun getCommandId(): Byte {
         return commandId.toByte()
@@ -29,7 +32,7 @@ class CMDSEND(power: Boolean, motor: Boolean,commandIndex:Int) : BaseCommand() {
             data = ByteArray(3)
             dataLength = 3
             data[0] = 0x03
-            data[1] = if (commandIndex == 1) COMMAND_XPDC1 else COMMAND_XPDC2
+            data[1] =  COMMAND_XPDC1
             var powerDate = if(power) 0x01 else 0x00
             var motorDate = if(motor) 0x01 else 0x00
             data[2] = ((powerDate or (motorDate shl 1)).toByte());

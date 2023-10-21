@@ -15,13 +15,15 @@
         android:textSize="24sp"
         android:textStyle="bold" />
     <ImageView
-        android:layout_width="357dp"
+
+        android:layout_width="match_parent"
         android:layout_height="99dp"
         android:layout_below="@id/ninth_title"
-
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_margin="16dp"
         android:background="@drawable/carinfo_large_autosar_icon"
-        ></ImageView>
+        />
 
 <!--    <com.longkai.stcarcontrol.st_exp.view.AppsGridView-->
 <!--        android:id="@+id/ninth_girdview"-->

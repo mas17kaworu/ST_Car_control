@@ -11,11 +11,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.RelativeLayout
 import android.widget.Switch
 import com.longkai.stcarcontrol.st_exp.R
-import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDResponse
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDSEND
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDMotorPower
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDSTATUS
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 
 class VcuCarInfoLayout : RelativeLayout {
     private var motor: Switch? = null
@@ -24,7 +21,8 @@ class VcuCarInfoLayout : RelativeLayout {
     private var dc_c: IndicatorView? = null
     private var ac_charge: IndicatorView? = null
     private var optimize:Switch? = null
-    private var rdcTextView:DrawView? = null
+    private var rdcTextView1:DrawView? = null
+    private var rdcTextView2:DrawView? = null
 
     constructor(context: Context) : super(context) {
         initLayout()
@@ -41,18 +39,20 @@ class VcuCarInfoLayout : RelativeLayout {
             setOnCheckedChangeListener(object : OnCheckedChangeListener {
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                     CMDSTATUS.sMotor = isChecked
-                    var comment = CMDSEND(CMDSTATUS.sPower,isChecked,2)
-                    sendMsg(comment)
+                    var comment = CMDMotorPower(CMDSTATUS.sPower,isChecked)
+                    CMDMsgSend.sendMsg(comment,3, handler)
                 }
 
             })
         }
 
-        rdcTextView = findViewById(R.id.vcu_car_rdc2)
+        rdcTextView1 = findViewById(R.id.vcu_car_rdc1)
+        rdcTextView2 = findViewById(R.id.vcu_car_rdc2)
         optimize = findViewById<Switch?>(R.id.vcu_car_switch_optimize)?.apply {
             setOnCheckedChangeListener(object : OnCheckedChangeListener {
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                    rdcTextView?.changeBgColor(if(isChecked) Color.parseColor("#293b92") else Color.parseColor("#373839"))
+                    rdcTextView1?.changeBgColor(if(isChecked) Color.parseColor("#293b92") else Color.parseColor("#373839"))
+                    rdcTextView2?.changeBgColor(if(isChecked) Color.parseColor("#373839") else Color.parseColor("#293b92"))
                     TractionStatus.resolver = isChecked
                     (this@VcuCarInfoLayout.parent as View)?.invalidate()
                 }
@@ -66,45 +66,5 @@ class VcuCarInfoLayout : RelativeLayout {
         }
     }
 
-
-    private fun sendMsg(cmdsend: CMDSEND) {
-        ServiceManager.getInstance()
-            .sendCommandToCar(cmdsend, object : CommandListenerAdapter<CMDResponse>() {
-                override fun onSuccess(response: CMDResponse?) {
-                    super.onSuccess(response)
-                    response?.let {
-                        it.data?.takeIf { it.size > 3 }?.apply {
-                            try {
-                                var res = this[3]
-                                var binary = Integer.toBinaryString(res.toInt())
-                                var len = binary.length
-                                if (len > 0) {
-                                    crash?.changeCircleColor(Character.getNumericValue(binary[len - 1]))
-                                }
-                                if (len > 1) {
-                                    dc_c?.changeCircleColor(Character.getNumericValue(binary[len - 2]))
-                                }
-                                if (len > 2) {
-                                    ac_charge?.changeCircleColor(Character.getNumericValue(binary[len - 3]))
-                                }
-                            } catch (e: Exception) {
-
-                            }
-                        }
-                    }
-                }
-
-                override fun onError(errorCode: Int) {
-                    super.onError(errorCode)
-                    Log.d(TAG, "onErr")
-                }
-
-                override fun onTimeout() {
-                    super.onTimeout()
-                    Log.d(TAG, "timeout")
-                }
-
-            })
-    }
 
 }
