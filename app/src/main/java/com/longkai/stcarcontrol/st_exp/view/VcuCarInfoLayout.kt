@@ -3,7 +3,6 @@ package com.longkai.stcarcontrol.st_exp.view
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
@@ -17,9 +16,6 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDSTATU
 class VcuCarInfoLayout : RelativeLayout {
     private var motor: Switch? = null
     private var TAG = "VcuCarInfoLayout"
-    private var crash: IndicatorView? = null
-    private var dc_c: IndicatorView? = null
-    private var ac_charge: IndicatorView? = null
     private var optimize:Switch? = null
     private var rdcTextView1:DrawView? = null
     private var rdcTextView2:DrawView? = null
@@ -59,11 +55,6 @@ class VcuCarInfoLayout : RelativeLayout {
             })
         }
 
-        post {
-            crash = (parent as View)?.findViewById(R.id.carinfo_crash)
-            dc_c = (parent as View)?.findViewById(R.id.carinfo_dc_c)
-            ac_charge = (parent as View)?.findViewById(R.id.carinfo_ac_charge)
-        }
     }
 
 

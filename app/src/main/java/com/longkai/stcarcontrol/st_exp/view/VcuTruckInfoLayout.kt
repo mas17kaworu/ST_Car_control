@@ -28,6 +28,7 @@ object CMDMsgSend {
      */
     @JvmStatic
     fun sendMsg(cmdsend: CMDMotorPower, retryCounts: Int, handler: Handler) {
+        Log.d(TAG,"sendMsg")
         if (retryCounts > 0) {
             ServiceManager.getInstance()
                 .sendCommandToCar(cmdsend, object : CommandListenerAdapter<CMDResponse>() {

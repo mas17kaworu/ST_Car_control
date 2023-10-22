@@ -21,12 +21,11 @@ class CMDDFAResponse( command: Byte) : BaseResponse(command) {
 class CMDDFA : BaseCommand() {
     private var commandId = COMMAND_XPDC2
     override fun toResponse(data: ByteArray?): BaseResponse {
-
         val response = CMDDFAResponse(commandId)
-        data?.takeIf { data.size > 4 && data[3] == COMMAND_XPDC2 }?.let {
+        data?.let {
             response.crash = data[4].toInt() and 0x01 != 0
             response.dc_c = data[4].toInt() and 0x02 != 0
-            response.ac_c = data[4].toInt() and 0x03 != 0
+            response.ac_c = data[4].toInt() and 0x04 != 0
         }
         return response
     }
