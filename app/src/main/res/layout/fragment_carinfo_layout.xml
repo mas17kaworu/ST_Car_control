@@ -16,7 +16,7 @@
             android:layout_height="200dp"
             android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
-            android:layout_marginTop="74dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="24dp"
             android:orientation="horizontal">
 
@@ -172,11 +172,17 @@
             </LinearLayout>
         </LinearLayout>
 
-        <View
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="51dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginLeft="24dp"
+            android:text="占位"
+            android:textColor="#ffffff"
+            android:gravity="center"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="34dp"
-            android:background="#030405"></View>
+            android:background="#030405"></TextView>
     </LinearLayout>
 </ScrollView>

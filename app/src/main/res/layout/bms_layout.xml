@@ -48,12 +48,12 @@
             android:layout_marginLeft="12dp"
             android:text="DFA optimization"
             android:textColor="#ffffff"
-            android:textSize="14sp" />
+            android:textSize="10sp" />
     </LinearLayout>
     <com.longkai.stcarcontrol.st_exp.view.AppsGridView
         android:id="@+id/batter_gird_view"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="16dp"
         app:column="6"
         app:space_bottom="16dp"

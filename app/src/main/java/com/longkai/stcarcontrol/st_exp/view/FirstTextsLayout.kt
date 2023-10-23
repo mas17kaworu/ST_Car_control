@@ -90,6 +90,7 @@ class FirstTextsLayout : View {
             textHeight = paint.fontMetrics.bottom -  paint.fontMetrics.top
 //            drawLineY += lineHeight
             drawSmallText(canvas, 0f, drawLineY + gapTextView + textHeight, "SiC Discretes, OA")
+            paint.textSize = 8.sp2px(context).toFloat()
             drawSmallText(canvas, start2X, drawLineY + gapTextView + textHeight, "SCT018HU65,SCT055HU65,SCTO70HU120,OA TSB582")
             drawLineY += gapLine + textHeight + gapTextView +lineHeight
             drawLine(canvas, 0f, drawLineY)
