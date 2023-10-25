@@ -6,11 +6,11 @@
 
     <ImageView
         android:id="@+id/vcu_car_icon"
-        android:layout_width="132dp"
+        android:layout_width="118dp"
         android:layout_marginBottom="16dp"
-        android:layout_height="110dp"
+        android:layout_height="99dp"
         android:layout_marginLeft="22dp"
-        android:layout_marginTop="49dp"
+        android:layout_marginTop="52dp"
         android:background="@drawable/car_engine" />
 
 
@@ -41,7 +41,7 @@
         android:textColor="#ffffff"
         android:id="@+id/drawLayout_1"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="184dp"
+        android:layout_marginLeft="175dp"
         android:layout_below="@id/vcu_car_switch_optimize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,13 +70,13 @@
             app:drawDesc="RDC"
             app:drawStyle="1"
             android:id="@+id/vcu_car_rdc1"
-            app:drawBgColor="#373839"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <LinearLayout
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="208dp"
+        android:layout_marginLeft="175dp"
         android:layout_below="@id/drawLayout_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -94,6 +94,7 @@
             app:drawDesc="RDC"
             android:id="@+id/vcu_car_rdc2"
             app:drawStyle="0"
+            app:drawBgColor="#373839"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>

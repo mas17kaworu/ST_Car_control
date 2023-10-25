@@ -13,9 +13,10 @@
 
     <LinearLayout
         android:id="@+id/seventh_content_1"
-        android:layout_width="223dp"
+        android:layout_width="match_parent"
         android:layout_height="98dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="60dp"
         android:layout_toRightOf="@id/car_seventh_image"
         android:background="@drawable/carinfo_six_bg"

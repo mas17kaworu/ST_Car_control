@@ -47,8 +47,8 @@ class VcuCarInfoLayout : RelativeLayout {
         optimize = findViewById<Switch?>(R.id.vcu_car_switch_optimize)?.apply {
             setOnCheckedChangeListener(object : OnCheckedChangeListener {
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                    rdcTextView1?.changeBgColor(if(isChecked) Color.parseColor("#293b92") else Color.parseColor("#373839"))
-                    rdcTextView2?.changeBgColor(if(isChecked) Color.parseColor("#373839") else Color.parseColor("#293b92"))
+                    rdcTextView2?.changeBgColor(if(isChecked) Color.parseColor("#293b92") else Color.parseColor("#373839"))
+                    rdcTextView1?.changeBgColor(if(isChecked) Color.parseColor("#373839") else Color.parseColor("#293b92"))
                     TractionStatus.resolver = isChecked
                     (this@VcuCarInfoLayout.parent as View)?.invalidate()
                 }

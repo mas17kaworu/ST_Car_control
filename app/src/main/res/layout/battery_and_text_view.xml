@@ -9,6 +9,7 @@
         android:layout_height="16dp"/>
 
     <TextView
+        android:visibility="gone"
         android:layout_toRightOf="@id/battery"
         android:id="@+id/temperature_text"
         android:textColor="#FFFFFFFF"
@@ -20,7 +21,6 @@
 
 
     <TextView
-        android:layout_below="@id/temperature_text"
         android:layout_toRightOf="@id/battery"
         android:id="@+id/electric_text"
         android:textColor="#FFFFFFFF"

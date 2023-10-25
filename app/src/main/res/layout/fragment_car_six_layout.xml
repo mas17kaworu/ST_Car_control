@@ -13,7 +13,7 @@
 
     <LinearLayout
         android:id="@+id/six_content_1"
-        android:layout_width="139dp"
+        android:layout_width="130dp"
         android:layout_height="98dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="60dp"
@@ -63,7 +63,7 @@
 
     <LinearLayout
         android:id="@+id/six_content_2"
-        android:layout_width="139dp"
+        android:layout_width="130dp"
         android:layout_height="98dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="60dp"
