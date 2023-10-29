@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="6dp"
-            android:text="Pmax: 2.5KW"
+            android:text="Pmax : 2.5KW"
             android:textColor="#ffffff"
             android:textSize="12sp" />
 
@@ -50,7 +50,7 @@
             android:layout_marginTop="2dp"
             android:layout_marginLeft="10dp"
 
-            android:text="Current:  20A"
+            android:text="Current :  20A"
             android:textColor="#ffffff"
             android:textSize="12sp" />
     </LinearLayout>

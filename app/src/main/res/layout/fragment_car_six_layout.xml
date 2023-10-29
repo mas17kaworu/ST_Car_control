@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="9dp"
-            android:text="Voltage : 220Vac"
+            android:text="Voltage :220Vac"
             android:textColor="#ffffff"
             android:textSize="12sp" />
 
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="2dp"
-            android:text="Current: 30"
+            android:text="Current : 30"
             android:textColor="#ffffff"
             android:textSize="12sp" />
 
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="2dp"
-            android:text="Power:电压X电流"
+            android:text="Power :电压X电流"
             android:textColor="#ffffff"
             android:textSize="12sp" />
         <TextView
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="2dp"
-            android:text="Frequency:50Hz"
+            android:text="Frequency :50Hz"
             android:textColor="#ffffff"
             android:textSize="12sp" />
     </LinearLayout>
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="2dp"
-            android:text="Current:  8A"
+            android:text="Current : 8A"
             android:textColor="#ffffff"
             android:textSize="12sp" />
 
@@ -98,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="2dp"
-            android:text="Power:电压X电流"
+            android:text="Power :电压X电流"
             android:textColor="#ffffff"
             android:textSize="12sp" />
 
@@ -108,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="2dp"
-            android:text="Temperature:20 C"
+            android:text="Temperature :20℃"
             android:textColor="#ffffff"
             android:textSize="12sp" />
 
@@ -128,7 +128,7 @@
     <com.longkai.stcarcontrol.st_exp.view.IndicatorView
         android:id="@+id/carinfo_ac_charge"
         android:layout_width="wrap_content"
-        app:tipText="AC_Charge"
+        app:tipText="AC\ncharge"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginTop="24dp"

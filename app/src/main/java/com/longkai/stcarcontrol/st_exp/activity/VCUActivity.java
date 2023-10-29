@@ -142,7 +142,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         hListView = (HorizontalListView) findViewById(R.id.vcu_horizon_listview);
         final int[] ids = {
                 R.drawable.vcu_activity_bottom_home,
-                R.drawable.vcu_activity_bottom_gyhlsd,
+                R.drawable.vcu_activity_bottom_car,
                 R.drawable.vcu_activity_bottom_vcu,
                 R.drawable.vcu_activity_bottom_obc,
                 R.drawable.vcu_activity_bottom_bms,

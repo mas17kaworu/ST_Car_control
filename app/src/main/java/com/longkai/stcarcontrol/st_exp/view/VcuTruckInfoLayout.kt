@@ -18,6 +18,8 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDMotor
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDResponse
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDSTATUS
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
+import com.longkai.stcarcontrol.st_exp.view.IndicatorColor.COLOR_GREEN
+import com.longkai.stcarcontrol.st_exp.view.IndicatorColor.COLOR_RED
 
 object CMDMsgSend {
     private var TAG = "CMDMsgSend"
@@ -28,7 +30,7 @@ object CMDMsgSend {
      */
     @JvmStatic
     fun sendMsg(cmdsend: CMDMotorPower, retryCounts: Int, handler: Handler) {
-        Log.d(TAG,"sendMsg")
+        Log.d(TAG, "sendMsg")
         if (retryCounts > 0) {
             ServiceManager.getInstance()
                 .sendCommandToCar(cmdsend, object : CommandListenerAdapter<CMDResponse>() {
@@ -69,7 +71,20 @@ object CMDMsgSend {
 
 class VcuTruckInfoLayout : RelativeLayout {
     private var mPower: Switch? = null
+    private var acc: Switch? = null
+    private var generator: Switch? = null
     private final var TAG = "VcuTruckInfoLayout"
+    private var pedal: IndicatorView? = null
+    private var brake: IndicatorView? = null
+    private var torque: TextView? = null
+    private var speed: TextView? = null
+    private val maxSpeed = 50
+    private val minSpeed = 0
+    private var currentSpeed = 0;
+    private var isAddSpeed = false
+    private var speedRunnable: Runnable = Runnable {
+        changeSpeed()
+    }
 
     private var statusTextView: TextView? = null
     private var statusChangeRunnable: Runnable = Runnable {
@@ -87,11 +102,36 @@ class VcuTruckInfoLayout : RelativeLayout {
         initLayout()
     }
 
+    private fun changeSpeed() {
+        removeCallbacks(speedRunnable)
+        if (isAddSpeed) {
+            if (currentSpeed < maxSpeed) {
+                speed?.text = "Speed: $currentSpeed RPM"
+                currentSpeed += 10;
+                postDelayed(speedRunnable, 1000)
+            } else {
+                currentSpeed = maxSpeed
+                speed?.text = "Speed: $maxSpeed RPM"
+            }
+        } else {
+            if (currentSpeed > minSpeed) {
+                speed?.text = "Speed: $currentSpeed RPM"
+                postDelayed(speedRunnable, 1000)
+                currentSpeed -= 10
+            } else {
+                currentSpeed = minSpeed
+                speed?.text = "Speed: $minSpeed RPM"
+                torque?.text = "Torque: 0 NM"
+            }
+        }
+    }
 
     private fun initLayout() {
         LayoutInflater.from(context).inflate(R.layout.vcu_truck_layout, this)
         mPower = findViewById(R.id.vcu_switch)
         statusTextView = findViewById(R.id.vcu_status)
+        torque = findViewById(R.id.vcu_torque)
+        speed = findViewById(R.id.vcu_speed)
         mPower?.let {
             it.setOnCheckedChangeListener(object : OnCheckedChangeListener {
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -113,6 +153,48 @@ class VcuTruckInfoLayout : RelativeLayout {
                 }
             })
         }
+
+        acc = findViewById<Switch>(R.id.vcu_acc)?.apply {
+            setOnCheckedChangeListener { buttonView, isChecked ->
+                run {
+                    if (isChecked) {
+                        pedal?.changeCircleColor(COLOR_GREEN)
+                        brake?.changeCircleColor(COLOR_RED)
+                        torque?.text = "Torque: 10 NM"
+                        isAddSpeed = true
+                        changeSpeed()
+                    } else {
+                        if(isAddSpeed){
+                            this@VcuTruckInfoLayout.removeCallbacks(speedRunnable)
+                        }
+                    }
+                    CMDSTATUS.sMotor = isChecked
+                    var comment = CMDMotorPower(CMDSTATUS.sPower, isChecked)
+                    CMDMsgSend.sendMsg(comment, 3, handler)
+                }
+            }
+        }
+        generator = findViewById<Switch>(R.id.vcu_generator)?.apply {
+            setOnCheckedChangeListener { buttonView, isChecked ->
+                run {
+                    if (isChecked) {
+                        acc?.isChecked = false
+                        brake?.changeCircleColor(COLOR_GREEN)
+                        pedal?.changeCircleColor(COLOR_RED)
+                        torque?.text = "Torque: -10 NM"
+                        isAddSpeed = false
+                        changeSpeed()
+                    } else {
+                        if(!isAddSpeed){
+                            this@VcuTruckInfoLayout.removeCallbacks(speedRunnable)
+                        }
+                    }
+                }
+            }
+        }
+
+        pedal = findViewById(R.id.vcu_pedal)
+        brake = findViewById(R.id.vcu_brake)
     }
 
 

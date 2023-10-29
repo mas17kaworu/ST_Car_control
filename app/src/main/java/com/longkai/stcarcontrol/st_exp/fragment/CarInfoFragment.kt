@@ -1,17 +1,25 @@
 package com.longkai.stcarcontrol.st_exp.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.longkai.stcarcontrol.st_exp.R
+import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDDFA
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDDFAResponse
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl
 import com.longkai.stcarcontrol.st_exp.view.AppProgressViewBean
 import com.longkai.stcarcontrol.st_exp.view.AppsInfoLayout
+import com.longkai.stcarcontrol.st_exp.view.IndicatorColor
+import com.longkai.stcarcontrol.st_exp.view.IndicatorView
 
 class CarInfoFragment : Fragment() {
+    private var TAG ="CarInfoFragment"
     private var mRootView: View? = null
     private var mList: List<AppProgressViewBean> = ArrayList()
     private var mListView: ArrayList<View> = ArrayList()
@@ -24,6 +32,26 @@ class CarInfoFragment : Fragment() {
             refreshViewSelect()
         }
 
+    }
+    private var postMsg: Runnable = Runnable {
+        ServiceManager.getInstance()
+            .sendCommandToCar(CMDDFA(), object : CommandListenerAdapter<CMDDFAResponse>() {
+                override fun onSuccess(response: CMDDFAResponse?) {
+                    super.onSuccess(response)
+                    response?.let {
+                        refreshView(response)
+                    }
+                }
+                override fun onError(errorCode: Int) {
+                    super.onError(errorCode)
+                }
+
+                override fun onTimeout() {
+                    super.onTimeout()
+                }
+
+            })
+        sendMsg()
     }
 
     override fun onCreateView(
@@ -44,17 +72,57 @@ class CarInfoFragment : Fragment() {
         }
         addViews()
 //        MockMessageServiceImpl.getService().StartService(CarInfoFragment::class.java.toString())
+        sendMsg()
         return mRootView
     }
 
     private fun initAppInfo(): List<AppProgressViewBean> {
         var list = ArrayList<AppProgressViewBean>()
         list.add(AppProgressViewBean(text = "APP #1", percent = 0.15f, des = "VCU", maxRand = 10))
-        list.add(AppProgressViewBean("APP #2", percent = 0.40f, des = "Traction", maxRand = 20, needCheckResolver = true))
-        list.add(AppProgressViewBean("APP #3", percent = 0.50f, des = "BMS", maxRand = 20, needCheckDFA = true))
-        list.add(AppProgressViewBean("APP #4", percent = 0.35f, des = "OBC", overlap = false,maxRand = 10))
-        list.add(AppProgressViewBean("APP #5", percent = 0.07f, des = "DC/DC", overlap = false, maxRand = 6))
-        list.add(AppProgressViewBean("APP #6", percent = 0.16f, des = "AutoSAR & FuSa", maxRand = 8))
+        list.add(
+            AppProgressViewBean(
+                "APP #2",
+                percent = 0.40f,
+                des = "Traction",
+                maxRand = 20,
+                needCheckResolver = true
+            )
+        )
+        list.add(
+            AppProgressViewBean(
+                "APP #3",
+                percent = 0.50f,
+                des = "BMS",
+                maxRand = 20,
+                needCheckDFA = true
+            )
+        )
+        list.add(
+            AppProgressViewBean(
+                "APP #4",
+                percent = 0.35f,
+                des = "OBC",
+                overlap = false,
+                maxRand = 10
+            )
+        )
+        list.add(
+            AppProgressViewBean(
+                "APP #5",
+                percent = 0.07f,
+                des = "DC/DC",
+                overlap = false,
+                maxRand = 6
+            )
+        )
+        list.add(
+            AppProgressViewBean(
+                "APP #6",
+                percent = 0.16f,
+                des = "AutoSAR & FuSa",
+                maxRand = 8
+            )
+        )
         return list;
     }
 
@@ -100,6 +168,28 @@ class CarInfoFragment : Fragment() {
         for (view in mListView) {
             view.isSelected = selectIndex == index++
         }
-
     }
+
+    private fun sendMsg() {
+        mRootView?.removeCallbacks(postMsg)
+        mRootView?.postDelayed(postMsg, 1000)
+        Log.i(TAG,"sendMsg")
+    }
+
+    private fun refreshView(response: CMDDFAResponse) {
+        mRootView?.findViewById<IndicatorView>(R.id.carinfo_crash)?.let {
+            it.changeCircleColor(if (response.crash) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_RED)
+        }
+        mRootView?.findViewById<IndicatorView>(R.id.carinfo_dc_c)?.let {
+            it.changeCircleColor(if (response.dc_c) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_RED)
+        }
+        mRootView?.findViewById<IndicatorView>(R.id.carinfo_ac_charge)
+            ?.changeCircleColor(if (response.ac_c) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_RED)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mRootView?.removeCallbacks(postMsg)
+    }
+
 }

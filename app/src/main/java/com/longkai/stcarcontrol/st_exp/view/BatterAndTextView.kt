@@ -33,7 +33,7 @@ class BatterAndTextView :RelativeLayout {
             setPower(battery)
         }
         electric?.apply {
-            text = "单体电压 ${decimalFormat.format(battery)}mV"
+            text = "Voltage ${decimalFormat.format(battery)}mV"
         }
     }
 

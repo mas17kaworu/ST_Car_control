@@ -34,38 +34,14 @@ class BmsLayout : RelativeLayout {
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                     TractionStatus.DFA = isChecked
                     batteryChange(isChecked)
-                    sendMsg(CMDDFA())
                     (this@BmsLayout.parent as View)?.invalidate()
                 }
             })
         }
         initGridView()
-        post {
-            ac_charge = (parent as View)?.findViewById(R.id.carinfo_ac_charge)
-        }
     }
 
-    private fun sendMsg(sendMsg: CMDDFA) {
-        ServiceManager.getInstance()
-            .sendCommandToCar(sendMsg, object : CommandListenerAdapter<CMDDFAResponse>() {
-                override fun onSuccess(response: CMDDFAResponse?) {
-                    super.onSuccess(response)
-                    response?.let {
-                        refreshView(response)
-                    }
-                }
 
-                override fun onError(errorCode: Int) {
-                    super.onError(errorCode)
-                }
-
-                override fun onTimeout() {
-                    super.onTimeout()
-                    Log.d(TAG, "timeout")
-                }
-
-            })
-    }
 
     private fun batteryChange(check: Boolean) {
         for (batteryView in listView) {
@@ -82,13 +58,5 @@ class BmsLayout : RelativeLayout {
         }
     }
 
-    private fun refreshView(response: CMDDFAResponse) {
-        findViewById<IndicatorView>(R.id.carinfo_crash)?.let {
-            it.changeCircleColor(if (response.crash) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_RED)
-        }
-        findViewById<IndicatorView>(R.id.carinfo_dc_c)?.let {
-            it.changeCircleColor(if (response.dc_c) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_RED)
-        }
-        ac_charge?.changeCircleColor(if (response.ac_c) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_RED)
-    }
+
 }

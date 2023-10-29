@@ -42,10 +42,10 @@ class OBCLayout : SixLayout {
             var tmp2 = 28 + Math.random() * 4
             var tmp3 = 7.5 + Math.random();
             it.text = "Voltage : ${decimalFormat.format(tmp1)}Vac"
-            mA?.text = "Current: ${decimalFormat.format(tmp2)}A"
-            mA2?.text = "Current: ${decimalFormat.format(tmp3)}A"
-            km?.text = "Power: ${decimalFormat.format(tmp1 * tmp2)}KW"
-            km2?.text = "Power: ${decimalFormat.format(voltage2Number * tmp3)}KW"
+            mA?.text = "Current : ${decimalFormat.format(tmp2)}A"
+            mA2?.text = "Current : ${decimalFormat.format(tmp3)}A"
+            km?.text = "Power : ${decimalFormat.format(tmp1 * tmp2)}KW"
+            km2?.text = "Power : ${decimalFormat.format(voltage2Number * tmp3)}KW"
             postDelayed({ refreshTexView() }, 1000)
         }
     }

@@ -1,6 +1,5 @@
 package com.longkai.stcarcontrol.st_exp.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.text.SpannableString

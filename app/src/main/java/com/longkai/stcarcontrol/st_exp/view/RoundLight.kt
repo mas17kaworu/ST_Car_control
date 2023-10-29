@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
@@ -31,6 +32,7 @@ class IndicatorView : View {
     private var textWidth = 0f
     private var text:String ="Ceshi"
     private var textHeight = 0f
+    private var textList:List<String> = ArrayList<String>()
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet){
@@ -52,16 +54,16 @@ class IndicatorView : View {
         initData(RoundBean(tips = text, circleColor =  circleColor))
     }
     init {
-        paint.textSize = 14.sp2px(context).toFloat()
+        paint.textSize = 11.sp2px(context).toFloat()
         var font = paint.fontMetrics
-         textHeight = font.bottom - font.top
+        textHeight = font.bottom - font.top
     }
     private fun initData(roundBean: RoundBean?) {
+        this.roundBean = roundBean
         roundBean?.let {
+            textList = it.tips .split("\n")
             this.circleColor = it.circleColor
             this.textColor = it.textColor
-            this.roundBean = it
-            textWidth = paint.measureText(it.tips)
             showCircle()
         }
     }
@@ -88,9 +90,13 @@ class IndicatorView : View {
                 var dp = 1.dp2px(context)
                 paint.color = textColor!!
                 paint.style = Paint.Style.FILL
-                var y = textHeight + dp
-                it.drawText(roundBean!!.tips, 0f, y, paint)
-                paint.color = circleColor
+                var y = 0f
+                for (string in textList) {
+                    y += textHeight
+                    var width = paint.measureText(string)
+                    it.drawText(string, (textWidth -width)/2, y, paint)
+                }
+                paint.color = roundBean!!.circleColor
                 it.drawCircle(textWidth + padding+circleRadius/2, (y+circleRadius)/2+dp, circleRadius-dp/2, paint)
             }
 
@@ -107,15 +113,22 @@ class IndicatorView : View {
                     it.circleColor =  Color.RED
                 }
             }
+            invalidate()
         }
 
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         roundBean?.let {
-            textWidth = paint.measureText(it.tips)
+            textWidth = 0f
+            for (string in textList) {
+                var width = paint.measureText(string)
+                if (width > textWidth) {
+                    textWidth = width;
+                }
+            }
             setMeasuredDimension((textWidth + padding + circleRadius * 2).toInt(),
-                (textHeight*1.5f).toInt())
+                (textHeight*0.5f + textList.size *textHeight).toInt())
 
         }
     }

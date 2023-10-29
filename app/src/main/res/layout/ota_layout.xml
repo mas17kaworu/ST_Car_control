@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/ota_button"
+        android:background="@drawable/ota_button_bg"
+        android:layout_gravity="center_vertical"
+        android:text="OTA"
+
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textColor="#ffffff"
+        android:layout_width="60dp"
+        android:layout_height="22dp"/>
+    <com.longkai.stcarcontrol.st_exp.view.OTAProgress
+        android:id="@+id/ota_prgress"
+        android:visibility="gone"
+       android:layout_gravity="center_vertical"
+        android:layout_marginLeft="7dp"
+        android:layout_width="81dp"
+        android:layout_height="4dp"
+        >
+
+    </com.longkai.stcarcontrol.st_exp.view.OTAProgress>
+    <TextView
+        android:layout_marginLeft="19dp"
+        android:id="@+id/ota_version"
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        android:text="FW Ver:1.0"
+        android:layout_height="60dp"
+        android:layout_width="wrap_content"></TextView>
+
+</merge>

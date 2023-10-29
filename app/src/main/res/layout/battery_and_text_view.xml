@@ -8,16 +8,16 @@
         android:layout_width="8dp"
         android:layout_height="16dp"/>
 
-    <TextView
-        android:visibility="gone"
-        android:layout_toRightOf="@id/battery"
-        android:id="@+id/temperature_text"
-        android:textColor="#FFFFFFFF"
-        android:layout_marginLeft="4dp"
-        android:textSize="6sp"
-        android:text="温度 3℃"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+<!--    <TextView-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_toRightOf="@id/battery"-->
+<!--        android:id="@+id/temperature_text"-->
+<!--        android:textColor="#FFFFFFFF"-->
+<!--        android:layout_marginLeft="4dp"-->
+<!--        android:textSize="6sp"-->
+<!--        android:text="温度 3℃"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"/>-->
 
 
     <TextView
@@ -25,9 +25,9 @@
         android:id="@+id/electric_text"
         android:textColor="#FFFFFFFF"
         android:textSize="5sp"
-        android:layout_marginTop="2dp"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="4dp"
-        android:text="单体电压8 mv"
+        android:text="Voltage:8 mv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

@@ -15,6 +15,15 @@
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+    <com.longkai.stcarcontrol.st_exp.view.OTALayout
+        android:layout_height="22dp"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="16dp"
+        android:id="@+id/ota_layout"
+        />
+
     <com.longkai.stcarcontrol.st_exp.view.AppsGridView
         android:layout_below="@id/apps_title"
         android:id="@+id/app_info_layout"
