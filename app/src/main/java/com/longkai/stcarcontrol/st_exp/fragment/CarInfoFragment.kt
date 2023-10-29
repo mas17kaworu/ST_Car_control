@@ -12,7 +12,6 @@ import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDDFA
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDDFAResponse
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
-import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl
 import com.longkai.stcarcontrol.st_exp.view.AppProgressViewBean
 import com.longkai.stcarcontrol.st_exp.view.AppsInfoLayout
 import com.longkai.stcarcontrol.st_exp.view.IndicatorColor

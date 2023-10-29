@@ -10,10 +10,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.RelativeLayout
 import android.widget.Switch
 import com.longkai.stcarcontrol.st_exp.R
-import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDDFA
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDDFAResponse
-import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 
 class BmsLayout : RelativeLayout {
     private var TAG = "BmsLayout"

@@ -39,7 +39,7 @@ class CMDDFA : BaseCommand() {
             data = ByteArray(3)
             dataLength = 3
             data[0] = 0x03
-            data[1] = COMMAND_XPDC1
+            data[1] = COMMAND_XPDC2
             data[2] = 0x00
         } catch (e: Exception) {
             e.printStackTrace()
