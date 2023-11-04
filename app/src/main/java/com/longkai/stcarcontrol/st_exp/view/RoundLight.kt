@@ -12,7 +12,7 @@ import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.Utils.dp2px
 import com.longkai.stcarcontrol.st_exp.Utils.sp2px
 object IndicatorColor{
-    var COLOR_RED = 0
+    var COLOR_GRAY = 0
     var COLOR_GREEN = 1
 
 }
@@ -25,7 +25,7 @@ data class RoundBean(
 class IndicatorView : View {
     private var circleRadius = 14f
     private var paint = Paint()
-    private var circleColor: Int = Color.RED
+    private var circleColor: Int = Color.GRAY
     private var textColor: Int = Color.WHITE
     private var roundBean: RoundBean? = null
     private var padding = 9.dp2px(context)
@@ -45,7 +45,7 @@ class IndicatorView : View {
                 getString(R.styleable.Indicator_tipText)?.let { 
                     text = it
                 }
-                getColor(R.styleable.Indicator_color,Color.RED)?.let {
+                getColor(R.styleable.Indicator_color,Color.GRAY)?.let {
                     circleColor = it
                 }
             }
@@ -109,8 +109,8 @@ class IndicatorView : View {
                 IndicatorColor.COLOR_GREEN  -> {
                     it.circleColor =  Color.GREEN
                 }
-                IndicatorColor.COLOR_RED -> {
-                    it.circleColor =  Color.RED
+                IndicatorColor.COLOR_GRAY -> {
+                    it.circleColor =  Color.GRAY
                 }
             }
             invalidate()

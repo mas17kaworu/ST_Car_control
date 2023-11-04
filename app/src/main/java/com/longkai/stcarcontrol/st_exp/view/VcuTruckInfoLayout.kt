@@ -18,8 +18,8 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDMotor
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDResponse
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDSTATUS
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
+import com.longkai.stcarcontrol.st_exp.view.IndicatorColor.COLOR_GRAY
 import com.longkai.stcarcontrol.st_exp.view.IndicatorColor.COLOR_GREEN
-import com.longkai.stcarcontrol.st_exp.view.IndicatorColor.COLOR_RED
 
 object CMDMsgSend {
     private var TAG = "CMDMsgSend"
@@ -158,8 +158,9 @@ class VcuTruckInfoLayout : RelativeLayout {
             setOnCheckedChangeListener { buttonView, isChecked ->
                 run {
                     if (isChecked) {
+                        generator?.isChecked = false
                         pedal?.changeCircleColor(COLOR_GREEN)
-                        brake?.changeCircleColor(COLOR_RED)
+                        brake?.changeCircleColor(COLOR_GRAY)
                         torque?.text = "Torque: 10 NM"
                         isAddSpeed = true
                         changeSpeed()
@@ -180,7 +181,7 @@ class VcuTruckInfoLayout : RelativeLayout {
                     if (isChecked) {
                         acc?.isChecked = false
                         brake?.changeCircleColor(COLOR_GREEN)
-                        pedal?.changeCircleColor(COLOR_RED)
+                        pedal?.changeCircleColor(COLOR_GRAY)
                         torque?.text = "Torque: -10 NM"
                         isAddSpeed = false
                         changeSpeed()

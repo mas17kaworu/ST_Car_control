@@ -8,11 +8,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.Utils.dp2px
-
+var isVersionUpgrade = false
 class OTALayout : LinearLayout, OnClickListener {
     private var progress: OTAProgress? = null
     private var otaButton: TextView? = null
@@ -31,7 +32,7 @@ class OTALayout : LinearLayout, OnClickListener {
             setOnClickListener(this@OTALayout)
         }
         otaVersion = findViewById(R.id.ota_version)
-
+        isVersionUpgrade?.takeIf { isVersionUpgrade}?.let { updateVersionUpgrade() }
     }
 
     override fun onClick(v: View) {
@@ -53,19 +54,38 @@ class OTALayout : LinearLayout, OnClickListener {
             progress?.updatePercent(retryCounts/5.0f)
             postDelayed({upgrade()},1000)
         } else {
-            progress?.visibility = View.GONE
-            otaVersion?.apply {
-                visibility = VISIBLE
-                text = "FW Ver:1.1 "
-            }
-            otaButton?.let {
-                it.isEnabled =true
-                it.isSelected = false
-            }
-
+            isVersionUpgrade = true
+            updateVersionUpgrade()
         }
     }
 
+   private fun updateVersionUpgrade(){
+       progress?.visibility = View.GONE
+       otaVersion?.apply {
+           visibility = VISIBLE
+           text = "FW Ver:1.1 "
+       }
+       otaButton?.let {
+           it.isEnabled =true
+           it.isSelected = false
+       }
+        findRootLayout(this)?.apply {
+            findViewById<View>(R.id.vcu_car_switch_optimize)?.let {
+                it.isEnabled = true
+            }
+            findViewById<View>(R.id.vcu_car_switch_dfa)?.let {
+                it.isEnabled = true
+            }
+        }
+
+    }
+
+    fun findRootLayout(viewGroup: ViewGroup):ViewGroup{
+        if(viewGroup is  ViewGroup && viewGroup.parent is  ViewGroup){
+            return  findRootLayout(viewGroup.parent as ViewGroup)
+        }
+        return viewGroup;
+    }
 }
 
 class OTAProgress : View {

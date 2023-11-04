@@ -40,7 +40,7 @@
 
         <Switch
             android:layout_marginTop="1dp"
-            android:id="@+id/vcu_car_switch_2"
+            android:id="@+id/vcu_car_switch_dfa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"

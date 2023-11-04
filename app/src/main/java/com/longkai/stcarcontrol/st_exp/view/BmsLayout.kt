@@ -24,13 +24,17 @@ class BmsLayout : RelativeLayout {
 
     init {
         LayoutInflater.from(context).inflate(R.layout.bms_layout, this)
+        TractionStatus.DFA = false
         gridView = findViewById(R.id.batter_gird_view)
-        bmsSwitch = findViewById<Switch?>(R.id.vcu_car_switch_2)?.apply {
+        bmsSwitch = findViewById<Switch?>(R.id.vcu_car_switch_dfa)?.apply {
+            this.isEnabled = isVersionUpgrade;
             setOnCheckedChangeListener(object : OnCheckedChangeListener {
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                    TractionStatus.DFA = isChecked
-                    batteryChange(isChecked)
-                    (this@BmsLayout.parent as View)?.invalidate()
+                    if (isVersionUpgrade) {
+                        TractionStatus.DFA = isChecked
+                        batteryChange(isChecked)
+                        (this@BmsLayout.parent as View)?.invalidate()
+                    }
                 }
             })
         }

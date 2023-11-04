@@ -16,6 +16,7 @@ import com.longkai.stcarcontrol.st_exp.view.AppProgressViewBean
 import com.longkai.stcarcontrol.st_exp.view.AppsInfoLayout
 import com.longkai.stcarcontrol.st_exp.view.IndicatorColor
 import com.longkai.stcarcontrol.st_exp.view.IndicatorView
+import com.longkai.stcarcontrol.st_exp.view.isVersionUpgrade
 
 class CarInfoFragment : Fragment() {
     private var TAG ="CarInfoFragment"
@@ -58,6 +59,7 @@ class CarInfoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        isVersionUpgrade = false
         mList = initAppInfo()
         mRootView = inflater.inflate(R.layout.fragment_carinfo_layout, null)
         appsInfoLayout = mRootView?.findViewById<AppsInfoLayout>(R.id.apps_info)?.apply {
@@ -177,13 +179,13 @@ class CarInfoFragment : Fragment() {
 
     private fun refreshView(response: CMDDFAResponse) {
         mRootView?.findViewById<IndicatorView>(R.id.carinfo_crash)?.let {
-            it.changeCircleColor(if (response.crash) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_RED)
+            it.changeCircleColor(if (response.crash) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_GRAY)
         }
         mRootView?.findViewById<IndicatorView>(R.id.carinfo_dc_c)?.let {
-            it.changeCircleColor(if (response.dc_c) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_RED)
+            it.changeCircleColor(if (response.dc_c) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_GRAY)
         }
         mRootView?.findViewById<IndicatorView>(R.id.carinfo_ac_charge)
-            ?.changeCircleColor(if (response.ac_c) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_RED)
+            ?.changeCircleColor(if (response.ac_c) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_GRAY)
     }
 
     override fun onDestroy() {

@@ -30,6 +30,7 @@ class VcuCarInfoLayout : RelativeLayout {
 
 
     private fun initLayout() {
+        TractionStatus.resolver = false
         LayoutInflater.from(context).inflate(R.layout.vcu_car_layout, this)
         motor = findViewById<Switch?>(R.id.vcu_car_switch_1)?.apply {
             setOnCheckedChangeListener(object : OnCheckedChangeListener {
@@ -45,12 +46,23 @@ class VcuCarInfoLayout : RelativeLayout {
         rdcTextView1 = findViewById(R.id.vcu_car_rdc1)
         rdcTextView2 = findViewById(R.id.vcu_car_rdc2)
         optimize = findViewById<Switch?>(R.id.vcu_car_switch_optimize)?.apply {
+            this.isEnabled = isVersionUpgrade
             setOnCheckedChangeListener(object : OnCheckedChangeListener {
                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                    rdcTextView2?.changeBgColor(if(isChecked) Color.parseColor("#293b92") else Color.parseColor("#373839"))
-                    rdcTextView1?.changeBgColor(if(isChecked) Color.parseColor("#373839") else Color.parseColor("#293b92"))
-                    TractionStatus.resolver = isChecked
-                    (this@VcuCarInfoLayout.parent as View)?.invalidate()
+                    if (isVersionUpgrade) {
+                        rdcTextView2?.changeBgColor(
+                            if (isChecked) Color.parseColor("#293b92") else Color.parseColor(
+                                "#373839"
+                            )
+                        )
+                        rdcTextView1?.changeBgColor(
+                            if (isChecked) Color.parseColor("#373839") else Color.parseColor(
+                                "#293b92"
+                            )
+                        )
+                        TractionStatus.resolver = isChecked
+                        (this@VcuCarInfoLayout.parent as View)?.invalidate()
+                    }
                 }
             })
         }

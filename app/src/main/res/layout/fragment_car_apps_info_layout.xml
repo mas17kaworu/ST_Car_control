@@ -19,7 +19,7 @@
         android:layout_height="22dp"
         android:layout_width="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:id="@+id/ota_layout"
         />
