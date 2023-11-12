@@ -52,11 +52,16 @@ class AppInfoItemLayout : RelativeLayout {
             this.findViewById<TextView>(R.id.app_title)?.apply {
                 var percent = (it.percent * 100).toInt() + (Math.random() * it.maxRand).toInt()
                 if (it.needCheckResolver) {
-                    percent = 32+ (Math.random() * 16).toInt()
-                    changeTextColor(this,percent,it.text,TractionStatus.resolver)
-                }  else if(it.needCheckDFA){
-                    percent = 42 + (Math.random() * 16).toInt()
-                    changeTextColor(this,percent,it.text,TractionStatus.DFA)
+                    if (TractionStatus.resolver) {
+                        percent = (it.percent * 100).toInt() -16 + (Math.random() * 8).toInt()
+                    }
+                    changeTextColor(this, percent, it.text, TractionStatus.resolver)
+
+                } else if (it.needCheckDFA) {
+                    if (TractionStatus.DFA) {
+                        percent = (it.percent * 100).toInt() -16  + (Math.random() * 8).toInt()
+                    }
+                    changeTextColor(this, percent, it.text, TractionStatus.DFA)
                 } else {
                     text = it.text + " " + percent + "%"
                 }

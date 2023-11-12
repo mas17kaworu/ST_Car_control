@@ -92,6 +92,8 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     public int mSelectedMode = 0;
     public VCUState vcuState;
 
+    private boolean canChangeWifiConnectVisible = false;
+
     private AtomicBoolean disableSwitchFragment = new AtomicBoolean(false);
 
     @Override
@@ -126,10 +128,11 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         ivConnectionState.setOnClickListener(this);
         ivWifiConnectionState = (ImageView) findViewById(R.id.iv_vcu_lost_wifi);
         ivWifiConnectionState.setOnClickListener(this);
-
+        canChangeWifiConnectVisible = true;
         if (communicationEstablished) {
             ivWifiConnectionState.setVisibility(View.INVISIBLE);
             ivConnectionState.setVisibility(View.INVISIBLE);
+            canChangeWifiConnectVisible = false;
         }
         ivDiagram = (ImageView) findViewById(R.id.iv_vcu_activity_diagram);
         ivDiagram.setOnClickListener(new View.OnClickListener() {
@@ -435,6 +438,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
             communicationEstablished = false;
             ivConnectionState.setVisibility(View.VISIBLE);
             ivWifiConnectionState.setVisibility(View.VISIBLE);
+            canChangeWifiConnectVisible = true;
         }
     };
 
@@ -451,6 +455,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 public void run() {
                     ivConnectionState.setVisibility(View.INVISIBLE);
                     ivWifiConnectionState.setVisibility(View.INVISIBLE);
+                    canChangeWifiConnectVisible = false;
                     Toast.makeText(getApplicationContext(),
                             "version:" + mVersion ,Toast.LENGTH_SHORT).show();
                 }
@@ -630,5 +635,17 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
 
     public void disableSwitchFragment(){
         disableSwitchFragment.set(true);
+    }
+
+    public void changeWifiConnectVisible(boolean visible) {
+        if (canChangeWifiConnectVisible) {
+            if (visible) {
+                ivConnectionState.setVisibility(View.VISIBLE);
+                ivWifiConnectionState.setVisibility(View.VISIBLE);
+            } else {
+                ivConnectionState.setVisibility(View.INVISIBLE);
+                ivWifiConnectionState.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 }

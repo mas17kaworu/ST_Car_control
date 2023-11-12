@@ -8,6 +8,8 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.longkai.stcarcontrol.st_exp.R
+import com.longkai.stcarcontrol.st_exp.activity.MainActivity
+import com.longkai.stcarcontrol.st_exp.activity.VCUActivity
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDDFA
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDDFAResponse
@@ -74,7 +76,27 @@ class CarInfoFragment : Fragment() {
         addViews()
 //        MockMessageServiceImpl.getService().StartService(CarInfoFragment::class.java.toString())
         sendMsg()
+
         return mRootView
+    }
+
+    override fun onResume() {
+        super.onResume()
+        changeWifiViewVisible(false)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        changeWifiViewVisible(true)
+    }
+
+
+    private fun changeWifiViewVisible(visible: Boolean){
+        activity?.takeIf { activity is VCUActivity } ?.let {
+            (activity as VCUActivity) ?.apply {
+                changeWifiConnectVisible(visible)
+            }
+        }
     }
 
     private fun initAppInfo(): List<AppProgressViewBean> {
