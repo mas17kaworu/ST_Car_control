@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import android.widget.Switch
 import androidx.fragment.app.Fragment
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity
@@ -19,7 +20,7 @@ import com.longkai.stcarcontrol.st_exp.view.AppsInfoLayout
 import com.longkai.stcarcontrol.st_exp.view.IndicatorColor
 import com.longkai.stcarcontrol.st_exp.view.IndicatorView
 import com.longkai.stcarcontrol.st_exp.view.isVersionUpgrade
-
+var ac_Charge_Value = false
 class CarInfoFragment : Fragment() {
     private var TAG ="CarInfoFragment"
     private var mRootView: View? = null
@@ -61,7 +62,6 @@ class CarInfoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        isVersionUpgrade = false
         mList = initAppInfo()
         mRootView = inflater.inflate(R.layout.fragment_carinfo_layout, null)
         appsInfoLayout = mRootView?.findViewById<AppsInfoLayout>(R.id.apps_info)?.apply {
@@ -105,9 +105,9 @@ class CarInfoFragment : Fragment() {
         list.add(
             AppProgressViewBean(
                 "APP #2",
-                percent = 0.40f,
+                percent = 0.25f,
                 des = "Traction",
-                maxRand = 20,
+                maxRand = 10,
                 needCheckResolver = true
             )
         )
@@ -200,6 +200,14 @@ class CarInfoFragment : Fragment() {
     }
 
     private fun refreshView(response: CMDDFAResponse) {
+        ac_Charge_Value = response.ac_c;
+        if (response.crash) {
+            mRootView?.findViewById<Switch>(R.id.vcu_acc)?.isChecked = false
+            mRootView?.findViewById<Switch>(R.id.vcu_switch)?.isChecked = false
+            mRootView?.findViewById<Switch>(R.id.vcu_generator)?.isChecked = false
+            mRootView?.findViewById<IndicatorView>(R.id.vcu_pedal)?.changeCircleColor(IndicatorColor.COLOR_GRAY)
+            mRootView?.findViewById<IndicatorView>(R.id.vcu_brake)?.changeCircleColor(IndicatorColor.COLOR_GRAY)
+        }
         mRootView?.findViewById<IndicatorView>(R.id.carinfo_crash)?.let {
             it.changeCircleColor(if (response.crash) IndicatorColor.COLOR_GREEN else IndicatorColor.COLOR_GRAY)
         }

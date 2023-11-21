@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.widget.TextView
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.Utils.decimalFormat
+import com.longkai.stcarcontrol.st_exp.fragment.ac_Charge_Value
 
 
 class OBCLayout : SixLayout {
@@ -15,6 +16,7 @@ class OBCLayout : SixLayout {
     private var km: TextView? = null
     private var km2: TextView? = null
     private var voltage2Number = 790
+    private var hzText:TextView ?= null
 
     constructor(context: Context) : super(context)
 
@@ -28,36 +30,47 @@ class OBCLayout : SixLayout {
         mA2 = findViewById<TextView?>(R.id.content02_text_02)
         km = findViewById<TextView?>(R.id.content01_text_03)
         km2 = findViewById<TextView?>(R.id.content02_text_03)
+        hzText = findViewById<TextView?>(R.id.content01_text_04)
         image?.let {
             it.setImageResource(R.drawable.carinfo_icon_obc)
         }
         refreshTexView()
-        refreshVoltage2Number()
     }
 
 
     private fun refreshTexView() {
+
         voltage?.let {
-            var tmp1 = Math.random() * 2 + 219;
-            var tmp2 = 28 + Math.random() * 4
-            var tmp3 = 7.5 + Math.random();
-            it.text = "Voltage : ${decimalFormat.format(tmp1)}Vac"
-            mA?.text = "Current : ${decimalFormat.format(tmp2)}A"
-            mA2?.text = "Current : ${decimalFormat.format(tmp3)}A"
-            km?.text = "Power : ${decimalFormat.format(tmp1 * tmp2)}KW"
-            km2?.text = "Power : ${decimalFormat.format(voltage2Number * tmp3)}KW"
+            if(ac_Charge_Value){
+                var tmp2 = 28 + Math.random() * 4
+                var tmp1 = Math.random() * 2 + 219;
+                var tmp3 = 7.5 + Math.random();
+                it.text = "Voltage : ${decimalFormat.format(tmp1)}Vac"
+                mA?.text = "Current : ${decimalFormat.format(tmp2)}A"
+                mA2?.text = "Current : ${decimalFormat.format(tmp3)}A"
+                km?.text = "Power : ${decimalFormat.format(tmp1 * tmp2)}W"
+                km2?.text = "Power : ${decimalFormat.format(voltage2Number * tmp3)}W"
+                hzText?.text = "Frequency : 50Hz"
+            } else {
+                it.text = "Voltage : --- Vac"
+                mA?.text = "Current : --- A"
+                mA2?.text = "Current : --- A"
+                km?.text = "Power : --- W"
+                km2?.text = "Power : --- W"
+                hzText?.text = "Frequency : --- Hz"
+            }
+
+
+            voltage2?.let {
+                if (voltage2Number > 820) {
+                    return
+                }
+                it.text = "Voltage : ${decimalFormat.format(voltage2Number++)}V"
+
+            }
             postDelayed({ refreshTexView() }, 1000)
         }
     }
 
-    private fun refreshVoltage2Number() {
-        voltage2?.let {
-            if (voltage2Number > 820) {
-                return
-            }
-            it.text = "Voltage : ${decimalFormat.format(voltage2Number++)}V"
-            postDelayed({ refreshVoltage2Number() }, 1000 * 60)
-        }
-    }
 
 }
