@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
 import com.longkai.stcarcontrol.st_exp.R
+import com.longkai.stcarcontrol.st_exp.Utils.addViewRefreshRunnable
 import com.longkai.stcarcontrol.st_exp.Utils.decimalFormat
 import com.longkai.stcarcontrol.st_exp.fragment.ac_Charge_Value
 
@@ -16,7 +17,8 @@ class OBCLayout : SixLayout {
     private var km: TextView? = null
     private var km2: TextView? = null
     private var voltage2Number = 790
-    private var hzText:TextView ?= null
+    private var hzText: TextView? = null
+    private var runnable: Runnable = Runnable { refreshTexView() }
 
     constructor(context: Context) : super(context)
 
@@ -41,10 +43,10 @@ class OBCLayout : SixLayout {
     private fun refreshTexView() {
 
         voltage?.let {
-            if(ac_Charge_Value){
+            if (ac_Charge_Value) {
                 var tmp2 = 28 + Math.random() * 4
-                var tmp1 = Math.random() * 2 + 219;
-                var tmp3 = 7.5 + Math.random();
+                var tmp1 = Math.random() * 2 + 219
+                var tmp3 = 6.5 + Math.random()//减1 后即能确保左侧power 大于右侧200多
                 it.text = "Voltage : ${decimalFormat.format(tmp1)}Vac"
                 mA?.text = "Current : ${decimalFormat.format(tmp2)}A"
                 mA2?.text = "Current : ${decimalFormat.format(tmp3)}A"
@@ -68,7 +70,7 @@ class OBCLayout : SixLayout {
                 it.text = "Voltage : ${decimalFormat.format(voltage2Number++)}V"
 
             }
-            postDelayed({ refreshTexView() }, 1000)
+            addViewRefreshRunnable(runnable)
         }
     }
 

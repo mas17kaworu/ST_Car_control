@@ -13,7 +13,7 @@ import com.longkai.stcarcontrol.st_exp.Utils.sp2px
 import kotlin.math.ceil
 
 public data class AppProgressViewBean(val text:String,var des:String = "Test",val percent:Float = 0f,var overlap:Boolean = true,
-                                      var maxRand:Int =0 ,var needCheckResolver:Boolean =false, var needCheckDFA:Boolean =false)
+                                      var maxRand:Int =0 ,var needCheckAccAndResolver:Boolean =false, var needCheckDFA:Boolean =false)
 class AppProgressView: View{
     private var beans:List<AppProgressViewBean>? = null
     private var  verticalCount =  1;

@@ -11,14 +11,17 @@ import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.longkai.stcarcontrol.st_exp.R
+import com.longkai.stcarcontrol.st_exp.Utils.addViewRefreshRunnable
 
 object TractionStatus {
     var resolver = false
     var DFA = false
+    var ACC = false
 }
 
 class AppInfoItemLayout : RelativeLayout {
     private var bean: AppProgressViewBean? = null
+    private var runnable:Runnable = Runnable{refreshView()}
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
@@ -51,9 +54,12 @@ class AppInfoItemLayout : RelativeLayout {
         bean?.let {
             this.findViewById<TextView>(R.id.app_title)?.apply {
                 var percent = (it.percent * 100).toInt() + (Math.random() * it.maxRand).toInt()
-                if (it.needCheckResolver) {
+                if (it.needCheckAccAndResolver) {
                     if (TractionStatus.resolver) {
-                        percent = (it.percent * 100).toInt() -16 + (Math.random() * 8).toInt()
+                        percent = (it.percent * 100).toInt() -10 + (Math.random() * 8).toInt()
+                    }
+                    if (TractionStatus.ACC) {
+                        percent += 20
                     }
                     changeTextColor(this, percent, it.text, TractionStatus.resolver)
 
@@ -66,7 +72,7 @@ class AppInfoItemLayout : RelativeLayout {
                     text = it.text + " " + percent + "%"
                 }
             }
-            postDelayed({ refreshView() }, 1000)
+            addViewRefreshRunnable(runnable)
         }
     }
 

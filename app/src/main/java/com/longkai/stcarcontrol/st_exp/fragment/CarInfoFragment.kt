@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import android.widget.Switch
 import androidx.fragment.app.Fragment
 import com.longkai.stcarcontrol.st_exp.R
+import com.longkai.stcarcontrol.st_exp.Utils.clearViewRefreshRunnable
+import com.longkai.stcarcontrol.st_exp.Utils.pauseRunnable
+import com.longkai.stcarcontrol.st_exp.Utils.resumeRunnable
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity
 import com.longkai.stcarcontrol.st_exp.activity.VCUActivity
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
@@ -83,11 +86,13 @@ class CarInfoFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         changeWifiViewVisible(false)
+        resumeRunnable()
     }
 
     override fun onPause() {
         super.onPause()
         changeWifiViewVisible(true)
+        pauseRunnable()
     }
 
 
@@ -108,7 +113,7 @@ class CarInfoFragment : Fragment() {
                 percent = 0.25f,
                 des = "Traction",
                 maxRand = 10,
-                needCheckResolver = true
+                needCheckAccAndResolver = true
             )
         )
         list.add(
@@ -221,6 +226,8 @@ class CarInfoFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         mRootView?.removeCallbacks(postMsg)
+        clearViewRefreshRunnable()
     }
+
 
 }
