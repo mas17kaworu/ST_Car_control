@@ -13,8 +13,6 @@ import android.widget.RelativeLayout
 import android.widget.Switch
 import android.widget.TextView
 import com.longkai.stcarcontrol.st_exp.R
-import com.longkai.stcarcontrol.st_exp.Utils.addViewRefreshRunnable
-import com.longkai.stcarcontrol.st_exp.Utils.removeViewRefreshRunnable
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDMotorPower
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDResponse
@@ -142,11 +140,14 @@ class VcuTruckInfoLayout : RelativeLayout {
                     CMDMsgSend.sendMsg(comment, 3, handler)
                     if (isChecked) {
                         statusTextView?.let {
-                            addViewRefreshRunnable(statusChangeRunnable)
+                            it.removeCallbacks(statusChangeRunnable)
+                            it.postDelayed(statusChangeRunnable, 1000)
+//                            addViewRefreshRunnable(statusChangeRunnable)
                         }
                     } else {
                         statusTextView?.apply {
-                            removeViewRefreshRunnable(statusChangeRunnable)
+                            removeCallbacks(statusChangeRunnable)
+//                            removeViewRefreshRunnable(statusChangeRunnable)
                             this.typeface = Typeface.DEFAULT
                             setTextColor(Color.WHITE)
                         }

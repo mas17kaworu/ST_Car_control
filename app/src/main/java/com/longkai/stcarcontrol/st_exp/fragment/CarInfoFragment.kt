@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.Utils.clearViewRefreshRunnable
 import com.longkai.stcarcontrol.st_exp.Utils.pauseRunnable
+import com.longkai.stcarcontrol.st_exp.Utils.recycleHandler
 import com.longkai.stcarcontrol.st_exp.Utils.resumeRunnable
 import com.longkai.stcarcontrol.st_exp.activity.MainActivity
 import com.longkai.stcarcontrol.st_exp.activity.VCUActivity
@@ -18,6 +19,7 @@ import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDDFA
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDDFAResponse
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl
 import com.longkai.stcarcontrol.st_exp.view.AppProgressViewBean
 import com.longkai.stcarcontrol.st_exp.view.AppsInfoLayout
 import com.longkai.stcarcontrol.st_exp.view.IndicatorColor
@@ -45,7 +47,7 @@ class CarInfoFragment : Fragment() {
                 override fun onSuccess(response: CMDDFAResponse?) {
                     super.onSuccess(response)
                     response?.let {
-                        refreshView(response)
+                        recycleHandler.post { refreshView(response) }
                     }
                 }
                 override fun onError(errorCode: Int) {
@@ -55,7 +57,6 @@ class CarInfoFragment : Fragment() {
                 override fun onTimeout() {
                     super.onTimeout()
                 }
-
             })
         sendMsg()
     }
@@ -77,7 +78,8 @@ class CarInfoFragment : Fragment() {
             })
         }
         addViews()
-//        MockMessageServiceImpl.getService().StartService(CarInfoFragment::class.java.toString())
+        // Test
+        MockMessageServiceImpl.getService().StartService(CarInfoFragment::class.java.toString())
         sendMsg()
 
         return mRootView
@@ -86,13 +88,13 @@ class CarInfoFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         changeWifiViewVisible(false)
-        resumeRunnable()
+//        resumeRunnable()
     }
 
     override fun onPause() {
         super.onPause()
         changeWifiViewVisible(true)
-        pauseRunnable()
+//        pauseRunnable()
     }
 
 
@@ -205,7 +207,7 @@ class CarInfoFragment : Fragment() {
     }
 
     private fun refreshView(response: CMDDFAResponse) {
-        ac_Charge_Value = response.ac_c;
+        ac_Charge_Value = response.ac_c
         if (response.crash) {
             mRootView?.findViewById<Switch>(R.id.vcu_acc)?.isChecked = false
             mRootView?.findViewById<Switch>(R.id.vcu_switch)?.isChecked = false
@@ -226,7 +228,7 @@ class CarInfoFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         mRootView?.removeCallbacks(postMsg)
-        clearViewRefreshRunnable()
+//        clearViewRefreshRunnable()
     }
 
 

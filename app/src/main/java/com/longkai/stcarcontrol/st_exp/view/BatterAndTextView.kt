@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.longkai.stcarcontrol.st_exp.R
-import com.longkai.stcarcontrol.st_exp.Utils.addViewRefreshRunnable
 import com.longkai.stcarcontrol.st_exp.Utils.decimalFormat
-import com.longkai.stcarcontrol.st_exp.Utils.removeViewRefreshRunnable
 
 
 class BatterAndTextView :RelativeLayout {
@@ -45,9 +43,9 @@ class BatterAndTextView :RelativeLayout {
         if (change) {
             var battery = batteryNumber + Math.random().toFloat()
             refreshBatteryView(battery)
-            addViewRefreshRunnable(batterChangeRunnable)
+            postDelayed(batterChangeRunnable, 1000)
         } else {
-            removeViewRefreshRunnable(batterChangeRunnable)
+            removeCallbacks(batterChangeRunnable)
         }
     }
 }

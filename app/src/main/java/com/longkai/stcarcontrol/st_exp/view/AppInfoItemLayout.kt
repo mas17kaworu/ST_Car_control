@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.longkai.stcarcontrol.st_exp.R
-import com.longkai.stcarcontrol.st_exp.Utils.addViewRefreshRunnable
 
 object TractionStatus {
     var resolver = false
@@ -72,7 +71,8 @@ class AppInfoItemLayout : RelativeLayout {
                     text = it.text + " " + percent + "%"
                 }
             }
-            addViewRefreshRunnable(runnable)
+            postDelayed({ refreshView() }, 1000)
+//            addViewRefreshRunnable(runnable)
         }
     }
 

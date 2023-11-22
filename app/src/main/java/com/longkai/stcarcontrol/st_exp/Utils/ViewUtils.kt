@@ -21,53 +21,69 @@ val listRunnable: ArrayList<Runnable> = ArrayList();
 var isRunnableViewsVisible = true
 var recycleHandler = object : Handler(Looper.getMainLooper()) {
     override fun dispatchMessage(msg: Message) {
-        super.dispatchMessage(msg)
-        if (msg != null && msg.what == MSG_REFRESH_VIEW_RECYCLE) {
-            Log.d("recycleHandler","isRunnableViewsVisible $isRunnableViewsVisible")
-            try {
-                if (isRunnableViewsVisible) {
-                    for (run in listRunnable) {
-                        run.run()
+        try {
+            super.dispatchMessage(msg)
+            if (msg != null && msg.what == MSG_REFRESH_VIEW_RECYCLE) {
+                Log.d("recycleHandler", "isRunnableViewsVisible $isRunnableViewsVisible")
+                try {
+                    if (isRunnableViewsVisible) {
+                        for (run in listRunnable) {
+                            run.run()
+                        }
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+                if (listRunnable.size > 0) {
+                    removeMessages(MSG_REFRESH_VIEW_RECYCLE)
+                    sendEmptyMessageDelayed(MSG_REFRESH_VIEW_RECYCLE, 1000);
+                }
             }
-            if (listRunnable.size > 0) {
-                removeMessages(MSG_REFRESH_VIEW_RECYCLE)
-                sendEmptyMessageDelayed(MSG_REFRESH_VIEW_RECYCLE, 1000);
-            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
 
 fun addViewRefreshRunnable(runnable: Runnable) {
-    if (!listRunnable.contains(runnable)) {
-        listRunnable.add(runnable)
-        isRunnableViewsVisible = true
+    try {
+        if (!listRunnable.contains(runnable)) {
+            listRunnable.add(runnable)
+            isRunnableViewsVisible = true
+        }
+        if (!recycleHandler.hasMessages(MSG_REFRESH_VIEW_RECYCLE)) {
+            recycleHandler.sendEmptyMessageDelayed(MSG_REFRESH_VIEW_RECYCLE, 1000)
+        }
+        Log.d("recycleHandler ", "list: ${listRunnable.size}")
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
-    if(!recycleHandler.hasMessages(MSG_REFRESH_VIEW_RECYCLE)){
-        recycleHandler.sendEmptyMessageDelayed(MSG_REFRESH_VIEW_RECYCLE,1000)
-    }
-    Log.d("recycleHandler ","list: ${listRunnable.size}")
 
 }
 
 fun removeViewRefreshRunnable(runnable: Runnable) {
-    if (listRunnable.contains(runnable)) {
-        listRunnable.remove(runnable)
+    try {
+        if (listRunnable.contains(runnable)) {
+            listRunnable.remove(runnable)
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 }
 
-fun  clearViewRefreshRunnable(){
-    recycleHandler.removeMessages(MSG_REFRESH_VIEW_RECYCLE)
-    listRunnable.clear()
+fun clearViewRefreshRunnable() {
+    try {
+        recycleHandler.removeMessages(MSG_REFRESH_VIEW_RECYCLE)
+        listRunnable.clear()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }
 
-fun pauseRunnable(){
-    isRunnableViewsVisible  =false
+fun pauseRunnable() {
+    isRunnableViewsVisible = false
 }
 
-fun resumeRunnable(){
-    isRunnableViewsVisible  =true
+fun resumeRunnable() {
+    isRunnableViewsVisible = true
 }
