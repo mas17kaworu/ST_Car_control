@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
 import com.longkai.stcarcontrol.st_exp.R
+import com.longkai.stcarcontrol.st_exp.Utils.addViewRefreshRunnable
 import com.longkai.stcarcontrol.st_exp.Utils.decimalFormat
 import com.longkai.stcarcontrol.st_exp.fragment.ac_Charge_Value
 
@@ -73,8 +74,7 @@ class OBCLayout : SixLayout {
                 voltage2?.let { it.text = "Voltage : ${decimalFormat.format(voltage2Number)}V"}
             }
 
-            postDelayed({ refreshTexView() }, 1000)
-//            addViewRefreshRunnable(runnable)
+            addViewRefreshRunnable(runnable)
         }
     }
 

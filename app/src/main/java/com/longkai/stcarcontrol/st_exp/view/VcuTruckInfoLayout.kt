@@ -13,6 +13,8 @@ import android.widget.RelativeLayout
 import android.widget.Switch
 import android.widget.TextView
 import com.longkai.stcarcontrol.st_exp.R
+import com.longkai.stcarcontrol.st_exp.Utils.addViewRefreshRunnable
+import com.longkai.stcarcontrol.st_exp.Utils.removeViewRefreshRunnable
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDMotorPower
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDVCU.CMDResponse
@@ -103,25 +105,26 @@ class VcuTruckInfoLayout : RelativeLayout {
     }
 
     private fun changeSpeed() {
-        removeCallbacks(speedRunnable)
         if (isAddSpeed) {
             if (currentSpeed < maxSpeed) {
                 speed?.text = "Speed: $currentSpeed RPM"
                 currentSpeed += 10;
-                postDelayed(speedRunnable, 1000)
+                addViewRefreshRunnable(speedRunnable)
             } else {
                 currentSpeed = maxSpeed
                 speed?.text = "Speed: $maxSpeed RPM"
+                removeViewRefreshRunnable(speedRunnable)
             }
         } else {
             if (currentSpeed > minSpeed) {
                 speed?.text = "Speed: $currentSpeed RPM"
-                postDelayed(speedRunnable, 1000)
+                addViewRefreshRunnable(speedRunnable)
                 currentSpeed -= 10
             } else {
                 currentSpeed = minSpeed
                 speed?.text = "Speed: $minSpeed RPM"
                 torque?.text = "Torque: 0 NM"
+                removeViewRefreshRunnable(speedRunnable)
             }
         }
     }
@@ -141,13 +144,11 @@ class VcuTruckInfoLayout : RelativeLayout {
                     if (isChecked) {
                         statusTextView?.let {
                             it.removeCallbacks(statusChangeRunnable)
-                            it.postDelayed(statusChangeRunnable, 1000)
-//                            addViewRefreshRunnable(statusChangeRunnable)
+                            addViewRefreshRunnable(statusChangeRunnable)
                         }
                     } else {
                         statusTextView?.apply {
-                            removeCallbacks(statusChangeRunnable)
-//                            removeViewRefreshRunnable(statusChangeRunnable)
+                            removeViewRefreshRunnable(statusChangeRunnable)
                             this.typeface = Typeface.DEFAULT
                             setTextColor(Color.WHITE)
                         }
@@ -169,7 +170,7 @@ class VcuTruckInfoLayout : RelativeLayout {
                         changeSpeed()
                     } else {
                         if(isAddSpeed){
-                            this@VcuTruckInfoLayout.removeCallbacks(speedRunnable)
+                            removeViewRefreshRunnable(speedRunnable)
                         }
                     }
                     CMDSTATUS.sMotor = isChecked
@@ -190,7 +191,7 @@ class VcuTruckInfoLayout : RelativeLayout {
                         changeSpeed()
                     } else {
                         if(!isAddSpeed){
-                            this@VcuTruckInfoLayout.removeCallbacks(speedRunnable)
+                            removeViewRefreshRunnable(speedRunnable)
                         }
                     }
                 }

@@ -88,13 +88,13 @@ class CarInfoFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         changeWifiViewVisible(false)
-//        resumeRunnable()
+        resumeRunnable()
     }
 
     override fun onPause() {
         super.onPause()
         changeWifiViewVisible(true)
-//        pauseRunnable()
+        pauseRunnable()
     }
 
 
@@ -227,8 +227,7 @@ class CarInfoFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mRootView?.removeCallbacks(postMsg)
-//        clearViewRefreshRunnable()
+        clearViewRefreshRunnable()
     }
 
 
