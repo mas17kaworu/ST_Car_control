@@ -51,7 +51,9 @@ class OBCLayout : SixLayout {
                 mA?.text = "Current : ${decimalFormat.format(tmp2)}A"
                 mA2?.text = "Current : ${decimalFormat.format(tmp3)}A"
                 km?.text = "Power : ${decimalFormat.format(tmp1 * tmp2)}W"
-                km2?.text = "Power : ${decimalFormat.format(voltage2Number * tmp3)}W"
+                val km2Value = if (voltage2Number * tmp3 >= tmp1 * tmp2) (tmp1 * tmp2) - 200
+                else voltage2Number * tmp3
+                km2?.text = "Power : ${decimalFormat.format(km2Value)}W"
                 hzText?.text = "Frequency : 50Hz"
             } else {
                 it.text = "Voltage : --- Vac"
