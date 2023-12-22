@@ -15,7 +15,7 @@ class BmsLayout : RelativeLayout {
     private var TAG = "BmsLayout"
     private var bmsSwitch: Switch? = null
     private var gridView: AppsGridView? = null
-    private var battery = 60f
+    private var battery = 3.30f
     private var listView: ArrayList<BatterAndTextView> = ArrayList<BatterAndTextView>();
     private var ac_charge: IndicatorView? = null
 
@@ -52,7 +52,7 @@ class BmsLayout : RelativeLayout {
     private fun initGridView() {
         for (index in 0 until 18) {
             var batteryView = BatterAndTextView(context)
-            batteryView.setBatteryAndText(battery + Math.random().toFloat())
+            batteryView.setBatteryAndText(battery + (Math.random().toFloat() * 0.2f - 0.1f) )
             listView.add(batteryView)
             gridView?.addView(batteryView)
         }

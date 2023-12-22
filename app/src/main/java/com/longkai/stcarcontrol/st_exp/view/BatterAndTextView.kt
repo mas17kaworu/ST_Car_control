@@ -33,10 +33,11 @@ class BatterAndTextView :RelativeLayout {
 
     private fun refreshBatteryView( battery:Float){
         batteryView?.apply {
-            setPower(battery)
+//            setPower(battery)
+            setPower(60.0f)
         }
         electric?.apply {
-            text = "Voltage ${decimalFormat.format(battery)}mV"
+            text = "Voltage ${decimalFormat.format(battery)} V"
         }
     }
 
