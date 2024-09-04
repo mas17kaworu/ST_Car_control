@@ -1,12 +1,21 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
+import WaveformDialog
 import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +31,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.TriggerCondition
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 @Composable
@@ -39,6 +49,44 @@ fun ExpressServicesScreen(
         uiState.expressServices.firstOrNull { it.name == uiState.focusedService?.name }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showDDSSettingsDialog by remember {
+        mutableStateOf(false)
+    }
+    var waveMaxValue by remember {
+        mutableStateOf(25)
+    }
+    if (showDDSSettingsDialog) {
+        DDSSettingsDialog(
+            onDismissRequest = {
+                showDDSSettingsDialog = false
+            },
+            waveMaxValue = waveMaxValue,
+            onWaveMacValueChange = {
+                waveMaxValue = it
+            },
+        )
+    }
+
+    var showWaveDialog by remember {
+        mutableStateOf(false)
+    }
+    if (showWaveDialog) {
+        // For test
+        val fakeFlow = flow {
+            while (true) {
+                emit((0..20).random()) // 随机生成一个整数
+                delay(500) // 每0.5秒生成一次
+            }
+        }
+
+        WaveformDialog(
+            flow = fakeFlow,
+            onDismiss = {
+                showWaveDialog = false
+            },
+            waveMaxValue = waveMaxValue,
+        )
+    }
 
     Row {
         Column {
@@ -56,9 +104,45 @@ fun ExpressServicesScreen(
                 },
                 selectedServiceId = focusedService?.id
             )
-            MusicPlayer(
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
+            Row {
+                // Hide Music player
+//                MusicPlayer(
+//                    modifier = Modifier.padding(vertical = 8.dp)
+//                )
+                IconButton(
+                    modifier = Modifier.background(color = MaterialTheme.colors.background),
+                    onClick = { showDDSSettingsDialog = true }) {
+                    Icon(
+                        Icons.Default.Settings,
+                        contentDescription = "setting",
+                        tint = MaterialTheme.colors.primary,
+                    )
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                IconButton(
+                    modifier = Modifier.background(color = MaterialTheme.colors.background),
+                    onClick = { showWaveDialog = true }) {
+                    Icon(
+                        modifier = Modifier.size(36.dp),
+                        painter = painterResource(id = R.drawable.wave),
+                        contentDescription = "wave",
+                        tint = MaterialTheme.colors.primary,
+                    )
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                IconButton(
+                    modifier = Modifier.background(color = MaterialTheme.colors.background),
+                    onClick = {
+                        /* todo sdk*/
+
+                    }) {
+                    Icon(
+                        Icons.Default.Call,
+                        contentDescription = "mic",
+                        tint = MaterialTheme.colors.primary,
+                    )
+                }
+            }
         }
 
         val imageUri = focusedService?.imageUri?.let {
