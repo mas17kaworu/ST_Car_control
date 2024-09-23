@@ -45,7 +45,7 @@ class BatteryView : View {
         setPower((Math.random() * 100f).toFloat() + 20)
     }
 
-    override fun draw(canvas: Canvas?) {
+    override fun draw(canvas: Canvas) {
         super.draw(canvas)
         canvas?.let {
             drawBatteryPower(canvas)
