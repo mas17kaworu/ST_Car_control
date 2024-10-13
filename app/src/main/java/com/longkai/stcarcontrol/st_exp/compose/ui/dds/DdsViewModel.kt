@@ -85,6 +85,9 @@ class DdsViewModel(
                         it.copy(focusedService = service)
                     }
                     executeExpressService(service)
+                    aiRepo.emitAbilityResult(
+                        "Service ${index + 1} sent!"
+                    )
                 }
             }
         }
