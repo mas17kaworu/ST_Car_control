@@ -3,6 +3,7 @@ package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
@@ -11,6 +12,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.MaterialTheme
@@ -18,6 +21,7 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,10 +46,12 @@ fun DDSSettingsDialog(
     selectedLanguage: DdsViewModel.Language,
     onDismissRequest: () -> Unit,
     aiSDKInitState: Boolean,
+    keywords: List<String> = emptyList(),
     onCurrentMaxValueChange: (Int) -> Unit,
     onVoltageMaxValueChange: (Int) -> Unit,
     onAIChooseLanguage: (DdsViewModel.Language) -> Unit,
     onKeyWordsChange: (Int, String) -> Unit,
+    updateKeywords: (List<String>) -> Unit,
 ) {
     Dialog(
         properties = DialogProperties(
@@ -66,7 +72,9 @@ fun DDSSettingsDialog(
             onCurrentMaxValueChange = onCurrentMaxValueChange,
             onVoltageMaxValueChange = onVoltageMaxValueChange,
             onAIChooseLanguage = onAIChooseLanguage,
+            keywords = keywords,
             onKeyWordsChange = onKeyWordsChange,
+            updateKeywords = updateKeywords,
         )
     }
 }
@@ -80,10 +88,12 @@ fun DDSSettings(
     temperatureMaxValue: Int,
     serviceCount: Int,
     aiSDKInitState: Boolean = false,
+    keywords: List<String> = emptyList(),
     onCurrentMaxValueChange: (Int) -> Unit,
     onVoltageMaxValueChange: (Int) -> Unit,
     onAIChooseLanguage: (DdsViewModel.Language) -> Unit,
     onKeyWordsChange: (Int, String) -> Unit,
+    updateKeywords: (List<String>) -> Unit,
 ) {
     CorneredContainer(
         modifier = modifier,
@@ -191,15 +201,20 @@ fun DDSSettings(
                     onClick = {
                         onAIChooseLanguage(DdsViewModel.Language.English)
                     },
-                    colors = androidx.compose.material.RadioButtonDefaults.colors(
-//                    selectedColor = androidx.compose.ui.graphics.Color.Blue,
-//                    unselectedColor = androidx.compose.ui.graphics.Color.Gray
-                    )
+                    colors = androidx.compose.material.RadioButtonDefaults.colors()
                 )
                 Text(text = "英文", color = textColor)
             }
             Spacer(modifier = Modifier.height(16.dp))
             val textValues = remember { mutableStateListOf(*Array(serviceCount) { "" }) }
+
+            // Ensure the textValues list is updated when initialValues changes
+            LaunchedEffect(Unit) {
+                textValues.clear()
+                textValues.addAll(List(serviceCount) { index ->
+                    keywords.getOrNull(index) ?: ""  // Use initialValues or empty string
+                })
+            }
 
             for (index in 1..serviceCount) {
                 Row(
@@ -222,16 +237,27 @@ fun DDSSettings(
                         )
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Button(
-                        modifier = Modifier.width(60.dp),
-                        onClick = {
-                            onKeyWordsChange(index - 1, textValues[index - 1])
-                        },
-                    ) {
-                        Text(text = "OK")
-                    }
+//                    Button(
+//                        modifier = Modifier.width(60.dp),
+//                        onClick = {
+//                            onKeyWordsChange(index - 1, textValues[index - 1])
+//                        },
+//                    ) {
+//                        Text(text = "OK")
+//                    }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
+            }
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    updateKeywords(textValues)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.White,
+                )
+            ) {
+                Text(text = "Save", color = Color.Black)
             }
 
             Text(
@@ -261,6 +287,7 @@ private fun DDSSettingsDialogPreview() {
             onVoltageMaxValueChange = {},
             onAIChooseLanguage = {},
             onKeyWordsChange = { index, value -> },
+            updateKeywords = {},
         )
     }
 }

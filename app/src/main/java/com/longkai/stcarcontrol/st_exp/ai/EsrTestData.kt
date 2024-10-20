@@ -20,12 +20,16 @@ val esrFsaList = mutableListOf(
             "0\t1\t-\n" +
             "1\t2\t<applaunch>\n" +
             "1\t2\t-\n" +
-            "2\t3\t<applist>\n" +
+            "2\t3\t<singledigit>\n" +
+            "2\t3\t-\n" +
+            "2\t4\t<applist>\n" +
+            "2\t4\t-\n" +
+            "3\t4\t<applist>\n" +
             ";\n" +
             "\n" +
-            "<appwant>:我想|我要|我想要|请|帮我|请帮我|给我|请给我;\n" +
+            "<appwant>:我想|我要|我想要|请|帮我|请帮我|给我|请给我|我;\n" +
             "<applaunch>:打开|启动|用|看|听|播放|设置|玩|关闭|退出;\n" +
-            "\n" +
+            "<singledigit>: 第一个|第二个|第三个|第四个|第五个|第六个|第七个|第八个|第九个;\n" +
             "<applist>:帮助|\n" +
             "保险|\n" +
             "车况|\n" +
@@ -49,7 +53,8 @@ val esrFsaList = mutableListOf(
             "语音功能|\n" +
             "账户|\n" +
             "帮助|\n" +
-            "应用名称|\n" +
+            "服务|\n" +
+            "无聊了|\n" +
             "桌面;",
     "#FSA 1.0;\n" +
             "0\t2\t<preSettings>\n" +

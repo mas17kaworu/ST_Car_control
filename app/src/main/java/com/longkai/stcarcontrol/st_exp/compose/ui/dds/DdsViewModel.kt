@@ -44,6 +44,7 @@ data class DdsUiState(
     val link2Status: Boolean = false,
     val link3Status: Boolean = false,
     val link4Status: Boolean = false,
+    val keyWords: List<String> = emptyList(),
 )
 
 class DdsViewModel(
@@ -86,7 +87,7 @@ class DdsViewModel(
                     }
                     executeExpressService(service)
                     aiRepo.emitAbilityResult(
-                        "Service ${index + 1} sent!"
+                        "$result Service ${index + 1} sent!"
                     )
                 }
             }
@@ -127,9 +128,8 @@ class DdsViewModel(
 
     private val esrHelper = EsrHelper(esrAbilityCallback)
 
-
-
     init {
+        aiRepo.initKeyWordsList()
         viewModelScope.launch {
             try {
                 combine(
@@ -153,6 +153,7 @@ class DdsViewModel(
                             currentFlow = _currentFlow.asStateFlow(),
                             deviceTempFlow = _deviceTempFlow.asStateFlow(),
                             voltageFlow = _voltageFlow.asStateFlow(),
+                            keyWords = aiRepo.getKeyWordFromPrefs(),
                         )
                     }
                 }.flatMapMerge {
@@ -221,6 +222,15 @@ class DdsViewModel(
 
     fun updateRecordKeyWords(index: Int, value: String) {
         aiRepo.updateKeyword(index, value)
+    }
+
+    fun updateRecordKeyWords(list: List<String>) {
+        _uiState.update {
+            it.copy(
+                keyWords = list
+            )
+        }
+        aiRepo.updateKeyword(list)
     }
 
     fun registerZCUCommandListener() {
