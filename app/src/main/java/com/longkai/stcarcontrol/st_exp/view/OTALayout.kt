@@ -101,7 +101,7 @@ class OTAProgress : View {
     constructor(context: Context) : super(context)
     constructor(context: Context, attriSet: AttributeSet) : super(context, attriSet)
 
-    override fun draw(canvas: Canvas?) {
+    override fun draw(canvas: Canvas) {
         super.draw(canvas)
         canvas?.let {
             drawDeFaultProgressPaint(it)
