@@ -69,11 +69,8 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_PBOX            = 0x35;
     protected static final byte COMMAND_OLED2           = 0x36;
 
-    protected static final byte COMMAND_XPDC1           = 0x37;
-    protected static final byte COMMAND_XPDC2           = 0x38;
-
-    protected static final byte COMMAND_ZCU_EFUSE       = 0x39;
-    protected static final byte COMMAND_ZCU             = 0x3A;
+    protected static final byte COMMAND_XPDC1          = 0x37;
+    protected static final byte COMMAND_XPDC2         = 0x38;
 
     protected byte[] data;//payload
     protected int dataLength;

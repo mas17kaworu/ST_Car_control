@@ -11,7 +11,6 @@ import android.content.pm.PackageManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.multidex.MultiDex
 import com.longkai.stcarcontrol.st_exp.STCarApplication
 import com.longkai.stcarcontrol.st_exp.Utils.CustomExceptionHandler
 import com.longkai.stcarcontrol.st_exp.Utils.FileUtils
@@ -20,7 +19,6 @@ import com.longkai.stcarcontrol.st_exp.compose.data.AppContainerImpl
 import org.apache.log4j.Level
 import java.io.File
 import kotlin.Exception
-import kotlin.properties.Delegates
 
 /**
  * Created by Administrator on 2017/12/10.
@@ -30,12 +28,11 @@ val Context.appPrefsDataStore : DataStore<Preferences> by preferencesDataStore("
 
 class STCarApplication : Application() {
 
-
     lateinit var appContainer: AppContainer
 
     override fun onCreate() {
         super.onCreate()
-        CONTEXT = applicationContext
+
         Thread.setDefaultUncaughtExceptionHandler(CustomExceptionHandler(this))
 
         // CrashHandler.getsInstance().init(this)
@@ -45,12 +42,10 @@ class STCarApplication : Application() {
 //        logConfig();
 //        FileUtils.createSDDir(INTERNAL_PATH + "testlk");
         appContainer = AppContainerImpl(this, inUIDebugMode)
-        MultiDex.install(this)
     }
 
     companion object {
-        var CONTEXT: Context by Delegates.notNull()
-        const val inUIDebugMode = true
+        const val inUIDebugMode = false
         @JvmStatic
         fun logConfig() {
             val logConfigurator = LogConfigurator()
