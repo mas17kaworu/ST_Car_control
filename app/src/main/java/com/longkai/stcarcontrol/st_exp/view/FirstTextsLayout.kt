@@ -24,7 +24,7 @@ class FirstTextsLayout : View {
      init {
 
     }
-    override fun draw(canvas: Canvas?) {
+    override fun draw(canvas: Canvas) {
         super.draw(canvas)
         canvas?.let {
             var drawLineY = 0f;

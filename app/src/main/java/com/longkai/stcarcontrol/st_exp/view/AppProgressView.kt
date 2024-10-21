@@ -39,7 +39,7 @@ class AppProgressView: View{
     private var halfWidth =0
 
     val paint = Paint();
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         halfWidth = width/2
         drawTitle(canvas)

@@ -143,7 +143,10 @@
   <string name="key_check_found">Detected valid key</string>
   <string name="key_check_not_found">No key detected</string>
   <string name="key_crash">Crash</string>
-
-
+  
+  <string name="outputCurrent">Output Current</string>
+  <string name="outputVoltage">Output Voltage</string>
+  <string name="deviceTemp">Device Temp.</string>
+  <string name="mosfetTemp">MOSFET Temp.</string>
 
 </resources>
