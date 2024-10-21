@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +26,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,7 +67,7 @@ fun WaveformDialog(
     }
 }
 
-private const val PointCountMaxNumber = 200
+private const val PointCountMaxNumber = 141
 
 @Composable
 fun BouncingDotWithPath(
@@ -182,7 +187,7 @@ fun BouncingDotWithPath(
         )
 
         // 绘制轨迹
-        val centerX = size.width * 2 / 3f
+        val centerX = size.width * 5 / 6f
 
         val realCurrentPath = currentPath.map {
             val canvasY = it.y.toCanvasY(
@@ -352,6 +357,7 @@ fun DrawScope.drawTextOnCanvas(
 @Composable
 fun WaveCardView(
     modifier: Modifier = Modifier,
+    loadStatus: Boolean,
     currentFlow: Flow<Float>,
     voltageFlow: Flow<Float>,
     tempDeviceValue: Float?,
@@ -379,18 +385,29 @@ fun WaveCardView(
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 ColumnInfoText(
                     title = stringResource(id = R.string.outputCurrent),
                     value = current.value.showNumber(),
                     unit = "A"
                 )
-                Spacer(modifier = Modifier.width(24.dp))
+                Spacer(modifier = Modifier.width(12.dp))
                 ColumnInfoText(
                     title = stringResource(id = R.string.outputVoltage),
                     value = voltage.value.showNumber(),
                     unit = "V"
                 )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = "Load: ",
+                    color = Color.White,
+                )
+                Icon(
+                    if (loadStatus) Icons.Default.Done else Icons.Default.Close,
+                    tint = if (loadStatus) Color.Green else Color.Red,
+                    contentDescription = "")
             }
             Spacer(modifier = Modifier.height(24.dp))
             Row {
@@ -472,5 +489,6 @@ fun WaveCardViewPreview() {
         tempMosValue = null,
         currentMaxValue = 10,
         voltageMaxValue = 10,
+        loadStatus = false,
     )
 }

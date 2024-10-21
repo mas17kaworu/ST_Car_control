@@ -50,7 +50,7 @@ class STCarApplication : Application() {
 
     companion object {
         var CONTEXT: Context by Delegates.notNull()
-        const val inUIDebugMode = false
+        const val inUIDebugMode = true
         @JvmStatic
         fun logConfig() {
             val logConfigurator = LogConfigurator()

@@ -12,17 +12,20 @@ class CMDZCUEfuse: BaseCommand() {
             val voltage = byteArrayToInt( data, 8) / 100f
             val tempDevice = byteArrayToInt( data, 12) / 1f
             val tempMos = byteArrayToInt( data, 16) / 1f
+            val loadStatus = data[20].toLinkStatus()
             Response(
                 current = current,
                 voltage = voltage,
                 tempDevice = tempDevice,
                 tempMos = tempMos,
+                loadStatus = loadStatus,
             )
         } ?: Response(
             current = 0f,
             voltage = 0f,
             tempDevice = 0f,
             tempMos = 0f,
+            loadStatus = CMDZCU.LinkStatus.Invalid,
         )
 
         return response
@@ -36,13 +39,14 @@ class CMDZCUEfuse: BaseCommand() {
         val current: Float,
         val voltage:Float,
         val tempDevice: Float,
-        val tempMos: Float
+        val tempMos: Float,
+        val loadStatus: CMDZCU.LinkStatus,
     ): BaseResponse(COMMAND_ZCU_EFUSE) {
         override fun mockResponse(): ByteArray {
-            val array = ByteArray(21)
+            val array = ByteArray(22)
             array[0] = COMMAND_HEAD0
             array[1] = COMMAND_HEAD1
-            array[2] = 0x10
+            array[2] = 0x14
             array[3] = getCommandId().toByte()
             val cBytes = intToBytes((current * 100).toInt())
             array[4] = cBytes[0]
@@ -64,7 +68,12 @@ class CMDZCUEfuse: BaseCommand() {
             array[17] = tMBytes[1]
             array[18] = tMBytes[2]
             array[19] = tMBytes[3]
-            array[20] = CheckSumBit.checkSum(array, array.size - 1)
+            array[20] = when (loadStatus) {
+                CMDZCU.LinkStatus.Fail -> 0x55.toByte()
+                CMDZCU.LinkStatus.OK -> 0xAA.toByte()
+                else -> 0x00.toByte()
+            }
+            array[21] = CheckSumBit.checkSum(array, array.size - 1)
             return array
         }
 

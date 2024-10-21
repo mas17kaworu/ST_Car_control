@@ -19,6 +19,8 @@ import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressServicePara
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction
 import com.longkai.stcarcontrol.st_exp.compose.data.successOr
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -44,6 +46,7 @@ data class DdsUiState(
     val link2Status: Boolean = false,
     val link3Status: Boolean = false,
     val link4Status: Boolean = false,
+    val loadStatus: Boolean = false,
     val keyWords: List<String> = emptyList(),
 )
 
@@ -246,6 +249,7 @@ class DdsViewModel(
                             voltage = response?.voltage,
                             tempMos = response?.tempMos,
                             tempDevice = response?.tempDevice,
+                            loadStatus = response?.loadStatus?.toBoolean() ?: it.loadStatus,
                         )
                     }
                 }
@@ -254,18 +258,36 @@ class DdsViewModel(
 
         ServiceManager.getInstance().registerRegularlyCommand(
             zcuCommand, object : CommandListenerAdapter<CMDZCU.Response>() {
+                private var job: Job? = null
+
                 override fun onSuccess(response: CMDZCU.Response?) {
                     _uiState.update {
                         it.copy(
-                            link1Status = response?.link1Status == LinkStatus.OK,
-                            link2Status = response?.link2Status == LinkStatus.OK,
-                            link3Status = response?.link3Status == LinkStatus.OK,
-                            link4Status = response?.link4Status == LinkStatus.OK,
+                            link1Status = response?.link1Status?.toBoolean() ?: it.link1Status,
+                            link2Status = response?.link2Status?.toBoolean() ?: it.link2Status,
+                            link3Status = response?.link3Status?.toBoolean() ?: it.link3Status,
+                            link4Status = response?.link4Status?.toBoolean() ?: it.link4Status,
+                        )
+                    }
+                    job?.cancel()
+                    job = viewModelScope.launch {
+                        delay(2000)
+                        _uiState.value = _uiState.value.copy(
+                            link1Status = false,
+                            link2Status = false,
+                            link3Status = false,
+                            link4Status = false
                         )
                     }
                 }
             }
         )
+    }
+
+    private fun LinkStatus.toBoolean(): Boolean? {
+        return if (this == LinkStatus.OK) true
+        else if (this == LinkStatus.Fail) false
+        else null
     }
 
     fun unregisterZCUCommandListener() {

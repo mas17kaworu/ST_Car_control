@@ -1,5 +1,8 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,11 +25,15 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -195,7 +202,7 @@ fun DDSSettings(
                     )
                 )
                 Text(text = "中文", color = textColor)
-
+                Spacer(modifier = Modifier.width(20.dp))
                 RadioButton(
                     selected = selectedLanguage == DdsViewModel.Language.English,
                     onClick = {
@@ -248,13 +255,17 @@ fun DDSSettings(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
+            val interactionSource = remember { MutableInteractionSource() }
+            val isPressed by interactionSource.collectIsPressedAsState()
+            val buttonColor = if (isPressed) Color.Gray else Color.White
             Button(
                 modifier = Modifier.fillMaxWidth(),
+                interactionSource = interactionSource,
                 onClick = {
                     updateKeywords(textValues)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.White,
+                    backgroundColor = buttonColor,
                 )
             ) {
                 Text(text = "Save", color = Color.Black)

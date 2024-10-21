@@ -311,6 +311,7 @@ fun ExpressServicesScreen(
                 WaveCardView(
                     modifier = Modifier
                         .fillMaxSize(),
+                    loadStatus = uiState.loadStatus,
                     currentMaxValue = currentMaxValue,
                     voltageMaxValue = voltageMaxValue,
                     currentFlow = uiState.currentFlow, //fakeFlow, //uiState.currentFlow,
