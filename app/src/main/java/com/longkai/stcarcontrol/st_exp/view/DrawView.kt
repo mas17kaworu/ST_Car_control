@@ -73,7 +73,7 @@ class DrawView : View {
         setMeasuredDimension(currentWidth.toInt(), height)
     }
 
-    override fun draw(canvas: Canvas?) {
+    override fun draw(canvas: Canvas) {
         super.draw(canvas)
         canvas?.let {
             when (style) {
@@ -90,7 +90,7 @@ class DrawView : View {
         }
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
     }
 

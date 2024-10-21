@@ -129,17 +129,20 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
             case 1:
-                switch (permissions[0]){
-                    case Manifest.permission.WRITE_EXTERNAL_STORAGE://权限1
-                        if (grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                            Toast.makeText(this, "permitted", Toast.LENGTH_SHORT).show();
+                if (permissions.length > 0) {
+                    switch (permissions[0]) {
+                        case Manifest.permission.WRITE_EXTERNAL_STORAGE://权限1
+                            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                                Toast.makeText(this, "permitted", Toast.LENGTH_SHORT).show();
 //                            logConfig();
-                        }else {
-                            Toast.makeText(this, "You denied the permission", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
+                            } else {
+                                Toast.makeText(this, "You denied the permission", Toast.LENGTH_SHORT).show();
+                            }
+                            break;
+                    }
                 }
                 break;
             default:
