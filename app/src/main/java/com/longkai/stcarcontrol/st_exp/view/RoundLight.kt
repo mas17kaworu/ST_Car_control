@@ -83,7 +83,7 @@ class IndicatorView : View {
 
     }
 
-    override fun draw(canvas: Canvas) {
+    override fun draw(canvas: Canvas?) {
         super.draw(canvas)
         canvas?.let {
             if (roundBean != null) {

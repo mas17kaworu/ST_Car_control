@@ -55,7 +55,7 @@ public class CommunicationServer extends Service {
         doBackgroundHandler = new Handler(handlerThread.getLooper());
 
 
-        String type = (String) SharedPreferencesUtil.get(this, ConstantData.CONNECTION_TYPE, "WIFI");
+        String type = (String) SharedPreferencesUtil.get(this, ConstantData.CONNECTION_TYPE, "BT");
 
         if (type.equalsIgnoreCase("BT")) {// use BTserver
             mConnection = new BTServer(BTManager.getInstance().getBtAdapter(), null, getApplicationContext());

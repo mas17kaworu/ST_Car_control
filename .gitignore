@@ -6,12 +6,4 @@
 .DS_Store
 /build
 /captures
-/resource/iflytekAikit/esr/wav_en
-/resource/iflytekAikit/esr/cn_wav
-/resource/iflytekAikit/esr/e75f07b62_MLP_VAD_CN.bin_1.0.0.0
-/resource/iflytekAikit/esr/e75f07b62_MLP_VAD_EN.bin_1.0.0.0
-/resource/iflytekAikit/esr/e75f07b62_MLP_XN_CN.bin_1.0.0.0
-/resource/iflytekAikit/esr/e75f07b62_MLP_XN_EN.bin_1.0.0.0
-/resource/iflytekAikit/esr/e75f07b62_WFST_CN.bin_1.0.0.0
-/resource/iflytekAikit/esr/e75f07b62_WFST_EN.bin_1.0.0.0
 .externalNativeBuild
