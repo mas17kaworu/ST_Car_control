@@ -93,7 +93,6 @@ val esrFsaList = mutableListOf(
             "can you|\n" +
             "i want my;\n" +
             "<sControl>:close|turn off|shut down|exit|leave|start|turn on|open|enter|launch|off|exits|down|mute|unmute|cancel|sound|mute to;\n" +
-            "<applist>:app name|phone|navigation|navigation yps;\n" +
             "<preSettings>:\n" +
             "take me to|\n" +
             "open;\n" +
@@ -129,5 +128,6 @@ val esrFsaList = mutableListOf(
             "<helpStable>:\n" +
             "what can you do for me|\n" +
             "what should i say|\n" +
-            "what can i say;"
+            "what can i say;\n" +
+            "<applist>:app name|phone|navigation|navigation yps;"
 )

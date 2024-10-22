@@ -77,7 +77,8 @@ fun ExpressServicesScreen(
             temperatureMaxValue = voltageMaxValue,
             serviceCount = uiState.expressServices.size,
             aiSDKInitState = uiState.isAISDKInitSuccess,
-            keywords = uiState.keyWords,
+            cnKeywords = uiState.cnKeyWords,
+            enKeywords = uiState.enKeyWords,
             onCurrentMaxValueChange = {
                 currentMaxValue = it
             },
@@ -88,7 +89,7 @@ fun ExpressServicesScreen(
                 ddsViewModel.selectAiLanguage(it)
             },
             onKeyWordsChange = { index, value -> ddsViewModel.updateRecordKeyWords(index, value) },
-            updateKeywords = { ddsViewModel.updateRecordKeyWords(it) }
+            updateKeywords = { cnList, enList -> ddsViewModel.updateRecordKeyWords(cnList, enList) }
         )
     }
 

@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.longkai.stcarcontrol.st_exp.ConstantData
+import com.longkai.stcarcontrol.st_exp.STCarApplication
+import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil
 import com.longkai.stcarcontrol.st_exp.ai.AbilityCallback
 import com.longkai.stcarcontrol.st_exp.ai.EsrHelper
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
@@ -12,13 +15,13 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU.CMDZCU.L
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU.CMDZCUEfuse
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.compose.data.AIRepo
+import com.longkai.stcarcontrol.st_exp.compose.data.AIRepoImpl.Companion.KEY_CN_KEY_WORDS
+import com.longkai.stcarcontrol.st_exp.compose.data.AIRepoImpl.Companion.KEY_EN_KEY_WORDS
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.DdsRepo
-import com.longkai.stcarcontrol.st_exp.compose.data.dds.fakeExpressServices
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressServiceParam
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction
 import com.longkai.stcarcontrol.st_exp.compose.data.successOr
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -47,13 +50,14 @@ data class DdsUiState(
     val link3Status: Boolean = false,
     val link4Status: Boolean = false,
     val loadStatus: Boolean = false,
-    val keyWords: List<String> = emptyList(),
+    val cnKeyWords: List<String> = emptyList(),
+    val enKeyWords: List<String> = emptyList(),
 )
 
 class DdsViewModel(
     private val ddsRepo: DdsRepo,
     private val aiRepo: AIRepo,
-): ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DdsUiState(loading = true))
     val uiState: StateFlow<DdsUiState> = _uiState.asStateFlow()
@@ -97,13 +101,13 @@ class DdsViewModel(
         }
 
         private fun String.getTargetServiceIndex(): Int? {
-            var serviceIndex : Int? = null
-            aiRepo.keyWordList.onEachIndexed { index , serviceCommandList ->
+            var serviceIndex: Int? = null
+            aiRepo.keyWordList.onEachIndexed { index, serviceCommandList ->
                 val foundString = serviceCommandList.find { keyWord ->
                     this.contains(keyWord)
                 }
                 if (foundString != null) {
-                    serviceIndex =  index
+                    serviceIndex = index
                 }
             }
             return serviceIndex
@@ -144,7 +148,12 @@ class DdsViewModel(
                     val avasActions = avasActionsResult.successOr(emptyList())
                     val oledActions = oledActionsResult.successOr(emptyList())
                     val actionOptions = avasActions + ServiceAction.Delay(seconds = 5) + oledActions
-
+                    val languageIndex = SharedPreferencesUtil.get(
+                        STCarApplication.CONTEXT,
+                        SHAREDP_PREF_KEY_LANGUAGE,
+                        0
+                    ) as Int
+                    val language = Language.values()[languageIndex]
                     _uiState.update {
                         it.copy(
                             expressServices = expressServices,
@@ -152,11 +161,13 @@ class DdsViewModel(
                             oledActions = oledActions,
                             actionOptions = actionOptions,
                             loading = false,
+                            aiLanguage = language,
                             isAISDKInitSuccess = isAISDKInitSuccess,
                             currentFlow = _currentFlow.asStateFlow(),
                             deviceTempFlow = _deviceTempFlow.asStateFlow(),
                             voltageFlow = _voltageFlow.asStateFlow(),
-                            keyWords = aiRepo.getKeyWordFromPrefs(),
+                            cnKeyWords = aiRepo.getKeyWordFromPrefs(KEY_CN_KEY_WORDS),
+                            enKeyWords = aiRepo.getKeyWordFromPrefs(KEY_EN_KEY_WORDS),
                         )
                     }
                 }.flatMapMerge {
@@ -205,14 +216,17 @@ class DdsViewModel(
         _uiState.update { it.copy(focusedService = service) }
     }
 
-    fun selectAiLanguage(language: Language) {
-        _uiState.update { it.copy(aiLanguage = language) }
-    }
-
     fun trySendSomething() {
         viewModelScope.launch {
             ddsRepo.trySendSomething()
         }
+    }
+
+    fun selectAiLanguage(language: Language) {
+        SharedPreferencesUtil.put(
+            STCarApplication.CONTEXT, SHAREDP_PREF_KEY_LANGUAGE, language.ordinal
+        )
+        _uiState.update { it.copy(aiLanguage = language) }
     }
 
     fun startListen() {
@@ -227,13 +241,14 @@ class DdsViewModel(
         aiRepo.updateKeyword(index, value)
     }
 
-    fun updateRecordKeyWords(list: List<String>) {
+    fun updateRecordKeyWords(listCN: List<String>, listEN: List<String>) {
         _uiState.update {
             it.copy(
-                keyWords = list
+                cnKeyWords = listCN,
+                enKeyWords = listEN,
             )
         }
-        aiRepo.updateKeyword(list)
+        aiRepo.updateKeyword(listCN, listEN)
     }
 
     fun registerZCUCommandListener() {
@@ -302,6 +317,8 @@ class DdsViewModel(
     }
 
     companion object {
+        private val SHAREDP_PREF_KEY_LANGUAGE = "SHARED_PREF_KEY_LANGUAGE"
+
         fun provideFactory(
             ddsRepo: DdsRepo,
             aiRepo: AIRepo,

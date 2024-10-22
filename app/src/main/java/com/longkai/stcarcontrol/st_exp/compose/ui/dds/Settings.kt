@@ -1,6 +1,5 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
@@ -15,25 +14,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,12 +47,13 @@ fun DDSSettingsDialog(
     selectedLanguage: DdsViewModel.Language,
     onDismissRequest: () -> Unit,
     aiSDKInitState: Boolean,
-    keywords: List<String> = emptyList(),
+    cnKeywords: List<String> = emptyList(),
+    enKeywords: List<String> = emptyList(),
     onCurrentMaxValueChange: (Int) -> Unit,
     onVoltageMaxValueChange: (Int) -> Unit,
     onAIChooseLanguage: (DdsViewModel.Language) -> Unit,
     onKeyWordsChange: (Int, String) -> Unit,
-    updateKeywords: (List<String>) -> Unit,
+    updateKeywords: (List<String>, List<String>) -> Unit,
 ) {
     Dialog(
         properties = DialogProperties(
@@ -79,7 +74,8 @@ fun DDSSettingsDialog(
             onCurrentMaxValueChange = onCurrentMaxValueChange,
             onVoltageMaxValueChange = onVoltageMaxValueChange,
             onAIChooseLanguage = onAIChooseLanguage,
-            keywords = keywords,
+            cnKeywords = cnKeywords,
+            enKeywords = enKeywords,
             onKeyWordsChange = onKeyWordsChange,
             updateKeywords = updateKeywords,
         )
@@ -95,12 +91,13 @@ fun DDSSettings(
     temperatureMaxValue: Int,
     serviceCount: Int,
     aiSDKInitState: Boolean = false,
-    keywords: List<String> = emptyList(),
+    cnKeywords: List<String> = emptyList(),
+    enKeywords: List<String> = emptyList(),
     onCurrentMaxValueChange: (Int) -> Unit,
     onVoltageMaxValueChange: (Int) -> Unit,
     onAIChooseLanguage: (DdsViewModel.Language) -> Unit,
     onKeyWordsChange: (Int, String) -> Unit,
-    updateKeywords: (List<String>) -> Unit,
+    updateKeywords: (List<String>, List<String>) -> Unit,
 ) {
     CorneredContainer(
         modifier = modifier,
@@ -191,6 +188,7 @@ fun DDSSettings(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Spacer(modifier = Modifier.width(100.dp))
                 RadioButton(
                     selected = selectedLanguage == DdsViewModel.Language.Chinese,
                     onClick = {
@@ -202,7 +200,7 @@ fun DDSSettings(
                     )
                 )
                 Text(text = "中文", color = textColor)
-                Spacer(modifier = Modifier.width(20.dp))
+                Spacer(modifier = Modifier.width(100.dp))
                 RadioButton(
                     selected = selectedLanguage == DdsViewModel.Language.English,
                     onClick = {
@@ -210,16 +208,21 @@ fun DDSSettings(
                     },
                     colors = androidx.compose.material.RadioButtonDefaults.colors()
                 )
-                Text(text = "英文", color = textColor)
+                Text(text = "English", color = textColor)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            val textValues = remember { mutableStateListOf(*Array(serviceCount) { "" }) }
+            val cnTextValues = remember { mutableStateListOf(*Array(serviceCount) { "" }) }
+            val enTextValues = remember { mutableStateListOf(*Array(serviceCount) { "" }) }
 
             // Ensure the textValues list is updated when initialValues changes
             LaunchedEffect(Unit) {
-                textValues.clear()
-                textValues.addAll(List(serviceCount) { index ->
-                    keywords.getOrNull(index) ?: ""  // Use initialValues or empty string
+                cnTextValues.clear()
+                enTextValues.clear()
+                cnTextValues.addAll(List(serviceCount) { index ->
+                    cnKeywords.getOrNull(index) ?: ""  // Use initialValues or empty string
+                })
+                enTextValues.addAll(List(serviceCount) { index ->
+                    enKeywords.getOrNull(index) ?: ""  // Use initialValues or empty string
                 })
             }
 
@@ -228,22 +231,37 @@ fun DDSSettings(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(text = "Key word $index", color = textColor)
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.weight(1f))
                     SimpleTextField(
                         modifier = Modifier.width(200.dp),
-                        value = textValues[index - 1],
+                        value = cnTextValues[index - 1],
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done,
                         ),
                         onValueChange = { text ->
-                            textValues[index - 1] = text
+                            cnTextValues[index - 1] = text
                         },
                         colors = ExposedDropdownMenuDefaults.textFieldColors(
                             textColor = textColor,
                         )
                     )
                     Spacer(modifier = Modifier.width(4.dp))
+                    SimpleTextField(
+                        modifier = Modifier.width(200.dp),
+                        value = enTextValues[index - 1],
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done,
+                        ),
+                        onValueChange = { text ->
+                            enTextValues[index - 1] = text
+                        },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors(
+                            textColor = textColor,
+                        )
+                    )
+                    //
 //                    Button(
 //                        modifier = Modifier.width(60.dp),
 //                        onClick = {
@@ -262,7 +280,7 @@ fun DDSSettings(
                 modifier = Modifier.fillMaxWidth(),
                 interactionSource = interactionSource,
                 onClick = {
-                    updateKeywords(textValues)
+                    updateKeywords(cnTextValues, enTextValues)
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = buttonColor,
@@ -298,7 +316,7 @@ private fun DDSSettingsDialogPreview() {
             onVoltageMaxValueChange = {},
             onAIChooseLanguage = {},
             onKeyWordsChange = { index, value -> },
-            updateKeywords = {},
+            updateKeywords = {c, e ->},
         )
     }
 }
