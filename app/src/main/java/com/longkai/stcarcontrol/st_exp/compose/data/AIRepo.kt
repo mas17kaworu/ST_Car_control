@@ -2,13 +2,20 @@ package com.longkai.stcarcontrol.st_exp.compose.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.lifecycle.viewModelScope
 import com.longkai.stcarcontrol.st_exp.STCarApplication
 import com.longkai.stcarcontrol.st_exp.Utils.writeToExternalStorage
 import com.longkai.stcarcontrol.st_exp.ai.esrFsaList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 interface AIRepo {
     val initStateFlow: StateFlow<Boolean>
@@ -23,9 +30,9 @@ interface AIRepo {
 
     fun updateKeyword(index: Int, value: String)
 
-    fun updateKeyword(list: List<String>)
+    fun updateKeyword(cnList: List<String>, enList: List<String>)
 
-    fun getKeyWordFromPrefs(): List<String>
+    fun getKeyWordFromPrefs(key: String): List<String>
 
     fun initKeyWordsList()
 }
@@ -51,8 +58,15 @@ class AIRepoImpl : AIRepo {
         }
     }
 
+    private var job: Job? = null
+
     override fun emitAbilityResult(result: String) {
+        job?.cancel()
         _abilityResult.update { result }
+        job = CoroutineScope(Dispatchers.Default).launch {
+            delay(3000)
+            _abilityResult.update { "" }
+        }
     }
 
     // deprecated
@@ -60,22 +74,36 @@ class AIRepoImpl : AIRepo {
         _keyWordList[index] = _keyWordList[index].toMutableList().apply { add(value) }.toList()
     }
 
-    override fun updateKeyword(list: List<String>) {
+    override fun updateKeyword(cnList: List<String>, enList: List<String>) {
         val modifiedList = esrFsaList.toMutableList()
-        var script = modifiedList[0].removeSuffix(";")
-        list.forEachIndexed { index, keyWord ->
+        var cnScript = modifiedList[0].removeSuffix(";")
+        var enScript = modifiedList[1].removeSuffix(";")
+        cnList.forEachIndexed { index, keyWord ->
             if (keyWord.isNotEmpty()) {
-                script += "|${keyWord}"
+                cnScript += "|${keyWord}"
                 updateKeyword(index, keyWord)
             }
         }
-        script += ";"
-        modifiedList[0] = script
+        enList.forEachIndexed { index, keyWord ->
+            if (keyWord.isNotEmpty()) {
+                enScript += "|${keyWord}"
+                updateKeyword(index, keyWord)
+            }
+        }
+        cnScript += ";"
+        enScript += ";"
+        modifiedList[0] = cnScript
+        modifiedList[1] = enScript
 
         saveStringListToSharedPref(
             context = STCarApplication.CONTEXT,
-            key = KEY_KEY_WORDS,
-            stringList = list,
+            key = KEY_CN_KEY_WORDS,
+            stringList = cnList,
+        )
+        saveStringListToSharedPref(
+            context = STCarApplication.CONTEXT,
+            key = KEY_EN_KEY_WORDS,
+            stringList = enList,
         )
 
         try {
@@ -85,13 +113,19 @@ class AIRepoImpl : AIRepo {
         }
     }
 
-    override fun getKeyWordFromPrefs(): List<String> {
-        return getStringListFromSharedPref(STCarApplication.CONTEXT, KEY_KEY_WORDS) ?: emptyList()
+    override fun getKeyWordFromPrefs(key: String): List<String> {
+        return getStringListFromSharedPref(STCarApplication.CONTEXT, key) ?: emptyList()
     }
 
     override fun initKeyWordsList() {
-        val keywords = getStringListFromSharedPref(STCarApplication.CONTEXT, KEY_KEY_WORDS) ?: emptyList()
-        keywords.forEachIndexed { index, keyWord ->
+        val cnKeywords = getStringListFromSharedPref(STCarApplication.CONTEXT, KEY_CN_KEY_WORDS) ?: emptyList()
+        cnKeywords.forEachIndexed { index, keyWord ->
+            if (keyWord.isNotEmpty()) {
+                updateKeyword(index, keyWord)
+            }
+        }
+        val enKeywords = getStringListFromSharedPref(STCarApplication.CONTEXT, KEY_EN_KEY_WORDS) ?: emptyList()
+        enKeywords.forEachIndexed { index, keyWord ->
             if (keyWord.isNotEmpty()) {
                 updateKeyword(index, keyWord)
             }
@@ -130,6 +164,7 @@ class AIRepoImpl : AIRepo {
     }
 
     companion object {
-        private val KEY_KEY_WORDS = "KEY_KEY_WORDS"
+        val KEY_CN_KEY_WORDS = "KEY_CN_KEY_WORDS"
+        val KEY_EN_KEY_WORDS = "KEY_EN_KEY_WORDS"
     }
 }

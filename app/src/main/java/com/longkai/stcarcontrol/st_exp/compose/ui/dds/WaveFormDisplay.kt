@@ -67,7 +67,7 @@ fun WaveformDialog(
     }
 }
 
-private const val PointCountMaxNumber = 141
+private const val PointCountMaxNumber = 200
 
 @Composable
 fun BouncingDotWithPath(
@@ -196,7 +196,7 @@ fun BouncingDotWithPath(
                 yStart = yStart,
             )
             it.copy(it.x + centerX, canvasY)
-        }
+        }.filter { it.x > 0 }
         val realTempPath = voltagePath.map {
             val canvasY = it.y.toCanvasY(
                 canvasHeight = size.height,
@@ -204,7 +204,7 @@ fun BouncingDotWithPath(
                 yStart = yStart,
             )
             it.copy(it.x + centerX, canvasY)
-        }
+        }.filter { it.x > 0 }
 
         val trajectoryCurrentPath = Path().apply {
             if (currentPath.size > 2) {
