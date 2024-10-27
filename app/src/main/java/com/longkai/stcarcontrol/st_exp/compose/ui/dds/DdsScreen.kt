@@ -28,7 +28,7 @@ import com.longkai.stcarcontrol.st_exp.compose.ui.dds.Route.ROUTE_EXPRESS_SERVIC
 import com.longkai.stcarcontrol.st_exp.compose.ui.dds.Route.ROUTE_SERVICE_DETAILS
 import kotlinx.coroutines.launch
 
-private const val showScreenLog = false;
+private const val showScreenLog = false
 
 @Composable
 fun DdsScreen(

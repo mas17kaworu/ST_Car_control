@@ -68,7 +68,11 @@ class DdsServiceImpl(private val context: Context): DdsService {
     override fun sendOledAction(data: ByteArray) {
         // Log.i(TAG, "sendOledAction: ${data.toDebugString()}")
         // ScreenLog.log(TAG, "sendOledAction: ${data.toDebugString()}")
-        this.oledWriter.sendData(data)
+        try {
+            this.oledWriter.sendData(data)
+        } catch (e: Exception) {
+            ScreenLog.log(TAG, e.message ?: "sendOledAction Exception")
+        }
     }
 
     override fun start() {
