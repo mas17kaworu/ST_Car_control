@@ -1,6 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -21,6 +22,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.dds.DdsRepo
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressServiceParam
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.test.ScreenLog
 import com.longkai.stcarcontrol.st_exp.compose.data.successOr
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -230,6 +232,7 @@ class DdsViewModel(
     }
 
     fun startListen() {
+        ScreenLog.log("start Listen")
         if (_uiState.value.listening) {
             esrHelper.stopAudioRecord()
         } else {
@@ -249,6 +252,7 @@ class DdsViewModel(
             )
         }
         aiRepo.updateKeyword(listCN, listEN)
+        Toast.makeText(STCarApplication.CONTEXT, "saved", Toast.LENGTH_SHORT).show()
     }
 
     fun registerZCUCommandListener() {
@@ -274,7 +278,6 @@ class DdsViewModel(
         ServiceManager.getInstance().registerRegularlyCommand(
             zcuCommand, object : CommandListenerAdapter<CMDZCU.Response>() {
                 private var job: Job? = null
-
                 override fun onSuccess(response: CMDZCU.Response?) {
                     _uiState.update {
                         it.copy(

@@ -3,6 +3,8 @@ package com.longkai.stcarcontrol.st_exp.compose.data
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.longkai.stcarcontrol.st_exp.STCarApplication
 import com.longkai.stcarcontrol.st_exp.Utils.writeToExternalStorage
 import com.longkai.stcarcontrol.st_exp.ai.esrFsaList
@@ -71,7 +73,9 @@ class AIRepoImpl : AIRepo {
 
     // deprecated
     override fun updateKeyword(index: Int, value: String) {
-        _keyWordList[index] = _keyWordList[index].toMutableList().apply { add(value) }.toList()
+        if (_keyWordList.size > index) {
+            _keyWordList[index] = _keyWordList[index].toMutableList().apply { add(value) }.toList()
+        }
     }
 
     override fun updateKeyword(cnList: List<String>, enList: List<String>) {
@@ -132,6 +136,7 @@ class AIRepoImpl : AIRepo {
         }
     }
 
+    val gson = Gson()
     // Function to save the list of strings to SharedPreferences
     private fun saveStringListToSharedPref(
         context: Context,
@@ -144,7 +149,10 @@ class AIRepoImpl : AIRepo {
         val editor = sharedPref.edit()
 
         // Convert the list to a Set<String> to store in SharedPreferences
-        editor.putStringSet(key, stringList.toSet())
+//        editor.putStringSet(key, HashSet(stringList))
+
+        val json = gson.toJson(stringList)
+        editor.putString(key, json).apply()
 
         // Apply changes
         editor.apply()
@@ -156,15 +164,24 @@ class AIRepoImpl : AIRepo {
         val sharedPref: SharedPreferences =
             context.getSharedPreferences("AIRepo", Context.MODE_PRIVATE)
 
+        val json = sharedPref.getString(key, null)
+        return if (json != null) {
+            val type = object : TypeToken<List<String>>() {}.type
+            gson.fromJson(json, type)
+        } else {
+            emptyList()
+        }
+
         // Retrieve the Set<String> from SharedPreferences
-        val stringSet = sharedPref.getStringSet(key, null)
+//        val stringSet = sharedPref.getStringSet(key, null)
+
 
         // Convert Set<String> back to List<String> and return it
-        return stringSet?.toList()
+//        return stringSet?.toList()
     }
 
     companion object {
-        val KEY_CN_KEY_WORDS = "KEY_CN_KEY_WORDS"
-        val KEY_EN_KEY_WORDS = "KEY_EN_KEY_WORDS"
+        val KEY_CN_KEY_WORDS = "KEY_CN_KEY_WORDS_JSON" //KEY_CN_KEY_WORDS
+        val KEY_EN_KEY_WORDS = "KEY_EN_KEY_WORDS_JSON"
     }
 }

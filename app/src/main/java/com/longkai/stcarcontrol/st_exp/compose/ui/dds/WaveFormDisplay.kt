@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -179,12 +178,14 @@ fun BouncingDotWithPath(
             textColor = android.graphics.Color.GREEN,
             fontSize = 40f,
         )
-        drawTextOnCanvas(
-            value = "T",
-            x = -30f,
-            y = yStart + 20f,
-            fontSize = 40f,
-        )
+        if (false) {
+            drawTextOnCanvas(
+                value = "T",
+                x = -30f,
+                y = yStart + 20f,
+                fontSize = 40f,
+            )
+        }
 
         // 绘制轨迹
         val centerX = size.width * 5 / 6f
@@ -369,61 +370,63 @@ fun WaveCardView(
         modifier = modifier,
         cornerSize = 24.dp,
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.height(48.dp))
-            val current = currentFlow.collectAsState(initial = null)
-            val voltage = voltageFlow.collectAsState(initial = null)
-            CorneredContainer(cornerSize = 4.dp) {
-                BouncingDotWithPath(
-                    currentFlow = currentFlow,
-                    voltageFlow = voltageFlow,
-                    currentMaxValue = currentMaxValue,
-                    voltageMaxValue = voltageMaxValue,
-                    modifier = Modifier.size(481.dp, 301.dp),
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+        Column {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                ColumnInfoText(
+                Spacer(modifier = Modifier.height(48.dp))
+                CorneredContainer(cornerSize = 4.dp) {
+                    BouncingDotWithPath(
+                        currentFlow = currentFlow,
+                        voltageFlow = voltageFlow,
+                        currentMaxValue = currentMaxValue,
+                        voltageMaxValue = voltageMaxValue,
+                        modifier = Modifier.size(481.dp, 301.dp),
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+            Column(modifier = Modifier.padding(start = 32.dp)) {
+                val current = currentFlow.collectAsState(initial = null)
+                val voltage = voltageFlow.collectAsState(initial = null)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Load: ",
+                        color = Color.White,
+                    )
+                    Icon(
+                        if (loadStatus) Icons.Default.Done else Icons.Default.Close,
+                        tint = if (loadStatus) Color.Green else Color.Red,
+                        contentDescription = ""
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                InfoText(
                     title = stringResource(id = R.string.outputCurrent),
                     value = current.value.showNumber(),
                     unit = "A"
                 )
-                Spacer(modifier = Modifier.width(12.dp))
-                ColumnInfoText(
+                Spacer(modifier = Modifier.height(8.dp))
+                InfoText(
                     title = stringResource(id = R.string.outputVoltage),
                     value = voltage.value.showNumber(),
                     unit = "V"
                 )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = "Load: ",
-                    color = Color.White,
-                )
-                Icon(
-                    if (loadStatus) Icons.Default.Done else Icons.Default.Close,
-                    tint = if (loadStatus) Color.Green else Color.Red,
-                    contentDescription = "")
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Row {
-                ColumnInfoText(
+                Spacer(modifier = Modifier.height(8.dp))
+                InfoText(
                     title = stringResource(id = R.string.deviceTemp),
                     value = tempDeviceValue.showNumber("####"),
                     unit = "°C"
                 )
-                Spacer(modifier = Modifier.width(24.dp))
-                ColumnInfoText(
+                Spacer(modifier = Modifier.height(8.dp))
+                InfoText(
                     title = stringResource(id = R.string.mosfetTemp),
                     value = tempMosValue.showNumber("###"),
                     unit = "°C"
                 )
             }
-
         }
     }
 }
@@ -437,18 +440,17 @@ private fun Float?.showNumber(
 }
 
 @Composable
-fun ColumnInfoText(
+fun InfoText(
     title: String,
     value: String,
     unit: String,
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Row(modifier = Modifier.width(200.dp)) {
         Text(
             text = title,
             color = Color.White,
         )
+        Spacer(modifier = Modifier.weight(1f))
         Text(
             text = "$value $unit",
             color = Color.White,
@@ -471,7 +473,7 @@ fun DefaultPreview() {
 @Preview
 @Composable
 fun ColumnInfoTextPreview() {
-    ColumnInfoText(
+    InfoText(
         title = "Output Current",
         value = "20.11",
         unit = "A"
