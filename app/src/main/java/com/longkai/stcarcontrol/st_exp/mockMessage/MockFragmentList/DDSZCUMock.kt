@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 class DDSZCUMock(handler: Handler?) : MockFragmentBase(handler) {
     override fun run() {
 //        case1()
-        case1()
+        case2()
         handler.removeCallbacksAndMessages(null) //remove all
     }
 
@@ -77,11 +77,21 @@ class DDSZCUMock(handler: Handler?) : MockFragmentBase(handler) {
                 )
                 val secondByte = secondResponse.mockResponse()
                 dispatcher.onReceive(secondByte, 0, secondByte.size)
-                delay(1000)
+                delay(8000)
 
                 firstResponse = CMDZCU.Response(
                     link1Status = LinkStatus.OK,
                     link2Status = LinkStatus.OK,
+                    link3Status = LinkStatus.Fail,
+                    link4Status = LinkStatus.Fail,
+                )
+                firstBytes = firstResponse.mockResponse()
+                dispatcher.onReceive(firstBytes, 0, firstBytes.size)
+                delay(3000)
+
+                firstResponse = CMDZCU.Response(
+                    link1Status = LinkStatus.Fail,
+                    link2Status = LinkStatus.Fail,
                     link3Status = LinkStatus.Fail,
                     link4Status = LinkStatus.Fail,
                 )

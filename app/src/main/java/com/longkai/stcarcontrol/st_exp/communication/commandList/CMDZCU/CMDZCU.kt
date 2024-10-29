@@ -53,9 +53,9 @@ class CMDZCU : BaseCommand() {
     }
 }
 
-fun Byte.toLinkStatus(): LinkStatus {
+private fun Byte.toLinkStatus(): LinkStatus {
     return if (this == 0x55.toByte()) LinkStatus.OK
-    else if (this == 0xAA.toByte()) LinkStatus.Fail
+//    else if (this == 0xAA.toByte()) LinkStatus.Fail
     else LinkStatus.Invalid
 }
 
