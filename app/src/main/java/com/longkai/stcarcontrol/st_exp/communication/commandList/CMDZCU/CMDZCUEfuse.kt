@@ -2,6 +2,7 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU
 
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU.CMDZCU.LinkStatus
 import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit
 import com.longkai.stcarcontrol.st_exp.communication.utils.byteArrayToInt
 
@@ -83,4 +84,10 @@ class CMDZCUEfuse: BaseCommand() {
             }
         }
     }
+}
+
+private fun Byte.toLinkStatus(): LinkStatus {
+    return if (this == 0x55.toByte()) LinkStatus.OK
+    else if (this == 0xAA.toByte()) LinkStatus.Fail
+    else LinkStatus.Invalid
 }
