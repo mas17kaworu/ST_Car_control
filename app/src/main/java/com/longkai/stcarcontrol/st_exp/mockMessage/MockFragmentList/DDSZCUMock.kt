@@ -61,27 +61,27 @@ class DDSZCUMock(handler: Handler?) : MockFragmentBase(handler) {
             while (true) {
                 var firstResponse = CMDZCU.Response(
                     link1Status = LinkStatus.OK,
-                    link2Status = LinkStatus.OK,
-                    link3Status = LinkStatus.OK,
-                    link4Status = LinkStatus.OK,
+                    link2Status = LinkStatus.Fail,
+                    link3Status = LinkStatus.Fail,
+                    link4Status = LinkStatus.Fail,
                 )
                 var firstBytes = firstResponse.mockResponse()
                 dispatcher.onReceive(firstBytes, 0, firstBytes.size)
-                delay(1000)
+                delay(100)
 
                 val secondResponse = CMDZCU.Response(
                     link1Status = LinkStatus.Fail,
-                    link2Status = LinkStatus.Fail,
-                    link3Status = LinkStatus.OK,
-                    link4Status = LinkStatus.OK,
+                    link2Status = LinkStatus.OK,
+                    link3Status = LinkStatus.Fail,
+                    link4Status = LinkStatus.Fail,
                 )
                 val secondByte = secondResponse.mockResponse()
                 dispatcher.onReceive(secondByte, 0, secondByte.size)
-                delay(8000)
+                delay(1000)
 
                 firstResponse = CMDZCU.Response(
-                    link1Status = LinkStatus.OK,
-                    link2Status = LinkStatus.OK,
+                    link1Status = LinkStatus.Fail,
+                    link2Status = LinkStatus.Fail,
                     link3Status = LinkStatus.Fail,
                     link4Status = LinkStatus.Fail,
                 )
