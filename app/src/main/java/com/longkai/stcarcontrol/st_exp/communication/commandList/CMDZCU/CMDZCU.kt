@@ -39,10 +39,10 @@ class CMDZCU : BaseCommand() {
             array[1] = COMMAND_HEAD1
             array[2] = 0x08
             array[3] = getCommandId().toByte()
-            array[4] = (if (link1Status == LinkStatus.OK) 0x55 else 0xAA).toByte()
-            array[5] = (if (link2Status == LinkStatus.OK) 0x55 else 0xAA).toByte()
-            array[6] = (if (link3Status == LinkStatus.OK) 0x55 else 0xAA).toByte()
-            array[7] = (if (link4Status == LinkStatus.OK) 0x55 else 0xAA).toByte()
+            array[4] = (if (link1Status == LinkStatus.OK) 0x55 else 0x00).toByte()
+            array[5] = (if (link2Status == LinkStatus.OK) 0x55 else 0x00).toByte()
+            array[6] = (if (link3Status == LinkStatus.OK) 0x55 else 0x00).toByte()
+            array[7] = (if (link4Status == LinkStatus.OK) 0x55 else 0x00).toByte()
             array[12] = CheckSumBit.checkSum(array, array.size - 1)
             return array
         }

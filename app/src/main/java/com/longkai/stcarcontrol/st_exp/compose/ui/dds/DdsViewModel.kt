@@ -283,19 +283,48 @@ class DdsViewModel(
                 private var link3Job : Job? = null
                 private var link4Job : Job? = null
                 override fun onSuccess(response: CMDZCU.Response?) {
+                    Log.i("Longkai", "${response?.link1Status?.toBoolean()} ${response?.link2Status?.toBoolean()} ${response?.link3Status?.toBoolean()} ${response?.link4Status?.toBoolean()}")
                     _uiState.update {
                         it.copy(
-                            link1Status = if (response?.link1Status?.toBoolean() == true) true else it.link1Status,
-                            link2Status = if (response?.link2Status?.toBoolean() == true) true else it.link2Status,
-                            link3Status = if (response?.link3Status?.toBoolean() == true) true else it.link3Status,
-                            link4Status = if (response?.link4Status?.toBoolean() == true) true else it.link4Status,
+                            link1Status = if (response?.link1Status?.toBoolean() == true) {
+                                link1Job?.cancel()
+                                link1Job = viewModelScope.launch {
+                                    delay(2000)
+                                    _uiState.value = _uiState.value.copy(link1Status = false)
+                                    Log.i("Longkai", "link1Job false")
+                                }
+                                true
+                            } else it.link1Status,
+                            link2Status = if (response?.link2Status?.toBoolean() == true) {
+                                link2Job?.cancel()
+                                link2Job = viewModelScope.launch {
+                                    delay(2000)
+                                    _uiState.value = _uiState.value.copy(link2Status = false)
+                                    Log.i("Longkai", "link2Job false")
+                                }
+                                true
+                            } else it.link2Status,
+                            link3Status = if (response?.link3Status?.toBoolean() == true) {
+                                link3Job?.cancel()
+                                link3Job = viewModelScope.launch {
+                                    delay(2000)
+                                    _uiState.value = _uiState.value.copy(link3Status = false)
+                                    Log.i("Longkai", "link3Job false")
+                                }
+                                true
+                            } else it.link3Status,
+                            link4Status = if (response?.link4Status?.toBoolean() == true) {
+                                link4Job?.cancel()
+                                link4Job = viewModelScope.launch {
+                                    delay(2000)
+                                    _uiState.value = _uiState.value.copy(link4Status = false)
+                                    Log.i("Longkai", "link4Job false")
+                                }
+                                true
+                            } else it.link4Status,
                         )
                     }
                     job?.cancel()
-                    if (response?.link1Status?.toBoolean() == true)  link1Job?.cancel()
-                    if (response?.link2Status?.toBoolean() == true)  link2Job?.cancel()
-                    if (response?.link3Status?.toBoolean() == true)  link3Job?.cancel()
-                    if (response?.link4Status?.toBoolean() == true)  link4Job?.cancel()
                     job = viewModelScope.launch {
                         delay(2000)
                         _uiState.value = _uiState.value.copy(
@@ -304,22 +333,6 @@ class DdsViewModel(
                             link3Status = false,
                             link4Status = false
                         )
-                    }
-                    link1Job = viewModelScope.launch {
-                        delay(2000)
-                        _uiState.value = _uiState.value.copy(link1Status = false)
-                    }
-                    link2Job = viewModelScope.launch {
-                        delay(2000)
-                        _uiState.value = _uiState.value.copy(link2Status = false)
-                    }
-                    link3Job = viewModelScope.launch {
-                        delay(2000)
-                        _uiState.value = _uiState.value.copy(link3Status = false)
-                    }
-                    link4Job = viewModelScope.launch {
-                        delay(2000)
-                        _uiState.value = _uiState.value.copy(link4Status = false)
                     }
                 }
             }
