@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 
 class DDSZCUMock(handler: Handler?) : MockFragmentBase(handler) {
     override fun run() {
-//        case1()
-        case2()
+        case1()
+//        case2()
         handler.removeCallbacksAndMessages(null) //remove all
     }
 
@@ -40,10 +40,10 @@ class DDSZCUMock(handler: Handler?) : MockFragmentBase(handler) {
                 )
                 val secondByte = secondResponse.mockResponse()
                 dispatcher.onReceive(secondByte, 0, secondByte.size)
-                delay(200)
+                delay(2000)
 
                 firstResponse = CMDZCUEfuse.Response(
-                    current = 3f,
+                    current = -1f,
                     voltage = 15f,
                     tempDevice = 18f,
                     tempMos = 30f,
@@ -51,7 +51,7 @@ class DDSZCUMock(handler: Handler?) : MockFragmentBase(handler) {
                 )
                 firstByte = firstResponse.mockResponse()
                 dispatcher.onReceive(firstByte, 0, firstByte.size)
-                delay(200)
+                delay(200000)
             }
         }
     }

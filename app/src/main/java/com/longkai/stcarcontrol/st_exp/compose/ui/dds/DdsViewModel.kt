@@ -40,9 +40,9 @@ data class DdsUiState(
     val aiListenResult: String = "",
     val listening: Boolean = false,
     val aiLanguage: DdsViewModel.Language = DdsViewModel.Language.Chinese,
-    val currentFlow: Flow<Float> = emptyFlow(),
-    val voltageFlow: Flow<Float> = emptyFlow(),
-    val deviceTempFlow: Flow<Float> = emptyFlow(),
+    val currentFlow: Flow<Float?> = emptyFlow(),
+    val voltageFlow: Flow<Float?> = emptyFlow(),
+    val deviceTempFlow: Flow<Float?> = emptyFlow(),
     val current: Float? = null,
     val voltage: Float? = null,
     val tempDevice: Float? = null,
@@ -64,9 +64,9 @@ class DdsViewModel(
     private val _uiState = MutableStateFlow(DdsUiState(loading = true))
     val uiState: StateFlow<DdsUiState> = _uiState.asStateFlow()
 
-    private val _currentFlow = MutableStateFlow(0f)
-    private val _deviceTempFlow = MutableStateFlow(0f)
-    private val _voltageFlow = MutableStateFlow(0f)
+    private val _currentFlow = MutableStateFlow<Float?>(null)
+    private val _deviceTempFlow = MutableStateFlow<Float?>(null)
+    private val _voltageFlow = MutableStateFlow<Float?>(null)
 
     private val zcuCommand = CMDZCU()
     private val zcuEfuseCommand = CMDZCUEfuse()
@@ -259,9 +259,9 @@ class DdsViewModel(
         ServiceManager.getInstance().registerRegularlyCommand(
             zcuEfuseCommand, object : CommandListenerAdapter<CMDZCUEfuse.Response>() {
                 override fun onSuccess(response: CMDZCUEfuse.Response?) {
-                    _currentFlow.update { response?.current ?: 0f }
-                    _deviceTempFlow.update { response?.tempDevice ?: 0f }
-                    _voltageFlow.update { response?.voltage ?: 0f }
+                    _currentFlow.update { response?.current }
+                    _deviceTempFlow.update { response?.tempDevice}
+                    _voltageFlow.update { response?.voltage}
                     _uiState.update {
                         it.copy(
                             current = response?.current,
