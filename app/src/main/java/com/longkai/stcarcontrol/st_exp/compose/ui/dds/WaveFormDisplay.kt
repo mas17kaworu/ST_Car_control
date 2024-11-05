@@ -73,8 +73,8 @@ fun BouncingDotWithPath(
     modifier: Modifier,
     currentMaxValue: Int,
     voltageMaxValue: Int,
-    currentFlow: Flow<Float>,
-    voltageFlow: Flow<Float>,
+    currentFlow: Flow<Float?>,
+    voltageFlow: Flow<Float?>,
 ) {
     val currentPath = remember { mutableStateListOf<Offset>() }
     val dotRadius = 2f
@@ -89,8 +89,8 @@ fun BouncingDotWithPath(
     LaunchedEffect(currentFlow) {
         // 收集来自 flow 的高度数据
         currentFlow.collectLatest { value ->
-            if (!paused) {
-                currentDotYValue = value
+            if (!paused && value != null) {
+                currentDotYValue = value ?: 0f
             }
         }
     }
@@ -98,8 +98,8 @@ fun BouncingDotWithPath(
     LaunchedEffect(voltageFlow) {
         // 收集来自 flow 的高度数据
         voltageFlow.collectLatest { value ->
-            if (!paused) {
-                voltageDotYValue = value
+            if (!paused && value != null) {
+                voltageDotYValue = value ?: 0f
             }
         }
     }
@@ -359,8 +359,8 @@ fun DrawScope.drawTextOnCanvas(
 fun WaveCardView(
     modifier: Modifier = Modifier,
     loadStatus: Boolean,
-    currentFlow: Flow<Float>,
-    voltageFlow: Flow<Float>,
+    currentFlow: Flow<Float?>,
+    voltageFlow: Flow<Float?>,
     tempDeviceValue: Float?,
     tempMosValue: Float?,
     currentMaxValue: Int,
