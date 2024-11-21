@@ -1,5 +1,6 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,11 +51,14 @@ fun ExpressServicesScreen(
     var showDDSSettingsDialog by remember { mutableStateOf(false) }
     var showLinkStatePanel by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+
     var currentMaxValue by remember {
-        mutableStateOf(25)
+        mutableStateOf(sharedPreferences.getInt("currentMaxValue", 25))
     }
     var voltageMaxValue by remember {
-        mutableStateOf(25)
+        mutableStateOf(sharedPreferences.getInt("voltageMaxValue", 25))
     }
 
     LaunchedEffect(Unit) {
@@ -81,9 +85,15 @@ fun ExpressServicesScreen(
             enKeywords = uiState.enKeyWords,
             onCurrentMaxValueChange = {
                 currentMaxValue = it
+                val editor = sharedPreferences.edit()
+                editor.putInt("currentMaxValue", currentMaxValue)
+                editor.apply()
             },
             onVoltageMaxValueChange = {
                 voltageMaxValue = it
+                val editor = sharedPreferences.edit()
+                editor.putInt("voltageMaxValue", voltageMaxValue)
+                editor.apply()
             },
             onAIChooseLanguage = {
                 ddsViewModel.selectAiLanguage(it)
