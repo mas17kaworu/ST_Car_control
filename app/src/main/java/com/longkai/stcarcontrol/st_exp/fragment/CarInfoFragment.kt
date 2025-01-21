@@ -130,10 +130,10 @@ class CarInfoFragment : Fragment() {
         list.add(
             AppProgressViewBean(
                 "APP #4",
-                percent = 0.35f,
+                percent = OBCPercentage,
                 des = "OBC",
                 overlap = false,
-                maxRand = 10
+                maxRand = OBCRange
             )
         )
         list.add(
@@ -208,6 +208,15 @@ class CarInfoFragment : Fragment() {
 
     private fun refreshView(response: CMDDFAResponse) {
         ac_Charge_Value = response.ac_c
+        if (ac_Charge_Value) {
+            OBCPercentage = 0.35f
+            OBCRange = 10
+        } else {
+            OBCPercentage = 0.04f
+            OBCRange = 1
+        }
+
+
         if (response.crash) {
             mRootView?.findViewById<Switch>(R.id.vcu_acc)?.isChecked = false
             mRootView?.findViewById<Switch>(R.id.vcu_switch)?.isChecked = false
@@ -230,5 +239,8 @@ class CarInfoFragment : Fragment() {
         clearViewRefreshRunnable()
     }
 
-
+    companion object {
+        var OBCPercentage: Float = 0.03f
+        var OBCRange: Int = 3
+    }
 }
