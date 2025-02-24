@@ -69,6 +69,10 @@ class AppsInfoLayout : RelativeLayout {
         }
     }
 
+    fun updateBean(index: Int, bean: AppProgressViewBean) {
+        (views[index] as? AppInfoItemLayout)?.setData(bean)
+    }
+
     public fun setClickListener(appInfoClick: AppInfoClick) {
         this.appInfoClick = appInfoClick
     }
