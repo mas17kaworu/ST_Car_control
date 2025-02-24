@@ -207,15 +207,20 @@ class CarInfoFragment : Fragment() {
     }
 
     private fun refreshView(response: CMDDFAResponse) {
-        ac_Charge_Value = response.ac_c
-        if (ac_Charge_Value) {
-            OBCPercentage = 0.35f
-            OBCRange = 10
-        } else {
-            OBCPercentage = 0.04f
-            OBCRange = 1
+        if (ac_Charge_Value != response.ac_c) {
+            if (response.ac_c) {
+                appsInfoLayout?.updateBean(3, OBCBean.copy(
+                    percent = 0.35f,
+                    maxRand = 10,
+                ))
+            } else {
+                appsInfoLayout?.updateBean(3, OBCBean.copy(
+                    percent = 0.03f,
+                    maxRand = 3,
+                ))
+            }
         }
-
+        ac_Charge_Value = response.ac_c
 
         if (response.crash) {
             mRootView?.findViewById<Switch>(R.id.vcu_acc)?.isChecked = false
@@ -240,7 +245,15 @@ class CarInfoFragment : Fragment() {
     }
 
     companion object {
-        var OBCPercentage: Float = 0.03f
-        var OBCRange: Int = 3
+        private var OBCPercentage: Float = 0.03f
+        private var OBCRange: Int = 3
+
+        private val OBCBean = AppProgressViewBean(
+            "APP #4",
+            percent = OBCPercentage,
+            des = "OBC",
+            overlap = false,
+            maxRand = OBCRange
+        )
     }
 }
