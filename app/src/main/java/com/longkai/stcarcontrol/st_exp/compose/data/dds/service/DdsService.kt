@@ -243,7 +243,7 @@ class DdsServiceImpl(private val context: Context): DdsService {
             this[11] = 1
         }
         private val DomainId: Long = 0L
-        private const val DiscoverIp: String = "255.255.255.255"
+        private const val DiscoverIp: String = "239.255.0.1" // 239.255.0.1   255.255.255.255
     }
 }
 
