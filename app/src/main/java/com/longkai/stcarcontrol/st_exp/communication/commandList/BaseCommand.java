@@ -74,7 +74,8 @@ public abstract class BaseCommand implements Command {
 
     protected static final byte COMMAND_ZCU_EFUSE       = 0x39;
     protected static final byte COMMAND_ZCU             = 0x3A;
-    
+    protected static final byte COMMAND_FANGJIA         = 0x3B;
+
     protected byte[] data;//payload
     protected int dataLength;
 

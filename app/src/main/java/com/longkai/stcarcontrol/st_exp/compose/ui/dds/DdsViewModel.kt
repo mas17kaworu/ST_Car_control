@@ -11,6 +11,7 @@ import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil
 import com.longkai.stcarcontrol.st_exp.ai.AbilityCallback
 import com.longkai.stcarcontrol.st_exp.ai.EsrHelper
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFangjia.CMDFangjia
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU.CMDZCU
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU.CMDZCU.LinkStatus
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU.CMDZCUEfuse
@@ -54,6 +55,7 @@ data class DdsUiState(
     val loadStatus: Boolean = false,
     val cnKeyWords: List<String> = emptyList(),
     val enKeyWords: List<String> = emptyList(),
+    val fangjiaState: Int = 0,
 )
 
 class DdsViewModel(
@@ -70,6 +72,7 @@ class DdsViewModel(
 
     private val zcuCommand = CMDZCU()
     private val zcuEfuseCommand = CMDZCUEfuse()
+    private val fangjiaCommand = CMDFangjia()
 
     private val esrAbilityCallback: AbilityCallback = object : AbilityCallback {
         override fun onAbilityBegin() {
@@ -253,6 +256,20 @@ class DdsViewModel(
         }
         aiRepo.updateKeyword(listCN, listEN)
         Toast.makeText(STCarApplication.CONTEXT, "saved", Toast.LENGTH_SHORT).show()
+    }
+
+    fun registerFangjiaListener() {
+        ServiceManager.getInstance().registerRegularlyCommand(
+            fangjiaCommand, object : CommandListenerAdapter<CMDFangjia.Response>() {
+                override fun onSuccess(response: CMDFangjia.Response?) {
+                    _uiState.update {
+                        it.copy(
+                            fangjiaState = response?.status ?: 0
+                        )
+                    }
+                }
+            }
+        )
     }
 
     fun registerZCUCommandListener() {
