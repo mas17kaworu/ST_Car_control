@@ -63,6 +63,7 @@ fun ExpressServicesScreen(
 
     LaunchedEffect(Unit) {
         ddsViewModel.registerZCUCommandListener()
+        ddsViewModel.registerFangjiaListener()
         MockMessageServiceImpl.getService().StartService(DdsViewModel::class.java.toString())
     }
 
@@ -104,6 +105,10 @@ fun ExpressServicesScreen(
     }
 
     var showWavePannel by remember {
+        mutableStateOf(false)
+    }
+
+    var showFangjiaPannel by remember {
         mutableStateOf(false)
     }
 
@@ -187,6 +192,20 @@ fun ExpressServicesScreen(
                         ddsViewModel.startListen()
                     }) {
                     Icon(
+                        painter = painterResource(id = R.drawable.microphone),
+                        contentDescription = "mic",
+                        tint = Color.White,
+                    )
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                IconButton(
+                    modifier = Modifier,
+                    onClick = {
+                        showFangjiaPannel = !showFangjiaPannel
+                    },
+                ) {
+                    Icon(
+//                        painter = painterResource(id = R.mipmap.fangjia_icon),
                         painter = painterResource(id = R.drawable.microphone),
                         contentDescription = "mic",
                         tint = Color.White,
@@ -337,6 +356,14 @@ fun ExpressServicesScreen(
                     modifier = Modifier
                         .fillMaxSize(),
                     uiState = uiState,
+                )
+            }
+
+            if (showFangjiaPannel) {
+                FangjiaCard(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    fangjiaState = uiState.fangjiaState,
                 )
             }
         }
