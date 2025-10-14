@@ -34,6 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import coil.compose.AsyncImage
+import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.CorneredContainer
 import com.longkai.stcarcontrol.st_exp.compose.ui.components.SimpleTextField
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.STCarTheme
@@ -54,6 +56,10 @@ fun DDSSettingsDialog(
     onAIChooseLanguage: (DdsViewModel.Language) -> Unit,
     onKeyWordsChange: (Int, String) -> Unit,
     updateKeywords: (List<String>, List<String>) -> Unit,
+    // New image selection related params
+    imageUris: List<String?>,
+    onPickImage: (Int) -> Unit,
+    onClearImage: (Int) -> Unit,
 ) {
     Dialog(
         properties = DialogProperties(
@@ -78,6 +84,9 @@ fun DDSSettingsDialog(
             enKeywords = enKeywords,
             onKeyWordsChange = onKeyWordsChange,
             updateKeywords = updateKeywords,
+            imageUris = imageUris,
+            onPickImage = onPickImage,
+            onClearImage = onClearImage,
         )
     }
 }
@@ -98,6 +107,10 @@ fun DDSSettings(
     onAIChooseLanguage: (DdsViewModel.Language) -> Unit,
     onKeyWordsChange: (Int, String) -> Unit,
     updateKeywords: (List<String>, List<String>) -> Unit,
+    // New image selection related params
+    imageUris: List<String?>,
+    onPickImage: (Int) -> Unit,
+    onClearImage: (Int) -> Unit,
 ) {
     CorneredContainer(
         modifier = modifier,
@@ -289,14 +302,69 @@ fun DDSSettings(
                 Text(text = "Save", color = Color.Black)
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "图片配置", color = textColor, style = MaterialTheme.typography.h6
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 modifier = Modifier.sizeIn(maxWidth = 350.dp),
                 text = "说明：科大讯飞离线语音识别SDK 第一次初始化需要联网。" +
-                        "\n第一次初始化成功后可不再联网。\n语言文件放置平板\\sdcard\\ai\\esr" +
-                        "目录下面，区分中英文文件夹。不可修改文件名",
+                    "\n第一次初始化成功后可不再联网。\n语言文件放置平板\\sdcard\\ai\\esr" +
+                    "目录下面，区分中英文文件夹。不可修改文件名",
                 style = MaterialTheme.typography.body1,
                 color = textColor,
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            for (i in 0 until 10) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                ) {
+                    Button(
+                        onClick = { onPickImage(i) },
+                        modifier = Modifier.width(110.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.DarkGray
+                        )
+                    ) { Text(text = "选择图片${i + 1}") }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    val uriString = imageUris.getOrNull(i)
+                    if (uriString.isNullOrBlank().not()) {
+                        AsyncImage(
+                            model = uriString,
+                            contentDescription = "预览${i + 1}",
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(80.dp)
+                        )
+                    } else {
+                        // simple placeholder box using Text
+                        androidx.compose.material.Surface(
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(80.dp),
+                            color = Color.Gray.copy(alpha = 0.3f)
+                        ) {
+                            androidx.compose.material.Text(
+                                text = "无",
+                                color = Color.White,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    if (uriString != null) {
+                        Button(
+                            onClick = { onClearImage(i) },
+                            modifier = Modifier.width(70.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red.copy(alpha = 0.6f))
+                        ) { Text(text = "清除", color = Color.White) }
+                    }
+                }
+            }
         }
     }
 }
@@ -317,6 +385,9 @@ private fun DDSSettingsDialogPreview() {
             onAIChooseLanguage = {},
             onKeyWordsChange = { index, value -> },
             updateKeywords = {c, e ->},
+            imageUris = List(10) { null },
+            onPickImage = {},
+            onClearImage = {},
         )
     }
 }

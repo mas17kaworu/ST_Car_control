@@ -2,6 +2,8 @@ package com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFangjia
 
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU.CMDZCU.LinkStatus
+import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit
 
 class CMDFangjia: BaseCommand() {
   override fun toResponse(data: ByteArray?): BaseResponse? {
@@ -18,6 +20,15 @@ class CMDFangjia: BaseCommand() {
   class Response(
     val status: Int = 0,
   ): BaseResponse(COMMAND_FANGJIA) {
-
+    override fun mockResponse(): ByteArray {
+      val array = ByteArray(7)
+      array[0] = COMMAND_HEAD0
+      array[1] = COMMAND_HEAD1
+      array[2] = 0x08
+      array[3] = getCommandId().toByte()
+      array[4] = (status and 0xFF).toByte()
+      array[6] = CheckSumBit.checkSum(array, array.size - 1)
+      return array
+    }
   }
 }

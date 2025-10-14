@@ -1,6 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList
 
 import android.os.Handler
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDFangjia.CMDFangjia
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU.CMDZCU
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU.CMDZCU.LinkStatus
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDZCU.CMDZCUEfuse
@@ -12,8 +13,10 @@ import kotlinx.coroutines.launch
 
 class DDSZCUMock(handler: Handler?) : MockFragmentBase(handler) {
     override fun run() {
-        case1()
+//        case1()
 //        case2()
+//        case3()
+        case4()
         handler.removeCallbacksAndMessages(null) //remove all
     }
 
@@ -134,6 +137,22 @@ class DDSZCUMock(handler: Handler?) : MockFragmentBase(handler) {
                 firstBytes = firstResponse.mockResponse()
                 dispatcher.onReceive(firstBytes, 0, firstBytes.size)
                 delay(1000)
+            }
+        }
+    }
+
+    fun case4() {
+        CoroutineScope(Dispatchers.Main).launch {
+            var status = 0
+            while (true) {
+                var firstResponse = CMDFangjia.Response(
+                    status = status,
+                )
+                var response = firstResponse.mockResponse()
+                dispatcher.onReceive(response, 0, response.size)
+                delay(2000)
+                status++
+                if (status >= 4) status = 0
             }
         }
     }
