@@ -20,6 +20,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.AIRepo
 import com.longkai.stcarcontrol.st_exp.compose.data.AIRepoImpl.Companion.KEY_CN_KEY_WORDS
 import com.longkai.stcarcontrol.st_exp.compose.data.AIRepoImpl.Companion.KEY_EN_KEY_WORDS
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.DdsRepo
+import com.longkai.stcarcontrol.st_exp.compose.data.dds.ImagePreferenceRepo
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ExpressServiceParam
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.model.ServiceAction
@@ -29,6 +30,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import android.net.Uri
 
 data class DdsUiState(
     val expressServices: List<ExpressService> = emptyList(),//fakeExpressServices,//emptyList(),
@@ -56,6 +58,8 @@ data class DdsUiState(
     val cnKeyWords: List<String> = emptyList(),
     val enKeyWords: List<String> = emptyList(),
     val fangjiaState: Int = 0,
+    // New: list of 10 optional image URIs for settings
+    val imageUris: List<String?> = List(ImagePreferenceRepo.IMAGE_COUNT) { null },
 )
 
 class DdsViewModel(
@@ -142,6 +146,9 @@ class DdsViewModel(
 
     init {
         aiRepo.initKeyWordsList()
+        // Load persisted image URIs early so they are present before combine updates
+        val savedImageUris = ImagePreferenceRepo.getImageUris()
+        _uiState.update { it.copy(imageUris = savedImageUris) }
         viewModelScope.launch {
             try {
                 combine(
@@ -173,6 +180,8 @@ class DdsViewModel(
                             voltageFlow = _voltageFlow.asStateFlow(),
                             cnKeyWords = aiRepo.getKeyWordFromPrefs(KEY_CN_KEY_WORDS),
                             enKeyWords = aiRepo.getKeyWordFromPrefs(KEY_EN_KEY_WORDS),
+                            // Preserve already loaded imageUris
+                            imageUris = it.imageUris,
                         )
                     }
                 }.flatMapMerge {
@@ -232,6 +241,32 @@ class DdsViewModel(
             STCarApplication.CONTEXT, SHAREDP_PREF_KEY_LANGUAGE, language.ordinal
         )
         _uiState.update { it.copy(aiLanguage = language) }
+    }
+
+    // New: handle image selection updates
+    fun onImageSelected(index: Int, uri: Uri?) {
+        if (index !in 0 until ImagePreferenceRepo.IMAGE_COUNT) return
+        val str = uri?.toString()
+        if (str != null) {
+            ImagePreferenceRepo.saveImageUri(index, str)
+        } else {
+            ImagePreferenceRepo.clearImageUri(index)
+        }
+        _uiState.update { old ->
+            val newList = old.imageUris.toMutableList()
+            newList[index] = str
+            old.copy(imageUris = newList)
+        }
+    }
+
+    fun clearImage(index: Int) {
+        if (index !in 0 until ImagePreferenceRepo.IMAGE_COUNT) return
+        ImagePreferenceRepo.clearImageUri(index)
+        _uiState.update { old ->
+            val newList = old.imageUris.toMutableList()
+            newList[index] = null
+            old.copy(imageUris = newList)
+        }
     }
 
     fun startListen() {

@@ -1,7 +1,11 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -61,6 +65,20 @@ fun ExpressServicesScreen(
         mutableStateOf(sharedPreferences.getInt("voltageMaxValue", 25))
     }
 
+    // Image picker state
+    var pendingImageIndex by remember { mutableStateOf<Int?>(null) }
+    val openDocumentLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            takePersistableReadPermission(context, uri)
+            pendingImageIndex?.let { idx ->
+                ddsViewModel.onImageSelected(idx, uri)
+            }
+        }
+        pendingImageIndex = null
+    }
+
     LaunchedEffect(Unit) {
         ddsViewModel.registerZCUCommandListener()
         ddsViewModel.registerFangjiaListener()
@@ -100,7 +118,13 @@ fun ExpressServicesScreen(
                 ddsViewModel.selectAiLanguage(it)
             },
             onKeyWordsChange = { index, value -> ddsViewModel.updateRecordKeyWords(index, value) },
-            updateKeywords = { cnList, enList -> ddsViewModel.updateRecordKeyWords(cnList, enList) }
+            updateKeywords = { cnList, enList -> ddsViewModel.updateRecordKeyWords(cnList, enList) },
+            imageUris = uiState.imageUris,
+            onPickImage = { idx ->
+                pendingImageIndex = idx
+                openDocumentLauncher.launch(arrayOf("image/*"))
+            },
+            onClearImage = { idx -> ddsViewModel.clearImage(idx) }
         )
     }
 
@@ -199,15 +223,15 @@ fun ExpressServicesScreen(
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 IconButton(
-                    modifier = Modifier,
+                    modifier = Modifier.background(color = MaterialTheme.colors.background),
                     onClick = {
                         showFangjiaPannel = !showFangjiaPannel
                     },
                 ) {
                     Icon(
-//                        painter = painterResource(id = R.mipmap.fangjia_icon),
-                        painter = painterResource(id = R.drawable.microphone),
+                        painter = painterResource(id = R.mipmap.fangjia_icon),
                         contentDescription = "mic",
+                        modifier = Modifier.size(32.dp),
                         tint = Color.White,
                     )
                 }
@@ -288,8 +312,9 @@ fun ExpressServicesScreen(
                                                     ddsViewModel.executeExpressService(
                                                         focusedService
                                                     )
-                                                    feedbackMessage =
+                                                    var feedbackMessageLocal =
                                                         "Service ${focusedService.name} sent!"
+                                                    feedbackMessage = feedbackMessageLocal
                                                     feedbackMessageScope.coroutineContext.cancelChildren()
                                                     feedbackMessageScope.launch {
                                                         delay(2000)
@@ -413,5 +438,14 @@ fun DeleteServiceConfirmationDialog(
             backgroundColor = Color.DarkGray,
             contentColor = Color.White
         )
+    }
+}
+
+fun takePersistableReadPermission(context: Context, uri: Uri) {
+    val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+    try {
+        context.contentResolver.takePersistableUriPermission(uri, flags)
+    } catch (e: SecurityException) {
+        Log.w("PersistURI", "Cannot persist: $uri  ${e.message}")
     }
 }
