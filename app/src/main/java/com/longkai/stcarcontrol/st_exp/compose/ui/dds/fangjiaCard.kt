@@ -2,7 +2,10 @@ package com.longkai.stcarcontrol.st_exp.compose.ui.dds
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
@@ -30,23 +33,34 @@ fun FangjiaCard(
   ) {
     imageUris.getOrNull(fangjiaState)
   }
-
-  CorneredContainer(
+  Column(
     modifier = modifier,
-    backgroundColor = Color.DarkGray,
-    cornerSize = 24.dp,
   ) {
-    Box(modifier = Modifier.fillMaxSize(1f)) {
-      AsyncImage(
-        model = imageUri,
-        contentDescription = null,
-        modifier = Modifier.align(Alignment.Center).size(350.dp)
-      )
-      Text(
-        modifier = Modifier.align(Alignment.TopStart).padding(top = 16.dp, start = 16.dp),
-        text = "防夹状态: $fangjiaState",
-        fontSize = 20.sp,
-      )
+    CorneredContainer(
+      modifier = Modifier.weight(1f),
+      cornerSize = 24.dp,
+      backgroundColor = Color.DarkGray
+    ) {
+      Box(
+        modifier = Modifier.fillMaxSize(1f)
+      ) {
+        AsyncImage(
+          model = imageUri,
+          contentDescription = null,
+          modifier = Modifier
+            .align(Alignment.Center)
+            .size(350.dp)
+        )
+        Text(
+          modifier = Modifier
+            .align(Alignment.TopStart)
+            .padding(top = 16.dp, start = 16.dp),
+          text = "Window Lift Status $fangjiaState",
+          fontSize = 20.sp,
+        )
+      }
     }
+
+    Spacer(modifier = Modifier.height(120.dp))
   }
 }
