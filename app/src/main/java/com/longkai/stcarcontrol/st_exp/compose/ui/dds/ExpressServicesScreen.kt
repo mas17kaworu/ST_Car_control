@@ -179,6 +179,7 @@ fun ExpressServicesScreen(
                         showWavePannel = !showWavePannel
                         if (showWavePannel) {
                             showLinkStatePanel = false
+                            showFangjiaPannel = false
                         }
                     }) {
                     Icon(
@@ -196,6 +197,7 @@ fun ExpressServicesScreen(
                         showLinkStatePanel = !showLinkStatePanel
                         if (showLinkStatePanel) {
                             showWavePannel = false
+                            showFangjiaPannel = false
                         }
                     }) {
                     Icon(
@@ -226,12 +228,16 @@ fun ExpressServicesScreen(
                     modifier = Modifier.background(color = MaterialTheme.colors.background),
                     onClick = {
                         showFangjiaPannel = !showFangjiaPannel
+                        if (showFangjiaPannel) {
+                            showWavePannel = false
+                            showLinkStatePanel = false
+                        }
                     },
                 ) {
                     Icon(
                         painter = painterResource(id = R.mipmap.fangjia_icon),
                         contentDescription = "mic",
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(26.dp),
                         tint = Color.White,
                     )
                 }

@@ -21,13 +21,13 @@ class CMDFangjia: BaseCommand() {
     val status: Int = 0,
   ): BaseResponse(COMMAND_FANGJIA) {
     override fun mockResponse(): ByteArray {
-      val array = ByteArray(7)
+      val array = ByteArray(6)
       array[0] = COMMAND_HEAD0
       array[1] = COMMAND_HEAD1
-      array[2] = 0x08
+      array[2] = 0x06
       array[3] = getCommandId().toByte()
       array[4] = (status and 0xFF).toByte()
-      array[6] = CheckSumBit.checkSum(array, array.size - 1)
+      array[5] = CheckSumBit.checkSum(array, array.size - 1)
       return array
     }
   }
