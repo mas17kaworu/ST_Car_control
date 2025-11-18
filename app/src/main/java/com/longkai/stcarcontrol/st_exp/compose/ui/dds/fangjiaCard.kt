@@ -39,7 +39,7 @@ fun FangjiaCard(
     CorneredContainer(
       modifier = Modifier.weight(1f),
       cornerSize = 24.dp,
-      backgroundColor = Color.DarkGray
+      backgroundColor = Color(0xFF3f454d)
     ) {
       Box(
         modifier = Modifier.fillMaxSize(1f)
@@ -55,7 +55,8 @@ fun FangjiaCard(
           modifier = Modifier
             .align(Alignment.TopStart)
             .padding(top = 16.dp, start = 16.dp),
-          text = "Window Lift Status $fangjiaState",
+          text = "Window Lift Status",
+//          text = "Window Lift Status $fangjiaState",
           fontSize = 20.sp,
         )
       }
