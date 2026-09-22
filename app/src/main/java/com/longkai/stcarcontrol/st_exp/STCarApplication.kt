@@ -1,13 +1,9 @@
 package com.longkai.stcarcontrol.st_exp
 
-import android.Manifest
 import com.longkai.stcarcontrol.st_exp.Utils.CrashHandler
 import de.mindpipe.android.logging.log4j.LogConfigurator
-import android.app.Activity
 import android.app.Application
 import android.content.Context
-import androidx.core.app.ActivityCompat
-import android.content.pm.PackageManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -19,7 +15,6 @@ import com.longkai.stcarcontrol.st_exp.compose.data.AppContainer
 import com.longkai.stcarcontrol.st_exp.compose.data.AppContainerImpl
 import org.apache.log4j.Level
 import java.io.File
-import kotlin.Exception
 import kotlin.properties.Delegates
 
 /**
@@ -65,31 +60,5 @@ class STCarApplication : Application() {
             // logConfigurator.configure()
         }
 
-        private const val REQUEST_EXTERNAL_STORAGE = 1
-        var permissions = arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-
-        @JvmStatic
-        fun verifyStoragePermissions(activity: Activity?) {
-            try {
-                val permission = ActivityCompat.checkSelfPermission(
-                    activity!!,
-                    "android.permission.WRITE_EXTERNAL_STORAGE"
-                )
-                if (permission != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
-                        activity,
-                        permissions,
-                        REQUEST_EXTERNAL_STORAGE
-                    )
-                } else {
-                    logConfig()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
     }
 }
