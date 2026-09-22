@@ -1,7 +1,6 @@
 package com.longkai.stcarcontrol.st_exp.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
@@ -17,13 +16,8 @@ import android.widget.Toast;
 
 import com.longkai.stcarcontrol.st_exp.communication.btComm.BTServer;
 
-import org.apache.log4j.Level;
-
-import java.io.File;
-
-import de.mindpipe.android.logging.log4j.LogConfigurator;
-
-import static com.longkai.stcarcontrol.st_exp.Utils.FileUtils.INTERNAL_PATH;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用于与底层蓝牙通信
@@ -32,6 +26,9 @@ import static com.longkai.stcarcontrol.st_exp.Utils.FileUtils.INTERNAL_PATH;
  */
 
 public class BaseActivity extends AppCompatActivity {
+    private static final String TAG = "BaseActivity";
+    protected static final int REQUEST_STARTUP_PERMISSIONS = 1;
+
     public BTServer mBtServer;
     protected static boolean hardwareConnected = false;
     protected static boolean communicationEstablished = false;
@@ -54,7 +51,9 @@ public class BaseActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
-        verifyStoragePermissions(this);
+        if (savedInstanceState == null) {
+            requestStartupPermissions();
+        }
 
         /*mBtServer = new BTServer(BTManager.getInstance().getBtAdapter(),
                 mBTDetectedHandler,
@@ -93,59 +92,58 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    private void logConfig(){
-        final LogConfigurator logConfigurator = new LogConfigurator();
-        logConfigurator.setFileName(INTERNAL_PATH
-                + "ST_DEMO_CAR" + File.separator + "logs"
-                + File.separator + "communication.txt");
-        logConfigurator.setRootLevel(Level.ALL);
-        logConfigurator.setLevel("org.apache", Level.ALL);
-        logConfigurator.setFilePattern("%d %-5p [%c{2}]-[%L] %m%n");
-        logConfigurator.setMaxFileSize(1024 * 1024 * 5);
-        logConfigurator.setImmediateFlush(true);
-        logConfigurator.configure();
-
-    }
-    private static String[] PERMISSIONS_STORAGE = {
-            "android.permission.READ_EXTERNAL_STORAGE",
-            "android.permission.WRITE_EXTERNAL_STORAGE" };
-
-    private void verifyStoragePermissions(Activity activity) {
-
-        try {
-            int permission = ActivityCompat.checkSelfPermission(activity,
-                    "android.permission.WRITE_EXTERNAL_STORAGE");
-            if (permission != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, 1);
-            } else {
-//                Toast.makeText(this, "permitted", Toast.LENGTH_SHORT).show();
-//                logConfig();
-//                FileUtils.createSDDir(INTERNAL_PATH + "testlk");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    @NonNull
+    protected List<String> getStartupPermissions() {
+        List<String> permissions = new ArrayList<>();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        return permissions;
+    }
+
+    private void requestStartupPermissions() {
+        List<String> missingPermissions = new ArrayList<>();
+        for (String permission : getStartupPermissions()) {
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                missingPermissions.add(permission);
+            }
+        }
+        if (missingPermissions.isEmpty()) {
+            onStartupPermissionsGranted();
+        } else {
+            ActivityCompat.requestPermissions(this, missingPermissions.toArray(new String[0]),
+                    REQUEST_STARTUP_PERMISSIONS);
+        }
+    }
+
+    protected void onStartupPermissionsGranted() {
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1:
-                if (permissions.length > 0) {
-                    switch (permissions[0]) {
-                        case Manifest.permission.WRITE_EXTERNAL_STORAGE://权限1
-                            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                                Toast.makeText(this, "permitted", Toast.LENGTH_SHORT).show();
-//                            logConfig();
-                            } else {
-                                Toast.makeText(this, "You denied the permission", Toast.LENGTH_SHORT).show();
-                            }
-                            break;
-                    }
-                }
-                break;
-            default:
+        if (requestCode != REQUEST_STARTUP_PERMISSIONS) {
+            return;
+        }
+        if (grantResults.length == 0 || permissions.length != grantResults.length) {
+            Log.w(TAG, "Startup permission request cancelled or incomplete");
+            return;
+        }
+
+        boolean allGranted = true;
+        for (int i = 0; i < permissions.length; i++) {
+            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                allGranted = false;
+                Log.w(TAG, "Permission denied: " + permissions[i]);
+            }
+        }
+        if (allGranted) {
+            onStartupPermissionsGranted();
+        } else {
+            Toast.makeText(this, "You denied the permission", Toast.LENGTH_SHORT).show();
         }
     }
 
