@@ -2,6 +2,8 @@ package com.longkai.stcarcontrol.st_exp.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -29,6 +31,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.CarInfoFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSMonitorFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUChargeFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUChassisFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUGYHLSDFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUOBCDemoFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUOBCFragment;
@@ -47,6 +50,7 @@ import static androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import static androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_BMS;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_CHARGE;
+import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_CHASSIS;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_GYHLSD;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_HOME;
 import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_MCU;
@@ -65,7 +69,8 @@ import static com.longkai.stcarcontrol.st_exp.ConstantData.FRAGMENT_TRANSACTION_
 
 public class VCUActivity extends BaseActivity implements View.OnClickListener{
 
-    private int mLastflag = 10;
+    private static final String STATE_SELECTED_PAGE = "vcu.selectedPage";
+    private int mLastflag = -1;
 
     private VCUHomeFragment mVCUHomeFragment;
     private VCUVCUCFragment mVCUVCUCFragment;
@@ -80,6 +85,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     private VCUUpdateFirmwareFragment vcuUpdateFirmwareFragment;
     private VCUOBCDemoFragment vcuobcDemoFragment;
     private CarInfoFragment mCarInfoFragment;
+    private VCUChassisFragment vcuChassisFragment;
 
     private HorizontalListView hListView;
     private HorizontalListViewAdapter hListViewAdapter;
@@ -112,8 +118,30 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         });*/
 
         initUI();
-        setSelect(FRAGMENT_TRANSACTION_HOME);
-        vcuState = VCUState.HomeScreen;
+        Fragment restoredFragment = getSupportFragmentManager()
+                .findFragmentById(R.id.vcu_main_fragment_content);
+        if (restoredFragment != null) {
+            mLastflag = restoreFragmentReference(restoredFragment);
+            updateSelectedTab(mLastflag);
+            updateDrawerForPage(mLastflag);
+            revealSelectedTab();
+        } else {
+            setSelect(savedInstanceState == null ? FRAGMENT_TRANSACTION_HOME
+                    : savedInstanceState.getInt(STATE_SELECTED_PAGE, FRAGMENT_TRANSACTION_HOME));
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_SELECTED_PAGE, mLastflag);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // DrawerLayout restores its own lock/open state after onCreate.
+        updateDrawerForPage(mLastflag);
     }
 
     @Override
@@ -128,12 +156,8 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         ivConnectionState.setOnClickListener(this);
         ivWifiConnectionState = (ImageView) findViewById(R.id.iv_vcu_lost_wifi);
         ivWifiConnectionState.setOnClickListener(this);
-        canChangeWifiConnectVisible = true;
-        if (communicationEstablished) {
-            ivWifiConnectionState.setVisibility(View.INVISIBLE);
-            ivConnectionState.setVisibility(View.INVISIBLE);
-            canChangeWifiConnectVisible = false;
-        }
+        canChangeWifiConnectVisible = !communicationEstablished;
+        changeWifiConnectVisible(true);
         ivDiagram = (ImageView) findViewById(R.id.iv_vcu_activity_diagram);
         ivDiagram.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,6 +172,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 R.drawable.vcu_activity_bottom_car,
                 R.drawable.vcu_activity_bottom_vcu,
                 R.drawable.vcu_activity_bottom_obc,
+                R.drawable.vcu_activity_bottom_chassis,
                 R.drawable.vcu_activity_bottom_bms,
                 R.drawable.vcu_activity_bottom_mcu,
                 R.drawable.vcu_activity_bottom_tbox,
@@ -167,10 +192,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 if (disableSwitchFragment.get()){
                     return;
                 }
-                mSelectedMode = position;
-                hListViewAdapter.setSelectIndex(position);
-                hListViewAdapter.notifyDataSetChanged();
-                setSelect(position);
+                setSelect(VCUTabNavigation.pageIdAt(position));
             }
         });
 
@@ -182,6 +204,13 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     private void updateDrawer(VCUState state){
         vcuState = state;
         switch (vcuState){
+            case CHASSIS:
+                drawerLayoutVCU.closeDrawers();
+                findViewById(R.id.rl_drawer_bms).setVisibility(View.INVISIBLE);
+                findViewById(R.id.rl_drawer_vcu).setVisibility(View.INVISIBLE);
+                findViewById(R.id.rl_drawer_tbox).setVisibility(View.INVISIBLE);
+                drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
+                break;
             case MCU:
             case UPDATE:
             case HomeScreen:
@@ -207,6 +236,7 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 drawerLayoutVCU.setDrawerLockMode(LOCK_MODE_UNLOCKED);
                 break;
         }
+        changeWifiConnectVisible(true);
     }
 
     private void initDrawerLayout(){
@@ -433,12 +463,16 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         }
         @Override
         public void onDisconnected() {
-            Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
             hardwareConnected = false;
             communicationEstablished = false;
-            ivConnectionState.setVisibility(View.VISIBLE);
-            ivWifiConnectionState.setVisibility(View.VISIBLE);
-            canChangeWifiConnectVisible = true;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    canChangeWifiConnectVisible = true;
+                    changeWifiConnectVisible(true);
+                    Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
+                }
+            });
         }
     };
 
@@ -453,9 +487,8 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ivConnectionState.setVisibility(View.INVISIBLE);
-                    ivWifiConnectionState.setVisibility(View.INVISIBLE);
                     canChangeWifiConnectVisible = false;
+                    changeWifiConnectVisible(false);
                     Toast.makeText(getApplicationContext(),
                             "version:" + mVersion ,Toast.LENGTH_SHORT).show();
                 }
@@ -473,12 +506,23 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         if (disableSwitchFragment.get()){
             return;
         }
+        if (i == 200) {
+            i = FRAGMENT_TRANSACTION_GYHLSD;
+        }
+        if (VCUTabNavigation.tabPositionForPage(i) < 0) {
+            Log.e("VCUActivity", "Unknown VCU page: " + i);
+            return;
+        }
         ivDiagram.setVisibility(View.INVISIBLE);
+        if (i == mLastflag) {
+            return;
+        }
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (i > mLastflag) {
+        int direction = VCUTabNavigation.animationDirection(mLastflag, i);
+        if (direction > 0) {
             transaction.setCustomAnimations(R.anim.left_slide_in, R.anim.left_slide_out);
-        } else if (i < mLastflag) {
+        } else if (direction < 0) {
             transaction.setCustomAnimations(R.anim.right_slide_in, R.anim.right_slide_out);
         }
         mLastflag = i;
@@ -489,48 +533,36 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                     mVCUHomeFragment = new VCUHomeFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, mVCUHomeFragment);
-                updateDrawer(VCUState.HomeScreen);
                 break;
             case FRAGMENT_TRANSACTION_VCUVCU:
                 if (mVCUVCUCFragment == null){
                     mVCUVCUCFragment = new VCUVCUCFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, mVCUVCUCFragment);
-                updateDrawer(VCUState.VCU);
                 break;
             case FRAGMENT_TRANSACTION_TMP:
                 if (mCarInfoFragment == null){
                     mCarInfoFragment = new CarInfoFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, mCarInfoFragment);
-                updateDrawer(VCUState.CARINFO);
-                break;
-            case 200:
-                if (mVCUGYHLSDFragment == null){
-                    mVCUGYHLSDFragment = new VCUGYHLSDFragment();
-                }
-                transaction.replace(R.id.vcu_main_fragment_content, mVCUGYHLSDFragment);
                 break;
             case FRAGMENT_TRANSACTION_BMS:
                 if (mVCUBMSFragment == null){
                     mVCUBMSFragment = new VCUBMSFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, mVCUBMSFragment);
-                updateDrawer(VCUState.BMS);
                 break;
             case FRAGMENT_TRANSACTION_MCU:
                 if (vcumcuFragment == null){
                     vcumcuFragment = new VCUMCUFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcumcuFragment);
-                updateDrawer(VCUState.MCU);
                 break;
             case FRAGMENT_TRANSACTION_TBOX:
                 if (vcuTboxFragment == null){
                     vcuTboxFragment = new VCUTboxFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcuTboxFragment);
-                updateDrawer(VCUState.TBox);
                 break;
             case FRAGMENT_TRANSACTION_GYHLSD:
                 if (mVCUGYHLSDFragment == null){
@@ -568,18 +600,133 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcuobcDemoFragment);
                 break;
+            case FRAGMENT_TRANSACTION_CHASSIS:
+                if (vcuChassisFragment == null) {
+                    vcuChassisFragment = new VCUChassisFragment();
+                }
+                transaction.replace(R.id.vcu_main_fragment_content, vcuChassisFragment);
+                break;
             case FRAGMENT_TRANSACTION_UPDATE_FIRMWARE:
                 if (vcuUpdateFirmwareFragment == null){
                     vcuUpdateFirmwareFragment = new VCUUpdateFirmwareFragment();
                 }
                 transaction.replace(R.id.vcu_main_fragment_content, vcuUpdateFirmwareFragment);
-                updateDrawer(VCUState.UPDATE);
                 break;
             default:
                 break;
 
         }
+        updateSelectedTab(i);
+        updateDrawerForPage(i);
         transaction.commit();
+    }
+
+    private void updateSelectedTab(int pageId) {
+        mSelectedMode = VCUTabNavigation.tabPositionForPage(pageId);
+        hListViewAdapter.setSelectIndex(mSelectedMode);
+        hListViewAdapter.notifyDataSetChanged();
+    }
+
+    private void updateDrawerForPage(int pageId) {
+        switch (pageId) {
+            case FRAGMENT_TRANSACTION_CHASSIS:
+                updateDrawer(VCUState.CHASSIS);
+                break;
+            case FRAGMENT_TRANSACTION_HOME:
+            case FRAGMENT_TRANSACTION_OBC_DEMO:
+                updateDrawer(VCUState.HomeScreen);
+                break;
+            case FRAGMENT_TRANSACTION_TMP:
+                updateDrawer(VCUState.CARINFO);
+                break;
+            case FRAGMENT_TRANSACTION_VCUVCU:
+            case FRAGMENT_TRANSACTION_GYHLSD:
+            case FRAGMENT_TRANSACTION_CHARGE:
+            case FRAGMENT_TRANSACTION_TORQUE:
+            case FRAGMENT_TRANSACTION_OBC:
+                updateDrawer(VCUState.VCU);
+                break;
+            case FRAGMENT_TRANSACTION_BMS:
+            case FRAGMENT_TRANSACTION_MONITOR:
+                updateDrawer(VCUState.BMS);
+                break;
+            case FRAGMENT_TRANSACTION_MCU:
+                updateDrawer(VCUState.MCU);
+                break;
+            case FRAGMENT_TRANSACTION_TBOX:
+                updateDrawer(VCUState.TBox);
+                break;
+            case FRAGMENT_TRANSACTION_UPDATE_FIRMWARE:
+                updateDrawer(VCUState.UPDATE);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private int restoreFragmentReference(Fragment fragment) {
+        if (fragment instanceof VCUHomeFragment) {
+            mVCUHomeFragment = (VCUHomeFragment) fragment;
+            return FRAGMENT_TRANSACTION_HOME;
+        } else if (fragment instanceof CarInfoFragment) {
+            mCarInfoFragment = (CarInfoFragment) fragment;
+            return FRAGMENT_TRANSACTION_TMP;
+        } else if (fragment instanceof VCUVCUCFragment) {
+            mVCUVCUCFragment = (VCUVCUCFragment) fragment;
+            return FRAGMENT_TRANSACTION_VCUVCU;
+        } else if (fragment instanceof VCUOBCDemoFragment) {
+            vcuobcDemoFragment = (VCUOBCDemoFragment) fragment;
+            return FRAGMENT_TRANSACTION_OBC_DEMO;
+        } else if (fragment instanceof VCUChassisFragment) {
+            vcuChassisFragment = (VCUChassisFragment) fragment;
+            return FRAGMENT_TRANSACTION_CHASSIS;
+        } else if (fragment instanceof VCUBMSFragment) {
+            mVCUBMSFragment = (VCUBMSFragment) fragment;
+            return FRAGMENT_TRANSACTION_BMS;
+        } else if (fragment instanceof VCUMCUFragment) {
+            vcumcuFragment = (VCUMCUFragment) fragment;
+            return FRAGMENT_TRANSACTION_MCU;
+        } else if (fragment instanceof VCUTboxFragment) {
+            vcuTboxFragment = (VCUTboxFragment) fragment;
+            return FRAGMENT_TRANSACTION_TBOX;
+        } else if (fragment instanceof VCUGYHLSDFragment) {
+            mVCUGYHLSDFragment = (VCUGYHLSDFragment) fragment;
+            return FRAGMENT_TRANSACTION_GYHLSD;
+        } else if (fragment instanceof VCUChargeFragment) {
+            vcuChargeFragment = (VCUChargeFragment) fragment;
+            return FRAGMENT_TRANSACTION_CHARGE;
+        } else if (fragment instanceof VCUTorqueFragment) {
+            vcuTorqueFragment = (VCUTorqueFragment) fragment;
+            return FRAGMENT_TRANSACTION_TORQUE;
+        } else if (fragment instanceof VCUBMSMonitorFragment) {
+            vcubmsMonitorFragment = (VCUBMSMonitorFragment) fragment;
+            return FRAGMENT_TRANSACTION_MONITOR;
+        } else if (fragment instanceof VCUOBCFragment) {
+            vcuobcFragment = (VCUOBCFragment) fragment;
+            return FRAGMENT_TRANSACTION_OBC;
+        } else if (fragment instanceof VCUUpdateFirmwareFragment) {
+            vcuUpdateFirmwareFragment = (VCUUpdateFirmwareFragment) fragment;
+            return FRAGMENT_TRANSACTION_UPDATE_FIRMWARE;
+        }
+        throw new IllegalStateException("Unknown restored VCU page: " + fragment.getClass().getName());
+    }
+
+    private void revealSelectedTab() {
+        hListView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                View firstTab = hListView.getChildAt(0);
+                if (firstTab == null) {
+                    return;
+                }
+                hListView.removeOnLayoutChangeListener(this);
+                int tabWidth = firstTab.getWidth() + firstTab.getPaddingRight();
+                int offset = mSelectedMode * tabWidth
+                        - (hListView.getWidth() - firstTab.getWidth()) / 2;
+                hListView.scrollTo(Math.max(0, offset));
+            }
+        });
     }
 
     private void releaseFragment(){
@@ -619,7 +766,8 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         BMS,
         MCU,
         TBox,
-        UPDATE
+        UPDATE,
+        CHASSIS
     }
 
     public void showDiagram(){
@@ -638,14 +786,10 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
     }
 
     public void changeWifiConnectVisible(boolean visible) {
-        if (canChangeWifiConnectVisible) {
-            if (visible) {
-                ivConnectionState.setVisibility(View.VISIBLE);
-                ivWifiConnectionState.setVisibility(View.VISIBLE);
-            } else {
-                ivConnectionState.setVisibility(View.INVISIBLE);
-                ivWifiConnectionState.setVisibility(View.INVISIBLE);
-            }
-        }
+        int visibility = visible && canChangeWifiConnectVisible
+                && vcuState != VCUState.CHASSIS && vcuState != VCUState.CARINFO
+                ? View.VISIBLE : View.INVISIBLE;
+        ivConnectionState.setVisibility(visibility);
+        ivWifiConnectionState.setVisibility(visibility);
     }
 }
