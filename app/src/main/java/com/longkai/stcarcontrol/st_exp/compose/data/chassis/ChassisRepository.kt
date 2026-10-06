@@ -1,6 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.compose.data.chassis
 
 import android.util.Log
+import com.longkai.stcarcontrol.st_exp.Utils.ByteUtils.bytes2hex
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisControl
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisReport
@@ -19,6 +20,8 @@ interface ChassisRepository {
 
     /** Submit an explicit target only; success must not be treated as measured feedback. */
     suspend fun submitControl(control: ChassisControl): ChassisCommandResult
+    suspend fun setEpb(enabled: Boolean): ChassisCommandResult
+    suspend fun setCurrentOffset(enabled: Boolean): ChassisCommandResult
 }
 
 class DefaultChassisRepository(
@@ -65,9 +68,6 @@ class DefaultChassisRepository(
         if (!config.isValid(control)) {
             return ChassisCommandResult.Rejected(ChassisError.InvalidControl)
         }
-        if (service.messageDispatcher == null) {
-            return ChassisCommandResult.Rejected(ChassisError.NotReady)
-        }
         val command = when (control.field) {
             ChassisControlField.Speed -> CMDChassisControl.setSpeed(control.value)
             ChassisControlField.Steering ->
@@ -75,6 +75,23 @@ class DefaultChassisRepository(
             ChassisControlField.Ehb -> CMDChassisControl.setEhbForce(control.value.toLong())
             ChassisControlField.Emb -> CMDChassisControl.setEmbForce(control.value.toLong())
         }
+        return sendCommand(command, "field=${control.field}, value=${control.value}")
+    }
+
+    override suspend fun setEpb(enabled: Boolean): ChassisCommandResult =
+        sendCommand(CMDChassisControl.setEpb(enabled), "field=Epb, enabled=$enabled")
+
+    override suspend fun setCurrentOffset(enabled: Boolean): ChassisCommandResult =
+        sendCommand(CMDChassisControl.setCurrentOffset(enabled), "field=CurrentOffset, enabled=$enabled")
+
+    private fun sendCommand(command: CMDChassisControl, description: String): ChassisCommandResult {
+        if (service.messageDispatcher == null) {
+            return ChassisCommandResult.Rejected(ChassisError.NotReady)
+        }
+        Log.i(
+            "ChassisRepository",
+            "Submit chassis: $description, frame=${bytes2hex(command.toRawData())}"
+        )
         service.sendCommandToCar(command, null)
         return ChassisCommandResult.Submitted
     }

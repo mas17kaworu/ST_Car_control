@@ -64,6 +64,10 @@ class ChassisDispatchTest {
             ChassisCommandResult.Rejected(ChassisError.NotReady),
             repository.submitControl(ChassisControl(ChassisControlField.Speed, 0))
         )
+        for (enabled in listOf(true, false)) {
+            assertEquals(ChassisCommandResult.Rejected(ChassisError.NotReady), repository.setEpb(enabled))
+            assertEquals(ChassisCommandResult.Rejected(ChassisError.NotReady), repository.setCurrentOffset(enabled))
+        }
     }
 
     private fun frame(): ByteArray = byteArrayOf(

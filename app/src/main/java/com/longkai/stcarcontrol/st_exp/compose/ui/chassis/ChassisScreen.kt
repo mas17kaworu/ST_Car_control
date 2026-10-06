@@ -58,6 +58,8 @@ fun ChassisScreen(
     onControlChanged: (ChassisControlField, Int, Long) -> Unit,
     onControlCommitted: (ChassisControlField, Long) -> Unit,
     onControlTabSelected: (ChassisControlTab) -> Unit,
+    onEpbToggled: () -> Unit,
+    onCurrentOffsetChanged: (Boolean) -> Unit,
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -203,9 +205,8 @@ fun ChassisScreen(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(offsetLabel, color = Color(0xFFB8CAD5), fontSize = 10.sp)
                                 Switch(
-                                    checked = false,
-                                    onCheckedChange = {},
-                                    enabled = false,
+                                    checked = state.currentOffsetEnabled,
+                                    onCheckedChange = onCurrentOffsetChanged,
                                     colors = SwitchDefaults.colors(checkedThumbColor = cyan),
                                     modifier = Modifier.testTag("chassis-current-offset")
                                         .semantics { contentDescription = offsetLabel }
@@ -227,7 +228,13 @@ fun ChassisScreen(
                     )
                 }
             }
-            ChassisControlBar(state.selectedControl, onControlTabSelected, Modifier.fillMaxWidth())
+            ChassisControlBar(
+                selected = state.selectedControl,
+                onSelected = onControlTabSelected,
+                epbEnabled = state.epbEnabled,
+                onEpbToggled = onEpbToggled,
+                modifier = Modifier.fillMaxWidth()
+            )
             Text(stringResource(R.string.chassis_control_hint), color = Color(0xFF94AABB), fontSize = 9.sp)
         }
     }

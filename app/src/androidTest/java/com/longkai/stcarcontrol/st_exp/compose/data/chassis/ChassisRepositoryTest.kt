@@ -46,6 +46,31 @@ class ChassisRepositoryTest {
     }
 
     @Test
+    fun independentSwitchesSetOnlyTheirOwnValidityBitAndPayloadByte() = runBlocking {
+        val repository = DefaultChassisRepository(service.manager)
+        for (isEpb in listOf(false, true)) {
+            for (enabled in listOf(true, false)) {
+                val result = if (isEpb) repository.setEpb(enabled) else repository.setCurrentOffset(enabled)
+                assertEquals(ChassisCommandResult.Submitted, result)
+                service.awaitIdle()
+                val frame = service.writes.last()
+                assertEquals(27, frame.size)
+                assertEquals(0x5A, frame[0].toInt())
+                assertEquals(0x3C, frame[1].toInt())
+                assertEquals(0x18, frame[2].toInt())
+                assertEquals(0x3D, frame[3].toInt())
+                assertEquals(if (isEpb) 0x20 else 0x10, byteArrayToInt(frame, 4))
+                for (offset in listOf(8, 12, 16, 20)) assertEquals(0, byteArrayToInt(frame, offset))
+                assertEquals(if (!isEpb && enabled) 0x55 else 0, frame[24].toInt())
+                assertEquals(if (isEpb && enabled) 0x55 else 0, frame[25].toInt())
+                assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 26), 24), frame[26])
+            }
+        }
+        assertEquals(4, service.writes.size)
+        assertEquals(0, service.registeredCommandCount)
+    }
+
+    @Test
     fun invalidControlsAreRejectedBeforeCallingTheService() = runBlocking {
         val repository = DefaultChassisRepository(service.manager)
         for (field in ChassisControlField.values()) {

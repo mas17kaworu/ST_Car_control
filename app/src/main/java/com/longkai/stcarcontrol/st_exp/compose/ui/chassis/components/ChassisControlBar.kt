@@ -32,6 +32,8 @@ import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlTab
 fun ChassisControlBar(
     selected: ChassisControlTab?,
     onSelected: (ChassisControlTab) -> Unit,
+    epbEnabled: Boolean,
+    onEpbToggled: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(modifier, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -44,16 +46,17 @@ fun ChassisControlBar(
                     ChassisControlTab.Epb -> R.string.chassis_epb
                 }
             )
-            val active = selected == tab
-            val available = tab != ChassisControlTab.Epb
-            val color = if (active) Color(0xFF3ABEE5) else if (available) Color(0xFFB7C9D5) else Color(0xFF71838F)
+            val active = if (tab == ChassisControlTab.Epb) epbEnabled else selected == tab
+            val color = if (active) Color(0xFF3ABEE5) else Color(0xFFB7C9D5)
             Surface(
                 color = if (active) Color(0xFF2A4D5E) else Color(0xFF303D49),
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(1.dp, color.copy(alpha = if (active) .7f else .15f)),
                 modifier = Modifier.weight(1f).height(42.dp)
                     .testTag("chassis-control-${tab.name}")
-                    .selectable(active, enabled = available, role = Role.Button, onClick = { onSelected(tab) })
+                    .selectable(active, role = Role.Button, onClick = {
+                        if (tab == ChassisControlTab.Epb) onEpbToggled() else onSelected(tab)
+                    })
             ) {
                 Row(
                     Modifier.padding(horizontal = 10.dp),
@@ -61,7 +64,7 @@ fun ChassisControlBar(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     ControlIcon(tab, color, Modifier.size(23.dp))
-                    Text(label, color = if (available) Color.White else color, fontSize = 12.sp, modifier = Modifier.padding(start = 8.dp))
+                    Text(label, color = Color.White, fontSize = 12.sp, modifier = Modifier.padding(start = 8.dp))
                 }
             }
         }

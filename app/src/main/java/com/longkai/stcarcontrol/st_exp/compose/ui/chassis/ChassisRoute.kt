@@ -25,6 +25,8 @@ fun ChassisRoute(
         onControlChanged = viewModel::onControlChanged,
         onControlCommitted = viewModel::onControlCommitted,
         onControlTabSelected = viewModel::onControlTabSelected,
+        onEpbToggled = viewModel::onEpbToggled,
+        onCurrentOffsetChanged = viewModel::onCurrentOffsetChanged,
         onDismissError = viewModel::dismissError,
         modifier = modifier
     )

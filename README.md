@@ -7,11 +7,11 @@ Android app for controlling a model car via UDP/Bluetooth.
 Open **VCU > CHASSIS**, after **X in 1**. Uses real communication; initialize the
 existing service through the normal app entry flow.
 
-- Controls start locked. **Vehicle**, **Steering**, and **Brake pedal** are mutually exclusive; click again to lock.
+- Sliders start locked. **Vehicle**, **Steering**, and **Brake pedal** are mutually exclusive; click again to lock.
 - Vehicle enables speed, Steering enables angle, and Brake pedal enables EHB/EMB. Release a slider to send only that field.
 - Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.
 - Reports are received independently of control enablement, from page entry until its view is destroyed.
-- EPB and current offset are disabled.
+- EPB and current offset are independent switches; each toggle sends its own command. They start off without sending and are not reset on page exit. Displayed states are local targets, not device feedback.
 
 | Signal | Control range | Step | Wire units |
 | --- | --- | --- | --- |

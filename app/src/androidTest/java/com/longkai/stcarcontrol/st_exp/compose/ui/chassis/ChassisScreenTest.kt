@@ -42,7 +42,7 @@ class ChassisScreenTest {
     }
 
     @Test
-    fun pageReceivesImmediatelyWithAllSlidersAndDeferredControlsLocked() {
+    fun pageReceivesImmediatelyWithSlidersLockedAndIndependentSwitchesOff() {
         showScreen()
         compose.onNodeWithText("EHB Braking Force").assertIsDisplayed()
         compose.onNodeWithText("EMB Braking Force").assertIsDisplayed()
@@ -51,8 +51,8 @@ class ChassisScreenTest {
         for (name in listOf("speed", "angle", "ehb", "emb")) {
             slider(name).performScrollTo().assertIsNotEnabled()
         }
-        compose.onNodeWithTag("chassis-current-offset").assertIsNotEnabled()
-        mode("Epb").assertIsNotEnabled()
+        offsetSwitch().assertIsEnabled().assertIsOff()
+        mode("Epb").assertIsEnabled().assertIsNotSelected()
         compose.runOnIdle {
             assertEquals(1, service.registeredCommandCount)
             assertTrue(service.writes.isEmpty())
@@ -78,6 +78,138 @@ class ChassisScreenTest {
         slider("ehb").assertIsEnabled()
         slider("emb").assertIsEnabled()
         slider("angle").assertIsNotEnabled()
+    }
+
+    @Test
+    fun independentSwitchesSendOnAndOffWithoutSelectingAControlGroup() {
+        showScreen(withInitialReport = false)
+        mode("Epb").performClick().assertIsSelected()
+        offsetSwitch().performScrollTo().performClick().assertIsOn()
+        mode("Epb").assertIsSelected()
+        compose.runOnIdle {
+            assertNull(model.uiState.value.selectedControl)
+            assertNull(model.uiState.value.telemetry)
+            assertEquals(listOf(0x20, 0x10), service.writes.map { byteArrayToInt(it, 4) })
+            assertEquals(0x55, service.writes[0][25].toInt())
+            assertEquals(0, service.writes[0][24].toInt())
+            assertEquals(0x55, service.writes[1][24].toInt())
+            assertEquals(0, service.writes[1][25].toInt())
+            model.onCurrentOffsetChanged(true)
+        }
+        mode("Epb").performClick().assertIsNotSelected()
+        offsetSwitch().assertIsOn().performClick().assertIsOff()
+        compose.runOnIdle {
+            assertEquals(listOf(0x20, 0x10, 0x20, 0x10), service.writes.map { byteArrayToInt(it, 4) })
+            assertEquals(0, service.writes[2][25].toInt())
+            assertEquals(0, service.writes[3][24].toInt())
+            assertEquals(1, service.registeredCommandCount)
+        }
+        for (name in listOf("speed", "angle", "ehb", "emb")) slider(name).assertIsNotEnabled()
+    }
+
+    @Test
+    fun switchesCoexistWithAllGroupsAndDoNotDiscardSliderEdits() {
+        showScreen()
+        mode("Epb").performClick()
+        offsetSwitch().performScrollTo().performClick()
+        for (name in listOf("Vehicle", "Steering", "BrakePedal")) {
+            mode(name).performClick().assertIsSelected()
+            mode("Epb").assertIsSelected()
+            offsetSwitch().assertIsOn()
+        }
+        mode("BrakePedal").performClick().assertIsNotSelected()
+        mode("Epb").assertIsSelected()
+        offsetSwitch().assertIsOn()
+        compose.runOnIdle {
+            assertEquals(2, service.writes.size)
+            service.receiveReport(CMDChassisReport.Response(5, 100, 200, 300))
+        }
+        compose.waitForIdle()
+        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+1.00")
+        mode("Vehicle").performClick()
+        var generation = 0L
+        compose.runOnIdle {
+            generation = model.uiState.value.controlGeneration
+            model.onControlChanged(ChassisControlField.Speed, 10, generation)
+        }
+        mode("Epb").performClick().assertIsNotSelected()
+        offsetSwitch().performClick().assertIsOff()
+        mode("Vehicle").assertIsSelected()
+        slider("speed").assertIsEnabled()
+        compose.runOnIdle {
+            assertEquals(generation, model.uiState.value.controlGeneration)
+            model.onControlCommitted(ChassisControlField.Speed, generation)
+        }
+        compose.waitForIdle()
+        compose.runOnIdle {
+            assertEquals(listOf(0x20, 0x10, 0x20, 0x10, 0x01), service.writes.map { byteArrayToInt(it, 4) })
+            assertEquals(10, byteArrayToInt(service.writes.last(), 8))
+            assertEquals(1, service.registeredCommandCount)
+        }
+    }
+
+    @Test
+    fun pageExitDoesNotResetSwitchTargetsOrReplayTheirCommands() {
+        showScreen()
+        mode("Epb").performClick()
+        offsetSwitch().performScrollTo().performClick()
+        compose.runOnIdle {
+            model.onPageExited()
+            model.onEpbToggled()
+            model.onCurrentOffsetChanged(false)
+        }
+        compose.waitForIdle()
+        compose.runOnIdle {
+            assertEquals(0, service.registeredCommandCount)
+            assertTrue(model.uiState.value.epbEnabled)
+            assertTrue(model.uiState.value.currentOffsetEnabled)
+            assertEquals(2, service.writes.size)
+            model.onPageEntered()
+        }
+        compose.waitForIdle()
+        mode("Epb").assertIsSelected()
+        offsetSwitch().assertIsOn()
+        compose.runOnIdle {
+            assertEquals(1, service.registeredCommandCount)
+            assertEquals(2, service.writes.size)
+        }
+    }
+
+    @Test
+    fun rejectedSwitchChangesPreservePreviousTargetsAndTheSelectedGroup() {
+        val liveRepository = DefaultChassisRepository(service.manager)
+        var reject = true
+        val repository = object : ChassisRepository by liveRepository {
+            override suspend fun setEpb(enabled: Boolean): ChassisCommandResult =
+                if (reject) ChassisCommandResult.Rejected(ChassisError.NotReady) else liveRepository.setEpb(enabled)
+
+            override suspend fun setCurrentOffset(enabled: Boolean): ChassisCommandResult =
+                if (reject) ChassisCommandResult.Rejected(ChassisError.NotReady) else liveRepository.setCurrentOffset(enabled)
+        }
+        showScreen(repository = repository)
+        mode("Vehicle").performClick()
+        mode("Epb").performClick()
+        compose.onNodeWithText("Dismiss").performClick()
+        mode("Epb").assertIsNotSelected()
+        offsetSwitch().performScrollTo().performClick()
+        compose.onNodeWithText("Dismiss").performClick()
+        offsetSwitch().assertIsOff()
+        compose.runOnIdle {
+            assertTrue(service.writes.isEmpty())
+            reject = false
+        }
+        mode("Epb").performClick().assertIsSelected()
+        offsetSwitch().performClick().assertIsOn()
+        compose.runOnIdle { reject = true }
+        mode("Epb").performClick()
+        compose.onNodeWithText("Dismiss").performClick()
+        mode("Epb").assertIsSelected()
+        offsetSwitch().performClick()
+        compose.onNodeWithText("Dismiss").performClick()
+        offsetSwitch().assertIsOn()
+        mode("Vehicle").assertIsSelected()
+        slider("speed").assertIsEnabled()
+        compose.runOnIdle { assertEquals(2, service.writes.size) }
     }
 
     @Test
@@ -176,11 +308,16 @@ class ChassisScreenTest {
 
     private fun mode(name: String) = compose.onNodeWithTag("chassis-control-$name")
     private fun slider(name: String) = compose.onNodeWithTag("chassis-$name-slider")
+    private fun offsetSwitch() = compose.onNodeWithTag("chassis-current-offset")
 
-    private fun showScreen(modifier: Modifier = Modifier, withInitialReport: Boolean = true) {
+    private fun showScreen(
+        modifier: Modifier = Modifier,
+        withInitialReport: Boolean = true,
+        repository: ChassisRepository = DefaultChassisRepository(service.manager)
+    ) {
         compose.runOnIdle {
             model = ViewModelProvider(
-                store, ChassisViewModel.provideFactory(DefaultChassisRepository(service.manager))
+                store, ChassisViewModel.provideFactory(repository)
             )[ChassisViewModel::class.java]
             model.onPageEntered()
         }

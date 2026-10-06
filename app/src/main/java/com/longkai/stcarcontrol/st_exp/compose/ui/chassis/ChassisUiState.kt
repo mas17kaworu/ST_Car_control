@@ -14,6 +14,9 @@ data class ChassisUiState(
     val history: List<ChassisTelemetry> = emptyList(),
     val selectedControl: ChassisControlTab? = null,
     val controlGeneration: Long = 0L,
+    /** Local targets; the report protocol does not include switch feedback. */
+    val epbEnabled: Boolean = false,
+    val currentOffsetEnabled: Boolean = false,
     val isDemo: Boolean = true,
     val error: ChassisError? = null,
 ) {

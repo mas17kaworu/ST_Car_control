@@ -49,6 +49,27 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
         if (enable) mutableUiState.update { it.copy(selectedControl = tab) }
     }
 
+    fun onEpbToggled() {
+        if (!pageActive) return
+        val enabled = !mutableUiState.value.epbEnabled
+        viewModelScope.launch {
+            when (val result = repository.setEpb(enabled)) {
+                is ChassisCommandResult.Rejected -> mutableUiState.update { it.copy(error = result.error) }
+                else -> mutableUiState.update { it.copy(epbEnabled = enabled) }
+            }
+        }
+    }
+
+    fun onCurrentOffsetChanged(enabled: Boolean) {
+        if (!pageActive || mutableUiState.value.currentOffsetEnabled == enabled) return
+        viewModelScope.launch {
+            when (val result = repository.setCurrentOffset(enabled)) {
+                is ChassisCommandResult.Rejected -> mutableUiState.update { it.copy(error = result.error) }
+                else -> mutableUiState.update { it.copy(currentOffsetEnabled = enabled) }
+            }
+        }
+    }
+
     fun onControlChanged(field: ChassisControlField, value: Int, interactionGeneration: Long) {
         val state = mutableUiState.value
         if (!pageActive || !state.canControl(field) || state.controlGeneration != interactionGeneration) return
