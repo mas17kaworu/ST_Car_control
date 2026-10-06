@@ -47,7 +47,7 @@ fun LiveLineChart(
         stringResource(R.string.chassis_now)
     )
     Canvas(modifier.testTag(tag).semantics { contentDescription = description }) {
-        val left = 30.dp.toPx()
+        val left = 42.dp.toPx()
         val right = size.width - 12.dp.toPx()
         val top = 7.dp.toPx()
         val bottom = size.height - 20.dp.toPx()

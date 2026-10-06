@@ -20,9 +20,9 @@ public final class VCUTabNavigation {
     private static final int[] PAGE_IDS = {
             FRAGMENT_TRANSACTION_HOME,
             FRAGMENT_TRANSACTION_TMP,
+            FRAGMENT_TRANSACTION_CHASSIS,
             FRAGMENT_TRANSACTION_VCUVCU,
             FRAGMENT_TRANSACTION_OBC_DEMO,
-            FRAGMENT_TRANSACTION_CHASSIS,
             FRAGMENT_TRANSACTION_BMS,
             FRAGMENT_TRANSACTION_MCU,
             FRAGMENT_TRANSACTION_TBOX

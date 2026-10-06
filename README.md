@@ -1,42 +1,31 @@
 # ST_Car_control
 
-android apps for control a module car
+Android app for controlling a model car via UDP/Bluetooth.
 
-## Chassis UI
+## Chassis control
 
-Open **VCU > CHASSIS** to use the Compose chassis page. It is hosted by
-`VCUChassisFragment`, with a screen-scoped ViewModel and a repository injected
-through `AppContainer`.
+Open **VCU > CHASSIS**, after **X in 1**. Uses real communication; initialize the
+existing service through the normal app entry flow.
 
-This first version is explicitly **demo-only**. The chassis repository uses its
-own fake device source, independently of `inUIDebugMode`, and never calls
-`ServiceManager` or sends vehicle commands. Slider movement edits a local target;
-release commits that target to the simulator. The three charts each display one
-timestamped feedback signal. The four control shortcuts only change selection;
-they do not implement vehicle linkage or EPB commands.
+- Controls start locked. **Vehicle**, **Steering**, and **Brake pedal** are mutually exclusive; click again to lock.
+- Vehicle enables speed, Steering enables angle, and Brake pedal enables EHB/EMB. Release a slider to send only that field.
+- Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.
+- Reports are received independently of control enablement, from page entry until its view is destroyed.
+- EPB and current offset are disabled.
 
-The demo uses configurable signed steps for speed/angle and normalized positive
-levels for EHB/EMB. These are not hardware protocol values. Real integration belongs
-behind `ChassisDeviceDataSource` after command IDs, units, limits, acknowledgements,
-send rates, release behavior, and current-offset semantics are specified. Do not
-persist or replay old control commands on reconnect.
+| Signal | Control range | Step | Wire units |
+| --- | --- | --- | --- |
+| Speed | 0 to 20 km/h | 1 km/h | 1 raw = 1 km/h |
+| Steering | -540 to +540 degrees | 1 degree | 1 raw = 0.01 degree |
+| EHB / EMB force | 0 to 20000 N | 1 N | 1 raw = 1 N |
 
-Feature code is in `compose/ui/chassis/` and `compose/data/chassis/`; protocol
-encoding should stay in `communication/commandList/` when it is introduced.
+## Code
 
-问题：
-tbox 表格形式
-充电枪 fragment
-demo/Actual difference
+`VCUChassisFragment` hosts Compose + ViewModel in `compose/ui/chassis/`.
+`compose/data/chassis/` contains one Repository layer and models; adjust ranges in
+`ChassisControlConfig`. The repository calls the existing `ServiceManager`.
 
-笑笑：
-电流dashboard
-
-todo
-bms J
-vcu J
-bcm
-plgm
-mcu J
-tbox J
-发动机音效 J
+Protocol: `communication/commandList/CMDChassisList/` contains
+`CMDChassisControl` (`0x3D`, single-field commands) and `CMDChassisReport` (`0x3E`).
+Integers are little-endian. `CheckSumBit` excludes the header on send and includes it
+on receive. There is no control acknowledgment; submission does not confirm execution.

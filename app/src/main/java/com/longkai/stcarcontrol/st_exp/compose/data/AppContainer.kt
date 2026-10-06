@@ -8,7 +8,6 @@ import com.longkai.stcarcontrol.st_exp.compose.data.dds.test.MockDdsService
 import com.longkai.stcarcontrol.st_exp.compose.data.dds.service.DdsServiceImpl
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisRepository
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.DefaultChassisRepository
-import com.longkai.stcarcontrol.st_exp.compose.data.chassis.fake.FakeChassisDeviceDataSource
 
 interface AppContainer {
     val ddsRepo: DdsRepo
@@ -35,8 +34,7 @@ class AppContainerImpl(
     }
 
     override val chassisRepository: ChassisRepository by lazy {
-        // Chassis remains a standalone demo until its hardware protocol is configured.
-        DefaultChassisRepository(FakeChassisDeviceDataSource())
+        DefaultChassisRepository()
     }
 
 }

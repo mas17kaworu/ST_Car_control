@@ -13,21 +13,17 @@ private fun ChassisPreview() {
         val wave = sin(index * .08).toFloat()
         ChassisTelemetry(
             timestampMillis = index * 200L,
-            speedKph = 68f,
-            steeringAngleDegrees = wave * 18f,
-            ehbPressureMpa = 5f + wave * 3f,
-            embValue = 15f + wave * 8f
+            speedKph = 12f,
+            steeringAngleDegrees = wave * 360f,
+            ehbForceN = 10_000f + wave * 8_000f,
+            embForceN = 10_000f + wave * 8_000f
         )
     }
     STCarTheme {
         ChassisScreen(
             state = ChassisUiState(telemetry = history.last(), history = history),
-            onSpeedStepChanged = {},
-            onSteeringStepChanged = {},
-            onEhbLevelChanged = {},
-            onEmbLevelChanged = {},
-            onControlsCommitted = {},
-            onCurrentOffsetChanged = {},
+            onControlChanged = { _, _, _ -> },
+            onControlCommitted = { _, _ -> },
             onControlTabSelected = {},
             onDismissError = {}
         )

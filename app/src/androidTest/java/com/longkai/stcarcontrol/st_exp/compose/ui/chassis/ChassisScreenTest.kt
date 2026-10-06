@@ -2,170 +2,194 @@ package com.longkai.stcarcontrol.st_exp.compose.ui.chassis
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.height
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.test.assertHeightIsAtLeast
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsOn
-import androidx.compose.ui.test.assertIsSelected
-import androidx.compose.ui.test.assertTextEquals
-import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
-import androidx.compose.ui.test.performSemanticsAction
-import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.swipe
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import androidx.test.platform.app.InstrumentationRegistry
-import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisTelemetry
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisReport
+import com.longkai.stcarcontrol.st_exp.communication.utils.byteArrayToInt
+import com.longkai.stcarcontrol.st_exp.compose.data.chassis.*
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.STCarTheme
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.After
+import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
 
 class ChassisScreenTest {
-    @get:Rule
-    val compose = createComposeRule()
+    @get:Rule val compose = createComposeRule()
+    private val store = ViewModelStore()
+    private lateinit var service: ChassisServiceFixture
+    private lateinit var model: ChassisViewModel
 
-    private val feedback = ChassisTelemetry(
-        timestampMillis = 30_000,
-        speedKph = 68f,
-        steeringAngleDegrees = 12.4f,
-        ehbPressureMpa = 6.8f,
-        embValue = 18.6f
-    )
+    @Before fun setUp() { service = ChassisServiceFixture() }
+
+    @After fun close() {
+        try {
+            compose.runOnIdle { store.clear() }
+            compose.waitForIdle()
+        } finally {
+            if (::service.isInitialized) service.close()
+        }
+    }
 
     @Test
-    fun englishSingleSignalCardsAndControlsArePresent() {
+    fun pageReceivesImmediatelyWithAllSlidersAndDeferredControlsLocked() {
         showScreen()
+        compose.onNodeWithText("EHB Braking Force").assertIsDisplayed()
+        compose.onNodeWithText("EMB Braking Force").assertIsDisplayed()
+        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+12.34")
+        compose.onNodeWithTag("chassis-ehb-reading").assertTextEquals("6800")
+        for (name in listOf("speed", "angle", "ehb", "emb")) {
+            slider(name).performScrollTo().assertIsNotEnabled()
+        }
+        compose.onNodeWithTag("chassis-current-offset").assertIsNotEnabled()
+        mode("Epb").assertIsNotEnabled()
+        compose.runOnIdle {
+            assertEquals(1, service.registeredCommandCount)
+            assertTrue(service.writes.isEmpty())
+        }
+    }
 
-        compose.onNodeWithText("Tire / Motor Angle").assertIsDisplayed()
-        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+12.4")
-        compose.onNodeWithTag("chassis-angle-chart").assertIsDisplayed()
-        compose.onNodeWithTag("chassis-ehb-chart").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithTag("chassis-emb-chart").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithTag("chassis-current-offset").assertIsDisplayed()
-        compose.onNodeWithTag("chassis-control-Epb").performScrollTo().assertIsDisplayed()
+    @Test
+    fun controlsCanBeEnabledAndUsedBeforeAnyReportArrives() {
+        showScreen(withInitialReport = false)
+        mode("Vehicle").assertIsEnabled().performClick()
+        slider("speed").assertIsEnabled()
+            .performSemanticsAction(SemanticsActions.SetProgress) { it(5f) }
+        compose.runOnIdle {
+            assertNull(model.uiState.value.telemetry)
+            assertNull(model.uiState.value.error)
+            assertEquals(1, service.writes.size)
+            assertEquals(5, byteArrayToInt(service.writes.single(), 8))
+        }
+        mode("Steering").assertIsEnabled().performClick()
+        slider("angle").assertIsEnabled()
+        slider("speed").assertIsNotEnabled()
+        mode("BrakePedal").assertIsEnabled().performClick()
+        slider("ehb").assertIsEnabled()
+        slider("emb").assertIsEnabled()
+        slider("angle").assertIsNotEnabled()
+    }
+
+    @Test
+    fun modesAreMutuallyExclusiveAndClickingAgainLocksWithoutSending() {
+        showScreen()
+        mode("Vehicle").performClick().assertIsSelected()
+        slider("speed").assertIsEnabled()
+        slider("angle").assertIsNotEnabled()
+        mode("Steering").performClick().assertIsSelected()
+        mode("Vehicle").assertIsNotSelected()
+        slider("speed").assertIsNotEnabled()
+        slider("angle").assertIsEnabled()
+        mode("BrakePedal").performClick().assertIsSelected()
+        slider("ehb").assertIsEnabled()
+        slider("emb").assertIsEnabled()
+        slider("angle").assertIsNotEnabled()
+        mode("BrakePedal").performClick().assertIsNotSelected()
+        slider("ehb").assertIsNotEnabled()
+        slider("emb").assertIsNotEnabled()
+        compose.runOnIdle {
+            assertTrue(service.writes.isEmpty())
+            service.receiveReport(CMDChassisReport.Response(7, -12345, 1234, 5678))
+        }
+        compose.waitForIdle()
+        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("-123.45")
+        compose.onNodeWithTag("chassis-emb-reading").assertTextEquals("5678")
+        compose.runOnIdle { assertEquals(1, service.registeredCommandCount) }
+    }
+
+    @Test
+    fun vehicleDragWritesOnceOnReleaseAndLockingDoesNotSendZero() {
+        showScreen()
+        mode("Vehicle").performClick()
+        slider("speed").performTouchInput { swipe(centerLeft, Offset(width * .75f, center.y), 200) }
+        compose.runOnIdle {
+            assertEquals(1, service.writes.size)
+            val frame = service.writes.single()
+            assertEquals(1, byteArrayToInt(frame, 4))
+            assertTrue(byteArrayToInt(frame, 8) in 1..20)
+            assertEquals(12f, model.uiState.value.telemetry!!.speedKph, 0f)
+        }
+        mode("Vehicle").performClick()
+        slider("speed").performTouchInput { swipe(centerRight, centerLeft, 200) }
+        compose.runOnIdle { assertEquals(1, service.writes.size) }
+    }
+
+    @Test
+    fun slidersUseConfirmedPhysicalRangesAndEachSendsOnlyItsOwnField() {
+        showScreen()
+        data class Case(val mode: String, val slider: String, val range: ClosedFloatingPointRange<Float>, val flag: Int, val offset: Int, val scale: Int)
+        val cases = listOf(
+            Case("Vehicle", "speed", 0f..20f, 1, 8, 1),
+            Case("Steering", "angle", -540f..540f, 2, 12, 100),
+            Case("BrakePedal", "ehb", 0f..20_000f, 4, 16, 1),
+            Case("BrakePedal", "emb", 0f..20_000f, 8, 20, 1),
+        )
+        var lastMode = ""
+        for (case in cases) {
+            if (lastMode != case.mode) mode(case.mode).performClick()
+            lastMode = case.mode
+            val node = slider(case.slider).performScrollTo()
+            val info = node.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo]
+            assertEquals(case.range, info.range)
+            assertEquals((case.range.endInclusive - case.range.start).toInt() - 1, info.steps)
+            for (value in listOf(case.range.endInclusive, case.range.start)) {
+                node.performSemanticsAction(SemanticsActions.SetProgress) { it(value) }
+                compose.runOnIdle {
+                    val raw = service.writes.last()
+                    assertEquals(case.flag, byteArrayToInt(raw, 4))
+                    for (offset in listOf(8, 12, 16, 20)) {
+                        assertEquals(if (offset == case.offset) value.toInt() * case.scale else 0, byteArrayToInt(raw, offset))
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun chartsRemainReadableAndReceiverIsReleasedOnPageExit() {
+        showScreen(Modifier.height(560.dp))
+        for (name in listOf("angle", "ehb", "emb")) {
+            compose.onNodeWithTag("chassis-$name-chart").performScrollTo().assertIsDisplayed().assertHeightIsAtLeast(70.dp)
+        }
+        compose.onNodeWithTag("chassis-current-offset").performScrollTo().assertIsDisplayed()
+        mode("Epb").performScrollTo().assertIsDisplayed()
         if (InstrumentationRegistry.getArguments().getString("chassisScreenshot") == "true") {
-            val file = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "chassis-ui.png")
+            val file = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "chassis-live-ui.png")
             file.outputStream().use {
                 check(compose.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it))
             }
         }
+        compose.runOnIdle { model.onPageExited() }
+        compose.waitForIdle()
+        compose.runOnIdle { assertEquals(0, service.registeredCommandCount) }
     }
 
-    @Test
-    fun controlTargetsDoNotOverwriteMeasuredFeedback() {
-        val state = mutableStateOf(ChassisUiState(telemetry = feedback))
-        showScreen(state)
+    private fun mode(name: String) = compose.onNodeWithTag("chassis-control-$name")
+    private fun slider(name: String) = compose.onNodeWithTag("chassis-$name-slider")
 
-        compose.onNodeWithTag("chassis-angle-slider").performSemanticsAction(SemanticsActions.SetProgress) { it(-3f) }
-        compose.runOnIdle { assertEquals(-3, state.value.controls.steeringStep) }
-        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+12.4")
-
-        compose.onNodeWithTag("chassis-ehb-slider").performScrollTo()
-            .performSemanticsAction(SemanticsActions.SetProgress) { it(.75f) }
-        compose.runOnIdle { assertEquals(.75f, state.value.controls.ehbLevel, .001f) }
-        compose.onNodeWithTag("chassis-ehb-reading").assertTextEquals("6.8")
-
-        compose.onNodeWithTag("chassis-current-offset").performClick().assertIsOn()
-        compose.onNodeWithTag("chassis-control-Epb").performScrollTo().performClick().assertIsSelected()
-    }
-
-    @Test
-    fun bipolarDragCommitsOnRelease() {
-        val state = mutableStateOf(ChassisUiState(telemetry = feedback))
-        var commits = 0
-        showScreen(state) { commits++ }
-
-        compose.onNodeWithTag("chassis-speed-slider").performTouchInput {
-            swipe(center, Offset(width * .1f, center.y), 200)
-        }
+    private fun showScreen(modifier: Modifier = Modifier, withInitialReport: Boolean = true) {
         compose.runOnIdle {
-            assertTrue(state.value.controls.speedStep < 0)
-            assertEquals(1, commits)
-            assertEquals(68f, state.value.telemetry!!.speedKph)
+            model = ViewModelProvider(
+                store, ChassisViewModel.provideFactory(DefaultChassisRepository(service.manager))
+            )[ChassisViewModel::class.java]
+            model.onPageEntered()
         }
-    }
-
-    @Test
-    fun chartsRemainReadableInReducedViewport() {
-        showScreen(modifier = Modifier.height(560.dp))
-
-        listOf("angle", "ehb", "emb").forEach {
-            compose.onNodeWithTag("chassis-$it-chart").performScrollTo()
-                .assertIsDisplayed().assertHeightIsAtLeast(70.dp)
+        compose.setContent { STCarTheme { ChassisRoute(model, modifier) } }
+        compose.waitForIdle()
+        compose.runOnIdle {
+            assertEquals(1, service.registeredCommandCount)
+            if (withInitialReport) service.receiveReport(CMDChassisReport.Response(12, 1234, 6800, 18600))
         }
-        compose.onNodeWithTag("chassis-current-offset").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithTag("chassis-control-Epb").performScrollTo().assertIsDisplayed()
-    }
-
-    @Test
-    fun slidersExposeSignedStepsAndPositiveBrakeLevels() {
-        val state = mutableStateOf(ChassisUiState(telemetry = feedback))
-        showScreen(state)
-
-        listOf("speed", "angle").forEach { name ->
-            val slider = compose.onNodeWithTag("chassis-$name-slider")
-            val info = slider.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo]
-            assertEquals(-5f..5f, info.range)
-            assertEquals(9, info.steps)
-            for (value in listOf(-5f, 5f, 0f)) {
-                slider.performSemanticsAction(SemanticsActions.SetProgress) { it(value) }
-                compose.runOnIdle {
-                    val actual = if (name == "speed") state.value.controls.speedStep else state.value.controls.steeringStep
-                    assertEquals(value.toInt(), actual)
-                }
-            }
-        }
-        listOf("ehb", "emb").forEach { name ->
-            val slider = compose.onNodeWithTag("chassis-$name-slider").performScrollTo()
-            assertEquals(0f..1f, slider.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo].range)
-            for (value in listOf(1f, 0f)) {
-                slider.performSemanticsAction(SemanticsActions.SetProgress) { it(value) }
-                compose.runOnIdle {
-                    val actual = if (name == "ehb") state.value.controls.ehbLevel else state.value.controls.embLevel
-                    assertEquals(value, actual, 0f)
-                }
-            }
-        }
-    }
-
-    private fun showScreen(
-        state: androidx.compose.runtime.MutableState<ChassisUiState> = mutableStateOf(
-            ChassisUiState(
-                telemetry = feedback,
-                history = (0..300).map { feedback.copy(timestampMillis = it * 100L) }
-            )
-        ),
-        modifier: Modifier = Modifier,
-        onCommit: () -> Unit = {}
-    ) {
-        compose.setContent {
-            STCarTheme {
-                ChassisScreen(
-                    state = state.value,
-                    onSpeedStepChanged = { state.value = state.value.copy(controls = state.value.controls.copy(speedStep = it)) },
-                    onSteeringStepChanged = { state.value = state.value.copy(controls = state.value.controls.copy(steeringStep = it)) },
-                    onEhbLevelChanged = { state.value = state.value.copy(controls = state.value.controls.copy(ehbLevel = it)) },
-                    onEmbLevelChanged = { state.value = state.value.copy(controls = state.value.controls.copy(embLevel = it)) },
-                    onControlsCommitted = onCommit,
-                    onCurrentOffsetChanged = { state.value = state.value.copy(controls = state.value.controls.copy(currentOffsetEnabled = it)) },
-                    onControlTabSelected = { state.value = state.value.copy(selectedControl = it) },
-                    onDismissError = { state.value = state.value.copy(error = null) },
-                    modifier = modifier
-                )
-            }
-        }
+        compose.waitForIdle()
     }
 }

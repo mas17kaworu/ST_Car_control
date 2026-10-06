@@ -170,9 +170,9 @@ public class VCUActivity extends BaseActivity implements View.OnClickListener{
         final int[] ids = {
                 R.drawable.vcu_activity_bottom_home,
                 R.drawable.vcu_activity_bottom_car,
+                R.drawable.vcu_activity_bottom_chassis,
                 R.drawable.vcu_activity_bottom_vcu,
                 R.drawable.vcu_activity_bottom_obc,
-                R.drawable.vcu_activity_bottom_chassis,
                 R.drawable.vcu_activity_bottom_bms,
                 R.drawable.vcu_activity_bottom_mcu,
                 R.drawable.vcu_activity_bottom_tbox,

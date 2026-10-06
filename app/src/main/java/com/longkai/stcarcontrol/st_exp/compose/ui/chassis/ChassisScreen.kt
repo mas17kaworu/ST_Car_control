@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlTab
+import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlField
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisError
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChartPoint
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisControlBar
@@ -54,12 +55,8 @@ import kotlin.math.roundToInt
 @Composable
 fun ChassisScreen(
     state: ChassisUiState,
-    onSpeedStepChanged: (Int) -> Unit,
-    onSteeringStepChanged: (Int) -> Unit,
-    onEhbLevelChanged: (Float) -> Unit,
-    onEmbLevelChanged: (Float) -> Unit,
-    onControlsCommitted: () -> Unit,
-    onCurrentOffsetChanged: (Boolean) -> Unit,
+    onControlChanged: (ChassisControlField, Int, Long) -> Unit,
+    onControlCommitted: (ChassisControlField, Long) -> Unit,
     onControlTabSelected: (ChassisControlTab) -> Unit,
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier
@@ -67,23 +64,21 @@ fun ChassisScreen(
     val anglePoints = remember(state.history) {
         state.history.map { ChartPoint(it.timestampMillis, it.steeringAngleDegrees) }
     }
-    val pressurePoints = remember(state.history) {
-        state.history.map { ChartPoint(it.timestampMillis, it.ehbPressureMpa) }
+    val ehbPoints = remember(state.history) {
+        state.history.map { ChartPoint(it.timestampMillis, it.ehbForceN) }
     }
     val brakePoints = remember(state.history) {
-        state.history.map { ChartPoint(it.timestampMillis, it.embValue) }
+        state.history.map { ChartPoint(it.timestampMillis, it.embForceN) }
     }
     val cyan = MaterialTheme.colors.primary
     val mint = MaterialTheme.colors.secondary
     val angleTitle = stringResource(R.string.chassis_angle)
-    val pressureTitle = stringResource(R.string.chassis_ehb)
+    val ehbTitle = stringResource(R.string.chassis_ehb)
     val brakeTitle = stringResource(R.string.chassis_emb)
-    val negativeSteps = stringResource(R.string.chassis_negative_steps)
-    val positiveSteps = stringResource(R.string.chassis_positive_steps)
-    val maximum = stringResource(R.string.chassis_max)
     val noData = stringResource(R.string.chassis_no_data)
-    val speedRange = state.config.speedMinStep.toFloat()..state.config.speedMaxStep.toFloat()
-    val angleRange = state.config.steeringMinStep.toFloat()..state.config.steeringMaxStep.toFloat()
+    val angleRange = state.config.steeringDegrees.let { it.first.toFloat()..it.last.toFloat() }
+    val ehbRange = state.config.ehbForceN.let { it.first.toFloat()..it.last.toFloat() }
+    val embRange = state.config.embForceN.let { it.first.toFloat()..it.last.toFloat() }
 
     BoxWithConstraints(
         modifier.fillMaxSize().background(
@@ -111,7 +106,6 @@ fun ChassisScreen(
                         stringResource(R.string.chassis_demo),
                         fontSize = 10.sp,
                         color = mint,
-                        modifier = Modifier.testTag("chassis-demo-mode")
                     )
                 }
             }
@@ -120,50 +114,42 @@ fun ChassisScreen(
                     title = stringResource(R.string.chassis_speed),
                     modifier = Modifier.weight(1f),
                     controls = {
-                        ControlSlider(
+                        ChassisSlider(
+                            state = state,
+                            field = ChassisControlField.Speed,
+                            onChanged = onControlChanged,
+                            onCommitted = onControlCommitted,
                             label = stringResource(R.string.chassis_speed_command),
-                            value = state.controls.speedStep.toFloat(),
-                            valueLabel = signedStep(state.controls.speedStep),
-                            range = speedRange,
-                            onValueChange = { onSpeedStepChanged(it.roundToInt()) },
-                            onValueChangeFinished = onControlsCommitted,
-                            startLabel = negativeSteps,
-                            endLabel = positiveSteps,
-                            steps = state.config.speedMaxStep - state.config.speedMinStep - 1,
-                            centered = true,
+                            unit = stringResource(R.string.chassis_unit_speed),
                             testTag = "chassis-speed-slider"
                         )
                     }
                 ) {
-                    SpeedGauge(state.telemetry?.speedKph, Modifier.fillMaxSize())
+                    SpeedGauge(state.telemetry?.speedKph, state.config.speedKph.last, Modifier.fillMaxSize())
                 }
                 ChassisCard(
                     title = angleTitle,
                     modifier = Modifier.weight(1f),
                     controls = {
-                        ControlSlider(
+                        ChassisSlider(
+                            state = state,
+                            field = ChassisControlField.Steering,
+                            onChanged = onControlChanged,
+                            onCommitted = onControlCommitted,
                             label = stringResource(R.string.chassis_angle_command),
-                            value = state.controls.steeringStep.toFloat(),
-                            valueLabel = signedStep(state.controls.steeringStep),
-                            range = angleRange,
-                            onValueChange = { onSteeringStepChanged(it.roundToInt()) },
-                            onValueChangeFinished = onControlsCommitted,
-                            startLabel = negativeSteps,
-                            endLabel = positiveSteps,
-                            steps = state.config.steeringMaxStep - state.config.steeringMinStep - 1,
-                            centered = true,
+                            unit = stringResource(R.string.chassis_unit_angle),
                             testTag = "chassis-angle-slider"
                         )
                     }
                 ) {
                     ChartReading(
-                        value = state.telemetry?.steeringAngleDegrees?.let { String.format(Locale.US, "%+.1f", it) } ?: noData,
+                        value = state.telemetry?.steeringAngleDegrees?.let { String.format(Locale.US, "%+.2f", it) } ?: noData,
                         unit = stringResource(R.string.chassis_unit_angle),
                         color = cyan,
                         tag = "chassis-angle-reading"
                     )
                     LiveLineChart(
-                        points = anglePoints, range = -30f..30f, color = cyan,
+                        points = anglePoints, range = angleRange, color = cyan,
                         description = angleTitle, tag = "chassis-angle-chart",
                         modifier = Modifier.fillMaxWidth().weight(1f)
                     )
@@ -171,31 +157,29 @@ fun ChassisScreen(
             }
             Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 ChassisCard(
-                    title = pressureTitle,
+                    title = ehbTitle,
                     modifier = Modifier.weight(1f),
                     controls = {
-                        ControlSlider(
+                        ChassisSlider(
+                            state = state,
+                            field = ChassisControlField.Ehb,
+                            onChanged = onControlChanged,
+                            onCommitted = onControlCommitted,
                             label = stringResource(R.string.chassis_ehb_control),
-                            value = state.controls.ehbLevel,
-                            valueLabel = stringResource(R.string.chassis_demo_level, (state.controls.ehbLevel * 100).roundToInt()),
-                            range = 0f..1f,
-                            onValueChange = onEhbLevelChanged,
-                            onValueChangeFinished = onControlsCommitted,
-                            startLabel = "0",
-                            endLabel = maximum,
+                            unit = stringResource(R.string.chassis_unit_force),
                             testTag = "chassis-ehb-slider"
                         )
                     }
                 ) {
                     ChartReading(
-                        value = state.telemetry?.ehbPressureMpa?.let { String.format(Locale.US, "%.1f", it) } ?: noData,
-                        unit = stringResource(R.string.chassis_unit_pressure),
+                        value = state.telemetry?.ehbForceN?.let { String.format(Locale.US, "%.0f", it) } ?: noData,
+                        unit = stringResource(R.string.chassis_unit_force),
                         color = mint,
                         tag = "chassis-ehb-reading"
                     )
                     LiveLineChart(
-                        points = pressurePoints, range = 0f..12f, color = mint,
-                        description = pressureTitle, tag = "chassis-ehb-chart",
+                        points = ehbPoints, range = ehbRange, color = mint,
+                        description = ehbTitle, tag = "chassis-ehb-chart",
                         modifier = Modifier.fillMaxWidth().weight(1f)
                     )
                 }
@@ -204,15 +188,13 @@ fun ChassisScreen(
                     modifier = Modifier.weight(1f),
                     controls = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            ControlSlider(
+                            ChassisSlider(
+                                state = state,
+                                field = ChassisControlField.Emb,
+                                onChanged = onControlChanged,
+                                onCommitted = onControlCommitted,
                                 label = stringResource(R.string.chassis_emb_control),
-                                value = state.controls.embLevel,
-                                valueLabel = stringResource(R.string.chassis_demo_level, (state.controls.embLevel * 100).roundToInt()),
-                                range = 0f..1f,
-                                onValueChange = onEmbLevelChanged,
-                                onValueChangeFinished = onControlsCommitted,
-                                startLabel = "0",
-                                endLabel = maximum,
+                                unit = stringResource(R.string.chassis_unit_force),
                                 testTag = "chassis-emb-slider",
                                 modifier = Modifier.weight(1f)
                             )
@@ -221,8 +203,9 @@ fun ChassisScreen(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(offsetLabel, color = Color(0xFFB8CAD5), fontSize = 10.sp)
                                 Switch(
-                                    checked = state.controls.currentOffsetEnabled,
-                                    onCheckedChange = onCurrentOffsetChanged,
+                                    checked = false,
+                                    onCheckedChange = {},
+                                    enabled = false,
                                     colors = SwitchDefaults.colors(checkedThumbColor = cyan),
                                     modifier = Modifier.testTag("chassis-current-offset")
                                         .semantics { contentDescription = offsetLabel }
@@ -232,22 +215,20 @@ fun ChassisScreen(
                     }
                 ) {
                     ChartReading(
-                        value = state.telemetry?.embValue?.let { String.format(Locale.US, "%.1f", it) } ?: noData,
-                        unit = stringResource(R.string.chassis_value),
+                        value = state.telemetry?.embForceN?.let { String.format(Locale.US, "%.0f", it) } ?: noData,
+                        unit = stringResource(R.string.chassis_unit_force),
                         color = cyan,
                         tag = "chassis-emb-reading"
                     )
                     LiveLineChart(
-                        points = brakePoints, range = 0f..30f, color = cyan,
+                        points = brakePoints, range = embRange, color = cyan,
                         description = brakeTitle, tag = "chassis-emb-chart",
                         modifier = Modifier.fillMaxWidth().weight(1f)
                     )
                 }
             }
             ChassisControlBar(state.selectedControl, onControlTabSelected, Modifier.fillMaxWidth())
-            if (state.isDemo) {
-                Text(stringResource(R.string.chassis_demo_limits), color = Color(0xFF94AABB), fontSize = 9.sp)
-            }
+            Text(stringResource(R.string.chassis_control_hint), color = Color(0xFF94AABB), fontSize = 9.sp)
         }
     }
     state.error?.let { error ->
@@ -308,4 +289,33 @@ private fun ChartReading(value: String, unit: String, color: Color, tag: String)
     }
 }
 
-private fun signedStep(value: Int): String = if (value > 0) "+$value" else value.toString()
+@Composable
+private fun ChassisSlider(
+    state: ChassisUiState,
+    field: ChassisControlField,
+    onChanged: (ChassisControlField, Int, Long) -> Unit,
+    onCommitted: (ChassisControlField, Long) -> Unit,
+    label: String,
+    unit: String,
+    testTag: String,
+    modifier: Modifier = Modifier,
+) {
+    val range = state.config.range(field)
+    val generation = state.controlGeneration
+    ControlSlider(
+        label = label,
+        value = state.controls.value(field).toFloat(),
+        valueLabel = "${state.controls.value(field)} $unit",
+        range = range.first.toFloat()..range.last.toFloat(),
+        onValueChange = { onChanged(field, it.roundToInt(), generation) },
+        onValueChangeFinished = { onCommitted(field, generation) },
+        startLabel = range.first.toString(),
+        endLabel = range.last.toString(),
+        steps = range.last - range.first - 1,
+        centered = range.first < 0,
+        enabled = state.canControl(field),
+        interactionKey = generation,
+        testTag = testTag,
+        modifier = modifier,
+    )
+}

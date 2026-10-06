@@ -20,6 +20,7 @@ import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.ChassisViewModel
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.STCarTheme
 
 class VCUChassisFragment : Fragment() {
+    private var chassisViewModel: ChassisViewModel? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,6 +37,8 @@ class VCUChassisFragment : Fragment() {
             this,
             ChassisViewModel.provideFactory(appContainer.chassisRepository)
         )[ChassisViewModel::class.java]
+        chassisViewModel = viewModel
+        viewModel.onPageEntered()
         (view as ComposeView).setContent {
             STCarTheme {
                 ProvideWindowInsets {
@@ -48,5 +51,16 @@ class VCUChassisFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        chassisViewModel?.lockControls()
+        super.onStop()
+    }
+
+    override fun onDestroyView() {
+        chassisViewModel?.onPageExited()
+        chassisViewModel = null
+        super.onDestroyView()
     }
 }

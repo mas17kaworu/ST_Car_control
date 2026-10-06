@@ -22,12 +22,8 @@ fun ChassisRoute(
 
     ChassisScreen(
         state = state,
-        onSpeedStepChanged = viewModel::onSpeedStepChanged,
-        onSteeringStepChanged = viewModel::onSteeringStepChanged,
-        onEhbLevelChanged = viewModel::onEhbLevelChanged,
-        onEmbLevelChanged = viewModel::onEmbLevelChanged,
-        onControlsCommitted = viewModel::commitControls,
-        onCurrentOffsetChanged = viewModel::onCurrentOffsetChanged,
+        onControlChanged = viewModel::onControlChanged,
+        onControlCommitted = viewModel::onControlCommitted,
         onControlTabSelected = viewModel::onControlTabSelected,
         onDismissError = viewModel::dismissError,
         modifier = modifier

@@ -12,6 +12,7 @@ import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -19,11 +20,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.disabled
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 @Composable
 fun ControlSlider(
@@ -38,9 +44,11 @@ fun ControlSlider(
     testTag: String,
     modifier: Modifier = Modifier,
     steps: Int = 0,
-    centered: Boolean = false
+    centered: Boolean = false,
+    enabled: Boolean = true,
+    interactionKey: Long = 0L
 ) {
-    val color = MaterialTheme.colors.secondary
+    val color = if (enabled) MaterialTheme.colors.secondary else Color(0xFF71838F)
     Column(modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(label, color = Color(0xFFB8CAD5), fontSize = 11.sp, modifier = Modifier.weight(1f))
@@ -66,23 +74,52 @@ fun ControlSlider(
                     drawLine(color, Offset(zeroX, y - 7.dp.toPx()), Offset(zeroX, y + 7.dp.toPx()), 1.dp.toPx())
                 }
             }
-            Slider(
-                value = value,
-                onValueChange = onValueChange,
-                onValueChangeFinished = onValueChangeFinished,
-                valueRange = range,
-                steps = steps,
-                colors = SliderDefaults.colors(
-                    thumbColor = color,
-                    activeTrackColor = Color.Transparent,
-                    inactiveTrackColor = Color.Transparent,
-                    activeTickColor = Color.Transparent,
-                    inactiveTickColor = Color.Transparent
-                ),
-                modifier = Modifier.fillMaxWidth()
-                    .testTag(testTag)
-                    .semantics { contentDescription = label }
-            )
+            key(interactionKey) {
+                Slider(
+                    enabled = enabled,
+                    value = value,
+                    onValueChange = onValueChange,
+                    onValueChangeFinished = onValueChangeFinished,
+                    valueRange = range,
+                    steps = steps,
+                    colors = SliderDefaults.colors(
+                        thumbColor = color,
+                        activeTrackColor = Color.Transparent,
+                        inactiveTrackColor = Color.Transparent,
+                        activeTickColor = Color.Transparent,
+                        inactiveTickColor = Color.Transparent,
+                        disabledThumbColor = color,
+                        disabledActiveTrackColor = Color.Transparent,
+                        disabledInactiveTrackColor = Color.Transparent,
+                        disabledActiveTickColor = Color.Transparent,
+                        disabledInactiveTickColor = Color.Transparent
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                        .testTag(testTag)
+                        .clearAndSetSemantics {
+                            contentDescription = label
+                            progressBarRangeInfo = ProgressBarRangeInfo(value, range, steps)
+                            if (!enabled) disabled()
+                            // Material 1.2 does not finish a gesture for accessibility progress.
+                            setProgress { requested ->
+                                if (!enabled || !requested.isFinite()) false
+                                else {
+                                    val clamped = requested.coerceIn(range.start, range.endInclusive)
+                                    val increment = (range.endInclusive - range.start) / (steps + 1)
+                                    val resolved = if (steps > 0) {
+                                        range.start + ((clamped - range.start) / increment).roundToInt() * increment
+                                    } else clamped
+                                    if (resolved == value) false
+                                    else {
+                                        onValueChange(resolved)
+                                        onValueChangeFinished()
+                                        true
+                                    }
+                                }
+                            }
+                        }
+                )
+            }
         }
         Box(Modifier.fillMaxWidth().padding(horizontal = 10.dp)) {
             Text(startLabel, color = Color(0xFF92A8B8), fontSize = 10.sp, modifier = Modifier.align(Alignment.CenterStart))
