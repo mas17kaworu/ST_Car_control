@@ -25,6 +25,8 @@
     <string name="chassis_steering_control">Steering</string>
     <string name="chassis_brake_pedal">Brake pedal</string>
     <string name="chassis_epb">EPB</string>
+    <string name="chassis_stop">STOP</string>
+    <string name="chassis_emergency_stop">Emergency stop</string>
     <string name="chassis_no_data">--</string>
     <string name="chassis_demo_level">%1$d%%</string>
     <string name="chassis_invalid_control">The control value is outside the supported range.</string>

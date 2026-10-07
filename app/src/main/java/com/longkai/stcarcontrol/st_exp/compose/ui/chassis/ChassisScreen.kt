@@ -87,7 +87,7 @@ fun ChassisScreen(
             Brush.verticalGradient(listOf(Color(0xFF414E57), Color(0xFF1E2530)))
         )
     ) {
-        val contentHeight = maxOf(maxHeight, 640.dp)
+        val contentHeight = maxOf(maxHeight, 680.dp)
         Column(
             Modifier.fillMaxWidth()
                 .verticalScroll(rememberScrollState())

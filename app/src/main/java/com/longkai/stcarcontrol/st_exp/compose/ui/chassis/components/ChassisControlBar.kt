@@ -1,28 +1,46 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.longkai.stcarcontrol.st_exp.R
@@ -36,35 +54,82 @@ fun ChassisControlBar(
     onEpbToggled: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        ChassisControlTab.values().forEach { tab ->
-            val label = stringResource(
-                when (tab) {
-                    ChassisControlTab.Vehicle -> R.string.chassis_vehicle_control
-                    ChassisControlTab.Steering -> R.string.chassis_steering_control
-                    ChassisControlTab.BrakePedal -> R.string.chassis_brake_pedal
-                    ChassisControlTab.Epb -> R.string.chassis_epb
-                }
-            )
-            val active = if (tab == ChassisControlTab.Epb) epbEnabled else selected == tab
-            val color = if (active) Color(0xFF3ABEE5) else Color(0xFFB7C9D5)
-            Surface(
-                color = if (active) Color(0xFF2A4D5E) else Color(0xFF303D49),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, color.copy(alpha = if (active) .7f else .15f)),
-                modifier = Modifier.weight(1f).height(42.dp)
-                    .testTag("chassis-control-${tab.name}")
-                    .selectable(active, role = Role.Button, onClick = {
-                        if (tab == ChassisControlTab.Epb) onEpbToggled() else onSelected(tab)
-                    })
-            ) {
-                Row(
-                    Modifier.padding(horizontal = 10.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+    Box(modifier.height(76.dp).testTag("chassis-control-bar")) {
+        Row(
+            Modifier.align(Alignment.Center).padding(horizontal = 80.dp)
+                .widthIn(max = 472.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ChassisControlTab.values().forEach { tab ->
+                val label = stringResource(
+                    when (tab) {
+                        ChassisControlTab.Vehicle -> R.string.chassis_vehicle_control
+                        ChassisControlTab.Steering -> R.string.chassis_steering_control
+                        ChassisControlTab.BrakePedal -> R.string.chassis_brake_pedal
+                        ChassisControlTab.Epb -> R.string.chassis_epb
+                    }
+                )
+                val active = if (tab == ChassisControlTab.Epb) epbEnabled else selected == tab
+                val color = if (active) Color(0xFF3ABEE5) else Color(0xFFB7C9D5)
+                Surface(
+                    color = if (active) Color(0xFF2A4D5E) else Color(0xFF303D49),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(1.dp, color.copy(alpha = if (active) .7f else .15f)),
+                    modifier = Modifier.weight(1f).height(48.dp)
+                        .testTag("chassis-control-${tab.name}")
+                        .selectable(active, role = Role.Button, onClick = {
+                            if (tab == ChassisControlTab.Epb) onEpbToggled() else onSelected(tab)
+                        })
                 ) {
-                    ControlIcon(tab, color, Modifier.size(23.dp))
-                    Text(label, color = Color.White, fontSize = 12.sp, modifier = Modifier.padding(start = 8.dp))
+                    Row(
+                        Modifier.padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ControlIcon(tab, color, Modifier.size(20.dp))
+                        Text(
+                            label, color = Color.White, fontSize = 11.sp,
+                            maxLines = 1, overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(start = 6.dp)
+                        )
+                    }
+                }
+            }
+        }
+        Box(
+            Modifier.align(Alignment.CenterEnd).width(72.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            val stopDescription = stringResource(R.string.chassis_emergency_stop)
+            val interactionSource = remember { MutableInteractionSource() }
+            val pressed by interactionSource.collectIsPressedAsState()
+            val buttonScale by animateFloatAsState(if (pressed) .92f else 1f, tween(100))
+            Box(
+                Modifier.size(56.dp).testTag("chassis-emergency-stop")
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        role = Role.Button,
+                        onClick = {} // UI-only until the emergency-stop command is connected.
+                    )
+                    .semantics { contentDescription = stopDescription }
+            ) {
+                Surface(
+                    color = if (pressed) Color(0xFF9B272C) else Color(0xFFC73F43),
+                    shape = CircleShape,
+                    border = BorderStroke(2.dp, Color(0xFFEF9A9A)),
+                    elevation = if (pressed) 0.dp else 4.dp,
+                    modifier = Modifier.fillMaxSize().graphicsLayer {
+                        scaleX = buttonScale
+                        scaleY = buttonScale
+                    }
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            stringResource(R.string.chassis_stop),
+                            color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
@@ -53,9 +54,66 @@ class ChassisScreenTest {
         }
         offsetSwitch().assertIsEnabled().assertIsOff()
         mode("Epb").assertIsEnabled().assertIsNotSelected()
+        compose.onNodeWithTag("chassis-emergency-stop").performScrollTo()
+            .assertIsDisplayed().assertIsEnabled()
+            .assertContentDescriptionEquals("Emergency stop")
+            .performTouchInput { click() }
+        compose.onNodeWithText("Not connected").assertDoesNotExist()
         compose.runOnIdle {
             assertEquals(1, service.registeredCommandCount)
             assertTrue(service.writes.isEmpty())
+        }
+    }
+
+    @Test
+    fun compactControlsAreCenteredWithStopAtTheRightEdge() {
+        showScreen()
+        val bar = compose.onNodeWithTag("chassis-control-bar").performScrollTo()
+            .fetchSemanticsNode().boundsInRoot
+        val controls = listOf("Vehicle", "Steering", "BrakePedal", "Epb").map { name ->
+            mode(name).assertIsDisplayed().assertWidthIsEqualTo(112.dp)
+                .assertHeightIsAtLeast(48.dp).fetchSemanticsNode().boundsInRoot
+        }
+        val stop = compose.onNodeWithTag("chassis-emergency-stop")
+            .assertIsDisplayed().assertWidthIsEqualTo(56.dp).assertHeightIsEqualTo(56.dp)
+            .fetchSemanticsNode().boundsInRoot
+        val density = InstrumentationRegistry.getInstrumentation().targetContext.resources.displayMetrics.density
+        assertEquals(bar.center.x, (controls.first().left + controls.last().right) / 2, 1f)
+        assertEquals(bar.right - 8 * density, stop.right, 1f)
+        assertTrue(controls.last().right < stop.left)
+        for ((left, right) in controls.zipWithNext()) {
+            assertEquals(8 * density, right.left - left.right, 1f)
+        }
+        mode("Vehicle").performClick()
+        mode("Epb").performClick()
+        compose.onNodeWithTag("chassis-emergency-stop").performTouchInput { click() }
+        mode("Vehicle").assertIsSelected()
+        mode("Epb").assertIsSelected()
+        compose.runOnIdle { assertEquals(1, service.writes.size) }
+    }
+
+    @Test
+    fun stopPressFeedbackResetsOnReleaseAndCancelWithoutSendingCommands() {
+        showScreen()
+        compose.onNodeWithTag("chassis-control-bar").performScrollTo()
+        mode("Vehicle").performClick()
+        mode("Epb").performClick()
+        val stop = compose.onNodeWithTag("chassis-emergency-stop")
+        val initialBounds = stop.fetchSemanticsNode().boundsInRoot
+        fun fillColor() = stop.captureToImage().toPixelMap().let { it[it.width / 2, it.height / 4] }
+        val normalColor = fillColor()
+        for (cancelPress in listOf(false, true)) {
+            stop.performTouchInput { down(center) }
+            compose.waitUntil(2_000) { fillColor().red < normalColor.red - .1f }
+            assertEquals(initialBounds, stop.fetchSemanticsNode().boundsInRoot)
+            if (cancelPress) stop.performTouchInput { cancel() } else stop.performTouchInput { up() }
+            compose.waitUntil(2_000) { fillColor() == normalColor }
+        }
+        mode("Vehicle").assertIsSelected()
+        mode("Epb").assertIsSelected()
+        compose.runOnIdle {
+            assertEquals(1, service.writes.size)
+            assertNull(model.uiState.value.error)
         }
     }
 
@@ -294,7 +352,10 @@ class ChassisScreenTest {
             compose.onNodeWithTag("chassis-$name-chart").performScrollTo().assertIsDisplayed().assertHeightIsAtLeast(70.dp)
         }
         compose.onNodeWithTag("chassis-current-offset").performScrollTo().assertIsDisplayed()
-        mode("Epb").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("chassis-control-bar").performScrollTo().assertIsDisplayed()
+        mode("Epb").assertIsDisplayed()
+        compose.onNodeWithTag("chassis-emergency-stop").assertIsDisplayed()
+        compose.onNodeWithText("Not connected").assertDoesNotExist()
         if (InstrumentationRegistry.getArguments().getString("chassisScreenshot") == "true") {
             val file = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "chassis-live-ui.png")
             file.outputStream().use {

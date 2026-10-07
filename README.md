@@ -12,6 +12,7 @@ existing service through the normal app entry flow.
 - Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.
 - Reports are received independently of control enablement, from page entry until its view is destroyed.
 - EPB and current offset are independent switches; each toggle sends its own command. They start off without sending and are not reset on page exit. Displayed states are local targets, not device feedback.
+- The red STOP button has press feedback only; no emergency-stop command is connected yet.
 
 | Signal | Control range | Step | Wire units |
 | --- | --- | --- | --- |
