@@ -2,6 +2,7 @@ package com.longkai.stcarcontrol.st_exp.communication
 
 import android.os.Bundle
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisControl
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisEmergencyStop
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisReport
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit
@@ -14,13 +15,16 @@ import org.junit.Test
 /** Exercises the actual dispatcher without opening a socket or sending vehicle commands. */
 class ChassisDispatchTest {
     @Test
-    fun existingSendApiWritesSingleFieldCommandWithoutRegisteringAnAcknowledgment() {
+    fun existingSendApiWritesChassisCommandsWithoutRegisteringAnAcknowledgment() {
         val connection = RecordingConnection()
         val dispatcher = ProtocolMessageDispatch(connection)
-        val control = CMDChassisControl.setSpeed(20)
-        dispatcher.sendCommand(control, null)
-        assertArrayEquals(control.toRawData(), connection.writes.single())
-        assertEquals(0, dispatcher.sentCommandList.size())
+        val commands = listOf(CMDChassisControl.setSpeed(20), CMDChassisEmergencyStop(true), CMDChassisEmergencyStop(false))
+        for (command in commands) {
+            dispatcher.sendCommand(command, null)
+            assertArrayEquals(command.toRawData(), connection.writes.last())
+            assertEquals(0, dispatcher.sentCommandList.size())
+        }
+        assertEquals(3, connection.writes.size)
     }
 
     @Test
@@ -67,6 +71,7 @@ class ChassisDispatchTest {
         for (enabled in listOf(true, false)) {
             assertEquals(ChassisCommandResult.Rejected(ChassisError.NotReady), repository.setEpb(enabled))
             assertEquals(ChassisCommandResult.Rejected(ChassisError.NotReady), repository.setCurrentOffset(enabled))
+            assertEquals(ChassisCommandResult.Rejected(ChassisError.NotReady), repository.setEmergencyStop(enabled))
         }
     }
 

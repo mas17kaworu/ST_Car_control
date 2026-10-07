@@ -70,6 +70,17 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
         }
     }
 
+    fun onEmergencyStopToggled() {
+        if (!pageActive) return
+        val enabled = !mutableUiState.value.emergencyStopEnabled
+        viewModelScope.launch {
+            when (val result = repository.setEmergencyStop(enabled)) {
+                is ChassisCommandResult.Rejected -> mutableUiState.update { it.copy(error = result.error) }
+                else -> mutableUiState.update { it.copy(emergencyStopEnabled = enabled) }
+            }
+        }
+    }
+
     fun onControlChanged(field: ChassisControlField, value: Int, interactionGeneration: Long) {
         val state = mutableUiState.value
         if (!pageActive || !state.canControl(field) || state.controlGeneration != interactionGeneration) return

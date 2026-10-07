@@ -17,6 +17,7 @@ data class ChassisUiState(
     /** Local targets; the report protocol does not include switch feedback. */
     val epbEnabled: Boolean = false,
     val currentOffsetEnabled: Boolean = false,
+    val emergencyStopEnabled: Boolean = false,
     val isDemo: Boolean = true,
     val error: ChassisError? = null,
 ) {

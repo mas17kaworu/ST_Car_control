@@ -60,6 +60,7 @@ fun ChassisScreen(
     onControlTabSelected: (ChassisControlTab) -> Unit,
     onEpbToggled: () -> Unit,
     onCurrentOffsetChanged: (Boolean) -> Unit,
+    onEmergencyStopToggled: () -> Unit,
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -233,6 +234,8 @@ fun ChassisScreen(
                 onSelected = onControlTabSelected,
                 epbEnabled = state.epbEnabled,
                 onEpbToggled = onEpbToggled,
+                emergencyStopEnabled = state.emergencyStopEnabled,
+                onEmergencyStopToggled = onEmergencyStopToggled,
                 modifier = Modifier.fillMaxWidth()
             )
             Text(stringResource(R.string.chassis_control_hint), color = Color(0xFF94AABB), fontSize = 9.sp)

@@ -12,7 +12,7 @@ existing service through the normal app entry flow.
 - Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.
 - Reports are received independently of control enablement, from page entry until its view is destroyed.
 - EPB and current offset are independent switches; each toggle sends its own command. They start off without sending and are not reset on page exit. Displayed states are local targets, not device feedback.
-- The red STOP button has press feedback only; no emergency-stop command is connected yet.
+- STOP toggles emergency stop on/off independently, with press feedback and a local-state highlight (not device confirmation). It sends nothing on page entry/exit.
 
 | Signal | Control range | Step | Wire units |
 | --- | --- | --- | --- |
@@ -28,5 +28,6 @@ existing service through the normal app entry flow.
 
 Protocol: `communication/commandList/CMDChassisList/` contains
 `CMDChassisControl` (`0x3D`, single-field commands) and `CMDChassisReport` (`0x3E`).
+`CMDChassisEmergencyStop` (`0x3F`, length `0x06`) sends a 4-byte value: `0x55` on, `0x00` off.
 Integers are little-endian. `CheckSumBit` excludes the header on send and includes it
 on receive. There is no control acknowledgment; submission does not confirm execution.

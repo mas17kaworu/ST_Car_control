@@ -77,6 +77,7 @@ public abstract class BaseCommand implements Command {
     protected static final byte COMMAND_FANGJIA         = 0x3C;
     protected static final byte COMMAND_CHASSIS_CONTROL = 0x3D;
     protected static final byte COMMAND_CHASSIS_REPORT  = 0x3E;
+    protected static final byte COMMAND_CHASSIS_EMERGENCY_STOP = 0x3F;
 
     protected byte[] data;//payload
     protected int dataLength;

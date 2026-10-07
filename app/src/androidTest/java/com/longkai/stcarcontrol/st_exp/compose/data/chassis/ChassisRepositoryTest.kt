@@ -71,6 +71,20 @@ class ChassisRepositoryTest {
     }
 
     @Test
+    fun emergencyStopUsesItsOwnCommandAndFourByteSwitchValue() = runBlocking {
+        val repository = DefaultChassisRepository(service.manager)
+        val enabledFrame = byteArrayOf(0x5A, 0x3C, 0x06, 0x3F, 0x55, 0, 0, 0, 0x65)
+        val disabledFrame = byteArrayOf(0x5A, 0x3C, 0x06, 0x3F, 0, 0, 0, 0, 0xBA.toByte())
+        for (enabled in listOf(true, false, true)) {
+            assertEquals(ChassisCommandResult.Submitted, repository.setEmergencyStop(enabled))
+            service.awaitIdle()
+            assertArrayEquals(if (enabled) enabledFrame else disabledFrame, service.writes.last())
+        }
+        assertEquals(3, service.writes.size)
+        assertEquals(0, service.registeredCommandCount)
+    }
+
+    @Test
     fun invalidControlsAreRejectedBeforeCallingTheService() = runBlocking {
         val repository = DefaultChassisRepository(service.manager)
         for (field in ChassisControlField.values()) {

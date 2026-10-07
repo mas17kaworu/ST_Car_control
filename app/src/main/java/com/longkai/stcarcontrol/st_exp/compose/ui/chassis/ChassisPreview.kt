@@ -27,6 +27,7 @@ private fun ChassisPreview() {
             onControlTabSelected = {},
             onEpbToggled = {},
             onCurrentOffsetChanged = {},
+            onEmergencyStopToggled = {},
             onDismissError = {}
         )
     }

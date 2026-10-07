@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,6 +53,8 @@ fun ChassisControlBar(
     onSelected: (ChassisControlTab) -> Unit,
     epbEnabled: Boolean,
     onEpbToggled: () -> Unit,
+    emergencyStopEnabled: Boolean,
+    onEmergencyStopToggled: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier.height(76.dp).testTag("chassis-control-bar")) {
@@ -110,14 +113,23 @@ fun ChassisControlBar(
                         interactionSource = interactionSource,
                         indication = null,
                         role = Role.Button,
-                        onClick = {} // UI-only until the emergency-stop command is connected.
+                        onClick = onEmergencyStopToggled
                     )
-                    .semantics { contentDescription = stopDescription }
+                    .semantics {
+                        contentDescription = stopDescription
+                        this.selected = emergencyStopEnabled
+                    }
             ) {
                 Surface(
-                    color = if (pressed) Color(0xFF9B272C) else Color(0xFFC73F43),
+                    color = when {
+                        pressed && emergencyStopEnabled -> Color(0xFF9B272C)
+                        pressed -> Color(0xFF202B35)
+                        emergencyStopEnabled -> Color(0xFFEF5350)
+                        else -> Color(0xFF303D49)
+                    },
                     shape = CircleShape,
-                    border = BorderStroke(2.dp, Color(0xFFEF9A9A)),
+                    border = if (emergencyStopEnabled) BorderStroke(3.dp, Color.White)
+                        else BorderStroke(2.dp, Color(0xFFEF5350)),
                     elevation = if (pressed) 0.dp else 4.dp,
                     modifier = Modifier.fillMaxSize().graphicsLayer {
                         scaleX = buttonScale
@@ -127,7 +139,8 @@ fun ChassisControlBar(
                     Box(contentAlignment = Alignment.Center) {
                         Text(
                             stringResource(R.string.chassis_stop),
-                            color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold
+                            color = if (emergencyStopEnabled) Color.White else Color(0xFFEF5350),
+                            fontSize = 12.sp, fontWeight = FontWeight.Bold
                         )
                     }
                 }

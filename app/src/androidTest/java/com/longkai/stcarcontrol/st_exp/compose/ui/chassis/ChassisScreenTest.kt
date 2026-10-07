@@ -4,7 +4,9 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -55,9 +57,8 @@ class ChassisScreenTest {
         offsetSwitch().assertIsEnabled().assertIsOff()
         mode("Epb").assertIsEnabled().assertIsNotSelected()
         compose.onNodeWithTag("chassis-emergency-stop").performScrollTo()
-            .assertIsDisplayed().assertIsEnabled()
+            .assertIsDisplayed().assertIsEnabled().assertIsNotSelected()
             .assertContentDescriptionEquals("Emergency stop")
-            .performTouchInput { click() }
         compose.onNodeWithText("Not connected").assertDoesNotExist()
         compose.runOnIdle {
             assertEquals(1, service.registeredCommandCount)
@@ -87,32 +88,65 @@ class ChassisScreenTest {
         mode("Vehicle").performClick()
         mode("Epb").performClick()
         compose.onNodeWithTag("chassis-emergency-stop").performTouchInput { click() }
+            .assertIsSelected()
         mode("Vehicle").assertIsSelected()
         mode("Epb").assertIsSelected()
-        compose.runOnIdle { assertEquals(1, service.writes.size) }
+        compose.runOnIdle {
+            assertEquals(2, service.writes.size)
+            assertEquals(0x3F, service.writes.last()[3].toInt())
+        }
     }
 
     @Test
-    fun stopPressFeedbackResetsOnReleaseAndCancelWithoutSendingCommands() {
-        showScreen()
+    fun stopPressFeedbackResetsAndOnlyCompletedClicksToggleEmergencyStop() {
+        showScreen(withInitialReport = false)
         compose.onNodeWithTag("chassis-control-bar").performScrollTo()
         mode("Vehicle").performClick()
         mode("Epb").performClick()
         val stop = compose.onNodeWithTag("chassis-emergency-stop")
         val initialBounds = stop.fetchSemanticsNode().boundsInRoot
         fun fillColor() = stop.captureToImage().toPixelMap().let { it[it.width / 2, it.height / 4] }
-        val normalColor = fillColor()
-        for (cancelPress in listOf(false, true)) {
+        fun assertStopColors(enabled: Boolean) {
+            val pixels = stop.captureToImage().toPixelMap()
+            val accent = if (enabled) Color.White else Color(0xFFEF5350)
+            val fill = if (enabled) Color(0xFFEF5350) else Color(0xFF303D49)
+            assertEquals(fill.toArgb(), pixels[pixels.width / 2, pixels.height / 4].toArgb())
+            assertEquals(accent.toArgb(), pixels[pixels.width / 2, pixels.height / 56].toArgb())
+            assertTrue(
+                (pixels.width / 4 until pixels.width * 3 / 4).any { x ->
+                    (pixels.height * 2 / 5 until pixels.height * 3 / 5).any { y ->
+                        pixels[x, y].toArgb() == accent.toArgb()
+                    }
+                }
+            )
+        }
+        repeat(2) { index ->
+            assertStopColors(enabled = index == 1)
+            val normalColor = fillColor()
             stop.performTouchInput { down(center) }
-            compose.waitUntil(2_000) { fillColor().red < normalColor.red - .1f }
+            compose.waitUntil(2_000) { fillColor().red < normalColor.red - .03f }
             assertEquals(initialBounds, stop.fetchSemanticsNode().boundsInRoot)
-            if (cancelPress) stop.performTouchInput { cancel() } else stop.performTouchInput { up() }
+            compose.runOnIdle { assertEquals(1 + index, service.writes.size) }
+            stop.performTouchInput { cancel() }
             compose.waitUntil(2_000) { fillColor() == normalColor }
+            compose.runOnIdle { assertEquals(1 + index, service.writes.size) }
+            stop.performTouchInput { down(center) }
+            compose.waitUntil(2_000) { fillColor().red < normalColor.red - .03f }
+            stop.performTouchInput { up() }
+            compose.waitForIdle()
+            if (index == 0) stop.assertIsSelected() else stop.assertIsNotSelected()
+            assertStopColors(enabled = index == 0)
+            compose.runOnIdle {
+                assertEquals(2 + index, service.writes.size)
+                val frame = service.writes.last()
+                assertEquals(0x3F, frame[3].toInt())
+                assertEquals(if (index == 0) 0x55 else 0, byteArrayToInt(frame, 4))
+            }
         }
         mode("Vehicle").assertIsSelected()
         mode("Epb").assertIsSelected()
         compose.runOnIdle {
-            assertEquals(1, service.writes.size)
+            assertEquals(3, service.writes.size)
             assertNull(model.uiState.value.error)
         }
     }
@@ -211,26 +245,69 @@ class ChassisScreenTest {
         showScreen()
         mode("Epb").performClick()
         offsetSwitch().performScrollTo().performClick()
+        val stop = compose.onNodeWithTag("chassis-emergency-stop")
+        stop.performClick().assertIsSelected()
+        for (name in listOf("Vehicle", "Steering", "BrakePedal")) {
+            mode(name).performClick().assertIsSelected()
+            stop.assertIsSelected()
+        }
+        compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(5, 100, 200, 300)) }
+        compose.waitForIdle()
+        stop.assertIsSelected()
         compose.runOnIdle {
             model.onPageExited()
             model.onEpbToggled()
             model.onCurrentOffsetChanged(false)
+            model.onEmergencyStopToggled()
         }
         compose.waitForIdle()
         compose.runOnIdle {
             assertEquals(0, service.registeredCommandCount)
             assertTrue(model.uiState.value.epbEnabled)
             assertTrue(model.uiState.value.currentOffsetEnabled)
-            assertEquals(2, service.writes.size)
+            assertTrue(model.uiState.value.emergencyStopEnabled)
+            assertEquals(3, service.writes.size)
             model.onPageEntered()
         }
         compose.waitForIdle()
         mode("Epb").assertIsSelected()
         offsetSwitch().assertIsOn()
+        stop.assertIsSelected()
         compose.runOnIdle {
             assertEquals(1, service.registeredCommandCount)
-            assertEquals(2, service.writes.size)
+            assertEquals(3, service.writes.size)
         }
+    }
+
+    @Test
+    fun rejectedEmergencyStopChangesKeepTheLastTargetAndOtherControls() {
+        val liveRepository = DefaultChassisRepository(service.manager)
+        var reject = true
+        val repository = object : ChassisRepository by liveRepository {
+            override suspend fun setEmergencyStop(enabled: Boolean): ChassisCommandResult =
+                if (reject) ChassisCommandResult.Rejected(ChassisError.NotReady)
+                else liveRepository.setEmergencyStop(enabled)
+        }
+        showScreen(repository = repository)
+        mode("Vehicle").performClick()
+        mode("Epb").performClick()
+        val stop = compose.onNodeWithTag("chassis-emergency-stop")
+        stop.performClick()
+        compose.onNodeWithText("Dismiss").performClick()
+        stop.assertIsNotSelected()
+        compose.runOnIdle {
+            assertEquals(1, service.writes.size)
+            reject = false
+        }
+        stop.performClick().assertIsSelected()
+        compose.runOnIdle { reject = true }
+        stop.performClick()
+        compose.onNodeWithText("Dismiss").performClick()
+        stop.assertIsSelected()
+        mode("Vehicle").assertIsSelected()
+        mode("Epb").assertIsSelected()
+        slider("speed").assertIsEnabled()
+        compose.runOnIdle { assertEquals(2, service.writes.size) }
     }
 
     @Test

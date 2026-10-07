@@ -3,7 +3,9 @@ package com.longkai.stcarcontrol.st_exp.compose.data.chassis
 import android.util.Log
 import com.longkai.stcarcontrol.st_exp.Utils.ByteUtils.bytes2hex
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
+import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisControl
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisEmergencyStop
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisReport
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
 import kotlinx.coroutines.channels.awaitClose
@@ -22,6 +24,7 @@ interface ChassisRepository {
     suspend fun submitControl(control: ChassisControl): ChassisCommandResult
     suspend fun setEpb(enabled: Boolean): ChassisCommandResult
     suspend fun setCurrentOffset(enabled: Boolean): ChassisCommandResult
+    suspend fun setEmergencyStop(enabled: Boolean): ChassisCommandResult
 }
 
 class DefaultChassisRepository(
@@ -84,7 +87,10 @@ class DefaultChassisRepository(
     override suspend fun setCurrentOffset(enabled: Boolean): ChassisCommandResult =
         sendCommand(CMDChassisControl.setCurrentOffset(enabled), "field=CurrentOffset, enabled=$enabled")
 
-    private fun sendCommand(command: CMDChassisControl, description: String): ChassisCommandResult {
+    override suspend fun setEmergencyStop(enabled: Boolean): ChassisCommandResult =
+        sendCommand(CMDChassisEmergencyStop(enabled), "field=EmergencyStop, enabled=$enabled")
+
+    private fun sendCommand(command: BaseCommand, description: String): ChassisCommandResult {
         if (service.messageDispatcher == null) {
             return ChassisCommandResult.Rejected(ChassisError.NotReady)
         }
