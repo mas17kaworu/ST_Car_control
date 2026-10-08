@@ -11,6 +11,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.KeyCheckFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.KeyPairFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.NFCFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUBMSFragment;
+import com.longkai.stcarcontrol.st_exp.fragment.VCUChassisFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUMCUFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUOBCDemoFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
@@ -23,6 +24,7 @@ import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.KeyPairFragm
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.NFCFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.OBCReturnFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUBMSFragmentMock;
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUChassisFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUMCUFragmentMock;
 import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUUpdateFragmentMock;
 
@@ -39,6 +41,7 @@ public class MockMessageServiceImpl implements MockMessageService {
   private static Handler doBackgroundHandler;
 
   private MockFragmentBase runnable = null;
+  private VCUChassisFragmentMock chassisRunnable = null;
 
   public static MockMessageService getService() {
     if (instance == null) {
@@ -57,6 +60,16 @@ public class MockMessageServiceImpl implements MockMessageService {
   @Override
   public void StartService(String fragmentClass) {
     if (inUIDebugMode) {
+      if (fragmentClass.equalsIgnoreCase(VCUChassisFragment.class.toString())) {
+        if (chassisRunnable != null) {
+          chassisRunnable.stop();
+        }
+        // Other mocks clear their entire Handler; keep chassis callbacks separate.
+        Handler chassisHandler = new Handler(doBackgroundHandler.getLooper());
+        chassisRunnable = new VCUChassisFragmentMock(chassisHandler);
+        chassisHandler.post(chassisRunnable);
+        return;
+      }
       if (fragmentClass.equalsIgnoreCase(VCUMCUFragment.class.toString())) {
         runnable = new VCUMCUFragmentMock(doBackgroundHandler);
       } else if (fragmentClass.equalsIgnoreCase(VCUBMSFragment.class.toString())) {
@@ -94,6 +107,13 @@ public class MockMessageServiceImpl implements MockMessageService {
 
   @Override
   public void StopService(String fragmentClass) {
+    if (fragmentClass.equalsIgnoreCase(VCUChassisFragment.class.toString())) {
+      if (chassisRunnable != null) {
+        chassisRunnable.stop();
+        chassisRunnable = null;
+      }
+      return;
+    }
     if (runnable != null) {
       runnable.isStopped = true;
     }

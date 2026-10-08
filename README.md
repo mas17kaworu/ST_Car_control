@@ -20,6 +20,10 @@ existing service through the normal app entry flow.
 | Steering | -540 to +540 degrees | 1 degree | 1 raw = 0.01 degree |
 | EHB / EMB force | 0 to 20000 N | 1 N | 1 raw = 1 N |
 
+Mock: set `STCarApplication.inUIDebugMode = true` and rebuild. Chassis injects
+reports every 100 ms while visible; values cycle independently of slider input.
+Disconnect the vehicle: command sending remains real. Set the flag back to `false` for real reports.
+
 ## Code
 
 `VCUChassisFragment` hosts Compose + ViewModel in `compose/ui/chassis/`.

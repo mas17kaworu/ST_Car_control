@@ -4,6 +4,8 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
 import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit
 import com.longkai.stcarcontrol.st_exp.communication.utils.byteArrayToInt
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 /** Receive-only telemetry, registered through ServiceManager.registerRegularlyCommand. */
 class CMDChassisReport : BaseCommand() {
@@ -39,7 +41,17 @@ class CMDChassisReport : BaseCommand() {
         val steeringRaw: Int,
         val ehbForceRaw: Long,
         val embForceRaw: Long,
-    ) : BaseResponse(COMMAND_CHASSIS_REPORT)
+    ) : BaseResponse(COMMAND_CHASSIS_REPORT) {
+        override fun mockResponse(): ByteArray =
+            ByteBuffer.allocate(FRAME_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+                .put(COMMAND_HEAD0).put(COMMAND_HEAD1)
+                .put(0x12.toByte()).put(COMMAND_CHASSIS_REPORT)
+                .putInt(speedRaw.toInt()).putInt(steeringRaw)
+                .putInt(ehbForceRaw.toInt()).putInt(embForceRaw.toInt())
+                .array().apply {
+                    this[FRAME_SIZE - 1] = CheckSumBit.checkSum(this, FRAME_SIZE - 1)
+                }
+    }
 
     private companion object {
         const val FRAME_SIZE = 21

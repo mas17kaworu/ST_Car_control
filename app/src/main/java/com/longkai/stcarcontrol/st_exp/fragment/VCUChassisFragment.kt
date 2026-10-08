@@ -18,6 +18,7 @@ import com.longkai.stcarcontrol.st_exp.STCarApplication
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.ChassisRoute
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.ChassisViewModel
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.STCarTheme
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockMessageServiceImpl
 
 class VCUChassisFragment : Fragment() {
     private var chassisViewModel: ChassisViewModel? = null
@@ -53,7 +54,17 @@ class VCUChassisFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (STCarApplication.inUIDebugMode) {
+            MockMessageServiceImpl.getService().StartService(VCUChassisFragment::class.java.toString())
+        }
+    }
+
     override fun onStop() {
+        if (STCarApplication.inUIDebugMode) {
+            MockMessageServiceImpl.getService().StopService(VCUChassisFragment::class.java.toString())
+        }
         chassisViewModel?.lockControls()
         super.onStop()
     }
