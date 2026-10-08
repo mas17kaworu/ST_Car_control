@@ -34,6 +34,9 @@ android {
         abortOnError false
         checkReleaseBuilds false
     }
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
     // Set both the Java and Kotlin compilers to target Java 8.
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -70,6 +73,7 @@ dependencies {
 
 
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.11.1'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

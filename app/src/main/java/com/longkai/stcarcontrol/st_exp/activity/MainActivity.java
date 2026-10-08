@@ -2,12 +2,10 @@ package com.longkai.stcarcontrol.st_exp.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -54,6 +52,7 @@ import com.longkai.stcarcontrol.st_exp.fragment.SoundFragment;
 import com.longkai.stcarcontrol.st_exp.fragment.VCUUpdateFirmwareFragment;
 
 import java.io.File;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -97,13 +96,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
   private AtomicBoolean disableSwitchFragment = new AtomicBoolean(false);
 
-  private static final String[] PERMISSIONS = new String[]{
-      Manifest.permission.RECORD_AUDIO,
-      Manifest.permission.MODIFY_AUDIO_SETTINGS,
-      Manifest.permission.READ_EXTERNAL_STORAGE,
-      Manifest.permission.WRITE_EXTERNAL_STORAGE
-  };
-
+  @NonNull
+  @Override
+  protected List<String> getStartupPermissions() {
+    List<String> permissions = super.getStartupPermissions();
+    permissions.add(Manifest.permission.RECORD_AUDIO);
+    return permissions;
+  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -145,12 +144,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     //Log.d("testLK", UnlockR + "  " + test);
 
 
-    //getActivity().requestPermissions(PERMISSIONS, 1);
-    //ActivityCompat.checkSelfPermission(this, PERMISSIONS[1])
     //FileUtils10.INSTANCE.getFilesUnderDownloadST(this);
     //openFileInNewWindow();
     requestAllFilesAccessPermission();
-    ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, 1);
 
     int tmp = 500;
     //        float tmp2 = ((float)(5 * tmp) / 1024);
@@ -165,26 +161,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
   }
 
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-      @NonNull int[] grantResults) {
-    //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    switch (requestCode) {
-      case 1:
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          //创建文件夹
-                    /*if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        File file = new File(Environment.getExternalStorageDirectory() + "/aa/bb/");
-                        if (!file.exists()) {
-                            Log.d("jim", "path1 create:" + file.mkdirs());
-                        }
-                    }*/
-
-        }
-        break;
-    }
-  }
   // Request code for selecting a PDF document.
   private static final int PICK_TXT_FILE = 707;
 

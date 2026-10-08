@@ -1,6 +1,5 @@
 package com.longkai.stcarcontrol.st_exp.activity
 
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -12,7 +11,6 @@ import android.widget.Toast
 import com.longkai.stcarcontrol.st_exp.ConstantData
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.STCarApplication.Companion.logConfig
-import com.longkai.stcarcontrol.st_exp.STCarApplication.Companion.verifyStoragePermissions
 import com.longkai.stcarcontrol.st_exp.Utils.SharedPreferencesUtil
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionListener
 import com.longkai.stcarcontrol.st_exp.communication.ConnectionType
@@ -34,26 +32,10 @@ class ChooseActivity : BaseActivity(), View.OnClickListener {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_first)
-        verifyStoragePermissions(this)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            1 -> for (permission in permissions) {
-                if (permission.equals(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        ignoreCase = true
-                    )
-                ) {
-                    logConfig()
-                }
-            }
-        }
+    override fun onStartupPermissionsGranted() {
+        logConfig()
     }
 
     override fun onStart() {
