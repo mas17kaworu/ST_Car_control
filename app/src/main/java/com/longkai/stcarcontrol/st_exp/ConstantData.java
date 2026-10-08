@@ -101,6 +101,7 @@ public class ConstantData {
     public static final int FRAGMENT_TRANSACTION_TORQUE = FRAGMENT_TRANSACTION_CHARGE + 1;
     public static final int FRAGMENT_TRANSACTION_MONITOR = FRAGMENT_TRANSACTION_TORQUE + 1;
     public static final int FRAGMENT_TRANSACTION_OBC = FRAGMENT_TRANSACTION_MONITOR + 1;
+    public static final int FRAGMENT_TRANSACTION_CHASSIS = 12;
 
 
     public static final int FRAGMENT_TRANSACTION_UPDATE_FIRMWARE = 104;

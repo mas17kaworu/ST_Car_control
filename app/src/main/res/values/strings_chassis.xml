@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chassis_title">Chassis Control</string>
+    <string name="chassis_demo">DEMO · No vehicle commands</string>
+    <string name="chassis_control_hint">Enable one control group, then release a slider to send. Locking does not reset the vehicle. EPB and current offset switch independently.</string>
+    <string name="chassis_speed">Vehicle Speed</string>
+    <string name="chassis_angle">Tire / Motor Angle</string>
+    <string name="chassis_ehb">EHB Braking Force</string>
+    <string name="chassis_emb">EMB Braking Force</string>
+    <string name="chassis_speed_command">Speed command</string>
+    <string name="chassis_angle_command">Angle command</string>
+    <string name="chassis_ehb_control">EHB control</string>
+    <string name="chassis_emb_control">EMB control</string>
+    <string name="chassis_current_offset">Current offset</string>
+    <string name="chassis_negative_steps">− Negative steps</string>
+    <string name="chassis_positive_steps">Positive steps +</string>
+    <string name="chassis_max">Max</string>
+    <string name="chassis_now">Now</string>
+    <string name="chassis_seconds_ago">−%1$d s</string>
+    <string name="chassis_value">Value</string>
+    <string name="chassis_unit_speed">km/h</string>
+    <string name="chassis_unit_angle">°</string>
+    <string name="chassis_unit_force">N</string>
+    <string name="chassis_vehicle_control">Vehicle</string>
+    <string name="chassis_steering_control">Steering</string>
+    <string name="chassis_brake_pedal">Brake pedal</string>
+    <string name="chassis_epb">EPB</string>
+    <string name="chassis_stop">STOP</string>
+    <string name="chassis_emergency_stop">Emergency stop</string>
+    <string name="chassis_no_data">--</string>
+    <string name="chassis_demo_level">%1$d%%</string>
+    <string name="chassis_invalid_control">The control value is outside the supported range.</string>
+    <string name="chassis_not_ready">Communication service unavailable. Reopen this page after the service is initialized.</string>
+    <string name="chassis_command_failed">The command could not be completed.</string>
+    <string name="chassis_dismiss">Dismiss</string>
+</resources>

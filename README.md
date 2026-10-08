@@ -1,39 +1,37 @@
 # ST_Car_control
 
-android apps for control a module car
+Android app for controlling a model car via UDP/Bluetooth.
 
-## Activity startup permissions
+## Chassis control
 
-`BaseActivity` requests missing startup permissions in one batch on first creation.
-Subclasses extend `getStartupPermissions()` instead of starting a second request.
-`MainActivity` adds microphone access; `MODIFY_AUDIO_SETTINGS` is a manifest-only
-permission. Legacy storage write access is requested only before Android 11,
-and legacy storage read access only before Android 13. This does not grant
-all-files access or replace scoped-storage/file-picker handling.
+Open **VCU > CHASSIS**, after **X in 1**. Uses real communication; initialize the
+existing service through the normal app entry flow.
 
-Cancelled or incomplete permission results are logged without accessing empty
-arrays. Denied permissions are logged and shown in a toast; grant-only setup
-runs only after a successful result or when no permissions are missing.
+- Sliders start locked. **Vehicle**, **Steering**, and **Brake pedal** are mutually exclusive; click again to lock.
+- Vehicle enables speed, Steering enables angle, and Brake pedal enables EHB/EMB. Release a slider to send only that field.
+- Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.
+- Reports are received independently of control enablement, from page entry until its view is destroyed.
+- EPB and current offset are independent switches; each toggle sends its own command. They start off without sending and are not reset on page exit. Displayed states are local targets, not device feedback.
+- STOP toggles emergency stop on/off independently, with press feedback and a local-state highlight (not device confirmation). It sends nothing on page entry/exit.
 
-Run the activity permission regressions with:
+| Signal | Control range | Step | Wire units |
+| --- | --- | --- | --- |
+| Speed | 0 to 20 km/h | 1 km/h | 1 raw = 1 km/h |
+| Steering | -540 to +540 degrees | 1 degree | 1 raw = 0.01 degree |
+| EHB / EMB force | 0 to 20000 N | 1 N | 1 raw = 1 N |
 
-```sh
-./gradlew :app:testDebugUnitTest --tests '*StartupPermissionsTest'
-```
+Mock: set `STCarApplication.inUIDebugMode = true` and rebuild. Chassis injects
+reports every 100 ms while visible; values cycle independently of slider input.
+Disconnect the vehicle: command sending remains real. Set the flag back to `false` for real reports.
 
-问题：
-tbox 表格形式
-充电枪 fragment
-demo/Actual difference
+## Code
 
-笑笑：
-电流dashboard
+`VCUChassisFragment` hosts Compose + ViewModel in `compose/ui/chassis/`.
+`compose/data/chassis/` contains one Repository layer and models; adjust ranges in
+`ChassisControlConfig`. The repository calls the existing `ServiceManager`.
 
-todo
-bms J
-vcu J
-bcm
-plgm
-mcu J
-tbox J
-发动机音效 J
+Protocol: `communication/commandList/CMDChassisList/` contains
+`CMDChassisControl` (`0x3D`, single-field commands) and `CMDChassisReport` (`0x3E`).
+`CMDChassisEmergencyStop` (`0x3F`, length `0x06`) sends a 4-byte value: `0x55` on, `0x00` off.
+Integers are little-endian. `CheckSumBit` excludes the header on send and includes it
+on receive. There is no control acknowledgment; submission does not confirm execution.
