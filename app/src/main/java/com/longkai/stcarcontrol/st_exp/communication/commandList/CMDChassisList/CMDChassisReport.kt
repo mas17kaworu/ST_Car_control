@@ -29,7 +29,7 @@ class CMDChassisReport : BaseCommand() {
         }
 
         return Response(
-            speedRaw = byteArrayToInt(data, 4).toLong() and 0xFFFF_FFFFL,
+            speedRaw = byteArrayToInt(data, 4).toLong(),
             steeringRaw = byteArrayToInt(data, 8),
             ehbForceRaw = byteArrayToInt(data, 12).toLong() and 0xFFFF_FFFFL,
             embForceRaw = byteArrayToInt(data, 16).toLong() and 0xFFFF_FFFFL,

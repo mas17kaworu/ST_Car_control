@@ -16,7 +16,7 @@ existing service through the normal app entry flow.
 
 | Signal | Control range | Step | Wire units |
 | --- | --- | --- | --- |
-| Speed | 0 to 20 km/h | 1 km/h | 1 raw = 1 km/h |
+| Speed | -20 to 20 km/h (0 centered) | 1 km/h | signed, 1 raw = 1 km/h |
 | Steering | -540 to +540 degrees | 1 degree | 1 raw = 0.01 degree |
 | EHB / EMB force | 0 to 20000 N | 1 N | 1 raw = 1 N |
 
