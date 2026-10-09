@@ -51,6 +51,10 @@ class ChassisServiceFixture : AutoCloseable {
                 isAccessible = true
                 set(server, handler)
             }
+            CommunicationServer::class.java.getDeclaredField("mConnectionListenerList").apply {
+                isAccessible = true
+                set(server, mutableListOf<ConnectionListener>())
+            }
             binderField.set(manager, binder)
         }
     }
