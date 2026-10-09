@@ -164,7 +164,7 @@ class ChassisRepositoryTest {
     }
 
     @Test
-    fun mockSpeedCyclesThroughNegativeZeroAndPositiveValues() = runBlocking {
+    fun mockSpeedCyclesThroughNonnegativeValues() = runBlocking {
         val repository = DefaultChassisRepository(service.manager)
         val samples = mutableListOf<ChassisTelemetry>()
         val collection = launch(Dispatchers.Main) { repository.telemetry.collect { samples += it } }
@@ -177,12 +177,12 @@ class ChassisRepositoryTest {
             }
             service.awaitIdle()
             assertEquals(201, samples.size)
-            assertEquals(-20f, samples.first().speedKph, 0f)
-            assertEquals(0f, samples[50].speedKph, 0f)
+            assertEquals(0f, samples.first().speedKph, 0f)
+            assertEquals(10f, samples[50].speedKph, 0f)
             assertEquals(20f, samples[100].speedKph, 0f)
-            assertEquals(0f, samples[150].speedKph, 0f)
-            assertEquals(-20f, samples.last().speedKph, 0f)
-            assertTrue(samples.all { it.speedKph in -20f..20f })
+            assertEquals(10f, samples[150].speedKph, 0f)
+            assertEquals(0f, samples.last().speedKph, 0f)
+            assertTrue(samples.all { it.speedKph in 0f..20f })
             assertTrue(service.writes.isEmpty())
         } finally {
             mock.stop()

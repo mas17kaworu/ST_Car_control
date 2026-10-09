@@ -123,7 +123,7 @@ fun ChassisScreen(
                     )
                 }
             ) {
-                SpeedGauge(state.telemetry?.speedKph, state.config.speedKph, Modifier.fillMaxSize())
+                SpeedGauge(state.telemetry?.speedKph, 0..state.config.speedKph.last, Modifier.fillMaxSize())
             }
             ChassisCard(
                 title = angleTitle,
