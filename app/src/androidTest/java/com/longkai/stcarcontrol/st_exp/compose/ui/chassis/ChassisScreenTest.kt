@@ -49,14 +49,14 @@ class ChassisScreenTest {
         showScreen()
         compose.onNodeWithText("EHB Braking Force").assertIsDisplayed()
         compose.onNodeWithText("EMB Braking Force").assertIsDisplayed()
-        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+12.34")
-        compose.onNodeWithTag("chassis-ehb-reading").assertTextEquals("6800")
+        compose.onNodeWithTag("chassis-angle-chart").assertTextEquals("+12.34")
+        compose.onNodeWithTag("chassis-ehb-chart").assertTextEquals("6800")
         for (name in listOf("speed", "angle", "ehb", "emb")) {
-            slider(name).performScrollTo().assertIsNotEnabled()
+            slider(name).assertIsNotEnabled()
         }
         offsetSwitch().assertIsEnabled().assertIsOff()
         mode("Epb").assertIsEnabled().assertIsNotSelected()
-        compose.onNodeWithTag("chassis-emergency-stop").performScrollTo()
+        compose.onNodeWithTag("chassis-emergency-stop")
             .assertIsDisplayed().assertIsEnabled().assertIsNotSelected()
             .assertContentDescriptionEquals("Emergency stop")
         compose.onNodeWithText("Not connected").assertDoesNotExist()
@@ -69,10 +69,10 @@ class ChassisScreenTest {
     @Test
     fun compactControlsAreCenteredWithStopAtTheRightEdge() {
         showScreen()
-        val bar = compose.onNodeWithTag("chassis-control-bar").performScrollTo()
+        val bar = compose.onNodeWithTag("chassis-control-bar")
             .fetchSemanticsNode().boundsInRoot
         val controls = listOf("Vehicle", "Steering", "BrakePedal", "Epb").map { name ->
-            mode(name).assertIsDisplayed().assertWidthIsEqualTo(112.dp)
+            mode(name).assertIsDisplayed().assertWidthIsAtLeast(88.dp)
                 .assertHeightIsAtLeast(48.dp).fetchSemanticsNode().boundsInRoot
         }
         val stop = compose.onNodeWithTag("chassis-emergency-stop")
@@ -100,7 +100,7 @@ class ChassisScreenTest {
     @Test
     fun stopPressFeedbackResetsAndOnlyCompletedClicksToggleEmergencyStop() {
         showScreen(withInitialReport = false)
-        compose.onNodeWithTag("chassis-control-bar").performScrollTo()
+        compose.onNodeWithTag("chassis-control-bar")
         mode("Vehicle").performClick()
         mode("Epb").performClick()
         val stop = compose.onNodeWithTag("chassis-emergency-stop")
@@ -156,30 +156,38 @@ class ChassisScreenTest {
         showScreen(withInitialReport = false)
         mode("Vehicle").assertIsEnabled().performClick()
         slider("speed").assertIsEnabled()
-            .performSemanticsAction(SemanticsActions.SetProgress) { it(5f) }
+        val input = compose.onNodeWithTag("chassis-speed-input")
+        input.performTextReplacement("-7")
+        mode("Steering").assertIsEnabled().performClick()
+        compose.runOnIdle { assertTrue(service.writes.isEmpty()) }
+        input.performImeAction()
         compose.runOnIdle {
             assertNull(model.uiState.value.telemetry)
             assertNull(model.uiState.value.error)
             assertEquals(1, service.writes.size)
-            assertEquals(5, byteArrayToInt(service.writes.single(), 8))
+            assertEquals(-7, byteArrayToInt(service.writes.single(), 8))
         }
-        mode("Steering").assertIsEnabled().performClick()
+        input.performTextReplacement("21")
+        input.performImeAction()
+        compose.onNodeWithText("Enter a whole number within the supported range.").assertIsDisplayed()
+        compose.onNodeWithText("Dismiss").performClick()
+        compose.runOnIdle { assertEquals(1, service.writes.size) }
         slider("angle").assertIsEnabled()
-        slider("speed").assertIsNotEnabled()
+        slider("speed").assertIsEnabled()
         mode("BrakePedal").assertIsEnabled().performClick()
         slider("ehb").assertIsEnabled()
         slider("emb").assertIsEnabled()
-        slider("angle").assertIsNotEnabled()
+        slider("angle").assertIsEnabled()
     }
 
     @Test
     fun independentSwitchesSendOnAndOffWithoutSelectingAControlGroup() {
         showScreen(withInitialReport = false)
         mode("Epb").performClick().assertIsSelected()
-        offsetSwitch().performScrollTo().performClick().assertIsOn()
+        offsetSwitch().performClick().assertIsOn()
         mode("Epb").assertIsSelected()
         compose.runOnIdle {
-            assertNull(model.uiState.value.selectedControl)
+            assertTrue(model.uiState.value.enabledControls.isEmpty())
             assertNull(model.uiState.value.telemetry)
             assertEquals(listOf(0x20, 0x10), service.writes.map { byteArrayToInt(it, 4) })
             assertEquals(0x55, service.writes[0][25].toInt())
@@ -203,7 +211,7 @@ class ChassisScreenTest {
     fun switchesCoexistWithAllGroupsAndDoNotDiscardSliderEdits() {
         showScreen()
         mode("Epb").performClick()
-        offsetSwitch().performScrollTo().performClick()
+        offsetSwitch().performClick()
         for (name in listOf("Vehicle", "Steering", "BrakePedal")) {
             mode(name).performClick().assertIsSelected()
             mode("Epb").assertIsSelected()
@@ -217,11 +225,11 @@ class ChassisScreenTest {
             service.receiveReport(CMDChassisReport.Response(5, 100, 200, 300))
         }
         compose.waitForIdle()
-        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+1.00")
-        mode("Vehicle").performClick()
+        compose.onNodeWithTag("chassis-angle-chart").assertTextEquals("+1.00")
+        mode("Vehicle").assertIsSelected()
         var generation = 0L
         compose.runOnIdle {
-            generation = model.uiState.value.controlGeneration
+            generation = model.uiState.value.generation(ChassisControlField.Speed)
             model.onControlChanged(ChassisControlField.Speed, 10, generation)
         }
         mode("Epb").performClick().assertIsNotSelected()
@@ -229,7 +237,7 @@ class ChassisScreenTest {
         mode("Vehicle").assertIsSelected()
         slider("speed").assertIsEnabled()
         compose.runOnIdle {
-            assertEquals(generation, model.uiState.value.controlGeneration)
+            assertEquals(generation, model.uiState.value.generation(ChassisControlField.Speed))
             model.onControlCommitted(ChassisControlField.Speed, generation)
         }
         compose.waitForIdle()
@@ -244,7 +252,7 @@ class ChassisScreenTest {
     fun pageExitDoesNotResetSwitchTargetsOrReplayTheirCommands() {
         showScreen()
         mode("Epb").performClick()
-        offsetSwitch().performScrollTo().performClick()
+        offsetSwitch().performClick()
         val stop = compose.onNodeWithTag("chassis-emergency-stop")
         stop.performClick().assertIsSelected()
         for (name in listOf("Vehicle", "Steering", "BrakePedal")) {
@@ -326,7 +334,7 @@ class ChassisScreenTest {
         mode("Epb").performClick()
         compose.onNodeWithText("Dismiss").performClick()
         mode("Epb").assertIsNotSelected()
-        offsetSwitch().performScrollTo().performClick()
+        offsetSwitch().performClick()
         compose.onNodeWithText("Dismiss").performClick()
         offsetSwitch().assertIsOff()
         compose.runOnIdle {
@@ -348,29 +356,31 @@ class ChassisScreenTest {
     }
 
     @Test
-    fun modesAreMutuallyExclusiveAndClickingAgainLocksWithoutSending() {
+    fun modesAreIndependentAndClickingAgainLocksOnlyThatGroupWithoutSending() {
         showScreen()
         mode("Vehicle").performClick().assertIsSelected()
         slider("speed").assertIsEnabled()
         slider("angle").assertIsNotEnabled()
         mode("Steering").performClick().assertIsSelected()
-        mode("Vehicle").assertIsNotSelected()
-        slider("speed").assertIsNotEnabled()
+        mode("Vehicle").assertIsSelected()
+        slider("speed").assertIsEnabled()
         slider("angle").assertIsEnabled()
         mode("BrakePedal").performClick().assertIsSelected()
         slider("ehb").assertIsEnabled()
         slider("emb").assertIsEnabled()
-        slider("angle").assertIsNotEnabled()
+        slider("angle").assertIsEnabled()
         mode("BrakePedal").performClick().assertIsNotSelected()
         slider("ehb").assertIsNotEnabled()
         slider("emb").assertIsNotEnabled()
+        slider("speed").assertIsEnabled()
+        slider("angle").assertIsEnabled()
         compose.runOnIdle {
             assertTrue(service.writes.isEmpty())
             service.receiveReport(CMDChassisReport.Response(7, -12345, 1234, 5678))
         }
         compose.waitForIdle()
-        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("-123.45")
-        compose.onNodeWithTag("chassis-emb-reading").assertTextEquals("5678")
+        compose.onNodeWithTag("chassis-angle-chart").assertTextEquals("-123.45")
+        compose.onNodeWithTag("chassis-emb-chart").assertTextEquals("5678")
         compose.runOnIdle { assertEquals(1, service.registeredCommandCount) }
     }
 
@@ -405,7 +415,7 @@ class ChassisScreenTest {
         for (case in cases) {
             if (lastMode != case.mode) mode(case.mode).performClick()
             lastMode = case.mode
-            val node = slider(case.slider).performScrollTo()
+            val node = slider(case.slider)
             val info = node.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo]
             assertEquals(case.range, info.range)
             assertEquals((case.range.endInclusive - case.range.start).toInt() - 1, info.steps)
@@ -429,7 +439,7 @@ class ChassisScreenTest {
         assertEquals(-20f..20f, info.range)
         assertEquals(0f, info.current, 0f)
         assertEquals(39, info.steps)
-        val gauge = compose.onNodeWithTag("chassis-speed-gauge").performScrollTo()
+        val gauge = compose.onNodeWithTag("chassis-speed-gauge")
         for (speed in listOf(-20, 0, 20)) {
             compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(speed.toLong(), 0, 0, 0)) }
             compose.waitForIdle()
@@ -457,10 +467,12 @@ class ChassisScreenTest {
     fun chartsRemainReadableAndReceiverIsReleasedOnPageExit() {
         showScreen(Modifier.height(560.dp))
         for (name in listOf("angle", "ehb", "emb")) {
-            compose.onNodeWithTag("chassis-$name-chart").performScrollTo().assertIsDisplayed().assertHeightIsAtLeast(70.dp)
+            compose.onNodeWithTag("chassis-$name-chart").assertIsDisplayed().assertHeightIsAtLeast(70.dp)
         }
-        compose.onNodeWithTag("chassis-current-offset").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithTag("chassis-control-bar").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("chassis-current-offset").assertIsDisplayed()
+        compose.onNodeWithTag("chassis-control-bar").assertIsDisplayed()
+        compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange))
+            .assertCountEquals(0)
         mode("Epb").assertIsDisplayed()
         compose.onNodeWithTag("chassis-emergency-stop").assertIsDisplayed()
         compose.onNodeWithText("Not connected").assertDoesNotExist()

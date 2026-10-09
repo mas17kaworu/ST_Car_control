@@ -2,9 +2,9 @@
 <resources>
     <string name="chassis_title">Chassis Control</string>
     <string name="chassis_demo">DEMO · No vehicle commands</string>
-    <string name="chassis_control_hint">Enable one control group, then release a slider to send. Locking does not reset the vehicle. EPB and current offset switch independently.</string>
+    <string name="chassis_control_hint">Enable groups independently. Release a slider or press Done in an input to send. Locking does not reset the vehicle.</string>
     <string name="chassis_speed">Vehicle Speed</string>
-    <string name="chassis_angle">Tire / Motor Angle</string>
+    <string name="chassis_angle">Steering Angle</string>
     <string name="chassis_ehb">EHB Braking Force</string>
     <string name="chassis_emb">EMB Braking Force</string>
     <string name="chassis_speed_command">Speed command</string>
@@ -29,7 +29,8 @@
     <string name="chassis_emergency_stop">Emergency stop</string>
     <string name="chassis_no_data">--</string>
     <string name="chassis_demo_level">%1$d%%</string>
-    <string name="chassis_invalid_control">The control value is outside the supported range.</string>
+    <string name="chassis_invalid_control">Enter a whole number within the supported range.</string>
+    <string name="chassis_input_range">Enter a whole number from %1$d to %2$d.</string>
     <string name="chassis_not_ready">Communication service unavailable. Reopen this page after the service is initialized.</string>
     <string name="chassis_command_failed">The command could not be completed.</string>
     <string name="chassis_dismiss">Dismiss</string>

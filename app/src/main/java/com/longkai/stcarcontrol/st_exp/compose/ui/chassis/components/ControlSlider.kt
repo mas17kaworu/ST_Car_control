@@ -2,11 +2,9 @@ package com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
@@ -35,7 +33,6 @@ import kotlin.math.roundToInt
 fun ControlSlider(
     label: String,
     value: Float,
-    valueLabel: String,
     range: ClosedFloatingPointRange<Float>,
     onValueChange: (Float) -> Unit,
     onValueChangeFinished: () -> Unit,
@@ -49,12 +46,9 @@ fun ControlSlider(
     interactionKey: Long = 0L
 ) {
     val color = if (enabled) MaterialTheme.colors.secondary else Color(0xFF71838F)
-    Column(modifier) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(label, color = Color(0xFFB8CAD5), fontSize = 11.sp, modifier = Modifier.weight(1f))
-            Text(valueLabel, color = color, fontSize = 12.sp)
-        }
-        Box(Modifier.fillMaxWidth().height(48.dp)) {
+    Row(modifier.height(48.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(startLabel, color = Color(0xFF92A8B8), fontSize = 10.sp)
+        Box(Modifier.weight(1f).height(48.dp)) {
             Canvas(Modifier.matchParentSize()) {
                 val inset = 10.dp.toPx()
                 val width = (size.width - inset * 2).coerceAtLeast(0f)
@@ -120,13 +114,10 @@ fun ControlSlider(
                         }
                 )
             }
-        }
-        Box(Modifier.fillMaxWidth().padding(horizontal = 10.dp)) {
-            Text(startLabel, color = Color(0xFF92A8B8), fontSize = 10.sp, modifier = Modifier.align(Alignment.CenterStart))
             if (centered) {
-                Text("0", color = Color(0xFFD5E5EA), fontSize = 10.sp, modifier = Modifier.align(Alignment.Center))
+                Text("0", color = Color(0xFFD5E5EA), fontSize = 9.sp, modifier = Modifier.align(Alignment.BottomCenter))
             }
-            Text(endLabel, color = Color(0xFF92A8B8), fontSize = 10.sp, modifier = Modifier.align(Alignment.CenterEnd))
         }
+        Text(endLabel, color = Color(0xFF92A8B8), fontSize = 10.sp)
     }
 }

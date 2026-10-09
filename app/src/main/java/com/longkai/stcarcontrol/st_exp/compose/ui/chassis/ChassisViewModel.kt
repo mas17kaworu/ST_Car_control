@@ -39,14 +39,26 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
 
     fun lockControls() {
         editedFields.clear()
-        mutableUiState.update { it.copy(selectedControl = null, controlGeneration = it.controlGeneration + 1) }
+        mutableUiState.update { state ->
+            state.copy(
+                enabledControls = emptySet(),
+                controlGenerations = ChassisControlTab.values().associateWith {
+                    (state.controlGenerations[it] ?: 0L) + 1
+                }
+            )
+        }
     }
 
     fun onControlTabSelected(tab: ChassisControlTab) {
         if (!pageActive || tab == ChassisControlTab.Epb) return
-        val enable = mutableUiState.value.selectedControl != tab
-        lockControls()
-        if (enable) mutableUiState.update { it.copy(selectedControl = tab) }
+        editedFields.removeAll { it.mode == tab }
+        mutableUiState.update { state ->
+            state.copy(
+                enabledControls = if (tab in state.enabledControls) state.enabledControls - tab
+                    else state.enabledControls + tab,
+                controlGenerations = state.controlGenerations + (tab to ((state.controlGenerations[tab] ?: 0L) + 1))
+            )
+        }
     }
 
     fun onEpbToggled() {
@@ -83,7 +95,7 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
 
     fun onControlChanged(field: ChassisControlField, value: Int, interactionGeneration: Long) {
         val state = mutableUiState.value
-        if (!pageActive || !state.canControl(field) || state.controlGeneration != interactionGeneration) return
+        if (!pageActive || !state.canControl(field) || state.generation(field) != interactionGeneration) return
         if (!repository.config.isValid(ChassisControl(field, value))) {
             mutableUiState.update { it.copy(error = ChassisError.InvalidControl) }
             return
@@ -94,7 +106,7 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
 
     fun onControlCommitted(field: ChassisControlField, interactionGeneration: Long) {
         val state = mutableUiState.value
-        if (!pageActive || !state.canControl(field) || state.controlGeneration != interactionGeneration) return
+        if (!pageActive || !state.canControl(field) || state.generation(field) != interactionGeneration) return
         if (!editedFields.remove(field)) return
         val control = ChassisControl(field, state.controls.value(field))
         viewModelScope.launch {
@@ -104,6 +116,18 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
                 mutableUiState.update { it.copy(error = result.error) }
             }
         }
+    }
+
+    fun onControlInputSubmitted(field: ChassisControlField, text: String, interactionGeneration: Long) {
+        val state = mutableUiState.value
+        if (!pageActive || !state.canControl(field) || state.generation(field) != interactionGeneration) return
+        val value = text.toIntOrNull()
+        if (value == null || !repository.config.isValid(ChassisControl(field, value))) {
+            mutableUiState.update { it.copy(error = ChassisError.InvalidControl) }
+            return
+        }
+        onControlChanged(field, value, interactionGeneration)
+        onControlCommitted(field, interactionGeneration)
     }
 
     fun dismissError() {
