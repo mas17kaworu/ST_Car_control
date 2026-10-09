@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 @Composable
-fun SpeedGauge(speedKph: Float?, maxSpeedKph: Int, modifier: Modifier = Modifier) {
+fun SpeedGauge(speedKph: Float?, speedRangeKph: IntRange, modifier: Modifier = Modifier) {
     val density = LocalDensity.current
     val paint = remember(density) { Paint(Paint.ANTI_ALIAS_FLAG).apply { textAlign = Paint.Align.CENTER } }
     val valueText = speedKph?.roundToInt()?.toString() ?: stringResource(R.string.chassis_no_data)
@@ -40,9 +40,13 @@ fun SpeedGauge(speedKph: Float?, maxSpeedKph: Int, modifier: Modifier = Modifier
         val arcSize = Size(radius * 2, radius * 2)
         val stroke = Stroke(8.dp.toPx(), cap = StrokeCap.Round)
         drawArc(Color(0xFF192832), 180f, 180f, false, arcStart, arcSize, style = stroke)
-        val progress = (speedKph ?: 0f).coerceIn(0f, maxSpeedKph.toFloat()) / maxSpeedKph
-        if (progress > 0f) {
-            drawArc(Color(0xFF3ABEE5), 180f, progress * 180f, false, arcStart, arcSize, style = stroke)
+        val minimum = speedRangeKph.first.toFloat()
+        val maximum = speedRangeKph.last.toFloat()
+        val span = maximum - minimum
+        val zeroAngle = 180f + (0f - minimum) / span * 180f
+        val sweep = (speedKph ?: 0f).coerceIn(minimum, maximum) / span * 180f
+        if (sweep != 0f) {
+            drawArc(Color(0xFF3ABEE5), zeroAngle, sweep, false, arcStart, arcSize, style = stroke)
         }
         paint.color = Color(0xFF92A9BA).toArgb()
         paint.textSize = with(density) { 9.sp.toPx() }
@@ -51,7 +55,8 @@ fun SpeedGauge(speedKph: Float?, maxSpeedKph: Int, modifier: Modifier = Modifier
             val labelRadius = radius + 15.dp.toPx()
             val x = center.x + cos(angle).toFloat() * labelRadius
             val y = center.y + sin(angle).toFloat() * labelRadius
-            drawContext.canvas.nativeCanvas.drawText((i * maxSpeedKph / 4).toString(), x, y + paint.textSize / 3, paint)
+            val tickValue = (minimum + span * i / 4).roundToInt()
+            drawContext.canvas.nativeCanvas.drawText(tickValue.toString(), x, y + paint.textSize / 3, paint)
         }
         paint.color = Color(0xFFF3F7FA).toArgb()
         paint.textSize = min(radius * .65f, with(density) { 48.sp.toPx() })

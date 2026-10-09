@@ -396,7 +396,7 @@ class ChassisScreenTest {
         showScreen()
         data class Case(val mode: String, val slider: String, val range: ClosedFloatingPointRange<Float>, val flag: Int, val offset: Int, val scale: Int)
         val cases = listOf(
-            Case("Vehicle", "speed", 0f..20f, 1, 8, 1),
+            Case("Vehicle", "speed", -20f..20f, 1, 8, 1),
             Case("Steering", "angle", -540f..540f, 2, 12, 100),
             Case("BrakePedal", "ehb", 0f..20_000f, 4, 16, 1),
             Case("BrakePedal", "emb", 0f..20_000f, 8, 20, 1),
@@ -409,7 +409,7 @@ class ChassisScreenTest {
             val info = node.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo]
             assertEquals(case.range, info.range)
             assertEquals((case.range.endInclusive - case.range.start).toInt() - 1, info.steps)
-            for (value in listOf(case.range.endInclusive, case.range.start)) {
+            for (value in listOf(case.range.endInclusive, case.range.start, 0f)) {
                 node.performSemanticsAction(SemanticsActions.SetProgress) { it(value) }
                 compose.runOnIdle {
                     val raw = service.writes.last()
@@ -420,6 +420,37 @@ class ChassisScreenTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun speedSliderStartsAtZeroAndGaugeShowsBothDirections() {
+        showScreen(withInitialReport = false)
+        val info = slider("speed").fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo]
+        assertEquals(-20f..20f, info.range)
+        assertEquals(0f, info.current, 0f)
+        assertEquals(39, info.steps)
+        val gauge = compose.onNodeWithTag("chassis-speed-gauge").performScrollTo()
+        for (speed in listOf(-20, 0, 20)) {
+            compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(speed.toLong(), 0, 0, 0)) }
+            compose.waitForIdle()
+            gauge.assertContentDescriptionEquals("Vehicle Speed: $speed km/h")
+            val pixels = gauge.captureToImage().toPixelMap()
+            var left = 0
+            var right = 0
+            for (y in 0 until pixels.height) {
+                for (x in 0 until pixels.width) {
+                    if (pixels[x, y].toArgb() == Color(0xFF3ABEE5).toArgb()) {
+                        if (x < pixels.width / 2) left++ else right++
+                    }
+                }
+            }
+            when {
+                speed < 0 -> assertTrue(left > 10 && left > right * 3)
+                speed > 0 -> assertTrue(right > 10 && right > left * 3)
+                else -> assertEquals(0, left + right)
+            }
+        }
+        compose.runOnIdle { assertTrue(service.writes.isEmpty()) }
     }
 
     @Test

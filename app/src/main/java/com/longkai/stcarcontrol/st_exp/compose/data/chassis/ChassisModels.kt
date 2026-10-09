@@ -32,13 +32,13 @@ data class ChassisControlState(
 
 /** Shared display and control limits; sliders advance in one-unit increments. */
 data class ChassisControlConfig(
-    val speedKph: IntRange = 0..20,
+    val speedKph: IntRange = -20..20,
     val steeringDegrees: IntRange = -540..540,
     val ehbForceN: IntRange = 0..20_000,
     val embForceN: IntRange = 0..20_000,
 ) {
     init {
-        require(speedKph.first == 0 && speedKph.last > 0)
+        require(speedKph.first <= 0 && speedKph.last > 0)
         require(steeringDegrees.first < 0 && steeringDegrees.last > 0)
         require(steeringDegrees.first.toLong() * STEERING_RAW_PER_DEGREE >= Int.MIN_VALUE)
         require(steeringDegrees.last.toLong() * STEERING_RAW_PER_DEGREE <= Int.MAX_VALUE)

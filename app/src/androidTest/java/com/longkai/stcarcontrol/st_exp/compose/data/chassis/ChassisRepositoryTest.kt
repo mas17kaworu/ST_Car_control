@@ -1,8 +1,12 @@
 package com.longkai.stcarcontrol.st_exp.compose.data.chassis
 
+import android.os.Handler
+import android.os.Looper
+import androidx.test.platform.app.InstrumentationRegistry
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisReport
 import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit
 import com.longkai.stcarcontrol.st_exp.communication.utils.byteArrayToInt
+import com.longkai.stcarcontrol.st_exp.mockMessage.MockFragmentList.VCUChassisFragmentMock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.collect
@@ -38,6 +42,12 @@ class ChassisRepositoryTest {
                 }
                 assertEquals(0, frame[24].toInt())
                 assertEquals(0, frame[25].toInt())
+                if (field == ChassisControlField.Speed && value == -20) {
+                    assertArrayEquals(
+                        byteArrayOf(0xEC.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
+                        frame.copyOfRange(8, 12)
+                    )
+                }
                 assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 26), 24), frame[26])
             }
         }
@@ -130,11 +140,15 @@ class ChassisRepositoryTest {
             assertTrue(samples.isEmpty())
             service.receiveReport(CMDChassisReport.Response(20, -54_000, 20_000, 15_000))
             service.receiveReport(CMDChassisReport.Response(21, 1234, 20_001, 0))
+            service.receiveReport(CMDChassisReport.Response(-20, 0, 0xFFFF_FFFFL, 0xFFFF_FFFFL))
+            service.receiveReport(CMDChassisReport.Response(-21, 0, 0, 0))
             service.awaitIdle()
             assertEquals(
                 listOf(
                     ChassisTelemetry(123, 20f, -540f, 20_000f, 15_000f),
                     ChassisTelemetry(123, 21f, 12.34f, 20_001f, 0f),
+                    ChassisTelemetry(123, -20f, 0f, 0xFFFF_FFFFL.toFloat(), 0xFFFF_FFFFL.toFloat()),
+                    ChassisTelemetry(123, -21f, 0f, 0f, 0f),
                 ),
                 samples
             )
@@ -145,8 +159,36 @@ class ChassisRepositoryTest {
         assertEquals(0, service.registeredCommandCount)
         service.receiveReport(CMDChassisReport.Response(0, 0, 0, 0))
         service.awaitIdle()
-        assertEquals(2, samples.size)
+        assertEquals(4, samples.size)
         assertTrue(service.writes.isEmpty())
+    }
+
+    @Test
+    fun mockSpeedCyclesThroughNegativeZeroAndPositiveValues() = runBlocking {
+        val repository = DefaultChassisRepository(service.manager)
+        val samples = mutableListOf<ChassisTelemetry>()
+        val collection = launch(Dispatchers.Main) { repository.telemetry.collect { samples += it } }
+        val mock = VCUChassisFragmentMock(Handler(Looper.getMainLooper()))
+        try {
+            service.awaitIdle()
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                repeat(201) { mock.run() }
+                mock.stop()
+            }
+            service.awaitIdle()
+            assertEquals(201, samples.size)
+            assertEquals(-20f, samples.first().speedKph, 0f)
+            assertEquals(0f, samples[50].speedKph, 0f)
+            assertEquals(20f, samples[100].speedKph, 0f)
+            assertEquals(0f, samples[150].speedKph, 0f)
+            assertEquals(-20f, samples.last().speedKph, 0f)
+            assertTrue(samples.all { it.speedKph in -20f..20f })
+            assertTrue(service.writes.isEmpty())
+        } finally {
+            mock.stop()
+            collection.cancelAndJoin()
+            service.awaitIdle()
+        }
     }
 
     @Test
