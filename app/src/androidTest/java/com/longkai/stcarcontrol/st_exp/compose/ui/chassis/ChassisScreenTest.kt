@@ -433,14 +433,14 @@ class ChassisScreenTest {
     }
 
     @Test
-    fun speedSliderStartsAtZeroAndGaugeShowsBothDirections() {
+    fun speedSliderRemainsSignedWhileGaugeShowsNonnegativeFeedback() {
         showScreen(withInitialReport = false)
         val info = slider("speed").fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo]
         assertEquals(-20f..20f, info.range)
         assertEquals(0f, info.current, 0f)
         assertEquals(39, info.steps)
         val gauge = compose.onNodeWithTag("chassis-speed-gauge")
-        for (speed in listOf(-20, 0, 20)) {
+        for (speed in listOf(0, 10, 20)) {
             compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(speed.toLong(), 0, 0, 0)) }
             compose.waitForIdle()
             gauge.assertContentDescriptionEquals("Vehicle Speed: $speed km/h")
@@ -455,8 +455,8 @@ class ChassisScreenTest {
                 }
             }
             when {
-                speed < 0 -> assertTrue(left > 10 && left > right * 3)
-                speed > 0 -> assertTrue(right > 10 && right > left * 3)
+                speed == 10 -> assertTrue(left > 10 && left > right * 3)
+                speed == 20 -> assertTrue(left > 10 && right > 10)
                 else -> assertEquals(0, left + right)
             }
         }

@@ -9,6 +9,7 @@ existing service through the normal app entry flow.
 
 - Controls start locked. **Vehicle**, **Steering**, and **Brake pedal** can be enabled together; click again to lock only that group.
 - Vehicle enables speed, Steering enables angle, and Brake pedal enables EHB/EMB. Release a slider to send only that field.
+- Speed commands remain -20 to 20 km/h. Speed feedback is nonnegative, so the gauge displays 0 to 20 km/h; mock speed reports use the same nonnegative range.
 - The upper-right input sets the exact target in the same range and step as its slider. Press keyboard **Done/Enter** to send; typing or leaving the input never sends. Invalid input is rejected.
 - All four cards stay on one screen without vertical scrolling. Chart feedback follows the latest point, with only the space needed for its value and unit on the right; input targets never replace feedback.
 - Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.

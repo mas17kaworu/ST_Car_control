@@ -18,7 +18,7 @@ class VCUChassisFragmentMock(handler: Handler) : MockFragmentBase(handler) {
             return
         }
         val frame = CMDChassisReport.Response(
-            speedRaw = triangle(100, 40) - 20,
+            speedRaw = triangle(100, 20),
             steeringRaw = (triangle(80, 108_000) - 54_000).toInt(),
             ehbForceRaw = triangle(60, 20_000),
             embForceRaw = triangle(90, 20_000)
