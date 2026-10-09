@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -49,7 +48,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlTab
 
 @Composable
 fun ChassisControlBar(
-    selected: ChassisControlTab?,
+    enabledControls: Set<ChassisControlTab>,
     onSelected: (ChassisControlTab) -> Unit,
     epbEnabled: Boolean,
     onEpbToggled: () -> Unit,
@@ -57,10 +56,9 @@ fun ChassisControlBar(
     onEmergencyStopToggled: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier.height(76.dp).testTag("chassis-control-bar")) {
+    Box(modifier.height(56.dp).testTag("chassis-control-bar")) {
         Row(
-            Modifier.align(Alignment.Center).padding(horizontal = 80.dp)
-                .widthIn(max = 472.dp).fillMaxWidth(),
+            Modifier.align(Alignment.Center).padding(horizontal = 80.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             ChassisControlTab.values().forEach { tab ->
@@ -72,20 +70,20 @@ fun ChassisControlBar(
                         ChassisControlTab.Epb -> R.string.chassis_epb
                     }
                 )
-                val active = if (tab == ChassisControlTab.Epb) epbEnabled else selected == tab
+                val active = if (tab == ChassisControlTab.Epb) epbEnabled else tab in enabledControls
                 val color = if (active) Color(0xFF3ABEE5) else Color(0xFFB7C9D5)
                 Surface(
                     color = if (active) Color(0xFF2A4D5E) else Color(0xFF303D49),
                     shape = RoundedCornerShape(8.dp),
                     border = BorderStroke(1.dp, color.copy(alpha = if (active) .7f else .15f)),
-                    modifier = Modifier.weight(1f).height(48.dp)
+                    modifier = Modifier.widthIn(min = 88.dp).height(48.dp)
                         .testTag("chassis-control-${tab.name}")
                         .selectable(active, role = Role.Button, onClick = {
                             if (tab == ChassisControlTab.Epb) onEpbToggled() else onSelected(tab)
                         })
                 ) {
                     Row(
-                        Modifier.padding(horizontal = 8.dp),
+                        Modifier.padding(horizontal = 12.dp),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {

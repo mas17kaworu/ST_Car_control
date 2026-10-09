@@ -24,6 +24,7 @@ private fun ChassisPreview() {
             state = ChassisUiState(telemetry = history.last(), history = history),
             onControlChanged = { _, _, _ -> },
             onControlCommitted = { _, _ -> },
+            onControlInputSubmitted = { _, _, _ -> },
             onControlTabSelected = {},
             onEpbToggled = {},
             onCurrentOffsetChanged = {},
