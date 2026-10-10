@@ -138,17 +138,17 @@ class ChassisRepositoryTest {
             service.awaitIdle()
             assertEquals(1, service.registeredCommandCount)
             assertTrue(samples.isEmpty())
-            service.receiveReport(CMDChassisReport.Response(20, -54_000, 20_000, 15_000))
-            service.receiveReport(CMDChassisReport.Response(21, 1234, 20_001, 0))
-            service.receiveReport(CMDChassisReport.Response(-20, 0, 0xFFFF_FFFFL, 0xFFFF_FFFFL))
-            service.receiveReport(CMDChassisReport.Response(-21, 0, 0, 0))
+            service.receiveReport(CMDChassisReport.Response(20, -54_000, 20_000, 15_000, rampRaw = 12))
+            service.receiveReport(CMDChassisReport.Response(21, 1234, 20_001, 0, rampRaw = 0x8000))
+            service.receiveReport(CMDChassisReport.Response(-20, 0, 0xFFFF_FFFFL, 0xFFFF_FFFFL, rampRaw = 0xFFFF))
+            service.receiveReport(CMDChassisReport.Response(-21, 0, 0, 0, rampRaw = 0))
             service.awaitIdle()
             assertEquals(
                 listOf(
-                    ChassisTelemetry(123, 20f, -540f, 20_000f, 15_000f),
-                    ChassisTelemetry(123, 21f, 12.34f, 20_001f, 0f),
-                    ChassisTelemetry(123, -20f, 0f, 0xFFFF_FFFFL.toFloat(), 0xFFFF_FFFFL.toFloat()),
-                    ChassisTelemetry(123, -21f, 0f, 0f, 0f),
+                    ChassisTelemetry(123, 20f, -540f, 20_000f, 15_000f, rampPercent = 12),
+                    ChassisTelemetry(123, 21f, 12.34f, 20_001f, 0f, rampPercent = 32768),
+                    ChassisTelemetry(123, -20f, 0f, 0xFFFF_FFFFL.toFloat(), 0xFFFF_FFFFL.toFloat(), rampPercent = 65535),
+                    ChassisTelemetry(123, -21f, 0f, 0f, 0f, rampPercent = 0),
                 ),
                 samples
             )
@@ -157,7 +157,7 @@ class ChassisRepositoryTest {
             service.awaitIdle()
         }
         assertEquals(0, service.registeredCommandCount)
-        service.receiveReport(CMDChassisReport.Response(0, 0, 0, 0))
+        service.receiveReport(CMDChassisReport.Response(0, 0, 0, 0, rampRaw = 0))
         service.awaitIdle()
         assertEquals(4, samples.size)
         assertTrue(service.writes.isEmpty())
@@ -183,6 +183,8 @@ class ChassisRepositoryTest {
             assertEquals(10f, samples[150].speedKph, 0f)
             assertEquals(0f, samples.last().speedKph, 0f)
             assertTrue(samples.all { it.speedKph in 0f..20f })
+            assertTrue(samples.all { it.rampPercent in 0..20 })
+            assertEquals(20, samples[60].rampPercent)
             assertTrue(service.writes.isEmpty())
         } finally {
             mock.stop()
@@ -198,18 +200,18 @@ class ChassisRepositoryTest {
         val collection = launch(Dispatchers.Main) { repository.telemetry.collect { samples += it } }
         try {
             service.awaitIdle()
-            val corrupt = ByteArray(21).apply {
+            val corrupt = ByteArray(23).apply {
                 this[0] = 0x5A
                 this[1] = 0x3C
-                this[2] = 0x12
+                this[2] = 0x14
                 this[3] = 0x3E
-                this[20] = (CheckSumBit.checkSum(this, 20).toInt() xor 1).toByte()
+                this[22] = (CheckSumBit.checkSum(this, 22).toInt() xor 1).toByte()
             }
             service.receiveFrame(corrupt)
             service.awaitIdle()
             assertTrue(samples.isEmpty())
             assertEquals(1, service.registeredCommandCount)
-            service.receiveReport(CMDChassisReport.Response(5, 123, 456, 789))
+            service.receiveReport(CMDChassisReport.Response(5, 123, 456, 789, rampRaw = 12))
             service.awaitIdle()
             assertEquals(1, samples.size)
             assertEquals(1.23f, samples.single().steeringAngleDegrees, 0f)

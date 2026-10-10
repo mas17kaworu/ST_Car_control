@@ -16,7 +16,8 @@ private fun ChassisPreview() {
             speedKph = 12f,
             steeringAngleDegrees = wave * 32f,
             ehbForceN = 10_000f + wave * 8_000f,
-            embForceN = 10_000f + sin(index * .08 + .5).toFloat() * 8_000f
+            embForceN = 10_000f + sin(index * .08 + .5).toFloat() * 8_000f,
+            rampPercent = 12
         )
     }
     STCarTheme {

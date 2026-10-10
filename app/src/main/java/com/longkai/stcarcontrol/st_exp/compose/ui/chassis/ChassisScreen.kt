@@ -95,13 +95,20 @@ fun ChassisScreen(
         ).padding(horizontal = 12.dp, vertical = 8.dp).testTag("chassis-screen"),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(
                 stringResource(R.string.chassis_title),
                 fontSize = 20.sp,
                 fontStyle = FontStyle.Italic,
                 color = Color.White,
                 modifier = Modifier.weight(1f)
+            )
+            Text(
+                stringResource(R.string.chassis_ramp, state.telemetry?.rampPercent?.toString() ?: noData),
+                fontSize = 14.sp,
+                color = Color(0xFFB8CAD5),
+                maxLines = 1,
+                modifier = Modifier.testTag("chassis-ramp-reading")
             )
             if (state.isDemo) {
                 Text(

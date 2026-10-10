@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="chassis_title">Chassis Control</string>
+    <string name="chassis_ramp">ramp: %1$s%%</string>
     <string name="chassis_demo">DEMO · No vehicle commands</string>
     <string name="chassis_control_hint">Enable groups independently. Release a slider or press Done in an input to send. Locking does not reset the vehicle.</string>
     <string name="chassis_speed">Vehicle Speed</string>

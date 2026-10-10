@@ -48,6 +48,7 @@ class DefaultChassisRepository(
                     clockMillis(), response.speedRaw.toFloat(),
                     response.steeringRaw.toFloat() / ChassisControlConfig.STEERING_RAW_PER_DEGREE,
                     response.ehbForceRaw.toFloat(), response.embForceRaw.toFloat(),
+                    response.rampRaw,
                 )
                 val result = trySend(sample)
                 if (result.isFailure && !result.isClosed) {

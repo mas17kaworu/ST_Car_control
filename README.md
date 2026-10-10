@@ -16,6 +16,7 @@ existing service through the normal app entry flow.
 - All three cards stay on one screen without vertical scrolling. Input targets never replace measured feedback; current offset remains independently available beside the combined input.
 - Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.
 - Reports are received independently of control enablement, from page entry until its view is destroyed.
+- The title bar shows the reported Ramp percentage as `ramp: 12%` (`ramp: --%` before the first report). Ramp is read-only, with 1 raw unit = 1%; it is not an angle in degrees.
 - EPB and current offset are independent switches; each toggle sends its own command. They start off without sending and are not reset on page exit. Displayed states are local targets, not device feedback.
 - STOP toggles emergency stop on/off independently, with press feedback and a local-state highlight (not device confirmation). It sends nothing on page entry/exit.
 
@@ -37,6 +38,10 @@ Disconnect the vehicle: command sending remains real. Set the flag back to `fals
 
 Protocol: `communication/commandList/CMDChassisList/` contains
 `CMDChassisControl` (`0x3D`) and `CMDChassisReport` (`0x3E`).
+The report is 23 bytes with length `0x14`: speed, steering, EHB and EMB retain
+their existing offsets; Ramp is a little-endian uint16 at byte offsets 20-21
+(after EMB), followed by the checksum at offset 22. The old 21-byte report is no
+longer accepted.
 Individual controls remain single-field commands. **Set EHB + EMB** sets validity
 bits `0x0C` and both force fields to the same value in a single `0x3D` frame.
 `CMDChassisEmergencyStop` (`0x3F`, length `0x06`) sends a 4-byte value: `0x55` on, `0x00` off.

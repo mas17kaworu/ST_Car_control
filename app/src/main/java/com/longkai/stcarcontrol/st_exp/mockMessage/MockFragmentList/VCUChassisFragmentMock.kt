@@ -21,7 +21,8 @@ class VCUChassisFragmentMock(handler: Handler) : MockFragmentBase(handler) {
             speedRaw = triangle(100, 20),
             steeringRaw = (triangle(80, 6_400) - 3_200).toInt(),
             ehbForceRaw = triangle(60, 20_000),
-            embForceRaw = triangle(90, 20_000)
+            embForceRaw = triangle(90, 20_000),
+            rampRaw = triangle(60, 20).toInt()
         ).mockResponse()
         dispatcher.onReceive(frame, 0, frame.size)
         tick++
