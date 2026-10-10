@@ -1,6 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.chassis
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,8 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -42,6 +45,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlTab
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlField
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisError
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChartPoint
+import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChartSeries
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisControlBar
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisValueInput
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ControlSlider
@@ -56,6 +60,8 @@ fun ChassisScreen(
     onControlChanged: (ChassisControlField, Int, Long) -> Unit,
     onControlCommitted: (ChassisControlField, Long) -> Unit,
     onControlInputSubmitted: (ChassisControlField, String, Long) -> Unit,
+    onCombinedBrakesChanged: (Int, Long) -> Unit,
+    onCombinedBrakesInputSubmitted: (String, Long) -> Unit,
     onControlTabSelected: (ChassisControlTab) -> Unit,
     onEpbToggled: () -> Unit,
     onCurrentOffsetChanged: (Boolean) -> Unit,
@@ -63,24 +69,25 @@ fun ChassisScreen(
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val anglePoints = remember(state.history) {
-        state.history.map { ChartPoint(it.timestampMillis, it.steeringAngleDegrees) }
-    }
-    val ehbPoints = remember(state.history) {
-        state.history.map { ChartPoint(it.timestampMillis, it.ehbForceN) }
-    }
-    val brakePoints = remember(state.history) {
-        state.history.map { ChartPoint(it.timestampMillis, it.embForceN) }
-    }
     val cyan = MaterialTheme.colors.primary
     val mint = MaterialTheme.colors.secondary
+    val ehbColor = Color(0xFF45D6FF)
+    val embColor = Color(0xFFFFBC5C)
+    val angleSeries = remember(state.history, cyan) {
+        listOf(ChartSeries(state.history.map { ChartPoint(it.timestampMillis, it.steeringAngleDegrees) }, cyan))
+    }
+    val brakeSeries = remember(state.history) {
+        listOf(
+            ChartSeries(state.history.map { ChartPoint(it.timestampMillis, it.ehbForceN) }, ehbColor, dashed = true),
+            ChartSeries(state.history.map { ChartPoint(it.timestampMillis, it.embForceN) }, embColor)
+        )
+    }
     val angleTitle = stringResource(R.string.chassis_angle)
-    val ehbTitle = stringResource(R.string.chassis_ehb)
-    val brakeTitle = stringResource(R.string.chassis_emb)
+    val brakeTitle = stringResource(R.string.chassis_braking_force)
     val noData = stringResource(R.string.chassis_no_data)
+    val forceUnit = stringResource(R.string.chassis_unit_force)
     val angleRange = state.config.steeringDegrees.let { it.first.toFloat()..it.last.toFloat() }
-    val ehbRange = state.config.ehbForceN.let { it.first.toFloat()..it.last.toFloat() }
-    val embRange = state.config.embForceN.let { it.first.toFloat()..it.last.toFloat() }
+    val brakeRange = 0f..maxOf(state.config.ehbForceN.last, state.config.embForceN.last).toFloat()
 
     Column(
         modifier.fillMaxSize().background(
@@ -105,119 +112,130 @@ fun ChassisScreen(
             }
         }
         Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            ChassisCard(
-                title = stringResource(R.string.chassis_speed),
-                modifier = Modifier.weight(1f),
-                input = {
-                    ChassisInput(state, ChassisControlField.Speed, onControlChanged, onControlInputSubmitted,
-                        stringResource(R.string.chassis_speed_command), stringResource(R.string.chassis_unit_speed), "chassis-speed-input")
-                },
-                controls = {
-                    ChassisSlider(
-                        state = state,
-                        field = ChassisControlField.Speed,
-                        onChanged = onControlChanged,
-                        onCommitted = onControlCommitted,
-                        label = stringResource(R.string.chassis_speed_command),
-                        testTag = "chassis-speed-slider"
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                ChassisCard(
+                    title = stringResource(R.string.chassis_speed),
+                    modifier = Modifier.weight(1f).testTag("chassis-speed-card"),
+                    input = {
+                        ChassisInput(state, ChassisControlField.Speed, onControlChanged, onControlInputSubmitted,
+                            stringResource(R.string.chassis_speed_command), stringResource(R.string.chassis_unit_speed), "chassis-speed-input")
+                    },
+                    controls = {
+                        ChassisSlider(
+                            state = state,
+                            field = ChassisControlField.Speed,
+                            onChanged = onControlChanged,
+                            onCommitted = onControlCommitted,
+                            label = stringResource(R.string.chassis_speed_command),
+                            testTag = "chassis-speed-slider"
+                        )
+                    }
+                ) {
+                    SpeedGauge(state.telemetry?.speedKph, 0..state.config.speedKph.last, Modifier.fillMaxSize())
+                }
+                ChassisCard(
+                    title = angleTitle,
+                    modifier = Modifier.weight(1f).testTag("chassis-angle-card"),
+                    input = {
+                        ChassisInput(state, ChassisControlField.Steering, onControlChanged, onControlInputSubmitted,
+                            stringResource(R.string.chassis_angle_command), stringResource(R.string.chassis_unit_angle), "chassis-angle-input")
+                    },
+                    controls = {
+                        ChassisSlider(
+                            state = state,
+                            field = ChassisControlField.Steering,
+                            onChanged = onControlChanged,
+                            onCommitted = onControlCommitted,
+                            label = stringResource(R.string.chassis_angle_command),
+                            testTag = "chassis-angle-slider"
+                        )
+                    }
+                ) {
+                    ChassisReading(
+                        reading = state.telemetry?.steeringAngleDegrees?.let { String.format(Locale.US, "%+.2f", it) } ?: noData,
+                        unit = stringResource(R.string.chassis_unit_angle), color = cyan,
+                        tag = "chassis-angle-reading", modifier = Modifier.fillMaxWidth().height(24.dp)
+                    )
+                    LiveLineChart(
+                        series = angleSeries, range = angleRange,
+                        description = angleTitle, tag = "chassis-angle-chart",
+                        modifier = Modifier.fillMaxWidth().weight(1f)
                     )
                 }
-            ) {
-                SpeedGauge(state.telemetry?.speedKph, 0..state.config.speedKph.last, Modifier.fillMaxSize())
-            }
-            ChassisCard(
-                title = angleTitle,
-                modifier = Modifier.weight(1f),
-                input = {
-                    ChassisInput(state, ChassisControlField.Steering, onControlChanged, onControlInputSubmitted,
-                        stringResource(R.string.chassis_angle_command), stringResource(R.string.chassis_unit_angle), "chassis-angle-input")
-                },
-                controls = {
-                    ChassisSlider(
-                        state = state,
-                        field = ChassisControlField.Steering,
-                        onChanged = onControlChanged,
-                        onCommitted = onControlCommitted,
-                        label = stringResource(R.string.chassis_angle_command),
-                        testTag = "chassis-angle-slider"
-                    )
-                }
-            ) {
-                LiveLineChart(
-                    points = anglePoints, range = angleRange, color = cyan,
-                    reading = state.telemetry?.steeringAngleDegrees?.let { String.format(Locale.US, "%+.2f", it) } ?: noData,
-                    unit = stringResource(R.string.chassis_unit_angle),
-                    description = angleTitle, tag = "chassis-angle-chart",
-                    modifier = Modifier.fillMaxWidth().weight(1f)
-                )
-            }
-        }
-        Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            ChassisCard(
-                title = ehbTitle,
-                modifier = Modifier.weight(1f),
-                input = {
-                    ChassisInput(state, ChassisControlField.Ehb, onControlChanged, onControlInputSubmitted,
-                        stringResource(R.string.chassis_ehb_control), stringResource(R.string.chassis_unit_force), "chassis-ehb-input")
-                },
-                controls = {
-                    ChassisSlider(
-                        state = state,
-                        field = ChassisControlField.Ehb,
-                        onChanged = onControlChanged,
-                        onCommitted = onControlCommitted,
-                        label = stringResource(R.string.chassis_ehb_control),
-                        testTag = "chassis-ehb-slider"
-                    )
-                }
-            ) {
-                LiveLineChart(
-                    points = ehbPoints, range = ehbRange, color = mint,
-                    reading = state.telemetry?.ehbForceN?.let { String.format(Locale.US, "%.0f", it) } ?: noData,
-                    unit = stringResource(R.string.chassis_unit_force),
-                    description = ehbTitle, tag = "chassis-ehb-chart",
-                    modifier = Modifier.fillMaxWidth().weight(1f)
-                )
             }
             ChassisCard(
                 title = brakeTitle,
-                modifier = Modifier.weight(1f),
-                input = {
-                    ChassisInput(state, ChassisControlField.Emb, onControlChanged, onControlInputSubmitted,
-                        stringResource(R.string.chassis_emb_control), stringResource(R.string.chassis_unit_force), "chassis-emb-input")
-                },
+                modifier = Modifier.weight(1f).testTag("chassis-braking-card"),
+                input = {},
                 controls = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        ChassisSlider(
-                            state = state,
-                            field = ChassisControlField.Emb,
-                            onChanged = onControlChanged,
-                            onCommitted = onControlCommitted,
-                            label = stringResource(R.string.chassis_emb_control),
-                            testTag = "chassis-emb-slider",
-                            modifier = Modifier.weight(1f)
+                    Column {
+                        BrakeControlRow(
+                            state, ChassisControlField.Ehb, onControlChanged, onControlCommitted, onControlInputSubmitted,
+                            stringResource(R.string.chassis_ehb_short), stringResource(R.string.chassis_ehb_control),
+                            ehbColor, "ehb"
                         )
-                        Spacer(Modifier.width(12.dp))
-                        val offsetLabel = stringResource(R.string.chassis_current_offset)
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(offsetLabel, color = Color(0xFFB8CAD5), fontSize = 10.sp)
-                            Switch(
-                                checked = state.currentOffsetEnabled,
-                                onCheckedChange = onCurrentOffsetChanged,
-                                colors = SwitchDefaults.colors(checkedThumbColor = cyan),
-                                modifier = Modifier.testTag("chassis-current-offset")
-                                    .semantics { contentDescription = offsetLabel }
+                        Divider(color = Color.White.copy(alpha = .06f))
+                        BrakeControlRow(
+                            state, ChassisControlField.Emb, onControlChanged, onControlCommitted, onControlInputSubmitted,
+                            stringResource(R.string.chassis_emb_short), stringResource(R.string.chassis_emb_control),
+                            embColor, "emb"
+                        )
+                        Divider(color = Color.White.copy(alpha = .06f))
+                        Row(
+                            Modifier.fillMaxWidth().height(48.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            val combinedLabel = stringResource(R.string.chassis_combined_brakes)
+                            val generation = state.generation(ChassisControlField.Ehb)
+                            Text(combinedLabel, color = Color(0xFFD5E4ED), fontSize = 12.sp, maxLines = 1)
+                            ChassisValueInput(
+                                value = state.controls.ehbForceN.takeIf { it == state.controls.embForceN },
+                                range = state.config.combinedBrakeForceN,
+                                enabled = state.canControl(ChassisControlField.Ehb),
+                                interactionKey = generation,
+                                label = combinedLabel, unit = forceUnit,
+                                onValueChange = { onCombinedBrakesChanged(it, generation) },
+                                onSubmit = { onCombinedBrakesInputSubmitted(it, generation) },
+                                modifier = Modifier.testTag("chassis-combined-brakes-input")
                             )
+                            Spacer(Modifier.weight(1f))
+                            val offsetLabel = stringResource(R.string.chassis_current_offset)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(offsetLabel, color = Color(0xFFB8CAD5), fontSize = 10.sp, maxLines = 1)
+                                Switch(
+                                    checked = state.currentOffsetEnabled,
+                                    onCheckedChange = onCurrentOffsetChanged,
+                                    colors = SwitchDefaults.colors(checkedThumbColor = cyan),
+                                    modifier = Modifier.testTag("chassis-current-offset")
+                                        .semantics { contentDescription = offsetLabel }
+                                )
+                            }
                         }
                     }
                 }
             ) {
+                Row(
+                    Modifier.fillMaxWidth().height(44.dp).padding(horizontal = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    BrakeReading(
+                        title = stringResource(R.string.chassis_ehb_short),
+                        reading = state.telemetry?.ehbForceN?.let { String.format(Locale.US, "%.0f", it) } ?: noData,
+                        color = ehbColor, dashed = true, tag = "chassis-ehb-reading", modifier = Modifier.weight(1f)
+                    )
+                    BrakeReading(
+                        title = stringResource(R.string.chassis_emb_short),
+                        reading = state.telemetry?.embForceN?.let { String.format(Locale.US, "%.0f", it) } ?: noData,
+                        color = embColor, dashed = false, tag = "chassis-emb-reading", modifier = Modifier.weight(1f)
+                    )
+                }
                 LiveLineChart(
-                    points = brakePoints, range = embRange, color = cyan,
-                    reading = state.telemetry?.embForceN?.let { String.format(Locale.US, "%.0f", it) } ?: noData,
-                    unit = stringResource(R.string.chassis_unit_force),
-                    description = brakeTitle, tag = "chassis-emb-chart",
-                    modifier = Modifier.fillMaxWidth().weight(1f)
+                    series = brakeSeries, range = brakeRange,
+                    description = brakeTitle, tag = "chassis-braking-chart",
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    windowSeconds = 3, timeIntervals = 3
                 )
             }
         }
@@ -246,6 +264,48 @@ fun ChassisScreen(
                 TextButton(onClick = onDismissError) { Text(stringResource(R.string.chassis_dismiss)) }
             }
         )
+    }
+}
+
+@Composable
+private fun ChassisReading(reading: String, unit: String, color: Color, tag: String, modifier: Modifier = Modifier) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
+        Text(reading, color = color, fontSize = 20.sp, maxLines = 1,
+            modifier = Modifier.testTag(tag).semantics { contentDescription = "$reading $unit" })
+        Text(unit, color = Color(0xFFADC0CC), fontSize = 10.sp, modifier = Modifier.padding(start = 5.dp))
+    }
+}
+
+@Composable
+private fun BrakeReading(title: String, reading: String, color: Color, dashed: Boolean, tag: String, modifier: Modifier) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Canvas(Modifier.width(24.dp).height(10.dp)) {
+            drawLine(color, Offset(0f, size.height / 2), Offset(size.width, size.height / 2), 2.dp.toPx(),
+                pathEffect = if (dashed) PathEffect.dashPathEffect(floatArrayOf(8.dp.toPx(), 6.dp.toPx())) else null)
+        }
+        Text(title, color = color, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        ChassisReading(reading, stringResource(R.string.chassis_unit_force), color, tag, Modifier.weight(1f))
+    }
+}
+
+@Composable
+private fun BrakeControlRow(
+    state: ChassisUiState,
+    field: ChassisControlField,
+    onChanged: (ChassisControlField, Int, Long) -> Unit,
+    onCommitted: (ChassisControlField, Long) -> Unit,
+    onSubmitted: (ChassisControlField, String, Long) -> Unit,
+    title: String,
+    label: String,
+    color: Color,
+    tag: String
+) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(title, color = color, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+        ChassisSlider(state, field, onChanged, onCommitted, label, "chassis-$tag-slider",
+            modifier = Modifier.weight(1f), activeColor = color)
+        ChassisInput(state, field, onChanged, onSubmitted, label,
+            stringResource(R.string.chassis_unit_force), "chassis-$tag-input")
     }
 }
 
@@ -313,6 +373,7 @@ private fun ChassisSlider(
     label: String,
     testTag: String,
     modifier: Modifier = Modifier,
+    activeColor: Color = MaterialTheme.colors.secondary,
 ) {
     val range = state.config.range(field)
     val generation = state.generation(field)
@@ -330,5 +391,6 @@ private fun ChassisSlider(
         interactionKey = generation,
         testTag = testTag,
         modifier = modifier,
+        activeColor = activeColor,
     )
 }

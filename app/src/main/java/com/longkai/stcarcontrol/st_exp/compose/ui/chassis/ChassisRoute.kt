@@ -25,6 +25,8 @@ fun ChassisRoute(
         onControlChanged = viewModel::onControlChanged,
         onControlCommitted = viewModel::onControlCommitted,
         onControlInputSubmitted = viewModel::onControlInputSubmitted,
+        onCombinedBrakesChanged = viewModel::onCombinedBrakesChanged,
+        onCombinedBrakesInputSubmitted = viewModel::onCombinedBrakesInputSubmitted,
         onControlTabSelected = viewModel::onControlTabSelected,
         onEpbToggled = viewModel::onEpbToggled,
         onCurrentOffsetChanged = viewModel::onCurrentOffsetChanged,

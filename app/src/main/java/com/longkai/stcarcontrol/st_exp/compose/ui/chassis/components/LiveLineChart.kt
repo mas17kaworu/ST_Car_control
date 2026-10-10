@@ -27,17 +27,20 @@ import java.util.Locale
 
 data class ChartPoint(val timestampMillis: Long, val value: Float)
 
+data class ChartSeries(val points: List<ChartPoint>, val color: Color, val dashed: Boolean = false)
+
 @Composable
 fun LiveLineChart(
-    points: List<ChartPoint>,
+    series: List<ChartSeries>,
     range: ClosedFloatingPointRange<Float>,
-    color: Color,
-    reading: String,
-    unit: String,
     description: String,
     tag: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    windowSeconds: Int = 30,
+    timeIntervals: Int = 2
 ) {
+    require(windowSeconds > 0 && timeIntervals in 1..windowSeconds && windowSeconds % timeIntervals == 0)
+    require(range.start < range.endInclusive)
     val density = LocalDensity.current
     val labelPaint = remember(density) {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -45,38 +48,31 @@ fun LiveLineChart(
             textSize = with(density) { 9.sp.toPx() }
         }
     }
-    val readingPaint = remember(density, color) {
-        Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            this.color = color.toArgb()
-            textSize = with(density) { 16.sp.toPx() }
+    val timeLabels = (0..timeIntervals).map { index ->
+        if (index == timeIntervals) stringResource(R.string.chassis_now)
+        else stringResource(R.string.chassis_seconds_ago, windowSeconds * (timeIntervals - index) / timeIntervals)
+    }
+    val windowMillis = windowSeconds * 1_000L
+    val endTime = series.mapNotNull { it.points.lastOrNull()?.timestampMillis }.maxOrNull() ?: 0L
+    val startTime = endTime - windowMillis
+    val visibleSeries = remember(series, startTime, endTime) {
+        series.map { line ->
+            val firstVisible = line.points.indexOfFirst { it.timestampMillis >= startTime }
+            // Keep the preceding sample so the line crosses the left edge without a gap.
+            line.copy(points = if (firstVisible < 0) emptyList()
+                else line.points.subList((firstVisible - 1).coerceAtLeast(0), line.points.size))
         }
     }
-    val unitPaint = remember(density) {
-        Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            this.color = Color(0xFFADC0CC).toArgb()
-            textSize = with(density) { 10.sp.toPx() }
-        }
-    }
-    val timeLabels = listOf(
-        stringResource(R.string.chassis_seconds_ago, 30),
-        stringResource(R.string.chassis_seconds_ago, 15),
-        stringResource(R.string.chassis_now)
-    )
     Canvas(modifier.testTag(tag).semantics {
-        contentDescription = "$description: $reading $unit"
-        text = AnnotatedString(reading)
+        contentDescription = description
+        text = AnnotatedString(timeLabels.joinToString(" "))
     }) {
         val fontHeight = labelPaint.fontMetrics.run { descent - ascent }
-        val readingHeight = readingPaint.fontMetrics.run { descent - ascent }
         val left = maxOf(42.dp.toPx(), labelPaint.measureText(range.start.toInt().toString()) + 8.dp.toPx(),
             labelPaint.measureText(range.endInclusive.toInt().toString()) + 8.dp.toPx())
-        val valueWidth = readingPaint.measureText(reading)
-        val unitGap = 4.dp.toPx()
-        val pointGap = 6.dp.toPx()
-        // Reserve only the measured label width, rather than a fixed empty column.
-        val right = size.width - 4.dp.toPx() - valueWidth - unitGap - unitPaint.measureText(unit) - pointGap
-        val top = maxOf(7.dp.toPx(), readingHeight / 2)
-        val bottom = size.height - maxOf(20.dp.toPx(), readingHeight / 2 + fontHeight + 4.dp.toPx())
+        val right = size.width - 6.dp.toPx()
+        val top = maxOf(7.dp.toPx(), fontHeight / 2)
+        val bottom = size.height - maxOf(20.dp.toPx(), fontHeight * 1.5f + 4.dp.toPx())
         if (right <= left || bottom <= top) return@Canvas
         val width = right - left
         val height = bottom - top
@@ -99,35 +95,29 @@ fun LiveLineChart(
             val label = if (value % 1f == 0f) value.toInt().toString() else String.format(Locale.US, "%.1f", value)
             drawContext.canvas.nativeCanvas.drawText(label, left - 6.dp.toPx(), y + labelPaint.textSize / 3, labelPaint)
         }
-        for (i in 0..2) {
-            val x = left + width * i / 2
+        for (i in 0..timeIntervals) {
+            val x = left + width * i / timeIntervals
             drawLine(gridColor, Offset(x, top), Offset(x, bottom))
-            labelPaint.textAlign = if (i == 2) Paint.Align.RIGHT else Paint.Align.CENTER
+            labelPaint.textAlign = if (i == timeIntervals) Paint.Align.RIGHT else Paint.Align.CENTER
             drawContext.canvas.nativeCanvas.drawText(timeLabels[i], x, size.height - 4.dp.toPx(), labelPaint)
         }
-        val lastValue = points.lastOrNull()?.value
-        val readingY = if (lastValue == null) (top + bottom) / 2
-            else bottom - (lastValue.coerceIn(range.start, range.endInclusive) - range.start) /
-                (range.endInclusive - range.start) * height
-        val baseline = readingY - readingPaint.fontMetrics.run { (ascent + descent) / 2 }
-        drawContext.canvas.nativeCanvas.drawText(reading, right + pointGap, baseline, readingPaint)
-        drawContext.canvas.nativeCanvas.drawText(unit, right + pointGap + valueWidth + unitGap, baseline, unitPaint)
-        if (points.isEmpty()) return@Canvas
-        val endTime = points.last().timestampMillis
-        val startTime = endTime - 30_000L
-        val visiblePoints = points.filter { it.timestampMillis >= startTime }
-        val path = Path()
-        var lastPoint: Offset? = null
-        visiblePoints.forEachIndexed { index, point ->
-            val x = left + (point.timestampMillis - startTime).toFloat() / 30_000f * width
-            val y = bottom - (point.value.coerceIn(range.start, range.endInclusive) - range.start) /
-                (range.endInclusive - range.start) * height
-            if (index == 0) path.moveTo(x, y) else path.lineTo(x, y)
-            lastPoint = Offset(x, y)
-        }
         clipRect(left, top, right + 3.dp.toPx(), bottom) {
-            drawPath(path, color, style = Stroke(width = 2.dp.toPx()))
-            lastPoint?.let { drawCircle(color, 2.5.dp.toPx(), it) }
+            visibleSeries.forEach { line ->
+                val path = Path()
+                var lastPoint: Offset? = null
+                line.points.forEachIndexed { index, point ->
+                    val x = left + (point.timestampMillis - startTime).toFloat() / windowMillis * width
+                    val y = bottom - (point.value.coerceIn(range.start, range.endInclusive) - range.start) /
+                        (range.endInclusive - range.start) * height
+                    if (index == 0) path.moveTo(x, y) else path.lineTo(x, y)
+                    lastPoint = Offset(x, y)
+                }
+                drawPath(path, line.color, style = Stroke(
+                    width = 2.dp.toPx(),
+                    pathEffect = if (line.dashed) PathEffect.dashPathEffect(floatArrayOf(8.dp.toPx(), 6.dp.toPx())) else null
+                ))
+                lastPoint?.let { drawCircle(line.color, 2.5.dp.toPx(), it) }
+            }
         }
     }
 }

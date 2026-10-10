@@ -130,6 +130,40 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
         onControlCommitted(field, interactionGeneration)
     }
 
+    fun onCombinedBrakesChanged(value: Int, interactionGeneration: Long) {
+        val state = mutableUiState.value
+        if (!pageActive || !state.canControl(ChassisControlField.Ehb) ||
+            state.generation(ChassisControlField.Ehb) != interactionGeneration) return
+        if (value !in repository.config.combinedBrakeForceN) {
+            mutableUiState.update { it.copy(error = ChassisError.InvalidControl) }
+            return
+        }
+        editedFields.addAll(listOf(ChassisControlField.Ehb, ChassisControlField.Emb))
+        mutableUiState.update {
+            it.copy(controls = it.controls.copy(ehbForceN = value, embForceN = value))
+        }
+    }
+
+    fun onCombinedBrakesInputSubmitted(text: String, interactionGeneration: Long) {
+        val state = mutableUiState.value
+        if (!pageActive || !state.canControl(ChassisControlField.Ehb) ||
+            state.generation(ChassisControlField.Ehb) != interactionGeneration) return
+        val value = text.toIntOrNull()
+        if (value == null || value !in repository.config.combinedBrakeForceN) {
+            mutableUiState.update { it.copy(error = ChassisError.InvalidControl) }
+            return
+        }
+        onCombinedBrakesChanged(value, interactionGeneration)
+        editedFields.removeAll(listOf(ChassisControlField.Ehb, ChassisControlField.Emb))
+        viewModelScope.launch {
+            val result = repository.submitCombinedBrakes(value)
+            if (result is ChassisCommandResult.Rejected) {
+                lockControls()
+                mutableUiState.update { it.copy(error = result.error) }
+            }
+        }
+    }
+
     fun dismissError() {
         mutableUiState.update { it.copy(error = null) }
     }

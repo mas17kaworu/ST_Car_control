@@ -48,7 +48,7 @@ import com.longkai.stcarcontrol.st_exp.R
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ChassisValueInput(
-    value: Int,
+    value: Int?,
     range: IntRange,
     enabled: Boolean,
     interactionKey: Long,
@@ -59,15 +59,17 @@ fun ChassisValueInput(
     modifier: Modifier = Modifier
 ) {
     key(interactionKey) {
-        var draft by remember { mutableStateOf(value.toString()) }
+        var draft by remember { mutableStateOf(value?.toString().orEmpty()) }
         var focused by remember { mutableStateOf(false) }
         val focusManager = LocalFocusManager.current
         val keyboard = LocalSoftwareKeyboardController.current
         val invalid = draft.toIntOrNull()?.let { it !in range } ?: true
+        val showError = invalid && (value != null || draft.isNotEmpty() || focused)
         val errorMessage = stringResource(R.string.chassis_input_range, range.first, range.last)
+        val placeholder = stringResource(R.string.chassis_no_data)
         val shape = RoundedCornerShape(6.dp)
         LaunchedEffect(value) {
-            if (draft.toIntOrNull() != value) draft = value.toString()
+            if (draft.toIntOrNull() != value) draft = value?.toString().orEmpty()
         }
         fun submit() {
             if (!enabled) return
@@ -103,7 +105,7 @@ fun ChassisValueInput(
                 }
                 .semantics {
                     contentDescription = "$label ($unit)"
-                    if (invalid) error(errorMessage)
+                    if (showError) error(errorMessage)
                 },
             decorationBox = { innerTextField ->
                 Box(contentAlignment = Alignment.Center) {
@@ -111,14 +113,19 @@ fun ChassisValueInput(
                         Modifier.fillMaxWidth().height(32.dp)
                             .background(Color(0xFF1E2C36), shape)
                             .border(1.dp, when {
-                                invalid -> Color(0xFFEF5350)
+                                showError -> Color(0xFFEF5350)
                                 focused -> Color(0xFF39BEE4)
                                 else -> Color(0xFF809AAA).copy(alpha = .4f)
                             }, shape)
                             .padding(horizontal = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(Modifier.weight(1f)) { innerTextField() }
+                        Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                            if (draft.isEmpty() && !focused) {
+                                Text(placeholder, color = Color(0xFF8196A4), fontSize = 14.sp)
+                            }
+                            innerTextField()
+                        }
                         Text(unit, color = Color(0xFFADC0CC), fontSize = 10.sp, modifier = Modifier.padding(start = 6.dp))
                     }
                 }

@@ -5,7 +5,7 @@ import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseResponse
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-/** Each factory creates a single-field command using raw, unscaled protocol values. */
+/** Factories select the valid fields using raw, unscaled protocol values. */
 class CMDChassisControl private constructor(
     validFields: Int,
     speedRaw: Int = 0,
@@ -63,6 +63,10 @@ class CMDChassisControl private constructor(
         @JvmStatic
         fun setEmbForce(embForceRaw: Long): CMDChassisControl =
             CMDChassisControl(FIELD_EMB, embForceRaw = embForceRaw)
+
+        @JvmStatic
+        fun setCombinedBrakeForce(forceRaw: Long): CMDChassisControl =
+            CMDChassisControl(FIELD_EHB or FIELD_EMB, ehbForceRaw = forceRaw, embForceRaw = forceRaw)
 
         @JvmStatic
         fun setCurrentOffset(enabled: Boolean): CMDChassisControl =

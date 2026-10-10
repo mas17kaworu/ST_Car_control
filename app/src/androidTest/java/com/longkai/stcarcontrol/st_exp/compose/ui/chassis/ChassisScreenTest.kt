@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.test.platform.app.InstrumentationRegistry
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisReport
+import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit
 import com.longkai.stcarcontrol.st_exp.communication.utils.byteArrayToInt
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.*
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.STCarTheme
@@ -47,10 +48,10 @@ class ChassisScreenTest {
     @Test
     fun pageReceivesImmediatelyWithSlidersLockedAndIndependentSwitchesOff() {
         showScreen()
-        compose.onNodeWithText("EHB Braking Force").assertIsDisplayed()
-        compose.onNodeWithText("EMB Braking Force").assertIsDisplayed()
-        compose.onNodeWithTag("chassis-angle-chart").assertTextEquals("+12.34")
-        compose.onNodeWithTag("chassis-ehb-chart").assertTextEquals("6800")
+        compose.onNodeWithText("EHB / EMB Braking Force").assertIsDisplayed()
+        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+12.34")
+        compose.onNodeWithTag("chassis-ehb-reading").assertTextEquals("6800")
+        compose.onNodeWithTag("chassis-combined-brakes-input").assertIsNotEnabled()
         for (name in listOf("speed", "angle", "ehb", "emb")) {
             slider(name).assertIsNotEnabled()
         }
@@ -178,6 +179,48 @@ class ChassisScreenTest {
         slider("ehb").assertIsEnabled()
         slider("emb").assertIsEnabled()
         slider("angle").assertIsEnabled()
+        val combined = compose.onNodeWithTag("chassis-combined-brakes-input")
+        combined.assertIsEnabled().performTextReplacement("8000")
+        mode("Vehicle").performClick()
+        compose.runOnIdle {
+            assertEquals(1, service.writes.size)
+            assertEquals(8000, model.uiState.value.controls.ehbForceN)
+            assertEquals(8000, model.uiState.value.controls.embForceN)
+        }
+        combined.performImeAction()
+        compose.runOnIdle {
+            assertEquals(2, service.writes.size)
+            val frame = service.writes.last()
+            assertEquals(27, frame.size)
+            assertEquals(0x0C, byteArrayToInt(frame, 4))
+            assertEquals(8000, byteArrayToInt(frame, 16))
+            assertEquals(8000, byteArrayToInt(frame, 20))
+            assertEquals(0, byteArrayToInt(frame, 8))
+            assertEquals(0, byteArrayToInt(frame, 12))
+            assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 26), 24), frame[26])
+            assertNull(model.uiState.value.telemetry)
+        }
+        compose.onNodeWithTag("chassis-ehb-input").performTextReplacement("6000")
+        compose.onNodeWithTag("chassis-ehb-input").performImeAction()
+        assertEquals("", combined.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+        assertEquals("8000", compose.onNodeWithTag("chassis-emb-input")
+            .fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+        compose.runOnIdle {
+            assertEquals(3, service.writes.size)
+            assertEquals(4, byteArrayToInt(service.writes.last(), 4))
+            assertEquals(6000, byteArrayToInt(service.writes.last(), 16))
+            assertEquals(0, byteArrayToInt(service.writes.last(), 20))
+        }
+        combined.performTextReplacement("20001")
+        combined.performImeAction()
+        compose.onNodeWithText("Enter a whole number within the supported range.").assertIsDisplayed()
+        compose.onNodeWithText("Dismiss").performClick()
+        mode("BrakePedal").performClick()
+        combined.assertIsNotEnabled()
+        compose.runOnIdle {
+            model.onCombinedBrakesInputSubmitted("9000", 1)
+            assertEquals(3, service.writes.size)
+        }
     }
 
     @Test
@@ -225,7 +268,7 @@ class ChassisScreenTest {
             service.receiveReport(CMDChassisReport.Response(5, 100, 200, 300))
         }
         compose.waitForIdle()
-        compose.onNodeWithTag("chassis-angle-chart").assertTextEquals("+1.00")
+        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+1.00")
         mode("Vehicle").assertIsSelected()
         var generation = 0L
         compose.runOnIdle {
@@ -379,8 +422,8 @@ class ChassisScreenTest {
             service.receiveReport(CMDChassisReport.Response(7, -12345, 1234, 5678))
         }
         compose.waitForIdle()
-        compose.onNodeWithTag("chassis-angle-chart").assertTextEquals("-123.45")
-        compose.onNodeWithTag("chassis-emb-chart").assertTextEquals("5678")
+        compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("-123.45")
+        compose.onNodeWithTag("chassis-emb-reading").assertTextEquals("5678")
         compose.runOnIdle { assertEquals(1, service.registeredCommandCount) }
     }
 
@@ -407,7 +450,7 @@ class ChassisScreenTest {
         data class Case(val mode: String, val slider: String, val range: ClosedFloatingPointRange<Float>, val flag: Int, val offset: Int, val scale: Int)
         val cases = listOf(
             Case("Vehicle", "speed", -20f..20f, 1, 8, 1),
-            Case("Steering", "angle", -540f..540f, 2, 12, 100),
+            Case("Steering", "angle", -32f..32f, 2, 12, 100),
             Case("BrakePedal", "ehb", 0f..20_000f, 4, 16, 1),
             Case("BrakePedal", "emb", 0f..20_000f, 8, 20, 1),
         )
@@ -465,9 +508,39 @@ class ChassisScreenTest {
 
     @Test
     fun chartsRemainReadableAndReceiverIsReleasedOnPageExit() {
-        showScreen(Modifier.height(560.dp))
-        for (name in listOf("angle", "ehb", "emb")) {
+        var timestamp = 0L
+        showScreen(Modifier.height(560.dp), withInitialReport = false,
+            repository = DefaultChassisRepository(service.manager, clockMillis = { timestamp }))
+        compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(12, 1234, 19000, 18000)) }
+        compose.waitForIdle()
+        for (second in 1..4) {
+            compose.runOnIdle {
+                timestamp = second * 1_000L
+                service.receiveReport(CMDChassisReport.Response(12, 1234, 6000, 12000))
+            }
+            compose.waitForIdle()
+        }
+        for (name in listOf("angle", "braking")) {
             compose.onNodeWithTag("chassis-$name-chart").assertIsDisplayed().assertHeightIsAtLeast(70.dp)
+        }
+        val speed = compose.onNodeWithTag("chassis-speed-card").fetchSemanticsNode().boundsInRoot
+        val angle = compose.onNodeWithTag("chassis-angle-card").fetchSemanticsNode().boundsInRoot
+        val braking = compose.onNodeWithTag("chassis-braking-card").fetchSemanticsNode().boundsInRoot
+        assertTrue(speed.bottom < angle.top)
+        assertTrue(speed.right < braking.left)
+        assertEquals(speed.top, braking.top, 1f)
+        assertEquals(angle.bottom, braking.bottom, 1f)
+        val chart = compose.onNodeWithTag("chassis-braking-chart")
+        chart.assertTextEquals("-3s -2s -1s now")
+        val pixels = chart.captureToImage().toPixelMap()
+        for (color in listOf(Color(0xFF45D6FF), Color(0xFFFFBC5C))) {
+            val points = mutableListOf<Pair<Int, Int>>()
+            for (y in 0 until pixels.height) for (x in 0 until pixels.width) {
+                if (pixels[x, y].toArgb() == color.toArgb()) points.add(x to y)
+            }
+            assertTrue(points.isNotEmpty())
+            assertTrue(points.maxOf { it.first } - points.minOf { it.first } > pixels.width * .75f)
+            assertTrue(points.maxOf { it.second } - points.minOf { it.second } < pixels.height * .05f)
         }
         compose.onNodeWithTag("chassis-current-offset").assertIsDisplayed()
         compose.onNodeWithTag("chassis-control-bar").assertIsDisplayed()

@@ -7,6 +7,10 @@
     <string name="chassis_angle">Steering Angle</string>
     <string name="chassis_ehb">EHB Braking Force</string>
     <string name="chassis_emb">EMB Braking Force</string>
+    <string name="chassis_braking_force">EHB / EMB Braking Force</string>
+    <string name="chassis_ehb_short">EHB</string>
+    <string name="chassis_emb_short">EMB</string>
+    <string name="chassis_combined_brakes">Set EHB + EMB</string>
     <string name="chassis_speed_command">Speed command</string>
     <string name="chassis_angle_command">Angle command</string>
     <string name="chassis_ehb_control">EHB control</string>
@@ -15,8 +19,8 @@
     <string name="chassis_negative_steps">− Negative steps</string>
     <string name="chassis_positive_steps">Positive steps +</string>
     <string name="chassis_max">Max</string>
-    <string name="chassis_now">Now</string>
-    <string name="chassis_seconds_ago">−%1$d s</string>
+    <string name="chassis_now">now</string>
+    <string name="chassis_seconds_ago">-%1$ds</string>
     <string name="chassis_value">Value</string>
     <string name="chassis_unit_speed">km/h</string>
     <string name="chassis_unit_angle">°</string>

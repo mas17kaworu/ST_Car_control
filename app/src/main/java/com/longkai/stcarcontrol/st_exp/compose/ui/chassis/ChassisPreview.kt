@@ -14,9 +14,9 @@ private fun ChassisPreview() {
         ChassisTelemetry(
             timestampMillis = index * 200L,
             speedKph = 12f,
-            steeringAngleDegrees = wave * 360f,
+            steeringAngleDegrees = wave * 32f,
             ehbForceN = 10_000f + wave * 8_000f,
-            embForceN = 10_000f + wave * 8_000f
+            embForceN = 10_000f + sin(index * .08 + .5).toFloat() * 8_000f
         )
     }
     STCarTheme {
@@ -25,6 +25,8 @@ private fun ChassisPreview() {
             onControlChanged = { _, _, _ -> },
             onControlCommitted = { _, _ -> },
             onControlInputSubmitted = { _, _, _ -> },
+            onCombinedBrakesChanged = { _, _ -> },
+            onCombinedBrakesInputSubmitted = { _, _ -> },
             onControlTabSelected = {},
             onEpbToggled = {},
             onCurrentOffsetChanged = {},

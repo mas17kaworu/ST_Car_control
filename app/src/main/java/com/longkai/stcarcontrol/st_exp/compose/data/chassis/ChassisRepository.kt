@@ -22,6 +22,7 @@ interface ChassisRepository {
 
     /** Submit an explicit target only; success must not be treated as measured feedback. */
     suspend fun submitControl(control: ChassisControl): ChassisCommandResult
+    suspend fun submitCombinedBrakes(forceN: Int): ChassisCommandResult
     suspend fun setEpb(enabled: Boolean): ChassisCommandResult
     suspend fun setCurrentOffset(enabled: Boolean): ChassisCommandResult
     suspend fun setEmergencyStop(enabled: Boolean): ChassisCommandResult
@@ -79,6 +80,13 @@ class DefaultChassisRepository(
             ChassisControlField.Emb -> CMDChassisControl.setEmbForce(control.value.toLong())
         }
         return sendCommand(command, "field=${control.field}, value=${control.value}")
+    }
+
+    override suspend fun submitCombinedBrakes(forceN: Int): ChassisCommandResult {
+        if (forceN !in config.combinedBrakeForceN) {
+            return ChassisCommandResult.Rejected(ChassisError.InvalidControl)
+        }
+        return sendCommand(CMDChassisControl.setCombinedBrakeForce(forceN.toLong()), "field=Ehb+Emb, value=$forceN")
     }
 
     override suspend fun setEpb(enabled: Boolean): ChassisCommandResult =

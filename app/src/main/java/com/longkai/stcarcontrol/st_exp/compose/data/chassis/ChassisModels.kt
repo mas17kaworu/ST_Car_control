@@ -33,7 +33,7 @@ data class ChassisControlState(
 /** Shared display and control limits; sliders advance in one-unit increments. */
 data class ChassisControlConfig(
     val speedKph: IntRange = -20..20,
-    val steeringDegrees: IntRange = -540..540,
+    val steeringDegrees: IntRange = -32..32,
     val ehbForceN: IntRange = 0..20_000,
     val embForceN: IntRange = 0..20_000,
 ) {
@@ -54,6 +54,9 @@ data class ChassisControlConfig(
     }
 
     fun isValid(control: ChassisControl): Boolean = control.value in range(control.field)
+
+    val combinedBrakeForceN: IntRange
+        get() = 0..minOf(ehbForceN.last, embForceN.last)
 
     companion object {
         const val STEERING_RAW_PER_DEGREE = 100

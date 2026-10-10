@@ -43,9 +43,10 @@ fun ControlSlider(
     steps: Int = 0,
     centered: Boolean = false,
     enabled: Boolean = true,
-    interactionKey: Long = 0L
+    interactionKey: Long = 0L,
+    activeColor: Color = MaterialTheme.colors.secondary
 ) {
-    val color = if (enabled) MaterialTheme.colors.secondary else Color(0xFF71838F)
+    val color = if (enabled) activeColor else Color(0xFF71838F)
     Row(modifier.height(48.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(startLabel, color = Color(0xFF92A8B8), fontSize = 10.sp)
         Box(Modifier.weight(1f).height(48.dp)) {
