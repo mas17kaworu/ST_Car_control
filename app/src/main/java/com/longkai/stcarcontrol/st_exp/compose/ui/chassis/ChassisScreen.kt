@@ -7,30 +7,42 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -46,6 +58,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlField
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisError
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChartPoint
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChartSeries
+import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisCompareDialog
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisControlBar
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisValueInput
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ControlSlider
@@ -69,6 +82,8 @@ fun ChassisScreen(
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var comparisonOpen by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
     val cyan = MaterialTheme.colors.primary
     val mint = MaterialTheme.colors.secondary
     val ehbColor = Color(0xFF45D6FF)
@@ -218,6 +233,32 @@ fun ChassisScreen(
                                         .semantics { contentDescription = offsetLabel }
                                 )
                             }
+                            OutlinedButton(
+                                onClick = {
+                                    focusManager.clearFocus()
+                                    comparisonOpen = true
+                                },
+                                modifier = Modifier.widthIn(min = 96.dp).height(36.dp).testTag("chassis-compare-button"),
+                                shape = RoundedCornerShape(7.dp),
+                                border = BorderStroke(1.dp, Color(0xFF45D6FF).copy(alpha = .47f)),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    backgroundColor = Color(0xFF2C4D5E), contentColor = Color(0xFFD8F4FF)
+                                ),
+                                contentPadding = PaddingValues(horizontal = 8.dp)
+                            ) {
+                                Canvas(Modifier.size(16.dp)) {
+                                    scale(size.width / 24, size.height / 24, pivot = Offset.Zero) {
+                                        val path = Path().apply {
+                                            moveTo(3f, 3f); lineTo(3f, 21f); lineTo(21f, 21f)
+                                            moveTo(6f, 16f); lineTo(10f, 10f); lineTo(15f, 13f); lineTo(21f, 5f)
+                                            moveTo(6f, 11f); lineTo(10f, 14f); lineTo(15f, 8f); lineTo(21f, 10f)
+                                        }
+                                        drawPath(path, Color(0xFFD8F4FF), style = Stroke(1.7f))
+                                    }
+                                }
+                                Text(stringResource(R.string.chassis_compare), fontSize = 12.sp, maxLines = 1,
+                                    modifier = Modifier.padding(start = 6.dp))
+                            }
                         }
                     }
                 }
@@ -256,6 +297,12 @@ fun ChassisScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Text(stringResource(R.string.chassis_control_hint), color = Color(0xFF94AABB), fontSize = 9.sp)
+    }
+    if (comparisonOpen) {
+        ChassisCompareDialog(
+            forceRange = state.config.embForceN.let { it.first.toFloat()..it.last.toFloat() },
+            onDismiss = { comparisonOpen = false }
+        )
     }
     state.error?.let { error ->
         AlertDialog(

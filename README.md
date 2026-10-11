@@ -14,6 +14,7 @@ existing service through the normal app entry flow.
 - Speed is at the upper left and Steering Angle below it. EHB/EMB share the full-height right card, with fixed feedback readings above the plot. EHB is cyan/dashed; EMB is amber/solid and drawn on top. The braking chart shows the latest 3 seconds (`-3s`, `-2s`, `-1s`, `now`); steering retains its 30-second window.
 - EHB and EMB retain separate sliders and inputs. **Set EHB + EMB** edits both targets together and sends them in one frame on **Done/Enter**, with Brake pedal enabled. It shows `--` when the two targets differ.
 - All three cards stay on one screen without vertical scrolling. Input targets never replace measured feedback; current offset remains independently available beside the combined input.
+- **Compare**, to the right of Current offset, opens the EMB offset comparison dialog: a shared 0-500 ms / N chart with cyan dashed (without offset) and amber solid (with offset) series. This is UI-only for now: no `0x40` command is sent and no comparison response is consumed. The chart shows "No comparison data" until the data integration is implemented; no synthetic vehicle readings are shown.
 - Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.
 - Reports are received independently of control enablement, from page entry until its view is destroyed.
 - The title bar shows the reported Ramp percentage as `ramp: 12%` (`ramp: --%` before the first report). Ramp is read-only, with 1 raw unit = 1%; it is not an angle in degrees.

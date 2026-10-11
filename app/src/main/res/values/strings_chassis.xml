@@ -17,6 +17,14 @@
     <string name="chassis_ehb_control">EHB control</string>
     <string name="chassis_emb_control">EMB control</string>
     <string name="chassis_current_offset">Current offset</string>
+    <string name="chassis_compare">Compare</string>
+    <string name="chassis_compare_title">EMB Offset Comparison</string>
+    <string name="chassis_compare_description">EMB braking force · 50 samples per series · 500 ms</string>
+    <string name="chassis_compare_close">Close comparison</string>
+    <string name="chassis_without_offset">Without current offset</string>
+    <string name="chassis_with_offset">With current offset</string>
+    <string name="chassis_compare_no_data">No comparison data</string>
+    <string name="chassis_milliseconds">%1$d ms</string>
     <string name="chassis_negative_steps">− Negative steps</string>
     <string name="chassis_positive_steps">Positive steps +</string>
     <string name="chassis_max">Max</string>

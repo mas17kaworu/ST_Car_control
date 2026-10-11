@@ -557,6 +557,32 @@ class ChassisScreenTest {
                 check(compose.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it))
             }
         }
+        val compare = compose.onNodeWithTag("chassis-compare-button").assertIsDisplayed().assertIsEnabled()
+        val compareBounds = compare.fetchSemanticsNode().boundsInRoot
+        assertTrue(compareBounds.left >= offsetSwitch().fetchSemanticsNode().boundsInRoot.right)
+        assertTrue(compareBounds.right <= braking.right)
+        compare.performClick()
+        compose.onNodeWithTag("chassis-compare-dialog").assertIsDisplayed()
+        compose.onNodeWithTag("chassis-compare-chart").assertIsDisplayed()
+            .assertTextEquals("0 100 200 300 400 500 ms")
+        compose.onNodeWithText("Without current offset").assertIsDisplayed()
+        compose.onNodeWithText("With current offset").assertIsDisplayed()
+        compose.onNodeWithText("No comparison data").assertIsDisplayed()
+        compose.onNodeWithText("Preview data").assertDoesNotExist()
+        if (InstrumentationRegistry.getArguments().getString("chassisScreenshot") == "true") {
+            val file = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "chassis-compare-ui.png")
+            file.outputStream().use {
+                check(compose.onNodeWithTag("chassis-compare-dialog").captureToImage()
+                    .asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it))
+            }
+        }
+        compose.onNodeWithTag("chassis-compare-close").performClick()
+        compose.onNodeWithTag("chassis-compare-dialog").assertDoesNotExist()
+        compare.performClick()
+        androidx.test.espresso.Espresso.pressBack()
+        compose.onNodeWithTag("chassis-compare-dialog").assertDoesNotExist()
+        offsetSwitch().assertIsOff()
+        compose.runOnIdle { assertTrue(service.writes.isEmpty()) }
         compose.runOnIdle { model.onPageExited() }
         compose.waitForIdle()
         compose.runOnIdle { assertEquals(0, service.registeredCommandCount) }

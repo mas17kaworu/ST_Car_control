@@ -40,7 +40,30 @@ fun LiveLineChart(
     timeIntervals: Int = 2
 ) {
     require(windowSeconds > 0 && timeIntervals in 1..windowSeconds && windowSeconds % timeIntervals == 0)
+    val timeLabels = (0..timeIntervals).map { index ->
+        if (index == timeIntervals) stringResource(R.string.chassis_now)
+        else stringResource(R.string.chassis_seconds_ago, windowSeconds * (timeIntervals - index) / timeIntervals)
+    }
+    val windowMillis = windowSeconds * 1_000L
+    val endTime = series.mapNotNull { it.points.lastOrNull()?.timestampMillis }.maxOrNull() ?: 0L
+    LineChart(
+        series = series, range = range, timeRangeMillis = (endTime - windowMillis)..endTime,
+        timeLabels = timeLabels, description = description, tag = tag, modifier = modifier
+    )
+}
+
+@Composable
+fun LineChart(
+    series: List<ChartSeries>,
+    range: ClosedFloatingPointRange<Float>,
+    timeRangeMillis: LongRange,
+    timeLabels: List<String>,
+    description: String,
+    tag: String,
+    modifier: Modifier = Modifier
+) {
     require(range.start < range.endInclusive)
+    require(timeRangeMillis.first < timeRangeMillis.last && timeLabels.size >= 2)
     val density = LocalDensity.current
     val labelPaint = remember(density) {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -48,13 +71,10 @@ fun LiveLineChart(
             textSize = with(density) { 9.sp.toPx() }
         }
     }
-    val timeLabels = (0..timeIntervals).map { index ->
-        if (index == timeIntervals) stringResource(R.string.chassis_now)
-        else stringResource(R.string.chassis_seconds_ago, windowSeconds * (timeIntervals - index) / timeIntervals)
-    }
-    val windowMillis = windowSeconds * 1_000L
-    val endTime = series.mapNotNull { it.points.lastOrNull()?.timestampMillis }.maxOrNull() ?: 0L
-    val startTime = endTime - windowMillis
+    val startTime = timeRangeMillis.first
+    val endTime = timeRangeMillis.last
+    val windowMillis = endTime - startTime
+    val timeIntervals = timeLabels.lastIndex
     val visibleSeries = remember(series, startTime, endTime) {
         series.map { line ->
             val firstVisible = line.points.indexOfFirst { it.timestampMillis >= startTime }
