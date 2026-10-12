@@ -24,6 +24,9 @@
     <string name="chassis_without_offset">Without current offset</string>
     <string name="chassis_with_offset">With current offset</string>
     <string name="chassis_compare_no_data">No comparison data</string>
+    <string name="chassis_compare_loading">Waiting for comparison data…</string>
+    <string name="chassis_compare_timeout">Comparison timed out. Close and reopen to request again.</string>
+    <string name="chassis_compare_invalid">Invalid comparison response. Close and reopen to request again.</string>
     <string name="chassis_milliseconds">%1$d ms</string>
     <string name="chassis_negative_steps">− Negative steps</string>
     <string name="chassis_positive_steps">Positive steps +</string>

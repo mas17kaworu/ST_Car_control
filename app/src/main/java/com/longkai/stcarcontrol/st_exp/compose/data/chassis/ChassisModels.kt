@@ -77,6 +77,20 @@ data class ChassisControl(val field: ChassisControlField, val value: Int)
 
 enum class ChassisError { InvalidControl, NotReady, CommandFailed }
 
+data class ChassisComparison(val withoutOffsetN: List<Int>, val withOffsetN: List<Int>) {
+    init {
+        require(withoutOffsetN.size == 50 && withOffsetN.size == 50)
+        require(withoutOffsetN.all { it in 0..0xFFFF } && withOffsetN.all { it in 0..0xFFFF })
+    }
+}
+
+enum class ChassisComparisonError { NotReady, Timeout, InvalidResponse, CommandFailed }
+
+sealed class ChassisComparisonResult {
+    data class Success(val data: ChassisComparison) : ChassisComparisonResult()
+    data class Failed(val error: ChassisComparisonError) : ChassisComparisonResult()
+}
+
 sealed class ChassisCommandResult {
     object PreviewOnly : ChassisCommandResult()
     /** Passed to the existing send API; neither transport completion nor device acknowledgment. */

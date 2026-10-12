@@ -4,6 +4,7 @@ import android.util.Log
 import com.longkai.stcarcontrol.st_exp.Utils.ByteUtils.bytes2hex
 import com.longkai.stcarcontrol.st_exp.communication.ServiceManager
 import com.longkai.stcarcontrol.st_exp.communication.commandList.BaseCommand
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisCompare
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisControl
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisEmergencyStop
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisReport
@@ -12,6 +13,8 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeoutOrNull
 
 interface ChassisRepository {
     val config: ChassisControlConfig
@@ -23,6 +26,7 @@ interface ChassisRepository {
     /** Submit an explicit target only; success must not be treated as measured feedback. */
     suspend fun submitControl(control: ChassisControl): ChassisCommandResult
     suspend fun submitCombinedBrakes(forceN: Int): ChassisCommandResult
+    suspend fun requestComparison(): ChassisComparisonResult
     suspend fun setEpb(enabled: Boolean): ChassisCommandResult
     suspend fun setCurrentOffset(enabled: Boolean): ChassisCommandResult
     suspend fun setEmergencyStop(enabled: Boolean): ChassisCommandResult
@@ -88,6 +92,51 @@ class DefaultChassisRepository(
             return ChassisCommandResult.Rejected(ChassisError.InvalidControl)
         }
         return sendCommand(CMDChassisControl.setCombinedBrakeForce(forceN.toLong()), "field=Ehb+Emb, value=$forceN")
+    }
+
+    override suspend fun requestComparison(): ChassisComparisonResult {
+        if (service.messageDispatcher == null) {
+            Log.w("ChassisRepository", "Cannot request chassis comparison: service is not initialized")
+            return ChassisComparisonResult.Failed(ChassisComparisonError.NotReady)
+        }
+        // A regular telemetry subscription can prevent the legacy dispatcher's timeout scan.
+        val result = withTimeoutOrNull(5_000L) {
+            callbackFlow<ChassisComparisonResult> {
+                val command = CMDChassisCompare()
+                val listener = object : CommandListenerAdapter<CMDChassisCompare.Response>(Int.MAX_VALUE) {
+                    override fun onSuccess(response: CMDChassisCompare.Response) {
+                        trySend(ChassisComparisonResult.Success(
+                            ChassisComparison(response.withoutOffsetN, response.withOffsetN)
+                        ))
+                        close()
+                    }
+
+                    override fun onTimeout() {
+                        Log.w("ChassisRepository", "Invalid chassis comparison response")
+                        trySend(ChassisComparisonResult.Failed(ChassisComparisonError.InvalidResponse))
+                        close()
+                    }
+
+                    override fun onError(errorCode: Int) {
+                        Log.w("ChassisRepository", "Chassis comparison error: $errorCode")
+                        trySend(ChassisComparisonResult.Failed(ChassisComparisonError.CommandFailed))
+                        close()
+                    }
+                }
+                service.registerCommandOnce(command, listener)
+                if (sendCommand(command, "field=EmbComparison") is ChassisCommandResult.Rejected) {
+                    trySend(ChassisComparisonResult.Failed(ChassisComparisonError.NotReady))
+                    close()
+                }
+                awaitClose {
+                    // This existing API also removes one-shot registrations.
+                    service.unregisterRegularlyCommand(command)
+                }
+            }.first()
+        }
+        if (result != null) return result
+        Log.w("ChassisRepository", "Chassis comparison response timed out")
+        return ChassisComparisonResult.Failed(ChassisComparisonError.Timeout)
     }
 
     override suspend fun setEpb(enabled: Boolean): ChassisCommandResult =

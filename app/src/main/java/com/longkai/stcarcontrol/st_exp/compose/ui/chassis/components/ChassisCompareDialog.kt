@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -44,7 +45,9 @@ fun ChassisCompareDialog(
     forceRange: ClosedFloatingPointRange<Float>,
     onDismiss: () -> Unit,
     withoutOffset: List<ChartPoint> = emptyList(),
-    withOffset: List<ChartPoint> = emptyList()
+    withOffset: List<ChartPoint> = emptyList(),
+    loading: Boolean = false,
+    errorMessage: String? = null
 ) {
     val configuration = LocalConfiguration.current
     val title = stringResource(R.string.chassis_compare_title)
@@ -122,11 +125,15 @@ fun ChassisCompareDialog(
                                 description = title, tag = "chassis-compare-chart",
                                 modifier = Modifier.fillMaxSize()
                             )
-                            if (withoutOffset.isEmpty() && withOffset.isEmpty()) {
+                            if (loading || errorMessage != null || (withoutOffset.isEmpty() && withOffset.isEmpty())) {
                                 Text(
-                                    stringResource(R.string.chassis_compare_no_data),
-                                    color = Color(0xFF9FB4C1), fontSize = 14.sp,
-                                    modifier = Modifier.align(Alignment.Center)
+                                    errorMessage ?: stringResource(
+                                        if (loading) R.string.chassis_compare_loading else R.string.chassis_compare_no_data
+                                    ),
+                                    color = if (errorMessage == null) Color(0xFF9FB4C1) else Color(0xFFFF8585),
+                                    fontSize = 14.sp, textAlign = TextAlign.Center,
+                                    modifier = Modifier.align(Alignment.Center).padding(16.dp)
+                                        .testTag("chassis-compare-status")
                                 )
                             }
                         }

@@ -29,10 +29,7 @@ import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -56,6 +53,8 @@ import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlTab
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlField
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisError
+import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisComparisonError
+import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisComparisonResult
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChartPoint
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChartSeries
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisCompareDialog
@@ -79,10 +78,11 @@ fun ChassisScreen(
     onEpbToggled: () -> Unit,
     onCurrentOffsetChanged: (Boolean) -> Unit,
     onEmergencyStopToggled: () -> Unit,
+    onCompareOpened: () -> Unit,
+    onCompareClosed: () -> Unit,
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var comparisonOpen by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val cyan = MaterialTheme.colors.primary
     val mint = MaterialTheme.colors.secondary
@@ -236,7 +236,7 @@ fun ChassisScreen(
                             OutlinedButton(
                                 onClick = {
                                     focusManager.clearFocus()
-                                    comparisonOpen = true
+                                    onCompareOpened()
                                 },
                                 modifier = Modifier.widthIn(min = 96.dp).height(36.dp).testTag("chassis-compare-button"),
                                 shape = RoundedCornerShape(7.dp),
@@ -298,10 +298,29 @@ fun ChassisScreen(
         )
         Text(stringResource(R.string.chassis_control_hint), color = Color(0xFF94AABB), fontSize = 9.sp)
     }
-    if (comparisonOpen) {
+    if (state.comparisonOpen) {
+        val result = state.comparisonResult
+        val data = (result as? ChassisComparisonResult.Success)?.data
+        val withoutOffset = remember(data) { data?.withoutOffsetN?.let(::comparisonPoints) ?: emptyList() }
+        val withOffset = remember(data) { data?.withOffsetN?.let(::comparisonPoints) ?: emptyList() }
+        val maximum = maxOf(
+            state.config.embForceN.last,
+            data?.withoutOffsetN?.maxOrNull() ?: 0,
+            data?.withOffsetN?.maxOrNull() ?: 0
+        )
+        val errorMessage = (result as? ChassisComparisonResult.Failed)?.error?.let {
+            stringResource(when (it) {
+                ChassisComparisonError.NotReady -> R.string.chassis_not_ready
+                ChassisComparisonError.Timeout -> R.string.chassis_compare_timeout
+                ChassisComparisonError.InvalidResponse -> R.string.chassis_compare_invalid
+                ChassisComparisonError.CommandFailed -> R.string.chassis_command_failed
+            })
+        }
         ChassisCompareDialog(
-            forceRange = state.config.embForceN.let { it.first.toFloat()..it.last.toFloat() },
-            onDismiss = { comparisonOpen = false }
+            forceRange = 0f..maximum.toFloat(),
+            onDismiss = onCompareClosed,
+            withoutOffset = withoutOffset, withOffset = withOffset,
+            loading = result == null, errorMessage = errorMessage
         )
     }
     state.error?.let { error ->
@@ -320,6 +339,9 @@ fun ChassisScreen(
         )
     }
 }
+
+private fun comparisonPoints(forces: List<Int>): List<ChartPoint> =
+    forces.mapIndexed { index, force -> ChartPoint(index * 500L / forces.lastIndex, force.toFloat()) }
 
 @Composable
 private fun ChassisReading(reading: String, unit: String, color: Color, tag: String, modifier: Modifier = Modifier) {

@@ -6,6 +6,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlTab
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlField
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisError
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisTelemetry
+import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisComparisonResult
 
 data class ChassisUiState(
     val controls: ChassisControlState = ChassisControlState(),
@@ -20,6 +21,8 @@ data class ChassisUiState(
     val emergencyStopEnabled: Boolean = false,
     val isDemo: Boolean = true,
     val error: ChassisError? = null,
+    val comparisonOpen: Boolean = false,
+    val comparisonResult: ChassisComparisonResult? = null,
 ) {
     fun canControl(field: ChassisControlField): Boolean = field.mode in enabledControls
 

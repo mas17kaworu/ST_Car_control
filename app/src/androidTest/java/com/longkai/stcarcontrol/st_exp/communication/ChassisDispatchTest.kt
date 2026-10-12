@@ -2,6 +2,7 @@ package com.longkai.stcarcontrol.st_exp.communication
 
 import android.os.Bundle
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisControl
+import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisCompare
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisEmergencyStop
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CMDChassisList.CMDChassisReport
 import com.longkai.stcarcontrol.st_exp.communication.commandList.CommandListenerAdapter
@@ -18,13 +19,15 @@ class ChassisDispatchTest {
     fun existingSendApiWritesChassisCommandsWithoutRegisteringAnAcknowledgment() {
         val connection = RecordingConnection()
         val dispatcher = ProtocolMessageDispatch(connection)
-        val commands = listOf(CMDChassisControl.setSpeed(20), CMDChassisEmergencyStop(true), CMDChassisEmergencyStop(false))
+        val commands = listOf(CMDChassisControl.setSpeed(20), CMDChassisEmergencyStop(true),
+            CMDChassisEmergencyStop(false), CMDChassisCompare())
         for (command in commands) {
             dispatcher.sendCommand(command, null)
             assertArrayEquals(command.toRawData(), connection.writes.last())
             assertEquals(0, dispatcher.sentCommandList.size())
         }
-        assertEquals(3, connection.writes.size)
+        assertEquals(4, connection.writes.size)
+        assertArrayEquals(byteArrayOf(0x5A, 0x3C, 0x02, 0x40, 0xBD.toByte()), connection.writes.last())
     }
 
     @Test
@@ -57,6 +60,23 @@ class ChassisDispatchTest {
         assertTrue(listener.samples.isEmpty())
         dispatcher.onReceive(frame(), 0, 23)
         assertEquals(1, listener.samples.size)
+
+        val comparison = CMDChassisCompare()
+        val comparisonFrame = CMDChassisCompare.Response(List(50) { 0x8034 }, List(50) { 0xFFFF }).mockResponse()
+        assertEquals(205, comparisonFrame.size)
+        assertEquals(0xCA, comparisonFrame[2].toInt() and 0xFF)
+        assertEquals(0x34, comparisonFrame[4].toInt() and 0xFF)
+        assertEquals(0x80, comparisonFrame[5].toInt() and 0xFF)
+        assertEquals(List(50) { 0x8034 }, comparison.toResponse(comparisonFrame).withoutOffsetN)
+        assertEquals(List(50) { 0xFFFF }, comparison.toResponse(comparisonFrame).withOffsetN)
+        for (invalid in listOf(
+            comparisonFrame.copyOf(204),
+            comparisonFrame.copyOf(206),
+            comparisonFrame.copyOf().apply { this[2] = 0x12 },
+            comparisonFrame.copyOf().apply { this[204] = (this[204].toInt() xor 1).toByte() }
+        )) {
+            assertTrue(runCatching { comparison.toResponse(invalid) }.exceptionOrNull() is IllegalArgumentException)
+        }
     }
 
     @Test
@@ -65,6 +85,7 @@ class ChassisDispatchTest {
         assertNull(ServiceManager.getInstance().messageDispatcher)
         val repository = DefaultChassisRepository()
         assertTrue(repository.telemetry.toList().isEmpty())
+        assertEquals(ChassisComparisonResult.Failed(ChassisComparisonError.NotReady), repository.requestComparison())
         assertEquals(
             ChassisCommandResult.Rejected(ChassisError.NotReady),
             repository.submitControl(ChassisControl(ChassisControlField.Speed, 0))

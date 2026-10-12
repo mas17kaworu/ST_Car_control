@@ -32,6 +32,8 @@ private fun ChassisPreview() {
             onEpbToggled = {},
             onCurrentOffsetChanged = {},
             onEmergencyStopToggled = {},
+            onCompareOpened = {},
+            onCompareClosed = {},
             onDismissError = {}
         )
     }

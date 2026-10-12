@@ -72,6 +72,15 @@ class ChassisServiceFixture : AutoCloseable {
 
     fun receiveFrame(frame: ByteArray) = onMain { dispatcher.onReceive(frame, 0, frame.size) }
 
+    fun comparisonFrame(withoutOffsetN: List<Int>, withOffsetN: List<Int>): ByteArray {
+        check(withoutOffsetN.size == 50 && withOffsetN.size == 50)
+        val buffer = ByteBuffer.allocate(205).order(ByteOrder.LITTLE_ENDIAN)
+            .put(0x5A.toByte()).put(0x3C.toByte()).put(0xCA.toByte()).put(0x40.toByte())
+        withoutOffsetN.forEach { buffer.putShort(it.toShort()) }
+        withOffsetN.forEach { buffer.putShort(it.toShort()) }
+        return buffer.array().apply { this[204] = CheckSumBit.checkSum(this, 204) }
+    }
+
     fun awaitIdle() = InstrumentationRegistry.getInstrumentation().waitForIdleSync()
 
     override fun close() = onMain {

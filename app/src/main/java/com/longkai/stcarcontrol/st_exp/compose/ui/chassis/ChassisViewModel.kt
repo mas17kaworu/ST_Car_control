@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.*
 import java.util.Collections
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -20,6 +22,7 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
     private var pageActive = false
     private val editedFields = mutableSetOf<ChassisControlField>()
     private var reception: Job? = null
+    private var comparisonRequest: Job? = null
 
     /** Reception belongs to the page, not to a selected send mode or a Compose subscription. */
     fun onPageEntered() {
@@ -32,6 +35,7 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
 
     fun onPageExited() {
         pageActive = false
+        onCompareClosed()
         lockControls()
         reception?.cancel()
         reception = null
@@ -162,6 +166,24 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
                 mutableUiState.update { it.copy(error = result.error) }
             }
         }
+    }
+
+    fun onCompareOpened() {
+        if (!pageActive || mutableUiState.value.comparisonOpen) return
+        mutableUiState.update { it.copy(comparisonOpen = true, comparisonResult = null) }
+        val previousRequest = comparisonRequest
+        comparisonRequest = viewModelScope.launch {
+            // Finish unregistering an earlier request before registering the same command ID.
+            previousRequest?.cancelAndJoin()
+            val result = repository.requestComparison()
+            ensureActive()
+            mutableUiState.update { it.copy(comparisonResult = result) }
+        }
+    }
+
+    fun onCompareClosed() {
+        comparisonRequest?.cancel()
+        mutableUiState.update { it.copy(comparisonOpen = false, comparisonResult = null) }
     }
 
     fun dismissError() {

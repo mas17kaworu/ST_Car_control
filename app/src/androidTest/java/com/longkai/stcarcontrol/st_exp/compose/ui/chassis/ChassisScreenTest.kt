@@ -567,8 +567,40 @@ class ChassisScreenTest {
             .assertTextEquals("0 100 200 300 400 500 ms")
         compose.onNodeWithText("Without current offset").assertIsDisplayed()
         compose.onNodeWithText("With current offset").assertIsDisplayed()
-        compose.onNodeWithText("No comparison data").assertIsDisplayed()
+        compose.onNodeWithText("Waiting for comparison data…").assertIsDisplayed()
         compose.onNodeWithText("Preview data").assertDoesNotExist()
+        val withoutOffset = List(50) { it * 1000 }
+        val withOffset = List(50) { 65535 - it * 700 }
+        val comparisonFrame = service.comparisonFrame(withoutOffset, withOffset)
+        val requestFrame = byteArrayOf(0x5A, 0x3C, 0x02, 0x40, 0xBD.toByte())
+        compose.runOnIdle {
+            assertEquals(2, service.registeredCommandCount)
+            assertArrayEquals(requestFrame, service.writes.single())
+            service.receiveFrame(comparisonFrame)
+        }
+        compose.waitForIdle()
+        compose.onNodeWithTag("chassis-compare-status").assertDoesNotExist()
+        compose.runOnIdle {
+            assertEquals(ChassisComparisonResult.Success(ChassisComparison(withoutOffset, withOffset)),
+                model.uiState.value.comparisonResult)
+            assertEquals(1, service.registeredCommandCount)
+            assertEquals(6000f, model.uiState.value.telemetry!!.ehbForceN, 0f)
+        }
+        val comparisonPixels = compose.onNodeWithTag("chassis-compare-chart").captureToImage().toPixelMap()
+        for (color in listOf(Color(0xFF45D6FF), Color(0xFFFFBC5C))) {
+            var count = 0
+            var top = comparisonPixels.height
+            var bottom = 0
+            for (y in 0 until comparisonPixels.height) for (x in 0 until comparisonPixels.width) {
+                if (comparisonPixels[x, y].toArgb() == color.toArgb()) {
+                    count++
+                    top = minOf(top, y)
+                    bottom = maxOf(bottom, y)
+                }
+            }
+            assertTrue(count > 50)
+            assertTrue(bottom - top > comparisonPixels.height * .4f)
+        }
         if (InstrumentationRegistry.getArguments().getString("chassisScreenshot") == "true") {
             val file = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "chassis-compare-ui.png")
             file.outputStream().use {
@@ -579,13 +611,51 @@ class ChassisScreenTest {
         compose.onNodeWithTag("chassis-compare-close").performClick()
         compose.onNodeWithTag("chassis-compare-dialog").assertDoesNotExist()
         compare.performClick()
+        compose.runOnIdle {
+            service.receiveFrame(comparisonFrame.copyOf().apply { this[204] = (this[204].toInt() xor 1).toByte() })
+        }
+        compose.onNodeWithTag("chassis-compare-status")
+            .assertTextEquals("Invalid comparison response. Close and reopen to request again.")
+        compose.onNodeWithTag("chassis-compare-close").performClick()
+        compare.performClick()
+        compose.waitUntil(7_000) {
+            model.uiState.value.comparisonResult == ChassisComparisonResult.Failed(ChassisComparisonError.Timeout)
+        }
+        compose.onNodeWithTag("chassis-compare-status")
+            .assertTextEquals("Comparison timed out. Close and reopen to request again.")
+        compose.onNodeWithTag("chassis-compare-close").performClick()
+        compare.performClick()
+        compose.runOnIdle {
+            model.onCompareClosed()
+            model.onCompareOpened()
+        }
+        compose.waitForIdle()
+        compose.runOnIdle {
+            assertEquals(2, service.registeredCommandCount)
+            service.receiveFrame(comparisonFrame)
+        }
+        compose.waitForIdle()
+        compose.onNodeWithTag("chassis-compare-status").assertDoesNotExist()
+        compose.onNodeWithTag("chassis-compare-close").performClick()
+        compare.performClick()
         androidx.test.espresso.Espresso.pressBack()
         compose.onNodeWithTag("chassis-compare-dialog").assertDoesNotExist()
         offsetSwitch().assertIsOff()
-        compose.runOnIdle { assertTrue(service.writes.isEmpty()) }
+        compose.runOnIdle {
+            assertEquals(1, service.registeredCommandCount)
+            service.receiveFrame(comparisonFrame)
+            assertNull(model.uiState.value.comparisonResult)
+            assertFalse(model.uiState.value.comparisonOpen)
+        }
+        compare.performClick()
         compose.runOnIdle { model.onPageExited() }
         compose.waitForIdle()
-        compose.runOnIdle { assertEquals(0, service.registeredCommandCount) }
+        compose.onNodeWithTag("chassis-compare-dialog").assertDoesNotExist()
+        compose.runOnIdle {
+            assertEquals(0, service.registeredCommandCount)
+            assertEquals(7, service.writes.size)
+            service.writes.forEach { assertArrayEquals(requestFrame, it) }
+        }
     }
 
     private fun mode(name: String) = compose.onNodeWithTag("chassis-control-$name")

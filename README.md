@@ -14,7 +14,8 @@ existing service through the normal app entry flow.
 - Speed is at the upper left and Steering Angle below it. EHB/EMB share the full-height right card, with fixed feedback readings above the plot. EHB is cyan/dashed; EMB is amber/solid and drawn on top. The braking chart shows the latest 3 seconds (`-3s`, `-2s`, `-1s`, `now`); steering retains its 30-second window.
 - EHB and EMB retain separate sliders and inputs. **Set EHB + EMB** edits both targets together and sends them in one frame on **Done/Enter**, with Brake pedal enabled. It shows `--` when the two targets differ.
 - All three cards stay on one screen without vertical scrolling. Input targets never replace measured feedback; current offset remains independently available beside the combined input.
-- **Compare**, to the right of Current offset, opens the EMB offset comparison dialog: a shared 0-500 ms / N chart with cyan dashed (without offset) and amber solid (with offset) series. This is UI-only for now: no `0x40` command is sent and no comparison response is consumed. The chart shows "No comparison data" until the data integration is implemented; no synthetic vehicle readings are shown.
+- **Compare**, to the right of Current offset, opens the EMB offset comparison dialog and sends one `0x40` request. The first 50 returned values are cyan/dashed (without offset); the last 50 are amber/solid (with offset), evenly placed over 0-500 ms. The N axis expands when returned forces exceed the normal control range.
+- Comparison waits up to 5 seconds and displays a failure if the reply is missing or invalid; no partial or synthetic data is plotted. Close and reopen to request again. Closing the dialog or leaving the page unregisters the request without sending a reset or changing controls; normal chassis reports continue independently.
 - Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.
 - Reports are received independently of control enablement, from page entry until its view is destroyed.
 - The title bar shows the reported Ramp percentage as `ramp: 12%` (`ramp: --%` before the first report). Ramp is read-only, with 1 raw unit = 1%; it is not an angle in degrees.
@@ -30,6 +31,7 @@ existing service through the normal app entry flow.
 Mock: set `STCarApplication.inUIDebugMode = true` and rebuild. Chassis injects
 reports every 100 ms while visible; values cycle independently of slider input.
 Disconnect the vehicle: command sending remains real. Set the flag back to `false` for real reports.
+The comparison dialog requires an actual `0x40` reply; the periodic chassis mock does not fabricate comparison results.
 
 ## Code
 
@@ -43,6 +45,13 @@ The report is 23 bytes with length `0x14`: speed, steering, EHB and EMB retain
 their existing offsets; Ramp is a little-endian uint16 at byte offsets 20-21
 (after EMB), followed by the checksum at offset 22. The old 21-byte report is no
 longer accepted.
+`CMDChassisCompare` (`0x40`) sends the parameter-free request `5A 3C 02 40 BD`.
+Its UDP reply is one 205-byte frame: `5A 3C CA 40`, then 100 little-endian uint16
+values (1 raw = 1 N), then the checksum at offset 204. Offsets 4-103 contain
+the 50 values without offset; offsets 104-203 contain the 50 values with offset.
+The 2-byte values apply only to `0x40`; other commands and `ProtocolMessageDispatch`
+are unchanged. This single-frame comparison protocol targets UDP; the existing
+128-byte Bluetooth frame assembler cannot receive it.
 Individual controls remain single-field commands. **Set EHB + EMB** sets validity
 bits `0x0C` and both force fields to the same value in a single `0x3D` frame.
 `CMDChassisEmergencyStop` (`0x3F`, length `0x06`) sends a 4-byte value: `0x55` on, `0x00` off.

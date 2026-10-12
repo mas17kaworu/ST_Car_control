@@ -31,6 +31,8 @@ fun ChassisRoute(
         onEpbToggled = viewModel::onEpbToggled,
         onCurrentOffsetChanged = viewModel::onCurrentOffsetChanged,
         onEmergencyStopToggled = viewModel::onEmergencyStopToggled,
+        onCompareOpened = viewModel::onCompareOpened,
+        onCompareClosed = viewModel::onCompareClosed,
         onDismissError = viewModel::dismissError,
         modifier = modifier
     )
