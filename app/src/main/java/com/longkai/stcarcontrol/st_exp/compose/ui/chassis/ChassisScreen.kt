@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -176,7 +177,7 @@ fun ChassisScreen(
                     ChassisReading(
                         reading = state.telemetry?.steeringAngleDegrees?.let { String.format(Locale.US, "%+.2f", it) } ?: noData,
                         unit = stringResource(R.string.chassis_unit_angle), color = cyan,
-                        tag = "chassis-angle-reading", modifier = Modifier.fillMaxWidth().height(24.dp)
+                        tag = "chassis-angle-reading", modifier = Modifier.fillMaxWidth().heightIn(min = 24.dp)
                     )
                     LiveLineChart(
                         series = angleSeries, range = angleRange,

@@ -12,6 +12,7 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
@@ -51,6 +52,15 @@ class ChassisScreenTest {
         compose.onNodeWithText("EHB / EMB Braking Force").assertIsDisplayed()
         compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+12.34")
         compose.onNodeWithTag("chassis-ehb-reading").assertTextEquals("6800")
+        for (name in listOf("angle", "ehb", "emb")) {
+            val reading = compose.onNodeWithTag("chassis-$name-reading")
+            val layouts = mutableListOf<TextLayoutResult>()
+            reading.performSemanticsAction(SemanticsActions.GetTextLayoutResult) { it(layouts) }
+            val layout = layouts.single()
+            assertFalse("$name reading overflows its text layout", layout.hasVisualOverflow)
+            assertTrue("$name reading is clipped by its container",
+                reading.fetchSemanticsNode().boundsInRoot.height >= layout.size.height - 1f)
+        }
         compose.onNodeWithTag("chassis-ramp-reading").assertIsDisplayed().assertTextEquals("ramp: 12%")
         compose.onNodeWithTag("chassis-combined-brakes-input").assertIsNotEnabled()
         for (name in listOf("speed", "angle", "ehb", "emb")) {
