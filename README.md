@@ -18,7 +18,7 @@ existing service through the normal app entry flow.
 - Comparison waits up to 5 seconds and displays a failure if the reply is missing or invalid; no partial or synthetic data is plotted. Close and reopen to request again. Closing the dialog or leaving the page unregisters the request without sending a reset or changing controls; normal chassis reports continue independently.
 - Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.
 - Reports are received independently of control enablement, from page entry until its view is destroyed.
-- The title bar shows the reported Ramp percentage as `ramp: 12%` (`ramp: --%` before the first report). Ramp is read-only, with 1 raw unit = 1%; it is not an angle in degrees.
+- The upper-right title bar shows `ramp: 12.34%`, then `voltage: 48.36` to its right. Both are read-only, divided by 100 from their reported raw values and displayed with exactly two decimal places. Ramp is a percentage, not an angle; voltage is in volts. Before the first report they show `ramp: --%` and `voltage: --`.
 - EPB and current offset are independent switches; each toggle sends its own command. They start off without sending and are not reset on page exit. Displayed states are local targets, not device feedback.
 - STOP toggles emergency stop on/off independently, with press feedback and a local-state highlight (not device confirmation). It sends nothing on page entry/exit.
 
@@ -41,16 +41,18 @@ The comparison dialog requires an actual `0x40` reply; the periodic chassis mock
 
 Protocol: `communication/commandList/CMDChassisList/` contains
 `CMDChassisControl` (`0x3D`) and `CMDChassisReport` (`0x3E`).
-The report is 23 bytes with length `0x14`: speed, steering, EHB and EMB retain
+The report is 25 bytes with length `0x16`: speed, steering, EHB and EMB retain
 their existing offsets; Ramp is a little-endian uint16 at byte offsets 20-21
-(after EMB), followed by the checksum at offset 22. The old 21-byte report is no
-longer accepted.
+(after EMB), followed by voltage as a little-endian uint16 at offsets 22-23,
+then the checksum at offset 24. Ramp and voltage each use 100 raw units per
+displayed unit (0.01% and 0.01 V per raw unit). The old 21-byte and 23-byte
+reports are no longer accepted.
 `CMDChassisCompare` (`0x40`) sends the parameter-free request `5A 3C 02 40 BD`.
 Its UDP reply is one 205-byte frame: `5A 3C CA 40`, then 100 little-endian uint16
 values (1 raw = 1 N), then the checksum at offset 204. Offsets 4-103 contain
 the 50 values without offset; offsets 104-203 contain the 50 values with offset.
-The 2-byte values apply only to `0x40`; other commands and `ProtocolMessageDispatch`
-are unchanged. This single-frame comparison protocol targets UDP; the existing
+Comparison force samples use 2 bytes; the force fields in `0x3D` and `0x3E`
+remain 4 bytes. `ProtocolMessageDispatch` is unchanged. This single-frame comparison protocol targets UDP; the existing
 128-byte Bluetooth frame assembler cannot receive it.
 Individual controls remain single-field commands. **Set EHB + EMB** sets validity
 bits `0x0C` and both force fields to the same value in a single `0x3D` frame.

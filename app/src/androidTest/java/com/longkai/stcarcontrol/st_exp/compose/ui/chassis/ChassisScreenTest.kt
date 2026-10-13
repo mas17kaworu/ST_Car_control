@@ -61,7 +61,12 @@ class ChassisScreenTest {
             assertTrue("$name reading is clipped by its container",
                 reading.fetchSemanticsNode().boundsInRoot.height >= layout.size.height - 1f)
         }
-        compose.onNodeWithTag("chassis-ramp-reading").assertIsDisplayed().assertTextEquals("ramp: 12%")
+        val ramp = compose.onNodeWithTag("chassis-ramp-reading")
+            .assertIsDisplayed().assertTextEquals("ramp: 12.34%").fetchSemanticsNode().boundsInRoot
+        val voltage = compose.onNodeWithTag("chassis-voltage-reading")
+            .assertIsDisplayed().assertTextEquals("voltage: 48.36").fetchSemanticsNode().boundsInRoot
+        assertTrue(ramp.right < voltage.left)
+        assertEquals(ramp.center.y, voltage.center.y, 1f)
         compose.onNodeWithTag("chassis-combined-brakes-input").assertIsNotEnabled()
         for (name in listOf("speed", "angle", "ehb", "emb")) {
             slider(name).assertIsNotEnabled()
@@ -75,6 +80,13 @@ class ChassisScreenTest {
         compose.runOnIdle {
             assertEquals(1, service.registeredCommandCount)
             assertTrue(service.writes.isEmpty())
+        }
+        for ((raw, formatted) in listOf(0 to "0.00", 1 to "0.01", 1200 to "12.00", 65535 to "655.35")) {
+            compose.runOnIdle {
+                service.receiveReport(CMDChassisReport.Response(12, 1234, 6800, 18600, rampRaw = raw, voltageRaw = raw))
+            }
+            compose.onNodeWithTag("chassis-ramp-reading").assertTextEquals("ramp: $formatted%")
+            compose.onNodeWithTag("chassis-voltage-reading").assertTextEquals("voltage: $formatted")
         }
     }
 
@@ -167,6 +179,7 @@ class ChassisScreenTest {
     fun controlsCanBeEnabledAndUsedBeforeAnyReportArrives() {
         showScreen(withInitialReport = false)
         compose.onNodeWithTag("chassis-ramp-reading").assertTextEquals("ramp: --%")
+        compose.onNodeWithTag("chassis-voltage-reading").assertTextEquals("voltage: --")
         mode("Vehicle").assertIsEnabled().performClick()
         slider("speed").assertIsEnabled()
         val input = compose.onNodeWithTag("chassis-speed-input")
@@ -277,7 +290,7 @@ class ChassisScreenTest {
         offsetSwitch().assertIsOn()
         compose.runOnIdle {
             assertEquals(2, service.writes.size)
-            service.receiveReport(CMDChassisReport.Response(5, 100, 200, 300, rampRaw = 0))
+            service.receiveReport(CMDChassisReport.Response(5, 100, 200, 300, rampRaw = 0, voltageRaw = 0))
         }
         compose.waitForIdle()
         compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+1.00")
@@ -314,7 +327,7 @@ class ChassisScreenTest {
             mode(name).performClick().assertIsSelected()
             stop.assertIsSelected()
         }
-        compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(5, 100, 200, 300, rampRaw = 0)) }
+        compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(5, 100, 200, 300, rampRaw = 0, voltageRaw = 0)) }
         compose.waitForIdle()
         stop.assertIsSelected()
         compose.runOnIdle {
@@ -431,7 +444,7 @@ class ChassisScreenTest {
         slider("angle").assertIsEnabled()
         compose.runOnIdle {
             assertTrue(service.writes.isEmpty())
-            service.receiveReport(CMDChassisReport.Response(7, -12345, 1234, 5678, rampRaw = 0))
+            service.receiveReport(CMDChassisReport.Response(7, -12345, 1234, 5678, rampRaw = 0, voltageRaw = 0))
         }
         compose.waitForIdle()
         compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("-123.45")
@@ -496,7 +509,7 @@ class ChassisScreenTest {
         assertEquals(39, info.steps)
         val gauge = compose.onNodeWithTag("chassis-speed-gauge")
         for (speed in listOf(0, 10, 20)) {
-            compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(speed.toLong(), 0, 0, 0, rampRaw = 0)) }
+            compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(speed.toLong(), 0, 0, 0, rampRaw = 0, voltageRaw = 0)) }
             compose.waitForIdle()
             gauge.assertContentDescriptionEquals("Vehicle Speed: $speed km/h")
             val pixels = gauge.captureToImage().toPixelMap()
@@ -523,12 +536,12 @@ class ChassisScreenTest {
         var timestamp = 0L
         showScreen(Modifier.height(560.dp), withInitialReport = false,
             repository = DefaultChassisRepository(service.manager, clockMillis = { timestamp }))
-        compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(12, 1234, 19000, 18000, rampRaw = 0)) }
+        compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(12, 1234, 19000, 18000, rampRaw = 0, voltageRaw = 4836)) }
         compose.waitForIdle()
         for (second in 1..4) {
             compose.runOnIdle {
                 timestamp = second * 1_000L
-                service.receiveReport(CMDChassisReport.Response(12, 1234, 6000, 12000, rampRaw = 12))
+                service.receiveReport(CMDChassisReport.Response(12, 1234, 6000, 12000, rampRaw = 1234, voltageRaw = 4836))
             }
             compose.waitForIdle()
         }
@@ -687,7 +700,7 @@ class ChassisScreenTest {
         compose.waitForIdle()
         compose.runOnIdle {
             assertEquals(1, service.registeredCommandCount)
-            if (withInitialReport) service.receiveReport(CMDChassisReport.Response(12, 1234, 6800, 18600, rampRaw = 12))
+            if (withInitialReport) service.receiveReport(CMDChassisReport.Response(12, 1234, 6800, 18600, rampRaw = 1234, voltageRaw = 4836))
         }
         compose.waitForIdle()
     }

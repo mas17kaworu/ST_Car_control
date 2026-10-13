@@ -38,13 +38,15 @@ class ChassisDispatchTest {
         val listener = Reports()
         dispatcher.registerRegularCommand(command, listener)
         assertTrue(connection.writes.isEmpty())
-        dispatcher.onReceive(frame(), 0, 23)
-        dispatcher.onReceive(frame(), 0, 23)
+        dispatcher.onReceive(frame(), 0, 25)
+        dispatcher.onReceive(frame(), 0, 25)
         assertEquals(2, listener.samples.size)
         assertEquals(0x8034, listener.samples.last().rampRaw)
+        assertEquals(0xCDEF, listener.samples.last().voltageRaw)
+        assertArrayEquals(frame(), listener.samples.last().mockResponse())
         assertEquals(0, listener.errors)
         dispatcher.unregisterRegularCommand(command)
-        dispatcher.onReceive(frame(), 0, 23)
+        dispatcher.onReceive(frame(), 0, 25)
         assertEquals(2, listener.samples.size)
         assertTrue(connection.writes.isEmpty())
     }
@@ -54,11 +56,11 @@ class ChassisDispatchTest {
         val dispatcher = ProtocolMessageDispatch(RecordingConnection())
         val listener = Reports()
         dispatcher.registerRegularCommand(CMDChassisReport(), listener)
-        val corrupt = frame().apply { this[22] = (this[22].toInt() xor 1).toByte() }
+        val corrupt = frame().apply { this[24] = (this[24].toInt() xor 1).toByte() }
         dispatcher.onReceive(corrupt, 0, corrupt.size)
         assertEquals(1, listener.errors)
         assertTrue(listener.samples.isEmpty())
-        dispatcher.onReceive(frame(), 0, 23)
+        dispatcher.onReceive(frame(), 0, 25)
         assertEquals(1, listener.samples.size)
 
         val comparison = CMDChassisCompare()
@@ -98,10 +100,10 @@ class ChassisDispatchTest {
     }
 
     private fun frame(): ByteArray = byteArrayOf(
-        0x5A, 0x3C, 0x14, 0x3E,
+        0x5A, 0x3C, 0x16, 0x3E,
         20, 0, 0, 0, 0x10, 0x27, 0, 0,
-        0x20, 0x4E, 0, 0, 0x10, 0x27, 0, 0, 0x34, 0x80.toByte(), 0,
-    ).apply { this[22] = CheckSumBit.checkSum(this, 22) }
+        0x20, 0x4E, 0, 0, 0x10, 0x27, 0, 0, 0x34, 0x80.toByte(), 0xEF.toByte(), 0xCD.toByte(), 0,
+    ).apply { this[24] = CheckSumBit.checkSum(this, 24) }
 
     private class Reports : CommandListenerAdapter<CMDChassisReport.Response>() {
         val samples = mutableListOf<CMDChassisReport.Response>()

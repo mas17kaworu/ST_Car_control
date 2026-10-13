@@ -138,17 +138,18 @@ class ChassisRepositoryTest {
             service.awaitIdle()
             assertEquals(1, service.registeredCommandCount)
             assertTrue(samples.isEmpty())
-            service.receiveReport(CMDChassisReport.Response(20, -54_000, 20_000, 15_000, rampRaw = 12))
-            service.receiveReport(CMDChassisReport.Response(21, 1234, 20_001, 0, rampRaw = 0x8000))
-            service.receiveReport(CMDChassisReport.Response(-20, 0, 0xFFFF_FFFFL, 0xFFFF_FFFFL, rampRaw = 0xFFFF))
-            service.receiveReport(CMDChassisReport.Response(-21, 0, 0, 0, rampRaw = 0))
+            service.receiveReport(CMDChassisReport.Response(20, -54_000, 20_000, 15_000, rampRaw = 12, voltageRaw = 4836))
+            service.receiveReport(CMDChassisReport.Response(21, 1234, 20_001, 0, rampRaw = 0x8000, voltageRaw = 0xFFFF))
+            service.receiveReport(CMDChassisReport.Response(-20, 0, 0xFFFF_FFFFL, 0xFFFF_FFFFL, rampRaw = 0xFFFF, voltageRaw = 0x8000))
+            service.receiveReport(CMDChassisReport.Response(-21, 0, 0, 0, rampRaw = 0, voltageRaw = 1))
             service.awaitIdle()
             assertEquals(
                 listOf(
-                    ChassisTelemetry(123, 20f, -540f, 20_000f, 15_000f, rampPercent = 12),
-                    ChassisTelemetry(123, 21f, 12.34f, 20_001f, 0f, rampPercent = 32768),
-                    ChassisTelemetry(123, -20f, 0f, 0xFFFF_FFFFL.toFloat(), 0xFFFF_FFFFL.toFloat(), rampPercent = 65535),
-                    ChassisTelemetry(123, -21f, 0f, 0f, 0f, rampPercent = 0),
+                    ChassisTelemetry(123, 20f, -540f, 20_000f, 15_000f, rampPercent = 0.12f, voltageV = 48.36f),
+                    ChassisTelemetry(123, 21f, 12.34f, 20_001f, 0f, rampPercent = 327.68f, voltageV = 655.35f),
+                    ChassisTelemetry(123, -20f, 0f, 0xFFFF_FFFFL.toFloat(), 0xFFFF_FFFFL.toFloat(),
+                        rampPercent = 655.35f, voltageV = 327.68f),
+                    ChassisTelemetry(123, -21f, 0f, 0f, 0f, rampPercent = 0f, voltageV = 0.01f),
                 ),
                 samples
             )
@@ -157,7 +158,7 @@ class ChassisRepositoryTest {
             service.awaitIdle()
         }
         assertEquals(0, service.registeredCommandCount)
-        service.receiveReport(CMDChassisReport.Response(0, 0, 0, 0, rampRaw = 0))
+        service.receiveReport(CMDChassisReport.Response(0, 0, 0, 0, rampRaw = 0, voltageRaw = 0))
         service.awaitIdle()
         assertEquals(4, samples.size)
         assertTrue(service.writes.isEmpty())
@@ -183,8 +184,9 @@ class ChassisRepositoryTest {
             assertEquals(10f, samples[150].speedKph, 0f)
             assertEquals(0f, samples.last().speedKph, 0f)
             assertTrue(samples.all { it.speedKph in 0f..20f })
-            assertTrue(samples.all { it.rampPercent in 0..20 })
-            assertEquals(20, samples[60].rampPercent)
+            assertTrue(samples.all { it.rampPercent in 0f..20f })
+            assertEquals(20f, samples[60].rampPercent, 0f)
+            assertTrue(samples.all { it.voltageV == 48.36f })
             assertTrue(service.writes.isEmpty())
         } finally {
             mock.stop()
@@ -200,18 +202,24 @@ class ChassisRepositoryTest {
         val collection = launch(Dispatchers.Main) { repository.telemetry.collect { samples += it } }
         try {
             service.awaitIdle()
-            val corrupt = ByteArray(23).apply {
+            val corrupt = ByteArray(25).apply {
                 this[0] = 0x5A
                 this[1] = 0x3C
-                this[2] = 0x14
+                this[2] = 0x16
                 this[3] = 0x3E
-                this[22] = (CheckSumBit.checkSum(this, 22).toInt() xor 1).toByte()
+                this[24] = (CheckSumBit.checkSum(this, 24).toInt() xor 1).toByte()
             }
             service.receiveFrame(corrupt)
+            for (size in listOf(21, 23)) {
+                service.receiveFrame(corrupt.copyOf(size).apply {
+                    this[2] = (size - 3).toByte()
+                    this[size - 1] = CheckSumBit.checkSum(this, size - 1)
+                })
+            }
             service.awaitIdle()
             assertTrue(samples.isEmpty())
             assertEquals(1, service.registeredCommandCount)
-            service.receiveReport(CMDChassisReport.Response(5, 123, 456, 789, rampRaw = 12))
+            service.receiveReport(CMDChassisReport.Response(5, 123, 456, 789, rampRaw = 12, voltageRaw = 4836))
             service.awaitIdle()
             assertEquals(1, samples.size)
             assertEquals(1.23f, samples.single().steeringAngleDegrees, 0f)

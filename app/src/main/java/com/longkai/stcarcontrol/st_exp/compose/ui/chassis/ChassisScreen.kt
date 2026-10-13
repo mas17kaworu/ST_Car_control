@@ -120,11 +120,20 @@ fun ChassisScreen(
                 modifier = Modifier.weight(1f)
             )
             Text(
-                stringResource(R.string.chassis_ramp, state.telemetry?.rampPercent?.toString() ?: noData),
+                stringResource(R.string.chassis_ramp,
+                    state.telemetry?.rampPercent?.let { String.format(Locale.US, "%.2f", it) } ?: noData),
                 fontSize = 14.sp,
                 color = Color(0xFFB8CAD5),
                 maxLines = 1,
                 modifier = Modifier.testTag("chassis-ramp-reading")
+            )
+            Text(
+                stringResource(R.string.chassis_voltage,
+                    state.telemetry?.voltageV?.let { String.format(Locale.US, "%.2f", it) } ?: noData),
+                fontSize = 14.sp,
+                color = Color(0xFFB8CAD5),
+                maxLines = 1,
+                modifier = Modifier.testTag("chassis-voltage-reading")
             )
             if (state.isDemo) {
                 Text(

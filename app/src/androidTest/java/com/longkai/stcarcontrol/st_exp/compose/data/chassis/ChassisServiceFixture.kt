@@ -60,13 +60,13 @@ class ChassisServiceFixture : AutoCloseable {
     }
 
     fun receiveReport(response: CMDChassisReport.Response) {
-        val frame = ByteBuffer.allocate(23).order(ByteOrder.LITTLE_ENDIAN)
-            .put(0x5A.toByte()).put(0x3C.toByte()).put(0x14.toByte()).put(0x3E.toByte())
+        val frame = ByteBuffer.allocate(25).order(ByteOrder.LITTLE_ENDIAN)
+            .put(0x5A.toByte()).put(0x3C.toByte()).put(0x16.toByte()).put(0x3E.toByte())
             .putInt(response.speedRaw.toInt()).putInt(response.steeringRaw)
             .putInt(response.ehbForceRaw.toInt()).putInt(response.embForceRaw.toInt())
-            .putShort(response.rampRaw.toShort())
+            .putShort(response.rampRaw.toShort()).putShort(response.voltageRaw.toShort())
             .put(0.toByte()).array()
-        frame[22] = CheckSumBit.checkSum(frame, 22)
+        frame[24] = CheckSumBit.checkSum(frame, 24)
         receiveFrame(frame)
     }
 

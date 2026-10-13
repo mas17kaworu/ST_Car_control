@@ -34,6 +34,7 @@ class CMDChassisReport : BaseCommand() {
             ehbForceRaw = byteArrayToInt(data, 12).toLong() and 0xFFFF_FFFFL,
             embForceRaw = byteArrayToInt(data, 16).toLong() and 0xFFFF_FFFFL,
             rampRaw = (data[20].toInt() and 0xFF) or ((data[21].toInt() and 0xFF) shl 8),
+            voltageRaw = (data[22].toInt() and 0xFF) or ((data[23].toInt() and 0xFF) shl 8),
         )
     }
 
@@ -43,9 +44,11 @@ class CMDChassisReport : BaseCommand() {
         val ehbForceRaw: Long,
         val embForceRaw: Long,
         val rampRaw: Int,
+        val voltageRaw: Int,
     ) : BaseResponse(COMMAND_CHASSIS_REPORT) {
         init {
             require(rampRaw in 0..0xFFFF) { "Ramp must fit uint16" }
+            require(voltageRaw in 0..0xFFFF) { "Voltage must fit uint16" }
         }
 
         override fun mockResponse(): ByteArray =
@@ -54,14 +57,14 @@ class CMDChassisReport : BaseCommand() {
                 .put(FRAME_LENGTH.toByte()).put(COMMAND_CHASSIS_REPORT)
                 .putInt(speedRaw.toInt()).putInt(steeringRaw)
                 .putInt(ehbForceRaw.toInt()).putInt(embForceRaw.toInt())
-                .putShort(rampRaw.toShort())
+                .putShort(rampRaw.toShort()).putShort(voltageRaw.toShort())
                 .array().apply {
                     this[FRAME_SIZE - 1] = CheckSumBit.checkSum(this, FRAME_SIZE - 1)
                 }
     }
 
     private companion object {
-        const val FRAME_LENGTH = 0x14
+        const val FRAME_LENGTH = 0x16
         const val FRAME_SIZE = FRAME_LENGTH + 3
     }
 }

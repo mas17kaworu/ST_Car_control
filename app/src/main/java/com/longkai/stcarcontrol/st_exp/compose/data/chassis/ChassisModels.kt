@@ -6,7 +6,8 @@ data class ChassisTelemetry(
     val steeringAngleDegrees: Float,
     val ehbForceN: Float,
     val embForceN: Float,
-    val rampPercent: Int,
+    val rampPercent: Float,
+    val voltageV: Float,
 )
 
 /** Targets in physical units, never substituted for measured feedback. */
