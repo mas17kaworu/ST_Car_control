@@ -11,14 +11,15 @@ existing service through the normal app entry flow.
 - Vehicle enables speed, Steering enables angle, and Brake pedal enables EHB/EMB. Release a slider to send only that field.
 - Speed commands remain -20 to 20 km/h. Speed feedback is nonnegative, so the gauge displays 0 to 20 km/h; mock speed reports use the same nonnegative range.
 - Each input sets the exact target in the same range and step as its slider. Press keyboard **Done/Enter** to send; typing or leaving the input never sends. Invalid input is rejected.
-- Speed is at the upper left and Steering Angle below it. EHB/EMB share the full-height right card, with fixed feedback readings above the plot. EHB is cyan/dashed; EMB is amber/solid and drawn on top. The braking chart shows the latest 3 seconds (`-3s`, `-2s`, `-1s`, `now`); steering retains its 30-second window.
+- Speed is at the upper left and Steering Angle below it. EHB/EMB share the full-height right card, with fixed feedback readings above the plot. EHB is cyan/dashed; EMB is amber/solid and drawn on top. The braking chart shows the latest 1 second (`-1s`, `now`); steering shows the latest 10 seconds (`-10s`, `-5s`, `now`).
+- History is retained by monotonic receive timestamps, not a fixed sample count, so changing the report frequency does not shorten the visible time span. One sample before the window is kept to connect the curve at the left edge. Charts advance with new reports and pause when reports stop.
 - EHB and EMB retain separate sliders and inputs. **Set EHB + EMB** edits both targets together and sends them in one frame on **Done/Enter**, with Brake pedal enabled. It shows `--` when the two targets differ.
 - All three cards stay on one screen without vertical scrolling. Input targets never replace measured feedback; current offset remains independently available beside the combined input.
 - **Compare**, to the right of Current offset, opens the EMB offset comparison dialog and sends one `0x40` request. The first 50 returned values are cyan/dashed (without offset); the last 50 are amber/solid (with offset), evenly placed over 0-500 ms. The N axis expands when returned forces exceed the normal control range.
 - Comparison waits up to 5 seconds and displays a failure if the reply is missing or invalid; no partial or synthetic data is plotted. Close and reopen to request again. Closing the dialog or leaving the page unregisters the request without sending a reset or changing controls; normal chassis reports continue independently.
 - Locking does not reset the vehicle or cancel submitted commands. Enabling does not resend old targets.
 - Reports are received independently of control enablement, from page entry until its view is destroyed.
-- The upper-right title bar shows `ramp: 12.34%`, then `voltage: 48.36` to its right. Both are read-only, divided by 100 from their reported raw values and displayed with exactly two decimal places. Ramp is a percentage, not an angle; voltage is in volts. Before the first report they show `ramp: --%` and `voltage: --`.
+- The upper-right title bar shows `ramp: 12.34%`, then `voltage: 48.30 V` to its right. Both are read-only and displayed with exactly two decimal places. Ramp is divided by 100 from its raw value and is a percentage, not an angle; voltage is divided by 10 and is in volts. Before the first report they show `ramp: --%` and `voltage: -- V`.
 - EPB and current offset are independent switches; each toggle sends its own command. They start off without sending and are not reset on page exit. Displayed states are local targets, not device feedback.
 - STOP toggles emergency stop on/off independently, with press feedback and a local-state highlight (not device confirmation). It sends nothing on page entry/exit.
 
@@ -44,8 +45,8 @@ Protocol: `communication/commandList/CMDChassisList/` contains
 The report is 25 bytes with length `0x16`: speed, steering, EHB and EMB retain
 their existing offsets; Ramp is a little-endian uint16 at byte offsets 20-21
 (after EMB), followed by voltage as a little-endian uint16 at offsets 22-23,
-then the checksum at offset 24. Ramp and voltage each use 100 raw units per
-displayed unit (0.01% and 0.01 V per raw unit). The old 21-byte and 23-byte
+then the checksum at offset 24. Ramp uses 100 raw units per percent (0.01% per
+raw unit); voltage uses 10 raw units per volt (0.1 V per raw unit). The old 21-byte and 23-byte
 reports are no longer accepted.
 `CMDChassisCompare` (`0x40`) sends the parameter-free request `5A 3C 02 40 BD`.
 Its UDP reply is one 205-byte frame: `5A 3C CA 40`, then 100 little-endian uint16

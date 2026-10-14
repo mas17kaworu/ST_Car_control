@@ -18,7 +18,7 @@ private fun ChassisPreview() {
             ehbForceN = 10_000f + wave * 8_000f,
             embForceN = 10_000f + sin(index * .08 + .5).toFloat() * 8_000f,
             rampPercent = 12.34f,
-            voltageV = 48.36f
+            voltageV = 48.3f
         )
     }
     STCarTheme {

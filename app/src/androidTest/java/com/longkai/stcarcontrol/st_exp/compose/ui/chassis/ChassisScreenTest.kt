@@ -64,7 +64,7 @@ class ChassisScreenTest {
         val ramp = compose.onNodeWithTag("chassis-ramp-reading")
             .assertIsDisplayed().assertTextEquals("ramp: 12.34%").fetchSemanticsNode().boundsInRoot
         val voltage = compose.onNodeWithTag("chassis-voltage-reading")
-            .assertIsDisplayed().assertTextEquals("voltage: 48.36").fetchSemanticsNode().boundsInRoot
+            .assertIsDisplayed().assertTextEquals("voltage: 483.60 V").fetchSemanticsNode().boundsInRoot
         assertTrue(ramp.right < voltage.left)
         assertEquals(ramp.center.y, voltage.center.y, 1f)
         compose.onNodeWithTag("chassis-combined-brakes-input").assertIsNotEnabled()
@@ -81,12 +81,15 @@ class ChassisScreenTest {
             assertEquals(1, service.registeredCommandCount)
             assertTrue(service.writes.isEmpty())
         }
-        for ((raw, formatted) in listOf(0 to "0.00", 1 to "0.01", 1200 to "12.00", 65535 to "655.35")) {
+        for ((raw, rampText, voltageText) in listOf(
+            Triple(0, "0.00", "0.00"), Triple(1, "0.01", "0.10"),
+            Triple(1200, "12.00", "120.00"), Triple(65535, "655.35", "6553.50")
+        )) {
             compose.runOnIdle {
                 service.receiveReport(CMDChassisReport.Response(12, 1234, 6800, 18600, rampRaw = raw, voltageRaw = raw))
             }
-            compose.onNodeWithTag("chassis-ramp-reading").assertTextEquals("ramp: $formatted%")
-            compose.onNodeWithTag("chassis-voltage-reading").assertTextEquals("voltage: $formatted")
+            compose.onNodeWithTag("chassis-ramp-reading").assertTextEquals("ramp: $rampText%")
+            compose.onNodeWithTag("chassis-voltage-reading").assertTextEquals("voltage: $voltageText V")
         }
     }
 
@@ -179,7 +182,7 @@ class ChassisScreenTest {
     fun controlsCanBeEnabledAndUsedBeforeAnyReportArrives() {
         showScreen(withInitialReport = false)
         compose.onNodeWithTag("chassis-ramp-reading").assertTextEquals("ramp: --%")
-        compose.onNodeWithTag("chassis-voltage-reading").assertTextEquals("voltage: --")
+        compose.onNodeWithTag("chassis-voltage-reading").assertTextEquals("voltage: -- V")
         mode("Vehicle").assertIsEnabled().performClick()
         slider("speed").assertIsEnabled()
         val input = compose.onNodeWithTag("chassis-speed-input")
@@ -541,7 +544,9 @@ class ChassisScreenTest {
         for (second in 1..4) {
             compose.runOnIdle {
                 timestamp = second * 1_000L
-                service.receiveReport(CMDChassisReport.Response(12, 1234, 6000, 12000, rampRaw = 1234, voltageRaw = 4836))
+                service.receiveReport(CMDChassisReport.Response(12, 1234,
+                    if (second <= 2) 19000 else 6000, if (second <= 2) 18000 else 12000,
+                    rampRaw = 1234, voltageRaw = 4836))
             }
             compose.waitForIdle()
         }
@@ -556,7 +561,7 @@ class ChassisScreenTest {
         assertEquals(speed.top, braking.top, 1f)
         assertEquals(angle.bottom, braking.bottom, 1f)
         val chart = compose.onNodeWithTag("chassis-braking-chart")
-        chart.assertTextEquals("-3s -2s -1s now")
+        chart.assertTextEquals("-1s now")
         val pixels = chart.captureToImage().toPixelMap()
         for (color in listOf(Color(0xFF45D6FF), Color(0xFFFFBC5C))) {
             val points = mutableListOf<Pair<Int, Int>>()
@@ -567,6 +572,39 @@ class ChassisScreenTest {
             assertTrue(points.maxOf { it.first } - points.minOf { it.first } > pixels.width * .75f)
             assertTrue(points.maxOf { it.second } - points.minOf { it.second } < pixels.height * .05f)
         }
+        val receivedTimes = (0..4).map { it * 1_000L }.toMutableList()
+        for (intervalMillis in listOf(10L, 5L, 20L)) {
+            repeat(6) {
+                compose.runOnIdle {
+                    repeat(100) {
+                        timestamp += intervalMillis
+                        receivedTimes += timestamp
+                        service.receiveReport(CMDChassisReport.Response(12, 1234, 6000, 12000,
+                            rampRaw = 1234, voltageRaw = 4836))
+                    }
+                }
+                compose.waitForIdle()
+            }
+            compose.runOnIdle {
+                val cutoff = timestamp - 10_000L
+                val expectedTimes = listOfNotNull(receivedTimes.lastOrNull { it < cutoff }) +
+                    receivedTimes.filter { it >= cutoff }
+                assertEquals(expectedTimes, model.uiState.value.history.map { it.timestampMillis })
+            }
+        }
+        val angleChart = compose.onNodeWithTag("chassis-angle-chart")
+        angleChart.assertTextEquals("-10s -5s now")
+        val anglePixels = angleChart.captureToImage().toPixelMap()
+        var firstCurveX = anglePixels.width
+        var lastCurveX = -1
+        for (y in 0 until anglePixels.height) for (x in 0 until anglePixels.width) {
+            if (anglePixels[x, y].toArgb() == Color(0xFF3ABEE5).toArgb()) {
+                firstCurveX = minOf(firstCurveX, x)
+                lastCurveX = maxOf(lastCurveX, x)
+            }
+        }
+        assertTrue("Steering history should span the plot after receiving more than 10 seconds of reports",
+            lastCurveX - firstCurveX > anglePixels.width * .8f)
         compose.onNodeWithTag("chassis-current-offset").assertIsDisplayed()
         compose.onNodeWithTag("chassis-control-bar").assertIsDisplayed()
         compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange))

@@ -191,7 +191,8 @@ fun ChassisScreen(
                     LiveLineChart(
                         series = angleSeries, range = angleRange,
                         description = angleTitle, tag = "chassis-angle-chart",
-                        modifier = Modifier.fillMaxWidth().weight(1f)
+                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        windowSeconds = ChassisViewModel.HISTORY_WINDOW_SECONDS
                     )
                 }
             }
@@ -293,7 +294,7 @@ fun ChassisScreen(
                     series = brakeSeries, range = brakeRange,
                     description = brakeTitle, tag = "chassis-braking-chart",
                     modifier = Modifier.fillMaxWidth().weight(1f),
-                    windowSeconds = 3, timeIntervals = 3
+                    windowSeconds = 1, timeIntervals = 1
                 )
             }
         }

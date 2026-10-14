@@ -23,7 +23,7 @@ class VCUChassisFragmentMock(handler: Handler) : MockFragmentBase(handler) {
             ehbForceRaw = triangle(60, 20_000),
             embForceRaw = triangle(90, 20_000),
             rampRaw = triangle(60, 2_000).toInt(),
-            voltageRaw = 4_836
+            voltageRaw = 483
         ).mockResponse()
         dispatcher.onReceive(frame, 0, frame.size)
         tick++

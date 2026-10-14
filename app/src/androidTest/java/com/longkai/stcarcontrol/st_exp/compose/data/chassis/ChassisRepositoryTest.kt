@@ -145,11 +145,11 @@ class ChassisRepositoryTest {
             service.awaitIdle()
             assertEquals(
                 listOf(
-                    ChassisTelemetry(123, 20f, -540f, 20_000f, 15_000f, rampPercent = 0.12f, voltageV = 48.36f),
-                    ChassisTelemetry(123, 21f, 12.34f, 20_001f, 0f, rampPercent = 327.68f, voltageV = 655.35f),
+                    ChassisTelemetry(123, 20f, -540f, 20_000f, 15_000f, rampPercent = 0.12f, voltageV = 483.6f),
+                    ChassisTelemetry(123, 21f, 12.34f, 20_001f, 0f, rampPercent = 327.68f, voltageV = 6553.5f),
                     ChassisTelemetry(123, -20f, 0f, 0xFFFF_FFFFL.toFloat(), 0xFFFF_FFFFL.toFloat(),
-                        rampPercent = 655.35f, voltageV = 327.68f),
-                    ChassisTelemetry(123, -21f, 0f, 0f, 0f, rampPercent = 0f, voltageV = 0.01f),
+                        rampPercent = 655.35f, voltageV = 3276.8f),
+                    ChassisTelemetry(123, -21f, 0f, 0f, 0f, rampPercent = 0f, voltageV = 0.1f),
                 ),
                 samples
             )
@@ -186,7 +186,7 @@ class ChassisRepositoryTest {
             assertTrue(samples.all { it.speedKph in 0f..20f })
             assertTrue(samples.all { it.rampPercent in 0f..20f })
             assertEquals(20f, samples[60].rampPercent, 0f)
-            assertTrue(samples.all { it.voltageV == 48.36f })
+            assertTrue(samples.all { it.voltageV == 48.3f })
             assertTrue(service.writes.isEmpty())
         } finally {
             mock.stop()

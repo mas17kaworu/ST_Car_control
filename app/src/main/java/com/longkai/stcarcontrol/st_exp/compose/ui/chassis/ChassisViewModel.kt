@@ -194,13 +194,17 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
         mutableUiState.update { state ->
             if (state.telemetry != null && sample.timestampMillis < state.telemetry.timestampMillis) state
             else {
-                val recent = state.history.filter {
-                    sample.timestampMillis - it.timestampMillis in 0L..HISTORY_WINDOW_MILLIS &&
-                        it.timestampMillis != sample.timestampMillis
+                val windowStart = sample.timestampMillis - HISTORY_WINDOW_MILLIS
+                // Retain one sample before the window to connect the curve across its left edge.
+                val firstRetained = state.history.indexOfLast {
+                    it.timestampMillis < windowStart
+                }.coerceAtLeast(0)
+                val recent = state.history.subList(firstRetained, state.history.size).filter {
+                    it.timestampMillis != sample.timestampMillis
                 }
                 state.copy(
                     telemetry = sample,
-                    history = Collections.unmodifiableList(recent.takeLast(HISTORY_MAX_POINTS - 1) + sample),
+                    history = Collections.unmodifiableList(recent + sample),
                 )
             }
         }
@@ -212,8 +216,8 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
     }
 
     companion object {
-        const val HISTORY_WINDOW_MILLIS = 30_000L
-        const val HISTORY_MAX_POINTS = 300
+        const val HISTORY_WINDOW_SECONDS = 10
+        const val HISTORY_WINDOW_MILLIS = HISTORY_WINDOW_SECONDS * 1_000L
 
         fun provideFactory(repository: ChassisRepository): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
