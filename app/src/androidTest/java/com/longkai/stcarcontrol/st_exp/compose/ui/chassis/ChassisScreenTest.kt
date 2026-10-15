@@ -1,6 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.chassis
 
 import android.graphics.Bitmap
+import android.os.Looper
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -22,12 +23,21 @@ import com.longkai.stcarcontrol.st_exp.communication.utils.CheckSumBit
 import com.longkai.stcarcontrol.st_exp.communication.utils.byteArrayToInt
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.*
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.STCarTheme
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 
 class ChassisScreenTest {
     @get:Rule val compose = createComposeRule()
@@ -40,7 +50,7 @@ class ChassisScreenTest {
     @After fun close() {
         try {
             compose.runOnIdle { store.clear() }
-            compose.waitForIdle()
+            compose.waitUntil(5_000) { service.registeredCommandCount == 0 }
         } finally {
             if (::service.isInitialized) service.close()
         }
@@ -88,6 +98,7 @@ class ChassisScreenTest {
             compose.runOnIdle {
                 service.receiveReport(CMDChassisReport.Response(12, 1234, 6800, 18600, rampRaw = raw, voltageRaw = raw))
             }
+            compose.waitUntil(5_000) { model.telemetryState.value.telemetry?.rampPercent == raw / 100f }
             compose.onNodeWithTag("chassis-ramp-reading").assertTextEquals("ramp: $rampText%")
             compose.onNodeWithTag("chassis-voltage-reading").assertTextEquals("voltage: $voltageText V")
         }
@@ -191,7 +202,7 @@ class ChassisScreenTest {
         compose.runOnIdle { assertTrue(service.writes.isEmpty()) }
         input.performImeAction()
         compose.runOnIdle {
-            assertNull(model.uiState.value.telemetry)
+            assertNull(model.telemetryState.value.telemetry)
             assertNull(model.uiState.value.error)
             assertEquals(1, service.writes.size)
             assertEquals(-7, byteArrayToInt(service.writes.single(), 8))
@@ -226,7 +237,7 @@ class ChassisScreenTest {
             assertEquals(0, byteArrayToInt(frame, 8))
             assertEquals(0, byteArrayToInt(frame, 12))
             assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 26), 24), frame[26])
-            assertNull(model.uiState.value.telemetry)
+            assertNull(model.telemetryState.value.telemetry)
         }
         compose.onNodeWithTag("chassis-ehb-input").performTextReplacement("6000")
         compose.onNodeWithTag("chassis-ehb-input").performImeAction()
@@ -259,7 +270,7 @@ class ChassisScreenTest {
         mode("Epb").assertIsSelected()
         compose.runOnIdle {
             assertTrue(model.uiState.value.enabledControls.isEmpty())
-            assertNull(model.uiState.value.telemetry)
+            assertNull(model.telemetryState.value.telemetry)
             assertEquals(listOf(0x20, 0x10), service.writes.map { byteArrayToInt(it, 4) })
             assertEquals(0x55, service.writes[0][25].toInt())
             assertEquals(0, service.writes[0][24].toInt())
@@ -295,7 +306,7 @@ class ChassisScreenTest {
             assertEquals(2, service.writes.size)
             service.receiveReport(CMDChassisReport.Response(5, 100, 200, 300, rampRaw = 0, voltageRaw = 0))
         }
-        compose.waitForIdle()
+        compose.waitUntil(5_000) { model.telemetryState.value.telemetry?.steeringAngleDegrees == 1f }
         compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("+1.00")
         mode("Vehicle").assertIsSelected()
         var generation = 0L
@@ -339,7 +350,7 @@ class ChassisScreenTest {
             model.onCurrentOffsetChanged(false)
             model.onEmergencyStopToggled()
         }
-        compose.waitForIdle()
+        compose.waitUntil(5_000) { service.registeredCommandCount == 0 }
         compose.runOnIdle {
             assertEquals(0, service.registeredCommandCount)
             assertTrue(model.uiState.value.epbEnabled)
@@ -347,8 +358,12 @@ class ChassisScreenTest {
             assertTrue(model.uiState.value.emergencyStopEnabled)
             assertEquals(3, service.writes.size)
             model.onPageEntered()
+            repeat(20) {
+                model.onPageExited()
+                model.onPageEntered()
+            }
         }
-        compose.waitForIdle()
+        compose.waitUntil(5_000) { service.registeredCommandCount == 1 }
         mode("Epb").assertIsSelected()
         offsetSwitch().assertIsOn()
         stop.assertIsSelected()
@@ -449,7 +464,7 @@ class ChassisScreenTest {
             assertTrue(service.writes.isEmpty())
             service.receiveReport(CMDChassisReport.Response(7, -12345, 1234, 5678, rampRaw = 0, voltageRaw = 0))
         }
-        compose.waitForIdle()
+        compose.waitUntil(5_000) { model.telemetryState.value.telemetry?.steeringAngleDegrees == -123.45f }
         compose.onNodeWithTag("chassis-angle-reading").assertTextEquals("-123.45")
         compose.onNodeWithTag("chassis-emb-reading").assertTextEquals("5678")
         compose.runOnIdle { assertEquals(1, service.registeredCommandCount) }
@@ -465,11 +480,27 @@ class ChassisScreenTest {
             val frame = service.writes.single()
             assertEquals(1, byteArrayToInt(frame, 4))
             assertTrue(byteArrayToInt(frame, 8) in 1..20)
-            assertEquals(12f, model.uiState.value.telemetry!!.speedKph, 0f)
+            assertEquals(12f, model.telemetryState.value.telemetry!!.speedKph, 0f)
         }
         mode("Vehicle").performClick()
         slider("speed").performTouchInput { swipe(centerRight, centerLeft, 200) }
         compose.runOnIdle { assertEquals(1, service.writes.size) }
+        mode("BrakePedal").performClick()
+        for ((index, name) in listOf("ehb", "emb").withIndex()) {
+            val brake = slider(name)
+            brake.performTouchInput {
+                down(centerLeft)
+                moveTo(Offset(width * .63f, center.y))
+            }
+            compose.runOnIdle { assertEquals(1 + index, service.writes.size) }
+            val value = brake.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo].current
+            assertEquals(value.toInt().toFloat(), value, 0f)
+            brake.performTouchInput { up() }
+            compose.runOnIdle {
+                assertEquals(2 + index, service.writes.size)
+                assertEquals(value.toInt(), byteArrayToInt(service.writes.last(), if (name == "ehb") 16 else 20))
+            }
+        }
     }
 
     @Test
@@ -490,7 +521,7 @@ class ChassisScreenTest {
             val info = node.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo]
             assertEquals(case.range, info.range)
             assertEquals((case.range.endInclusive - case.range.start).toInt() - 1, info.steps)
-            for (value in listOf(case.range.endInclusive, case.range.start, 0f)) {
+            for (value in listOf(case.range.endInclusive, case.range.start, 0f, 1f, 2f)) {
                 node.performSemanticsAction(SemanticsActions.SetProgress) { it(value) }
                 compose.runOnIdle {
                     val raw = service.writes.last()
@@ -513,7 +544,7 @@ class ChassisScreenTest {
         val gauge = compose.onNodeWithTag("chassis-speed-gauge")
         for (speed in listOf(0, 10, 20)) {
             compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(speed.toLong(), 0, 0, 0, rampRaw = 0, voltageRaw = 0)) }
-            compose.waitForIdle()
+            compose.waitUntil(5_000) { model.telemetryState.value.telemetry?.speedKph == speed.toFloat() }
             gauge.assertContentDescriptionEquals("Vehicle Speed: $speed km/h")
             val pixels = gauge.captureToImage().toPixelMap()
             var left = 0
@@ -537,10 +568,18 @@ class ChassisScreenTest {
     @Test
     fun chartsRemainReadableAndReceiverIsReleasedOnPageExit() {
         var timestamp = 0L
+        val liveRepository = DefaultChassisRepository(service.manager, clockMillis = { timestamp })
+        val repository = object : ChassisRepository by liveRepository {
+            override val telemetry = liveRepository.telemetry.onEach {
+                assertNotEquals("Telemetry collection must not run on the UI thread",
+                    Looper.getMainLooper(), Looper.myLooper())
+            }
+        }
         showScreen(Modifier.height(560.dp), withInitialReport = false,
-            repository = DefaultChassisRepository(service.manager, clockMillis = { timestamp }))
+            repository = repository)
+        val initialControlState = model.uiState.value
         compose.runOnIdle { service.receiveReport(CMDChassisReport.Response(12, 1234, 19000, 18000, rampRaw = 0, voltageRaw = 4836)) }
-        compose.waitForIdle()
+        compose.waitUntil(5_000) { model.telemetryState.value.telemetry?.timestampMillis == timestamp }
         for (second in 1..4) {
             compose.runOnIdle {
                 timestamp = second * 1_000L
@@ -548,7 +587,7 @@ class ChassisScreenTest {
                     if (second <= 2) 19000 else 6000, if (second <= 2) 18000 else 12000,
                     rampRaw = 1234, voltageRaw = 4836))
             }
-            compose.waitForIdle()
+            compose.waitUntil(5_000) { model.telemetryState.value.telemetry?.timestampMillis == timestamp }
         }
         for (name in listOf("angle", "braking")) {
             compose.onNodeWithTag("chassis-$name-chart").assertIsDisplayed().assertHeightIsAtLeast(70.dp)
@@ -583,13 +622,21 @@ class ChassisScreenTest {
                             rampRaw = 1234, voltageRaw = 4836))
                     }
                 }
-                compose.waitForIdle()
+                compose.waitUntil(5_000) { model.telemetryState.value.telemetry?.timestampMillis == timestamp }
             }
             compose.runOnIdle {
                 val cutoff = timestamp - 10_000L
                 val expectedTimes = listOfNotNull(receivedTimes.lastOrNull { it < cutoff }) +
                     receivedTimes.filter { it >= cutoff }
-                assertEquals(expectedTimes, model.uiState.value.history.map { it.timestampMillis })
+                val feedback = model.telemetryState.value
+                assertEquals(expectedTimes, feedback.history.map { it.timestampMillis })
+                assertEquals(expectedTimes, feedback.steeringPoints.map { it.timestampMillis })
+                val brakeCutoff = timestamp - 1_000L
+                val brakeTimes = listOfNotNull(receivedTimes.lastOrNull { it < brakeCutoff }) +
+                    receivedTimes.filter { it >= brakeCutoff }
+                assertEquals(brakeTimes, feedback.ehbPoints.map { it.timestampMillis })
+                assertEquals(brakeTimes, feedback.embPoints.map { it.timestampMillis })
+                assertSame("Reports must not update control/input state", initialControlState, model.uiState.value)
             }
         }
         val angleChart = compose.onNodeWithTag("chassis-angle-chart")
@@ -605,6 +652,44 @@ class ChassisScreenTest {
         }
         assertTrue("Steering history should span the plot after receiving more than 10 seconds of reports",
             lastCurveX - firstCurveX > anglePixels.width * .8f)
+        mode("BrakePedal").performClick()
+        val input = compose.onNodeWithTag("chassis-ehb-input").performClick()
+        runBlocking {
+            val updates = AtomicInteger()
+            val startTime = System.nanoTime()
+            val monitor = launch(Dispatchers.Default, start = CoroutineStart.UNDISPATCHED) {
+                model.telemetryState.collect { updates.incrementAndGet() }
+            }
+            val traffic = launch(Dispatchers.Default) {
+                repeat(200) {
+                    InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                        timestamp += 10L
+                        service.receiveReport(CMDChassisReport.Response(12, 1234, 6000, 12000,
+                            rampRaw = 1234, voltageRaw = 4836))
+                    }
+                    delay(10)
+                }
+            }
+            try {
+                input.performTextReplacement("1234")
+                input.performTextInput("5")
+                traffic.join()
+                compose.waitUntil(5_000) { model.telemetryState.value.telemetry?.timestampMillis == timestamp }
+                input.assertIsFocused()
+                assertEquals("12345", input.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+                compose.runOnIdle {
+                    assertEquals(12345, model.uiState.value.controls.ehbForceN)
+                    assertTrue("Typing and reports must not send commands", service.writes.isEmpty())
+                }
+                val elapsedMillis = (System.nanoTime() - startTime) / 1_000_000L
+                assertTrue("Display updates must be capped independently of report traffic",
+                    updates.get() <= elapsedMillis / ChassisViewModel.DISPLAY_INTERVAL_MILLIS + 2)
+                assertTrue("Feedback should keep updating while typing", updates.get() > 1)
+            } finally {
+                traffic.cancelAndJoin()
+                monitor.cancelAndJoin()
+            }
+        }
         compose.onNodeWithTag("chassis-current-offset").assertIsDisplayed()
         compose.onNodeWithTag("chassis-control-bar").assertIsDisplayed()
         compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange))
@@ -645,7 +730,7 @@ class ChassisScreenTest {
             assertEquals(ChassisComparisonResult.Success(ChassisComparison(withoutOffset, withOffset)),
                 model.uiState.value.comparisonResult)
             assertEquals(1, service.registeredCommandCount)
-            assertEquals(6000f, model.uiState.value.telemetry!!.ehbForceN, 0f)
+            assertEquals(6000f, model.telemetryState.value.telemetry!!.ehbForceN, 0f)
         }
         val comparisonPixels = compose.onNodeWithTag("chassis-compare-chart").captureToImage().toPixelMap()
         for (color in listOf(Color(0xFF45D6FF), Color(0xFFFFBC5C))) {
@@ -710,7 +795,7 @@ class ChassisScreenTest {
         }
         compare.performClick()
         compose.runOnIdle { model.onPageExited() }
-        compose.waitForIdle()
+        compose.waitUntil(5_000) { service.registeredCommandCount == 0 }
         compose.onNodeWithTag("chassis-compare-dialog").assertDoesNotExist()
         compose.runOnIdle {
             assertEquals(0, service.registeredCommandCount)
@@ -735,10 +820,13 @@ class ChassisScreenTest {
             model.onPageEntered()
         }
         compose.setContent { STCarTheme { ChassisRoute(model, modifier) } }
-        compose.waitForIdle()
+        compose.waitUntil(5_000) { service.registeredCommandCount == 1 }
         compose.runOnIdle {
             assertEquals(1, service.registeredCommandCount)
             if (withInitialReport) service.receiveReport(CMDChassisReport.Response(12, 1234, 6800, 18600, rampRaw = 1234, voltageRaw = 4836))
+        }
+        if (withInitialReport) {
+            compose.waitUntil(5_000) { model.telemetryState.value.telemetry != null }
         }
         compose.waitForIdle()
     }

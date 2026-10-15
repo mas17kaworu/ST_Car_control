@@ -47,6 +47,14 @@ fun ControlSlider(
     activeColor: Color = MaterialTheme.colors.secondary
 ) {
     val color = if (enabled) activeColor else Color(0xFF71838F)
+    fun resolveValue(requested: Float): Float {
+        val clamped = requested.coerceIn(range.start, range.endInclusive)
+        val increment = (range.endInclusive - range.start) / (steps + 1)
+        return if (steps > 0) {
+            (range.start + ((clamped - range.start) / increment).roundToInt() * increment)
+                .coerceIn(range.start, range.endInclusive)
+        } else clamped
+    }
     Row(modifier.height(48.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(startLabel, color = Color(0xFF92A8B8), fontSize = 10.sp)
         Box(Modifier.weight(1f).height(48.dp)) {
@@ -73,10 +81,14 @@ fun ControlSlider(
                 Slider(
                     enabled = enabled,
                     value = value,
-                    onValueChange = onValueChange,
+                    onValueChange = { requested ->
+                        val resolved = resolveValue(requested)
+                        if (resolved != value) onValueChange(resolved)
+                    },
                     onValueChangeFinished = onValueChangeFinished,
                     valueRange = range,
-                    steps = steps,
+                    // Quantize values ourselves; Material otherwise draws thousands of transparent ticks.
+                    steps = 0,
                     colors = SliderDefaults.colors(
                         thumbColor = color,
                         activeTrackColor = Color.Transparent,
@@ -99,11 +111,7 @@ fun ControlSlider(
                             setProgress { requested ->
                                 if (!enabled || !requested.isFinite()) false
                                 else {
-                                    val clamped = requested.coerceIn(range.start, range.endInclusive)
-                                    val increment = (range.endInclusive - range.start) / (steps + 1)
-                                    val resolved = if (steps > 0) {
-                                        range.start + ((clamped - range.start) / increment).roundToInt() * increment
-                                    } else clamped
+                                    val resolved = resolveValue(requested)
                                     if (resolved == value) false
                                     else {
                                         onValueChange(resolved)

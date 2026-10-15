@@ -1,6 +1,8 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.chassis
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisTelemetry
 import com.longkai.stcarcontrol.st_exp.compose.ui.theme.STCarTheme
@@ -23,7 +25,8 @@ private fun ChassisPreview() {
     }
     STCarTheme {
         ChassisScreen(
-            state = ChassisUiState(telemetry = history.last(), history = history),
+            state = ChassisUiState(),
+            telemetryState = remember { mutableStateOf(ChassisTelemetryState.fromHistory(history)) },
             onControlChanged = { _, _, _ -> },
             onControlCommitted = { _, _ -> },
             onControlInputSubmitted = { _, _, _ -> },

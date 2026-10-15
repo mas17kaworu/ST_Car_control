@@ -9,10 +9,12 @@ existing service through the normal app entry flow.
 
 - Controls start locked. **Vehicle**, **Steering**, and **Brake pedal** can be enabled together; click again to lock only that group.
 - Vehicle enables speed, Steering enables angle, and Brake pedal enables EHB/EMB. Release a slider to send only that field.
+- Sliders quantize directly to their configured step instead of generating Material tick marks; EHB/EMB retain 1 N precision, including accessibility adjustments.
 - Speed commands remain -20 to 20 km/h. Speed feedback is nonnegative, so the gauge displays 0 to 20 km/h; mock speed reports use the same nonnegative range.
 - Each input sets the exact target in the same range and step as its slider. Press keyboard **Done/Enter** to send; typing or leaving the input never sends. Invalid input is rejected.
 - Speed is at the upper left and Steering Angle below it. EHB/EMB share the full-height right card, with fixed feedback readings above the plot. EHB is cyan/dashed; EMB is amber/solid and drawn on top. The braking chart shows the latest 1 second (`-1s`, `now`); steering shows the latest 10 seconds (`-10s`, `-5s`, `now`).
 - History is retained by monotonic receive timestamps, not a fixed sample count, so changing the report frequency does not shorten the visible time span. One sample before the window is kept to connect the curve at the left edge. Charts advance with new reports and pause when reports stop.
+- History maintenance and chart-point preparation run off the UI thread. Every received sample is processed before display updates are coalesced to at most approximately 30 Hz (34 ms minimum interval). Telemetry updates only the feedback sections, not input/control state; braking points are prepared from the 1-second window only. Static chart grids and labels are cached separately from the moving curves.
 - EHB and EMB retain separate sliders and inputs. **Set EHB + EMB** edits both targets together and sends them in one frame on **Done/Enter**, with Brake pedal enabled. It shows `--` when the two targets differ.
 - All three cards stay on one screen without vertical scrolling. Input targets never replace measured feedback; current offset remains independently available beside the combined input.
 - **Compare**, to the right of Current offset, opens the EMB offset comparison dialog and sends one `0x40` request. The first 50 returned values are cyan/dashed (without offset); the last 50 are amber/solid (with offset), evenly placed over 0-500 ms. The N axis expands when returned forces exceed the normal control range.

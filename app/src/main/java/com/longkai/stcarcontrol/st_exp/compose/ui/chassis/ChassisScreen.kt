@@ -30,6 +30,7 @@ import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +71,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ChassisScreen(
     state: ChassisUiState,
+    telemetryState: State<ChassisTelemetryState>,
     onControlChanged: (ChassisControlField, Int, Long) -> Unit,
     onControlCommitted: (ChassisControlField, Long) -> Unit,
     onControlInputSubmitted: (ChassisControlField, String, Long) -> Unit,
@@ -89,18 +91,8 @@ fun ChassisScreen(
     val mint = MaterialTheme.colors.secondary
     val ehbColor = Color(0xFF45D6FF)
     val embColor = Color(0xFFFFBC5C)
-    val angleSeries = remember(state.history, cyan) {
-        listOf(ChartSeries(state.history.map { ChartPoint(it.timestampMillis, it.steeringAngleDegrees) }, cyan))
-    }
-    val brakeSeries = remember(state.history) {
-        listOf(
-            ChartSeries(state.history.map { ChartPoint(it.timestampMillis, it.ehbForceN) }, ehbColor, dashed = true),
-            ChartSeries(state.history.map { ChartPoint(it.timestampMillis, it.embForceN) }, embColor)
-        )
-    }
     val angleTitle = stringResource(R.string.chassis_angle)
     val brakeTitle = stringResource(R.string.chassis_braking_force)
-    val noData = stringResource(R.string.chassis_no_data)
     val forceUnit = stringResource(R.string.chassis_unit_force)
     val angleRange = state.config.steeringDegrees.let { it.first.toFloat()..it.last.toFloat() }
     val brakeRange = 0f..maxOf(state.config.ehbForceN.last, state.config.embForceN.last).toFloat()
@@ -119,22 +111,7 @@ fun ChassisScreen(
                 color = Color.White,
                 modifier = Modifier.weight(1f)
             )
-            Text(
-                stringResource(R.string.chassis_ramp,
-                    state.telemetry?.rampPercent?.let { String.format(Locale.US, "%.2f", it) } ?: noData),
-                fontSize = 14.sp,
-                color = Color(0xFFB8CAD5),
-                maxLines = 1,
-                modifier = Modifier.testTag("chassis-ramp-reading")
-            )
-            Text(
-                stringResource(R.string.chassis_voltage,
-                    state.telemetry?.voltageV?.let { String.format(Locale.US, "%.2f", it) } ?: noData),
-                fontSize = 14.sp,
-                color = Color(0xFFB8CAD5),
-                maxLines = 1,
-                modifier = Modifier.testTag("chassis-voltage-reading")
-            )
+            ChassisHeaderReadings(telemetryState)
             if (state.isDemo) {
                 Text(
                     stringResource(R.string.chassis_demo),
@@ -163,7 +140,7 @@ fun ChassisScreen(
                         )
                     }
                 ) {
-                    SpeedGauge(state.telemetry?.speedKph, 0..state.config.speedKph.last, Modifier.fillMaxSize())
+                    ChassisSpeedFeedback(telemetryState, state.config.speedKph.last)
                 }
                 ChassisCard(
                     title = angleTitle,
@@ -183,17 +160,7 @@ fun ChassisScreen(
                         )
                     }
                 ) {
-                    ChassisReading(
-                        reading = state.telemetry?.steeringAngleDegrees?.let { String.format(Locale.US, "%+.2f", it) } ?: noData,
-                        unit = stringResource(R.string.chassis_unit_angle), color = cyan,
-                        tag = "chassis-angle-reading", modifier = Modifier.fillMaxWidth().heightIn(min = 24.dp)
-                    )
-                    LiveLineChart(
-                        series = angleSeries, range = angleRange,
-                        description = angleTitle, tag = "chassis-angle-chart",
-                        modifier = Modifier.fillMaxWidth().weight(1f),
-                        windowSeconds = ChassisViewModel.HISTORY_WINDOW_SECONDS
-                    )
+                    ChassisSteeringFeedback(telemetryState, angleRange, cyan, angleTitle)
                 }
             }
             ChassisCard(
@@ -274,28 +241,7 @@ fun ChassisScreen(
                     }
                 }
             ) {
-                Row(
-                    Modifier.fillMaxWidth().height(44.dp).padding(horizontal = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    BrakeReading(
-                        title = stringResource(R.string.chassis_ehb_short),
-                        reading = state.telemetry?.ehbForceN?.let { String.format(Locale.US, "%.0f", it) } ?: noData,
-                        color = ehbColor, dashed = true, tag = "chassis-ehb-reading", modifier = Modifier.weight(1f)
-                    )
-                    BrakeReading(
-                        title = stringResource(R.string.chassis_emb_short),
-                        reading = state.telemetry?.embForceN?.let { String.format(Locale.US, "%.0f", it) } ?: noData,
-                        color = embColor, dashed = false, tag = "chassis-emb-reading", modifier = Modifier.weight(1f)
-                    )
-                }
-                LiveLineChart(
-                    series = brakeSeries, range = brakeRange,
-                    description = brakeTitle, tag = "chassis-braking-chart",
-                    modifier = Modifier.fillMaxWidth().weight(1f),
-                    windowSeconds = 1, timeIntervals = 1
-                )
+                ChassisBrakeFeedback(telemetryState, brakeRange, ehbColor, embColor, brakeTitle)
             }
         }
         ChassisControlBar(
@@ -349,6 +295,87 @@ fun ChassisScreen(
             }
         )
     }
+}
+
+@Composable
+private fun ChassisHeaderReadings(state: State<ChassisTelemetryState>) {
+    val telemetry = state.value.telemetry
+    val noData = stringResource(R.string.chassis_no_data)
+    Text(
+        stringResource(R.string.chassis_ramp,
+            telemetry?.rampPercent?.let { String.format(Locale.US, "%.2f", it) } ?: noData),
+        fontSize = 14.sp, color = Color(0xFFB8CAD5), maxLines = 1,
+        modifier = Modifier.testTag("chassis-ramp-reading")
+    )
+    Text(
+        stringResource(R.string.chassis_voltage,
+            telemetry?.voltageV?.let { String.format(Locale.US, "%.2f", it) } ?: noData),
+        fontSize = 14.sp, color = Color(0xFFB8CAD5), maxLines = 1,
+        modifier = Modifier.testTag("chassis-voltage-reading")
+    )
+}
+
+@Composable
+private fun ChassisSpeedFeedback(state: State<ChassisTelemetryState>, maximum: Int) {
+    SpeedGauge(state.value.telemetry?.speedKph, 0..maximum, Modifier.fillMaxSize())
+}
+
+@Composable
+private fun ColumnScope.ChassisSteeringFeedback(
+    state: State<ChassisTelemetryState>,
+    range: ClosedFloatingPointRange<Float>,
+    color: Color,
+    title: String
+) {
+    val feedback = state.value
+    val series = remember(feedback.steeringPoints, color) { listOf(ChartSeries(feedback.steeringPoints, color)) }
+    ChassisReading(
+        reading = feedback.telemetry?.steeringAngleDegrees?.let { String.format(Locale.US, "%+.2f", it) }
+            ?: stringResource(R.string.chassis_no_data),
+        unit = stringResource(R.string.chassis_unit_angle), color = color,
+        tag = "chassis-angle-reading", modifier = Modifier.fillMaxWidth().heightIn(min = 24.dp)
+    )
+    LiveLineChart(
+        series = series, range = range, description = title, tag = "chassis-angle-chart",
+        modifier = Modifier.fillMaxWidth().weight(1f),
+        windowSeconds = ChassisViewModel.HISTORY_WINDOW_SECONDS
+    )
+}
+
+@Composable
+private fun ColumnScope.ChassisBrakeFeedback(
+    state: State<ChassisTelemetryState>,
+    range: ClosedFloatingPointRange<Float>,
+    ehbColor: Color,
+    embColor: Color,
+    title: String
+) {
+    val feedback = state.value
+    val noData = stringResource(R.string.chassis_no_data)
+    val series = remember(feedback.ehbPoints, feedback.embPoints, ehbColor, embColor) {
+        listOf(ChartSeries(feedback.ehbPoints, ehbColor, dashed = true), ChartSeries(feedback.embPoints, embColor))
+    }
+    Row(
+        Modifier.fillMaxWidth().height(44.dp).padding(horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        BrakeReading(
+            title = stringResource(R.string.chassis_ehb_short),
+            reading = feedback.telemetry?.ehbForceN?.let { String.format(Locale.US, "%.0f", it) } ?: noData,
+            color = ehbColor, dashed = true, tag = "chassis-ehb-reading", modifier = Modifier.weight(1f)
+        )
+        BrakeReading(
+            title = stringResource(R.string.chassis_emb_short),
+            reading = feedback.telemetry?.embForceN?.let { String.format(Locale.US, "%.0f", it) } ?: noData,
+            color = embColor, dashed = false, tag = "chassis-emb-reading", modifier = Modifier.weight(1f)
+        )
+    }
+    LiveLineChart(
+        series = series, range = range, description = title, tag = "chassis-braking-chart",
+        modifier = Modifier.fillMaxWidth().weight(1f),
+        windowSeconds = ChassisViewModel.BRAKE_WINDOW_SECONDS, timeIntervals = 1
+    )
 }
 
 private fun comparisonPoints(forces: List<Int>): List<ChartPoint> =

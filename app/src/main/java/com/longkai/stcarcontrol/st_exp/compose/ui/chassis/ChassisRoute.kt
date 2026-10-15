@@ -19,9 +19,15 @@ fun ChassisRoute(
         viewModel.uiState.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
     }
     val state by stateFlow.collectAsState(initial = viewModel.uiState.value)
+    val telemetryFlow = remember(viewModel, lifecycle) {
+        viewModel.telemetryState.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+    }
+    // Read this State only inside feedback composables, not in the control/layout composition.
+    val telemetryState = telemetryFlow.collectAsState(initial = viewModel.telemetryState.value)
 
     ChassisScreen(
         state = state,
+        telemetryState = telemetryState,
         onControlChanged = viewModel::onControlChanged,
         onControlCommitted = viewModel::onControlCommitted,
         onControlInputSubmitted = viewModel::onControlInputSubmitted,

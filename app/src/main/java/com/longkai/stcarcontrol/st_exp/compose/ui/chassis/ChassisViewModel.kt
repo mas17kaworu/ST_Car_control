@@ -4,32 +4,55 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.*
-import java.util.Collections
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import java.util.ArrayDeque
 
 class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() {
     private val mutableUiState = MutableStateFlow(
         ChassisUiState(config = repository.config, isDemo = repository.isDemo)
     )
     val uiState = mutableUiState.asStateFlow()
+    private val mutableTelemetryState = MutableStateFlow(ChassisTelemetryState())
+    val telemetryState = mutableTelemetryState.asStateFlow()
     private var pageActive = false
     private val editedFields = mutableSetOf<ChassisControlField>()
     private var reception: Job? = null
+    private val receptionMutex = Mutex()
     private var comparisonRequest: Job? = null
 
     /** Reception belongs to the page, not to a selected send mode or a Compose subscription. */
     fun onPageEntered() {
         if (pageActive) return
         pageActive = true
-        reception = viewModelScope.launch {
-            repository.telemetry.collect { appendTelemetry(it) }
+        reception = viewModelScope.launch(Dispatchers.Default) {
+            // A rapid exit/re-entry must finish unregistering before the next subscription starts.
+            receptionMutex.withLock {
+                val history = ArrayDeque(mutableTelemetryState.value.history)
+                val historyMutex = Mutex()
+                repository.telemetry.onEach { sample ->
+                    historyMutex.withLock { appendTelemetry(history, sample) }
+                }.conflate().collect {
+                    // Only display notifications are conflated; every received sample is stored first.
+                    val snapshot = historyMutex.withLock { history.toList() }
+                    val display = ChassisTelemetryState.fromHistory(snapshot)
+                    ensureActive()
+                    mutableTelemetryState.value = display
+                    delay(DISPLAY_INTERVAL_MILLIS)
+                }
+            }
         }
     }
 
@@ -190,24 +213,18 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
         mutableUiState.update { it.copy(error = null) }
     }
 
-    private fun appendTelemetry(sample: ChassisTelemetry) {
-        mutableUiState.update { state ->
-            if (state.telemetry != null && sample.timestampMillis < state.telemetry.timestampMillis) state
-            else {
-                val windowStart = sample.timestampMillis - HISTORY_WINDOW_MILLIS
-                // Retain one sample before the window to connect the curve across its left edge.
-                val firstRetained = state.history.indexOfLast {
-                    it.timestampMillis < windowStart
-                }.coerceAtLeast(0)
-                val recent = state.history.subList(firstRetained, state.history.size).filter {
-                    it.timestampMillis != sample.timestampMillis
-                }
-                state.copy(
-                    telemetry = sample,
-                    history = Collections.unmodifiableList(recent + sample),
-                )
-            }
+    private fun appendTelemetry(history: ArrayDeque<ChassisTelemetry>, sample: ChassisTelemetry) {
+        val latest = history.peekLast()
+        if (latest != null && sample.timestampMillis < latest.timestampMillis) return
+        if (latest?.timestampMillis == sample.timestampMillis) history.removeLast()
+        history.addLast(sample)
+        val windowStart = sample.timestampMillis - HISTORY_WINDOW_MILLIS
+        var boundary: ChassisTelemetry? = null
+        while (history.isNotEmpty() && history.first.timestampMillis < windowStart) {
+            boundary = history.removeFirst()
         }
+        // Keep the predecessor so the line reaches the window's left edge.
+        boundary?.let { history.addFirst(it) }
     }
 
     override fun onCleared() {
@@ -218,6 +235,8 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
     companion object {
         const val HISTORY_WINDOW_SECONDS = 10
         const val HISTORY_WINDOW_MILLIS = HISTORY_WINDOW_SECONDS * 1_000L
+        const val BRAKE_WINDOW_SECONDS = 1
+        const val DISPLAY_INTERVAL_MILLIS = 34L
 
         fun provideFactory(repository: ChassisRepository): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
