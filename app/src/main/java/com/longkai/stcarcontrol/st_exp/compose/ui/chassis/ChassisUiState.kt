@@ -10,6 +10,11 @@ import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisComparisonRes
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChartPoint
 import java.util.Collections
 
+data class ChassisBrakeResponse(
+    val startedAtMillis: Long,
+    val samples: List<ChassisTelemetry> = emptyList(),
+)
+
 data class ChassisUiState(
     val controls: ChassisControlState = ChassisControlState(),
     val config: ChassisControlConfig = ChassisControlConfig(),
@@ -23,6 +28,7 @@ data class ChassisUiState(
     val error: ChassisError? = null,
     val comparisonOpen: Boolean = false,
     val comparisonResult: ChassisComparisonResult? = null,
+    val brakeResponse: ChassisBrakeResponse? = null,
 ) {
     fun canControl(field: ChassisControlField): Boolean = field.mode in enabledControls
 

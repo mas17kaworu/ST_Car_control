@@ -13,6 +13,9 @@
     <string name="chassis_ehb_short">EHB</string>
     <string name="chassis_emb_short">EMB</string>
     <string name="chassis_combined_brakes">Set EHB + EMB</string>
+    <string name="chassis_brake_response_title">EMB / EHB Response</string>
+    <string name="chassis_brake_response_close">Close response</string>
+    <string name="chassis_brake_response_no_data">No reports received in this 2-second window.</string>
     <string name="chassis_speed_command">Speed command</string>
     <string name="chassis_angle_command">Angle command</string>
     <string name="chassis_ehb_control">EHB control</string>

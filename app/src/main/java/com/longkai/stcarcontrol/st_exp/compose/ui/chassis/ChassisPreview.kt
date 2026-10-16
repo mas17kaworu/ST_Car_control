@@ -38,6 +38,7 @@ private fun ChassisPreview() {
             onEmergencyStopToggled = {},
             onCompareOpened = {},
             onCompareClosed = {},
+            onBrakeResponseClosed = {},
             onDismissError = {}
         )
     }

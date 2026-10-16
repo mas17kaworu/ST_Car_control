@@ -103,8 +103,8 @@ fun ChassisCompareDialog(
                     horizontalArrangement = Arrangement.spacedBy(32.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    ComparisonLegend(stringResource(R.string.chassis_without_offset), withoutColor, dashed = true)
-                    ComparisonLegend(stringResource(R.string.chassis_with_offset), withColor, dashed = false)
+                    ChartLegend(stringResource(R.string.chassis_without_offset), withoutColor, dashed = true)
+                    ChartLegend(stringResource(R.string.chassis_with_offset), withColor, dashed = false)
                 }
                 Surface(
                     modifier = Modifier.fillMaxWidth().weight(1f),
@@ -145,7 +145,7 @@ fun ChassisCompareDialog(
 }
 
 @Composable
-private fun ComparisonLegend(label: String, color: Color, dashed: Boolean) {
+internal fun ChartLegend(label: String, color: Color, dashed: Boolean) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         Canvas(Modifier.width(24.dp).height(10.dp)) {
             drawLine(

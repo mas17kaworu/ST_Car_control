@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.*
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -19,8 +20,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.ArrayDeque
+import java.util.Collections
+import java.util.concurrent.atomic.AtomicReference
 
-class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() {
+class ChassisViewModel(
+    private val repository: ChassisRepository,
+    private val clockMillis: () -> Long = { System.nanoTime() / 1_000_000L },
+    private val receptionDispatcher: CoroutineDispatcher = Dispatchers.Default,
+) : ViewModel() {
     private val mutableUiState = MutableStateFlow(
         ChassisUiState(config = repository.config, isDemo = repository.isDemo)
     )
@@ -32,12 +39,14 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
     private var reception: Job? = null
     private val receptionMutex = Mutex()
     private var comparisonRequest: Job? = null
+    private var brakeResponseRequest: Job? = null
+    private val brakeResponseRecording = AtomicReference<ChassisBrakeResponse?>()
 
     /** Reception belongs to the page, not to a selected send mode or a Compose subscription. */
     fun onPageEntered() {
         if (pageActive) return
         pageActive = true
-        reception = viewModelScope.launch(Dispatchers.Default) {
+        reception = viewModelScope.launch(receptionDispatcher) {
             // A rapid exit/re-entry must finish unregistering before the next subscription starts.
             receptionMutex.withLock {
                 val history = ArrayDeque(mutableTelemetryState.value.history)
@@ -59,6 +68,7 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
     fun onPageExited() {
         pageActive = false
         onCompareClosed()
+        onBrakeResponseClosed()
         lockControls()
         reception?.cancel()
         reception = null
@@ -182,13 +192,34 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
         }
         onCombinedBrakesChanged(value, interactionGeneration)
         editedFields.removeAll(listOf(ChassisControlField.Ehb, ChassisControlField.Emb))
-        viewModelScope.launch {
+        onBrakeResponseClosed()
+        brakeResponseRequest = viewModelScope.launch {
+            val startedAtMillis = clockMillis()
+            // Start before submission so an immediate report is not lost.
+            brakeResponseRecording.set(ChassisBrakeResponse(startedAtMillis))
             val result = repository.submitCombinedBrakes(value)
-            if (result is ChassisCommandResult.Rejected) {
-                lockControls()
-                mutableUiState.update { it.copy(error = result.error) }
+            ensureActive()
+            when (result) {
+                is ChassisCommandResult.Rejected -> {
+                    brakeResponseRecording.set(null)
+                    lockControls()
+                    mutableUiState.update { it.copy(error = result.error) }
+                }
+                ChassisCommandResult.PreviewOnly -> brakeResponseRecording.set(null)
+                ChassisCommandResult.Submitted -> {
+                    delay((startedAtMillis + BRAKE_RESPONSE_WINDOW_MILLIS - clockMillis()).coerceAtLeast(0L))
+                    val response = checkNotNull(brakeResponseRecording.getAndSet(null))
+                    mutableUiState.update { it.copy(brakeResponse = response) }
+                }
             }
         }
+    }
+
+    fun onBrakeResponseClosed() {
+        brakeResponseRequest?.cancel()
+        brakeResponseRequest = null
+        brakeResponseRecording.set(null)
+        mutableUiState.update { it.copy(brakeResponse = null) }
     }
 
     fun onCompareOpened() {
@@ -214,6 +245,12 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
     }
 
     private fun appendTelemetry(history: ArrayDeque<ChassisTelemetry>, sample: ChassisTelemetry) {
+        brakeResponseRecording.updateAndGet { recording ->
+            if (recording != null && sample.timestampMillis in recording.startedAtMillis until
+                (recording.startedAtMillis + BRAKE_RESPONSE_WINDOW_MILLIS)) {
+                recording.copy(samples = Collections.unmodifiableList(recording.samples + sample))
+            } else recording
+        }
         val latest = history.peekLast()
         if (latest != null && sample.timestampMillis < latest.timestampMillis) return
         if (latest?.timestampMillis == sample.timestampMillis) history.removeLast()
@@ -237,6 +274,7 @@ class ChassisViewModel(private val repository: ChassisRepository) : ViewModel() 
         const val HISTORY_WINDOW_MILLIS = HISTORY_WINDOW_SECONDS * 1_000L
         const val BRAKE_WINDOW_SECONDS = 1
         const val DISPLAY_INTERVAL_MILLIS = 34L
+        const val BRAKE_RESPONSE_WINDOW_MILLIS = 2_000L
 
         fun provideFactory(repository: ChassisRepository): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {

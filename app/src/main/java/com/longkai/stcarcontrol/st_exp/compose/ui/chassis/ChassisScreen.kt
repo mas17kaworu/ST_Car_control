@@ -60,6 +60,7 @@ import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisComparisonRes
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChartPoint
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChartSeries
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisCompareDialog
+import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisBrakeResponseDialog
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisControlBar
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ChassisValueInput
 import com.longkai.stcarcontrol.st_exp.compose.ui.chassis.components.ControlSlider
@@ -83,6 +84,7 @@ fun ChassisScreen(
     onEmergencyStopToggled: () -> Unit,
     onCompareOpened: () -> Unit,
     onCompareClosed: () -> Unit,
+    onBrakeResponseClosed: () -> Unit,
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -279,6 +281,19 @@ fun ChassisScreen(
             withoutOffset = withoutOffset, withOffset = withOffset,
             loading = result == null, errorMessage = errorMessage
         )
+    }
+    if (!state.comparisonOpen) {
+        state.brakeResponse?.let { response ->
+            val maximum = maxOf(
+                brakeRange.endInclusive,
+                response.samples.maxOfOrNull { maxOf(it.ehbForceN, it.embForceN) } ?: 0f
+            )
+            ChassisBrakeResponseDialog(
+                response = response,
+                forceRange = 0f..maximum,
+                onDismiss = onBrakeResponseClosed
+            )
+        }
     }
     state.error?.let { error ->
         AlertDialog(
