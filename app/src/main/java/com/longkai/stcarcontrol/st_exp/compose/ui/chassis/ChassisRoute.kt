@@ -39,6 +39,7 @@ fun ChassisRoute(
         onEmergencyStopToggled = viewModel::onEmergencyStopToggled,
         onCompareOpened = viewModel::onCompareOpened,
         onCompareClosed = viewModel::onCompareClosed,
+        onBrakeResponseClosed = viewModel::onBrakeResponseClosed,
         onDismissError = viewModel::dismissError,
         modifier = modifier
     )

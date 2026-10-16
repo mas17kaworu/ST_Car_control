@@ -804,6 +804,96 @@ class ChassisScreenTest {
         }
     }
 
+    @Test
+    fun combinedInputAutomaticallyShowsOnlyItsRecordedBrakeResponse() {
+        showScreen()
+        mode("BrakePedal").performClick()
+        val combined = compose.onNodeWithTag("chassis-combined-brakes-input")
+        combined.performTextReplacement("8000")
+        compose.onNodeWithTag("chassis-brake-response-dialog").assertDoesNotExist()
+        compose.runOnIdle { assertTrue(service.writes.isEmpty()) }
+        combined.performImeAction()
+        compose.onNodeWithTag("chassis-brake-response-dialog").assertDoesNotExist()
+        compose.runOnIdle {
+            service.receiveReport(CMDChassisReport.Response(0, 0, 25000, 30000, rampRaw = 0, voltageRaw = 480))
+        }
+        compose.waitForIdle()
+        compose.runOnIdle {
+            service.receiveReport(CMDChassisReport.Response(0, 0, 35000, 40000, rampRaw = 0, voltageRaw = 480))
+        }
+        compose.waitUntil(4_000) { model.uiState.value.brakeResponse != null }
+        compose.onNodeWithTag("chassis-brake-response-dialog").assertIsDisplayed()
+        compose.onNodeWithText("EMB / EHB Response").assertIsDisplayed()
+        compose.onNode(hasText("EMB") and hasAnyAncestor(hasTestTag("chassis-brake-response-dialog")))
+            .assertIsDisplayed()
+        compose.onNode(hasText("EHB") and hasAnyAncestor(hasTestTag("chassis-brake-response-dialog")))
+            .assertIsDisplayed()
+        val chart = compose.onNodeWithTag("chassis-brake-response-chart")
+            .assertIsDisplayed().assertTextEquals("0 500 1000 1500 2000 ms")
+        compose.onNodeWithTag("chassis-brake-response-status").assertDoesNotExist()
+        val pixels = chart.captureToImage().toPixelMap()
+        for (color in listOf(Color(0xFF45D6FF), Color(0xFFFFBC5C))) {
+            assertTrue("The reported forces must not be clipped by the normal control range",
+                (0 until pixels.height).any { y ->
+                    (0 until pixels.width).any { x -> pixels[x, y].toArgb() == color.toArgb() }
+                })
+        }
+        if (InstrumentationRegistry.getArguments().getString("chassisScreenshot") == "true") {
+            val file = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "chassis-brake-response-ui.png")
+            file.outputStream().use {
+                check(compose.onNodeWithTag("chassis-brake-response-dialog").captureToImage()
+                    .asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it))
+            }
+        }
+        compose.runOnIdle {
+            val response = model.uiState.value.brakeResponse!!
+            assertEquals(listOf(25000f, 35000f), response.samples.map { it.ehbForceN })
+            assertEquals(listOf(30000f, 40000f), response.samples.map { it.embForceN })
+            assertEquals(1, service.writes.size)
+            assertEquals(0x3D, service.writes.single()[3].toInt())
+            assertEquals(1, service.registeredCommandCount)
+            service.receiveReport(CMDChassisReport.Response(0, 0, 1, 2, rampRaw = 0, voltageRaw = 480))
+        }
+        compose.waitForIdle()
+        compose.runOnIdle { assertEquals(2, model.uiState.value.brakeResponse!!.samples.size) }
+        compose.onNodeWithTag("chassis-brake-response-close")
+            .assertContentDescriptionEquals("Close response").performClick()
+        compose.onNodeWithTag("chassis-brake-response-dialog").assertDoesNotExist()
+        compose.runOnIdle { assertEquals(1, service.writes.size) }
+        compose.onNodeWithTag("chassis-compare-button").performClick()
+        compose.onNodeWithTag("chassis-compare-dialog").assertIsDisplayed()
+        compose.runOnIdle {
+            assertEquals(2, service.writes.size)
+            assertEquals(0x40, service.writes.last()[3].toInt())
+        }
+        compose.onNodeWithTag("chassis-compare-close").performClick()
+    }
+
+    @Test
+    fun emptyResponseWindowIsExplicitAndWaitsForAnOpenComparisonToClose() {
+        showScreen(withInitialReport = false)
+        mode("BrakePedal").performClick()
+        val combined = compose.onNodeWithTag("chassis-combined-brakes-input")
+        combined.performTextReplacement("8000")
+        combined.performImeAction()
+        compose.onNodeWithTag("chassis-compare-button").performClick()
+        compose.waitUntil(4_000) { model.uiState.value.brakeResponse != null }
+        compose.onNodeWithTag("chassis-compare-dialog").assertIsDisplayed()
+        compose.onNodeWithTag("chassis-brake-response-dialog").assertDoesNotExist()
+        compose.onNodeWithTag("chassis-compare-close").performClick()
+        compose.onNodeWithTag("chassis-brake-response-status")
+            .assertIsDisplayed().assertTextEquals("No reports received in this 2-second window.")
+        compose.onNodeWithTag("chassis-brake-response-chart")
+            .assertTextEquals("0 500 1000 1500 2000 ms")
+        androidx.test.espresso.Espresso.pressBackUnconditionally()
+        compose.onNodeWithTag("chassis-brake-response-dialog").assertDoesNotExist()
+        compose.runOnIdle {
+            assertNull(model.uiState.value.brakeResponse)
+            assertEquals(2, service.writes.size)
+            assertEquals(1, service.registeredCommandCount)
+        }
+    }
+
     private fun mode(name: String) = compose.onNodeWithTag("chassis-control-$name")
     private fun slider(name: String) = compose.onNodeWithTag("chassis-$name-slider")
     private fun offsetSwitch() = compose.onNodeWithTag("chassis-current-offset")
