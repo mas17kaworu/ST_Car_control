@@ -28,6 +28,7 @@ fun ChassisRoute(
     ChassisScreen(
         state = state,
         telemetryState = telemetryState,
+        onBrakeChartMaxSubmitted = viewModel::onBrakeChartMaxSubmitted,
         onControlChanged = viewModel::onControlChanged,
         onControlCommitted = viewModel::onControlCommitted,
         onControlInputSubmitted = viewModel::onControlInputSubmitted,

@@ -4,12 +4,13 @@
     <string name="chassis_ramp">ramp: %1$s%%</string>
     <string name="chassis_voltage">voltage: %1$s V</string>
     <string name="chassis_demo">DEMO · No vehicle commands</string>
-    <string name="chassis_control_hint">Enable groups independently. Release a slider or press Done in an input to send. Locking does not reset the vehicle.</string>
+    <string name="chassis_control_hint">Enable groups independently. Release a slider or press Done in a control input to send. Locking does not reset the vehicle.</string>
     <string name="chassis_speed">Vehicle Speed</string>
     <string name="chassis_angle">Steering Angle</string>
     <string name="chassis_ehb">EHB Braking Force</string>
     <string name="chassis_emb">EMB Braking Force</string>
     <string name="chassis_braking_force">EHB / EMB Braking Force</string>
+    <string name="chassis_chart_y_max">Y Max</string>
     <string name="chassis_ehb_short">EHB</string>
     <string name="chassis_emb_short">EMB</string>
     <string name="chassis_combined_brakes">Set EHB + EMB</string>

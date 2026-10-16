@@ -128,7 +128,7 @@ fun ChassisBrakeResponseDialog(
                                 series = series, range = forceRange,
                                 timeRangeMillis = 0L..duration, timeLabels = timeLabels,
                                 description = title, tag = "chassis-brake-response-chart",
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(), clampValuesToRange = false
                             )
                             if (response.samples.isEmpty()) {
                                 Text(

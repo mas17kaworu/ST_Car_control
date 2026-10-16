@@ -73,6 +73,7 @@ import kotlin.math.roundToInt
 fun ChassisScreen(
     state: ChassisUiState,
     telemetryState: State<ChassisTelemetryState>,
+    onBrakeChartMaxSubmitted: (String) -> Unit,
     onControlChanged: (ChassisControlField, Int, Long) -> Unit,
     onControlCommitted: (ChassisControlField, Long) -> Unit,
     onControlInputSubmitted: (ChassisControlField, String, Long) -> Unit,
@@ -97,7 +98,7 @@ fun ChassisScreen(
     val brakeTitle = stringResource(R.string.chassis_braking_force)
     val forceUnit = stringResource(R.string.chassis_unit_force)
     val angleRange = state.config.steeringDegrees.let { it.first.toFloat()..it.last.toFloat() }
-    val brakeRange = 0f..maxOf(state.config.ehbForceN.last, state.config.embForceN.last).toFloat()
+    val brakeRange = 0f..state.brakeChartMaxN.toFloat()
 
     Column(
         modifier.fillMaxSize().background(
@@ -168,7 +169,20 @@ fun ChassisScreen(
             ChassisCard(
                 title = brakeTitle,
                 modifier = Modifier.weight(1f).testTag("chassis-braking-card"),
-                input = {},
+                input = {
+                    val label = stringResource(R.string.chassis_chart_y_max)
+                    Text(label, color = Color(0xFFD5E4ED), fontSize = 12.sp, maxLines = 1)
+                    ChassisValueInput(
+                        value = state.brakeChartMaxN,
+                        range = 1..Int.MAX_VALUE,
+                        enabled = true,
+                        interactionKey = 0L,
+                        label = label, unit = forceUnit,
+                        onValueChange = {},
+                        onSubmit = onBrakeChartMaxSubmitted,
+                        modifier = Modifier.testTag("chassis-brake-chart-max-input")
+                    )
+                },
                 controls = {
                     Column {
                         BrakeControlRow(
@@ -262,11 +276,6 @@ fun ChassisScreen(
         val data = (result as? ChassisComparisonResult.Success)?.data
         val withoutOffset = remember(data) { data?.withoutOffsetN?.let(::comparisonPoints) ?: emptyList() }
         val withOffset = remember(data) { data?.withOffsetN?.let(::comparisonPoints) ?: emptyList() }
-        val maximum = maxOf(
-            state.config.embForceN.last,
-            data?.withoutOffsetN?.maxOrNull() ?: 0,
-            data?.withOffsetN?.maxOrNull() ?: 0
-        )
         val errorMessage = (result as? ChassisComparisonResult.Failed)?.error?.let {
             stringResource(when (it) {
                 ChassisComparisonError.NotReady -> R.string.chassis_not_ready
@@ -276,7 +285,7 @@ fun ChassisScreen(
             })
         }
         ChassisCompareDialog(
-            forceRange = 0f..maximum.toFloat(),
+            forceRange = brakeRange,
             onDismiss = onCompareClosed,
             withoutOffset = withoutOffset, withOffset = withOffset,
             loading = result == null, errorMessage = errorMessage
@@ -284,13 +293,9 @@ fun ChassisScreen(
     }
     if (!state.comparisonOpen) {
         state.brakeResponse?.let { response ->
-            val maximum = maxOf(
-                brakeRange.endInclusive,
-                response.samples.maxOfOrNull { maxOf(it.ehbForceN, it.embForceN) } ?: 0f
-            )
             ChassisBrakeResponseDialog(
                 response = response,
-                forceRange = 0f..maximum,
+                forceRange = brakeRange,
                 onDismiss = onBrakeResponseClosed
             )
         }
@@ -389,7 +394,8 @@ private fun ColumnScope.ChassisBrakeFeedback(
     LiveLineChart(
         series = series, range = range, description = title, tag = "chassis-braking-chart",
         modifier = Modifier.fillMaxWidth().weight(1f),
-        windowSeconds = ChassisViewModel.BRAKE_WINDOW_SECONDS, timeIntervals = 1
+        windowSeconds = ChassisViewModel.BRAKE_WINDOW_SECONDS, timeIntervals = 1,
+        clampValuesToRange = false
     )
 }
 

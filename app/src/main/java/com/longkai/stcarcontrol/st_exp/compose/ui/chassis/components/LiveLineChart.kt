@@ -44,7 +44,8 @@ fun LiveLineChart(
     tag: String,
     modifier: Modifier = Modifier,
     windowSeconds: Int = 30,
-    timeIntervals: Int = 2
+    timeIntervals: Int = 2,
+    clampValuesToRange: Boolean = true
 ) {
     require(windowSeconds > 0 && timeIntervals in 1..windowSeconds && windowSeconds % timeIntervals == 0)
     val timeLabels = (0..timeIntervals).map { index ->
@@ -55,7 +56,8 @@ fun LiveLineChart(
     val endTime = series.mapNotNull { it.points.lastOrNull()?.timestampMillis }.maxOrNull() ?: 0L
     LineChart(
         series = series, range = range, timeRangeMillis = (endTime - windowMillis)..endTime,
-        timeLabels = timeLabels, description = description, tag = tag, modifier = modifier
+        timeLabels = timeLabels, description = description, tag = tag, modifier = modifier,
+        clampValuesToRange = clampValuesToRange
     )
 }
 
@@ -67,7 +69,8 @@ fun LineChart(
     timeLabels: List<String>,
     description: String,
     tag: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    clampValuesToRange: Boolean = true
 ) {
     require(range.start < range.endInclusive)
     require(timeRangeMillis.first < timeRangeMillis.last && timeLabels.size >= 2)
@@ -103,7 +106,8 @@ fun LineChart(
                     var lastPoint: Offset? = null
                     line.points.forEachIndexed { index, point ->
                         val x = bounds.left + (point.timestampMillis - startTime).toFloat() / windowMillis * bounds.width
-                        val y = bounds.bottom - (point.value.coerceIn(range.start, range.endInclusive) - range.start) /
+                        val value = if (clampValuesToRange) point.value.coerceIn(range.start, range.endInclusive) else point.value
+                        val y = bounds.bottom - (value - range.start) /
                             (range.endInclusive - range.start) * bounds.height
                         if (index == 0) path.moveTo(x, y) else path.lineTo(x, y)
                         lastPoint = Offset(x, y)

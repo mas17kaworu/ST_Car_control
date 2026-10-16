@@ -91,6 +91,10 @@ class ChassisScreenTest {
             assertEquals(1, service.registeredCommandCount)
             assertTrue(service.writes.isEmpty())
         }
+        val maximum = compose.onNodeWithTag("chassis-brake-chart-max-input")
+            .assertIsDisplayed().assertIsEnabled().assertContentDescriptionEquals("Y Max (N)")
+        assertEquals("20000", maximum.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+        maximum.performClick().performTextReplacement("40000")
         for ((raw, rampText, voltageText) in listOf(
             Triple(0, "0.00", "0.00"), Triple(1, "0.01", "0.10"),
             Triple(1200, "12.00", "120.00"), Triple(65535, "655.35", "6553.50")
@@ -101,6 +105,31 @@ class ChassisScreenTest {
             compose.waitUntil(5_000) { model.telemetryState.value.telemetry?.rampPercent == raw / 100f }
             compose.onNodeWithTag("chassis-ramp-reading").assertTextEquals("ramp: $rampText%")
             compose.onNodeWithTag("chassis-voltage-reading").assertTextEquals("voltage: $voltageText V")
+            assertEquals("40000", maximum.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+            compose.runOnIdle { assertEquals(20000, model.uiState.value.brakeChartMaxN) }
+        }
+        mode("Vehicle").performClick()
+        mode("Vehicle").performClick()
+        compose.runOnIdle { assertEquals("Focus loss must not apply the scale", 20000, model.uiState.value.brakeChartMaxN) }
+        maximum.performImeAction()
+        compose.runOnIdle { assertEquals(40000, model.uiState.value.brakeChartMaxN) }
+        for (invalid in listOf("", "0", "-1", "1.5", "2147483648")) {
+            maximum.performTextReplacement(invalid)
+            maximum.performImeAction()
+            compose.onNodeWithText("Enter a whole number within the supported range.").assertIsDisplayed()
+            compose.onNodeWithText("Dismiss").performClick()
+            compose.runOnIdle { assertEquals(40000, model.uiState.value.brakeChartMaxN) }
+        }
+        for (valid in listOf(1, Int.MAX_VALUE, 20000)) {
+            maximum.performTextReplacement(valid.toString())
+            maximum.performImeAction()
+            compose.runOnIdle {
+                assertEquals(valid, model.uiState.value.brakeChartMaxN)
+                assertTrue(service.writes.isEmpty())
+                assertTrue(model.uiState.value.enabledControls.isEmpty())
+                assertEquals(ChassisControlState(), model.uiState.value.controls)
+                assertNull(model.uiState.value.brakeResponse)
+            }
         }
     }
 
@@ -652,6 +681,36 @@ class ChassisScreenTest {
         }
         assertTrue("Steering history should span the plot after receiving more than 10 seconds of reports",
             lastCurveX - firstCurveX > anglePixels.width * .8f)
+        val ehbColor = Color(0xFF45D6FF)
+        val embColor = Color(0xFFFFBC5C)
+        val beforeEhb = curvePixels(chart, ehbColor)
+        val beforeEmb = curvePixels(chart, embColor)
+        val feedbackBeforeScale = model.telemetryState.value
+        val maximum = compose.onNodeWithTag("chassis-brake-chart-max-input")
+        maximum.performTextReplacement("40000")
+        assertEquals(beforeEhb, curvePixels(chart, ehbColor))
+        maximum.performImeAction()
+        val afterEhb = curvePixels(chart, ehbColor)
+        val afterEmb = curvePixels(chart, embColor)
+        val originalSeparation = beforeEhb.map { it.second }.average() - beforeEmb.map { it.second }.average()
+        val scaledSeparation = afterEhb.map { it.second }.average() - afterEmb.map { it.second }.average()
+        assertEquals("Doubling Y Max must halve the vertical separation", originalSeparation / 2, scaledSeparation, 2.0)
+        maximum.performTextReplacement("5000")
+        maximum.performImeAction()
+        assertTrue("EHB above Y Max must be clipped, not flattened", curvePixels(chart, ehbColor).isEmpty())
+        assertTrue("EMB above Y Max must be clipped, not flattened", curvePixels(chart, embColor).isEmpty())
+        compose.onNodeWithTag("chassis-ehb-reading").assertTextEquals("6000")
+        compose.onNodeWithTag("chassis-emb-reading").assertTextEquals("12000")
+        maximum.performTextReplacement("20000")
+        maximum.performImeAction()
+        assertEquals(beforeEhb, curvePixels(chart, ehbColor))
+        assertEquals(beforeEmb, curvePixels(chart, embColor))
+        compose.runOnIdle {
+            assertSame(feedbackBeforeScale, model.telemetryState.value)
+            assertTrue(service.writes.isEmpty())
+            assertEquals(0..20000, model.uiState.value.config.ehbForceN)
+            assertEquals(0..20000, model.uiState.value.config.embForceN)
+        }
         mode("BrakePedal").performClick()
         val input = compose.onNodeWithTag("chassis-ehb-input").performClick()
         runBlocking {
@@ -732,7 +791,13 @@ class ChassisScreenTest {
             assertEquals(1, service.registeredCommandCount)
             assertEquals(6000f, model.telemetryState.value.telemetry!!.ehbForceN, 0f)
         }
-        val comparisonPixels = compose.onNodeWithTag("chassis-compare-chart").captureToImage().toPixelMap()
+        val comparisonChart = compose.onNodeWithTag("chassis-compare-chart")
+        assertTrue(curvePixels(comparisonChart, ehbColor).isNotEmpty())
+        assertTrue("Compare must use the shared maximum without automatic expansion",
+            curvePixels(comparisonChart, embColor).isEmpty())
+        val comparisonBeforeScale = model.uiState.value.comparisonResult
+        compose.runOnIdle { model.onBrakeChartMaxSubmitted("70000") }
+        val comparisonPixels = comparisonChart.captureToImage().toPixelMap()
         for (color in listOf(Color(0xFF45D6FF), Color(0xFFFFBC5C))) {
             var count = 0
             var top = comparisonPixels.height
@@ -747,6 +812,10 @@ class ChassisScreenTest {
             assertTrue(count > 50)
             assertTrue(bottom - top > comparisonPixels.height * .4f)
         }
+        compose.runOnIdle {
+            assertSame(comparisonBeforeScale, model.uiState.value.comparisonResult)
+            assertEquals(1, service.writes.size)
+        }
         if (InstrumentationRegistry.getArguments().getString("chassisScreenshot") == "true") {
             val file = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "chassis-compare-ui.png")
             file.outputStream().use {
@@ -756,6 +825,13 @@ class ChassisScreenTest {
         }
         compose.onNodeWithTag("chassis-compare-close").performClick()
         compose.onNodeWithTag("chassis-compare-dialog").assertDoesNotExist()
+        assertEquals("70000", maximum.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+        compose.runOnIdle {
+            model.onPageExited()
+            model.onPageEntered()
+            assertEquals(70000, model.uiState.value.brakeChartMaxN)
+        }
+        compose.waitUntil(5_000) { service.registeredCommandCount == 1 }
         compare.performClick()
         compose.runOnIdle {
             service.receiveFrame(comparisonFrame.copyOf().apply { this[204] = (this[204].toInt() xor 1).toByte() })
@@ -807,6 +883,9 @@ class ChassisScreenTest {
     @Test
     fun combinedInputAutomaticallyShowsOnlyItsRecordedBrakeResponse() {
         showScreen()
+        val maximum = compose.onNodeWithTag("chassis-brake-chart-max-input")
+        maximum.performTextReplacement("50000")
+        maximum.performImeAction()
         mode("BrakePedal").performClick()
         val combined = compose.onNodeWithTag("chassis-combined-brakes-input")
         combined.performTextReplacement("8000")
@@ -816,6 +895,7 @@ class ChassisScreenTest {
         compose.onNodeWithTag("chassis-brake-response-dialog").assertDoesNotExist()
         compose.runOnIdle {
             service.receiveReport(CMDChassisReport.Response(0, 0, 25000, 30000, rampRaw = 0, voltageRaw = 480))
+            model.onBrakeChartMaxSubmitted("60000")
         }
         compose.waitForIdle()
         compose.runOnIdle {
@@ -833,10 +913,24 @@ class ChassisScreenTest {
         compose.onNodeWithTag("chassis-brake-response-status").assertDoesNotExist()
         val pixels = chart.captureToImage().toPixelMap()
         for (color in listOf(Color(0xFF45D6FF), Color(0xFFFFBC5C))) {
-            assertTrue("The reported forces must not be clipped by the normal control range",
+            assertTrue("Forces below the chosen maximum must remain visible above the control range",
                 (0 until pixels.height).any { y ->
                     (0 until pixels.width).any { x -> pixels[x, y].toArgb() == color.toArgb() }
                 })
+        }
+        val responseBeforeScale = model.uiState.value.brakeResponse
+        compose.runOnIdle { model.onBrakeChartMaxSubmitted("20000") }
+        for (color in listOf(Color(0xFF45D6FF), Color(0xFFFFBC5C))) {
+            assertTrue("Recorded forces above Y Max must be clipped without automatic expansion",
+                curvePixels(chart, color).isEmpty())
+        }
+        compose.runOnIdle {
+            model.onBrakeChartMaxSubmitted("50000")
+            assertSame(responseBeforeScale, model.uiState.value.brakeResponse)
+            assertEquals(1, service.writes.size)
+        }
+        for (color in listOf(Color(0xFF45D6FF), Color(0xFFFFBC5C))) {
+            assertTrue("Changing the scale must redraw the same recorded data", curvePixels(chart, color).isNotEmpty())
         }
         if (InstrumentationRegistry.getArguments().getString("chassisScreenshot") == "true") {
             val file = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "chassis-brake-response-ui.png")
@@ -897,6 +991,15 @@ class ChassisScreenTest {
     private fun mode(name: String) = compose.onNodeWithTag("chassis-control-$name")
     private fun slider(name: String) = compose.onNodeWithTag("chassis-$name-slider")
     private fun offsetSwitch() = compose.onNodeWithTag("chassis-current-offset")
+
+    private fun curvePixels(chart: SemanticsNodeInteraction, color: Color): List<Pair<Int, Int>> {
+        val pixels = chart.captureToImage().toPixelMap()
+        return buildList {
+            for (y in 0 until pixels.height) for (x in 0 until pixels.width) {
+                if (pixels[x, y].toArgb() == color.toArgb()) add(x to y)
+            }
+        }
+    }
 
     private fun showScreen(
         modifier: Modifier = Modifier,

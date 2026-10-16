@@ -18,6 +18,7 @@ data class ChassisBrakeResponse(
 data class ChassisUiState(
     val controls: ChassisControlState = ChassisControlState(),
     val config: ChassisControlConfig = ChassisControlConfig(),
+    val brakeChartMaxN: Int = 20_000,
     val enabledControls: Set<ChassisControlTab> = emptySet(),
     val controlGenerations: Map<ChassisControlTab, Long> = emptyMap(),
     /** Local targets; the report protocol does not include switch feedback. */

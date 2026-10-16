@@ -27,6 +27,7 @@ private fun ChassisPreview() {
         ChassisScreen(
             state = ChassisUiState(),
             telemetryState = remember { mutableStateOf(ChassisTelemetryState.fromHistory(history)) },
+            onBrakeChartMaxSubmitted = {},
             onControlChanged = { _, _, _ -> },
             onControlCommitted = { _, _ -> },
             onControlInputSubmitted = { _, _, _ -> },

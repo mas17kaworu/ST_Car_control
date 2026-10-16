@@ -98,6 +98,16 @@ class ChassisViewModel(
         }
     }
 
+    fun onBrakeChartMaxSubmitted(text: String) {
+        if (!pageActive) return
+        val maximum = text.toIntOrNull()
+        if (maximum == null || maximum <= 0) {
+            mutableUiState.update { it.copy(error = ChassisError.InvalidControl) }
+            return
+        }
+        mutableUiState.update { it.copy(brakeChartMaxN = maximum) }
+    }
+
     fun onEpbToggled() {
         if (!pageActive) return
         val enabled = !mutableUiState.value.epbEnabled

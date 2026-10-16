@@ -123,7 +123,7 @@ fun ChassisCompareDialog(
                                 series = series, range = forceRange,
                                 timeRangeMillis = 0L..500L, timeLabels = timeLabels,
                                 description = title, tag = "chassis-compare-chart",
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(), clampValuesToRange = false
                             )
                             if (loading || errorMessage != null || (withoutOffset.isEmpty() && withOffset.isEmpty())) {
                                 Text(
