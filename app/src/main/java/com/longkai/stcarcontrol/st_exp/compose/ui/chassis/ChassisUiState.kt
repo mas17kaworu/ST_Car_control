@@ -1,6 +1,7 @@
 package com.longkai.stcarcontrol.st_exp.compose.ui.chassis
 
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlConfig
+import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisBrakeTimes
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlState
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlTab
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlField
@@ -19,6 +20,7 @@ data class ChassisUiState(
     val controls: ChassisControlState = ChassisControlState(),
     val config: ChassisControlConfig = ChassisControlConfig(),
     val brakeChartMaxN: Int = 20_000,
+    val brakeTimes: ChassisBrakeTimes = ChassisBrakeTimes(),
     val enabledControls: Set<ChassisControlTab> = emptySet(),
     val controlGenerations: Map<ChassisControlTab, Long> = emptyMap(),
     /** Local targets; the report protocol does not include switch feedback. */

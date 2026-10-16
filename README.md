@@ -27,12 +27,14 @@ existing service through the normal app entry flow.
 - The upper-right title bar shows `ramp: 12.34%`, then `voltage: 48.30 V` to its right. Both are read-only and displayed with exactly two decimal places. Ramp is divided by 100 from its raw value and is a percentage, not an angle; voltage is divided by 10 and is in volts. Before the first report they show `ramp: --%` and `voltage: -- V`.
 - EPB and current offset are independent switches; each toggle sends its own command. They start off without sending and are not reset on page exit. Displayed states are local targets, not device feedback.
 - STOP toggles emergency stop on/off independently, with press feedback and a local-state highlight (not device confirmation). It sends nothing on page entry/exit.
+- The bottom bar also has independent **EHB** and **EMB** time inputs in seconds (0–255, default 0). Each **Done/Enter** sends that time immediately, even when all control groups are locked; typing or losing focus never sends. The other field's unsubmitted draft is not sent. Both last-submitted times are carried in every `0x3D` frame so unrelated controls cannot reset them. Invalid or rejected submissions keep the prior submitted values, and errors are shown. Page exit/locking neither resets nor resends them; values are retained in the app's repository, not persisted across app restarts or confirmed by feedback. These device parameters do not change chart windows or the 2-second response recording.
 
 | Signal | Control range | Step | Wire units |
 | --- | --- | --- | --- |
 | Speed | -20 to 20 km/h (0 centered) | 1 km/h | signed, 1 raw = 1 km/h |
 | Steering | -32 to +32 degrees | 1 degree | 1 raw = 0.01 degree |
 | EHB / EMB force | 0 to 20000 N | 1 N | 1 raw = 1 N |
+| EHB / EMB time | 0 to 255 s | 1 s | unsigned byte, 1 raw = 1 s |
 
 Mock: set `STCarApplication.inUIDebugMode = true` and rebuild. Chassis injects
 reports every 100 ms while visible; values cycle independently of slider input.
@@ -47,6 +49,13 @@ The comparison dialog requires an actual `0x40` reply; the periodic chassis mock
 
 Protocol: `communication/commandList/CMDChassisList/` contains
 `CMDChassisControl` (`0x3D`) and `CMDChassisReport` (`0x3E`).
+The control frame is now 29 bytes with length `0x1A`. Existing fields and validity
+bits are unchanged: mask at offsets 4–7, speed 8–11, steering 12–15, EHB force 16–19,
+EMB force 20–23, current offset 24, and EPB 25. EHB time is appended at offset 26
+and EMB time at 27 (each uint8 seconds); the checksum moves to offset 28.
+The time bytes are always valid, independent of the existing mask: no bits 6/7
+are added. Time-only submissions use mask 0 and zero all legacy control fields,
+while retaining both submitted times. Firmware must accept the new 29-byte frame.
 The report is 25 bytes with length `0x16`: speed, steering, EHB and EMB retain
 their existing offsets; Ramp is a little-endian uint16 at byte offsets 20-21
 (after EMB), followed by voltage as a little-endian uint16 at offsets 22-23,
@@ -60,7 +69,7 @@ the 50 values without offset; offsets 104-203 contain the 50 values with offset.
 Comparison force samples use 2 bytes; the force fields in `0x3D` and `0x3E`
 remain 4 bytes. `ProtocolMessageDispatch` is unchanged. This single-frame comparison protocol targets UDP; the existing
 128-byte Bluetooth frame assembler cannot receive it.
-Individual controls remain single-field commands. **Set EHB + EMB** sets validity
+Individual controls still select only their own legacy validity bit and retain both time bytes. **Set EHB + EMB** sets validity
 bits `0x0C` and both force fields to the same value in a single `0x3D` frame.
 `CMDChassisEmergencyStop` (`0x3F`, length `0x06`) sends a 4-byte value: `0x55` on, `0x00` off.
 Integers are little-endian. `CheckSumBit` excludes the header on send and includes it

@@ -28,6 +28,8 @@ private fun ChassisPreview() {
             state = ChassisUiState(),
             telemetryState = remember { mutableStateOf(ChassisTelemetryState.fromHistory(history)) },
             onBrakeChartMaxSubmitted = {},
+            onEhbTimeSubmitted = {},
+            onEmbTimeSubmitted = {},
             onControlChanged = { _, _, _ -> },
             onControlCommitted = { _, _ -> },
             onControlInputSubmitted = { _, _, _ -> },

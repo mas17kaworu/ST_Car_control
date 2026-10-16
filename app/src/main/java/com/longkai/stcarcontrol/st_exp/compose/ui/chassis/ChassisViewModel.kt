@@ -29,7 +29,7 @@ class ChassisViewModel(
     private val receptionDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : ViewModel() {
     private val mutableUiState = MutableStateFlow(
-        ChassisUiState(config = repository.config, isDemo = repository.isDemo)
+        ChassisUiState(config = repository.config, isDemo = repository.isDemo, brakeTimes = repository.brakeTimes)
     )
     val uiState = mutableUiState.asStateFlow()
     private val mutableTelemetryState = MutableStateFlow(ChassisTelemetryState())
@@ -106,6 +106,28 @@ class ChassisViewModel(
             return
         }
         mutableUiState.update { it.copy(brakeChartMaxN = maximum) }
+    }
+
+    fun onEhbTimeSubmitted(text: String) = submitBrakeTime(text, ehb = true)
+
+    fun onEmbTimeSubmitted(text: String) = submitBrakeTime(text, ehb = false)
+
+    private fun submitBrakeTime(text: String, ehb: Boolean) {
+        if (!pageActive) return
+        val seconds = text.toIntOrNull()
+        if (seconds == null || seconds !in ChassisBrakeTimes.RANGE) {
+            mutableUiState.update { it.copy(error = ChassisError.InvalidControl) }
+            return
+        }
+        viewModelScope.launch {
+            val times = repository.brakeTimes.let {
+                if (ehb) it.copy(ehbSeconds = seconds) else it.copy(embSeconds = seconds)
+            }
+            when (val result = repository.submitBrakeTimes(times)) {
+                is ChassisCommandResult.Rejected -> mutableUiState.update { it.copy(error = result.error) }
+                else -> mutableUiState.update { it.copy(brakeTimes = times) }
+            }
+        }
     }
 
     fun onEpbToggled() {

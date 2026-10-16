@@ -10,6 +10,13 @@ data class ChassisTelemetry(
     val voltageV: Float,
 )
 
+/** Last submitted times, not device feedback; independent of control enablement. */
+data class ChassisBrakeTimes(val ehbSeconds: Int = 0, val embSeconds: Int = 0) {
+    companion object {
+        val RANGE = 0..255
+    }
+}
+
 /** Targets in physical units, never substituted for measured feedback. */
 data class ChassisControlState(
     val speedKph: Int = 0,

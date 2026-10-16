@@ -33,7 +33,8 @@ class ChassisRepositoryTest {
                 assertEquals(ChassisCommandResult.Submitted, repository.submitControl(ChassisControl(field, value)))
                 service.awaitIdle()
                 val frame = service.writes.last()
-                assertEquals(27, frame.size)
+                assertEquals(29, frame.size)
+                assertEquals(0x1A, frame[2].toInt())
                 assertEquals(0x3D, frame[3].toInt())
                 assertEquals(1 shl field.ordinal, byteArrayToInt(frame, 4))
                 val raw = if (field == ChassisControlField.Steering) value * 100 else value
@@ -48,11 +49,36 @@ class ChassisRepositoryTest {
                         frame.copyOfRange(8, 12)
                     )
                 }
-                assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 26), 24), frame[26])
+                assertEquals(0, frame[26].toInt())
+                assertEquals(0, frame[27].toInt())
+                assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 28), 26), frame[28])
             }
         }
         assertEquals(12, service.writes.size)
         assertEquals(0, service.registeredCommandCount)
+        val times = ChassisBrakeTimes(255, 128)
+        assertEquals(ChassisCommandResult.Submitted, repository.submitBrakeTimes(times))
+        service.awaitIdle()
+        val timeFrame = service.writes.last()
+        assertEquals(29, timeFrame.size)
+        assertEquals(0x1A, timeFrame[2].toInt())
+        assertEquals(0, byteArrayToInt(timeFrame, 4))
+        assertTrue(timeFrame.copyOfRange(8, 26).all { it == 0.toByte() })
+        for (field in ChassisControlField.values()) {
+            repository.submitControl(ChassisControl(field, 1))
+        }
+        repository.submitCombinedBrakes(8000)
+        repository.setEpb(true)
+        repository.setCurrentOffset(true)
+        service.awaitIdle()
+        val frames = service.writes.drop(12)
+        assertEquals(listOf(0, 1, 2, 4, 8, 12, 32, 16), frames.map { byteArrayToInt(it, 4) })
+        for (frame in frames) {
+            assertEquals(255, frame[26].toInt() and 0xFF)
+            assertEquals(128, frame[27].toInt() and 0xFF)
+            assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 28), 26), frame[28])
+        }
+        assertEquals(times, repository.brakeTimes)
     }
 
     @Test
@@ -64,16 +90,18 @@ class ChassisRepositoryTest {
                 assertEquals(ChassisCommandResult.Submitted, result)
                 service.awaitIdle()
                 val frame = service.writes.last()
-                assertEquals(27, frame.size)
+                assertEquals(29, frame.size)
                 assertEquals(0x5A, frame[0].toInt())
                 assertEquals(0x3C, frame[1].toInt())
-                assertEquals(0x18, frame[2].toInt())
+                assertEquals(0x1A, frame[2].toInt())
                 assertEquals(0x3D, frame[3].toInt())
                 assertEquals(if (isEpb) 0x20 else 0x10, byteArrayToInt(frame, 4))
                 for (offset in listOf(8, 12, 16, 20)) assertEquals(0, byteArrayToInt(frame, offset))
                 assertEquals(if (!isEpb && enabled) 0x55 else 0, frame[24].toInt())
                 assertEquals(if (isEpb && enabled) 0x55 else 0, frame[25].toInt())
-                assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 26), 24), frame[26])
+                assertEquals(0, frame[26].toInt())
+                assertEquals(0, frame[27].toInt())
+                assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 28), 26), frame[28])
             }
         }
         assertEquals(4, service.writes.size)
@@ -104,6 +132,13 @@ class ChassisRepositoryTest {
                     ChassisCommandResult.Rejected(ChassisError.InvalidControl),
                     repository.submitControl(ChassisControl(field, value))
                 )
+            }
+        }
+        for (invalid in listOf(-1, 256, Int.MIN_VALUE, Int.MAX_VALUE)) {
+            for (times in listOf(ChassisBrakeTimes(invalid, 0), ChassisBrakeTimes(0, invalid))) {
+                assertEquals(ChassisCommandResult.Rejected(ChassisError.InvalidControl),
+                    repository.submitBrakeTimes(times))
+                assertEquals(ChassisBrakeTimes(), repository.brakeTimes)
             }
         }
         service.awaitIdle()

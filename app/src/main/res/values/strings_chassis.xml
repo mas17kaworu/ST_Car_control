@@ -13,6 +13,8 @@
     <string name="chassis_chart_y_max">Y Max</string>
     <string name="chassis_ehb_short">EHB</string>
     <string name="chassis_emb_short">EMB</string>
+    <string name="chassis_ehb_time">EHB time</string>
+    <string name="chassis_emb_time">EMB time</string>
     <string name="chassis_combined_brakes">Set EHB + EMB</string>
     <string name="chassis_brake_response_title">EMB / EHB Response</string>
     <string name="chassis_brake_response_close">Close response</string>
@@ -42,6 +44,7 @@
     <string name="chassis_unit_speed">km/h</string>
     <string name="chassis_unit_angle">°</string>
     <string name="chassis_unit_force">N</string>
+    <string name="chassis_unit_seconds">s</string>
     <string name="chassis_vehicle_control">Vehicle</string>
     <string name="chassis_steering_control">Steering</string>
     <string name="chassis_brake_pedal">Brake pedal</string>

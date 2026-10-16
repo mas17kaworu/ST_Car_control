@@ -19,6 +19,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 interface ChassisRepository {
     val config: ChassisControlConfig
     val isDemo: Boolean
+    val brakeTimes: ChassisBrakeTimes
 
     /** Cold, main-safe observations, independent of desired controls and command submission. */
     val telemetry: Flow<ChassisTelemetry>
@@ -26,6 +27,7 @@ interface ChassisRepository {
     /** Submit an explicit target only; success must not be treated as measured feedback. */
     suspend fun submitControl(control: ChassisControl): ChassisCommandResult
     suspend fun submitCombinedBrakes(forceN: Int): ChassisCommandResult
+    suspend fun submitBrakeTimes(times: ChassisBrakeTimes): ChassisCommandResult
     suspend fun requestComparison(): ChassisComparisonResult
     suspend fun setEpb(enabled: Boolean): ChassisCommandResult
     suspend fun setCurrentOffset(enabled: Boolean): ChassisCommandResult
@@ -38,6 +40,8 @@ class DefaultChassisRepository(
     private val clockMillis: () -> Long = { System.nanoTime() / 1_000_000L },
 ) : ChassisRepository {
     override val isDemo = false
+    override var brakeTimes = ChassisBrakeTimes()
+        private set
 
     override val telemetry: Flow<ChassisTelemetry> = callbackFlow {
         if (service.messageDispatcher == null) {
@@ -85,14 +89,26 @@ class DefaultChassisRepository(
             ChassisControlField.Ehb -> CMDChassisControl.setEhbForce(control.value.toLong())
             ChassisControlField.Emb -> CMDChassisControl.setEmbForce(control.value.toLong())
         }
-        return sendCommand(command, "field=${control.field}, value=${control.value}")
+        return sendControl(command, "field=${control.field}, value=${control.value}")
     }
 
     override suspend fun submitCombinedBrakes(forceN: Int): ChassisCommandResult {
         if (forceN !in config.combinedBrakeForceN) {
             return ChassisCommandResult.Rejected(ChassisError.InvalidControl)
         }
-        return sendCommand(CMDChassisControl.setCombinedBrakeForce(forceN.toLong()), "field=Ehb+Emb, value=$forceN")
+        return sendControl(CMDChassisControl.setCombinedBrakeForce(forceN.toLong()), "field=Ehb+Emb, value=$forceN")
+    }
+
+    override suspend fun submitBrakeTimes(times: ChassisBrakeTimes): ChassisCommandResult {
+        if (times.ehbSeconds !in ChassisBrakeTimes.RANGE || times.embSeconds !in ChassisBrakeTimes.RANGE) {
+            return ChassisCommandResult.Rejected(ChassisError.InvalidControl)
+        }
+        val result = sendCommand(
+            CMDChassisControl.setBrakeTimes(times.ehbSeconds, times.embSeconds),
+            "field=BrakeTimes, ehbSeconds=${times.ehbSeconds}, embSeconds=${times.embSeconds}"
+        )
+        if (result == ChassisCommandResult.Submitted) brakeTimes = times
+        return result
     }
 
     override suspend fun requestComparison(): ChassisComparisonResult {
@@ -141,13 +157,17 @@ class DefaultChassisRepository(
     }
 
     override suspend fun setEpb(enabled: Boolean): ChassisCommandResult =
-        sendCommand(CMDChassisControl.setEpb(enabled), "field=Epb, enabled=$enabled")
+        sendControl(CMDChassisControl.setEpb(enabled), "field=Epb, enabled=$enabled")
 
     override suspend fun setCurrentOffset(enabled: Boolean): ChassisCommandResult =
-        sendCommand(CMDChassisControl.setCurrentOffset(enabled), "field=CurrentOffset, enabled=$enabled")
+        sendControl(CMDChassisControl.setCurrentOffset(enabled), "field=CurrentOffset, enabled=$enabled")
 
     override suspend fun setEmergencyStop(enabled: Boolean): ChassisCommandResult =
         sendCommand(CMDChassisEmergencyStop(enabled), "field=EmergencyStop, enabled=$enabled")
+
+    private fun sendControl(command: CMDChassisControl, description: String): ChassisCommandResult =
+        // Without validity bits, every 0x3D frame must retain both submitted times.
+        sendCommand(command.withBrakeTimes(brakeTimes.ehbSeconds, brakeTimes.embSeconds), description)
 
     private fun sendCommand(command: BaseCommand, description: String): ChassisCommandResult {
         if (service.messageDispatcher == null) {

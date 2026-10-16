@@ -145,10 +145,17 @@ class ChassisScreenTest {
         val stop = compose.onNodeWithTag("chassis-emergency-stop")
             .assertIsDisplayed().assertWidthIsEqualTo(56.dp).assertHeightIsEqualTo(56.dp)
             .fetchSemanticsNode().boundsInRoot
+        val times = listOf("ehb", "emb").map { name ->
+            compose.onNodeWithTag("chassis-$name-time-input").assertIsDisplayed().assertIsEnabled()
+                .assertWidthIsEqualTo(72.dp).assertHeightIsEqualTo(48.dp)
+                .fetchSemanticsNode().boundsInRoot
+        }
         val density = InstrumentationRegistry.getInstrumentation().targetContext.resources.displayMetrics.density
-        assertEquals(bar.center.x, (controls.first().left + controls.last().right) / 2, 1f)
+        assertEquals(bar.center.x, (controls.first().left + times.last().right) / 2, 1f)
         assertEquals(bar.right - 8 * density, stop.right, 1f)
-        assertTrue(controls.last().right < stop.left)
+        assertTrue(controls.last().right < times.first().left)
+        assertTrue(times.first().right < times.last().left)
+        assertTrue(times.last().right < stop.left)
         for ((left, right) in controls.zipWithNext()) {
             assertEquals(8 * density, right.left - left.right, 1f)
         }
@@ -161,6 +168,121 @@ class ChassisScreenTest {
         compose.runOnIdle {
             assertEquals(2, service.writes.size)
             assertEquals(0x3F, service.writes.last()[3].toInt())
+        }
+    }
+
+    @Test
+    fun brakeTimesSendOnEnterWithoutEnableBitsOrSendingTheOtherDraft() {
+        val liveRepository = DefaultChassisRepository(service.manager)
+        var rejectTimes = false
+        val repository = object : ChassisRepository by liveRepository {
+            override suspend fun submitBrakeTimes(times: ChassisBrakeTimes): ChassisCommandResult =
+                if (rejectTimes) ChassisCommandResult.Rejected(ChassisError.NotReady)
+                else liveRepository.submitBrakeTimes(times)
+        }
+        showScreen(withInitialReport = false, repository = repository)
+        val ehb = compose.onNodeWithTag("chassis-ehb-time-input")
+            .assertIsEnabled().assertContentDescriptionEquals("EHB time (s)")
+        val emb = compose.onNodeWithTag("chassis-emb-time-input")
+            .assertIsEnabled().assertContentDescriptionEquals("EMB time (s)")
+        fun assertTimes(ehbSeconds: Int, embSeconds: Int, writes: Int, mask: Int = 0) {
+            compose.runOnIdle {
+                assertEquals(writes, service.writes.size)
+                val frame = service.writes.last()
+                assertEquals(29, frame.size)
+                assertEquals(0x1A, frame[2].toInt())
+                assertEquals(0x3D, frame[3].toInt())
+                assertEquals(mask, byteArrayToInt(frame, 4))
+                assertEquals(ehbSeconds, frame[26].toInt() and 0xFF)
+                assertEquals(embSeconds, frame[27].toInt() and 0xFF)
+                assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 28), 26), frame[28])
+                if (mask == 0) assertTrue(frame.copyOfRange(8, 26).all { it == 0.toByte() })
+                assertEquals(ChassisBrakeTimes(ehbSeconds, embSeconds), model.uiState.value.brakeTimes)
+                assertEquals(model.uiState.value.brakeTimes, repository.brakeTimes)
+                assertNull(model.uiState.value.brakeResponse)
+                assertFalse(model.uiState.value.comparisonOpen)
+            }
+        }
+        assertEquals("0", ehb.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+        assertEquals("0", emb.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+        ehb.performTextReplacement("12")
+        emb.performTextReplacement("34")
+        compose.runOnIdle { assertTrue(service.writes.isEmpty()) }
+        ehb.performImeAction()
+        assertTimes(12, 0, 1)
+        assertEquals("34", emb.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+        compose.runOnIdle {
+            assertTrue(model.uiState.value.enabledControls.isEmpty())
+            service.receiveReport(CMDChassisReport.Response(12, 0, 6000, 7000, 0, 480))
+        }
+        compose.waitUntil(5_000) { model.telemetryState.value.telemetry != null }
+        assertEquals("34", emb.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+        emb.performImeAction()
+        assertTimes(12, 34, 2)
+        ehb.performTextReplacement("60")
+        emb.performTextReplacement("255")
+        emb.performImeAction()
+        assertTimes(12, 255, 3)
+        assertEquals("60", ehb.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+        for (invalid in listOf("", "-1", "256", "1.5")) {
+            ehb.performTextReplacement(invalid)
+            ehb.performImeAction()
+            compose.onNodeWithText("Enter a whole number within the supported range.").assertIsDisplayed()
+            compose.onNodeWithText("Dismiss").performClick()
+            assertTimes(12, 255, 3)
+        }
+        ehb.performTextReplacement("0")
+        ehb.performImeAction()
+        assertTimes(0, 255, 4)
+        ehb.performImeAction()
+        assertTimes(0, 255, 5)
+        for (mode in listOf("Vehicle", "Steering", "BrakePedal")) {
+            mode(mode).performClick()
+            ehb.assertIsEnabled()
+            emb.assertIsEnabled()
+            mode(mode).performClick()
+        }
+        ehb.performClick().performTextReplacement("42")
+        InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_ENTER)
+        compose.waitForIdle()
+        assertTimes(42, 255, 6)
+        mode("Vehicle").performClick()
+        slider("speed").performSemanticsAction(SemanticsActions.SetProgress) { it(5f) }
+        assertTimes(42, 255, 7, mask = 1)
+        mode("Epb").performClick()
+        assertTimes(42, 255, 8, mask = 32)
+        offsetSwitch().performClick()
+        assertTimes(42, 255, 9, mask = 16)
+        compose.runOnIdle { rejectTimes = true }
+        emb.performTextReplacement("5")
+        emb.performImeAction()
+        compose.onNodeWithText("Dismiss").performClick()
+        assertTimes(42, 255, 9, mask = 16)
+        mode("Vehicle").assertIsSelected()
+        mode("Epb").assertIsSelected()
+        offsetSwitch().assertIsOn()
+        compose.runOnIdle { rejectTimes = false }
+        emb.performImeAction()
+        assertTimes(42, 5, 10)
+        compose.runOnIdle {
+            model.onPageExited()
+            model.onEhbTimeSubmitted("99")
+            model.onEmbTimeSubmitted("99")
+        }
+        compose.waitUntil(5_000) { service.registeredCommandCount == 0 }
+        compose.runOnIdle { model.onPageEntered() }
+        compose.waitUntil(5_000) { service.registeredCommandCount == 1 }
+        assertTimes(42, 5, 10)
+        compose.runOnIdle {
+            assertEquals(ChassisBrakeTimes(42, 5), ChassisViewModel(repository).uiState.value.brakeTimes)
+        }
+        ehb.assertIsEnabled()
+        emb.assertIsEnabled()
+        if (InstrumentationRegistry.getArguments().getString("chassisScreenshot") == "true") {
+            File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "chassis-times-ui.png")
+                .outputStream().use {
+                    check(compose.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it))
+                }
         }
     }
 
@@ -259,13 +381,15 @@ class ChassisScreenTest {
         compose.runOnIdle {
             assertEquals(2, service.writes.size)
             val frame = service.writes.last()
-            assertEquals(27, frame.size)
+            assertEquals(29, frame.size)
             assertEquals(0x0C, byteArrayToInt(frame, 4))
             assertEquals(8000, byteArrayToInt(frame, 16))
             assertEquals(8000, byteArrayToInt(frame, 20))
             assertEquals(0, byteArrayToInt(frame, 8))
             assertEquals(0, byteArrayToInt(frame, 12))
-            assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 26), 24), frame[26])
+            assertEquals(0, frame[26].toInt())
+            assertEquals(0, frame[27].toInt())
+            assertEquals(CheckSumBit.checkSum(frame.copyOfRange(2, 28), 26), frame[28])
             assertNull(model.telemetryState.value.telemetry)
         }
         compose.onNodeWithTag("chassis-ehb-input").performTextReplacement("6000")

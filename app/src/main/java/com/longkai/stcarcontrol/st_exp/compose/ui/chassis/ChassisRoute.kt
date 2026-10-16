@@ -29,6 +29,8 @@ fun ChassisRoute(
         state = state,
         telemetryState = telemetryState,
         onBrakeChartMaxSubmitted = viewModel::onBrakeChartMaxSubmitted,
+        onEhbTimeSubmitted = viewModel::onEhbTimeSubmitted,
+        onEmbTimeSubmitted = viewModel::onEmbTimeSubmitted,
         onControlChanged = viewModel::onControlChanged,
         onControlCommitted = viewModel::onControlCommitted,
         onControlInputSubmitted = viewModel::onControlInputSubmitted,

@@ -237,6 +237,7 @@ class ChassisBrakeResponseTest {
     private class RecordingRepository : ChassisRepository {
         override val config = ChassisControlConfig()
         override val isDemo = false
+        override var brakeTimes = ChassisBrakeTimes()
         val reports = MutableSharedFlow<ChassisTelemetry>(extraBufferCapacity = 512)
         override val telemetry = reports
         val combinedSubmissions = mutableListOf<Int>()
@@ -253,6 +254,11 @@ class ChassisBrakeResponseTest {
         override suspend fun submitCombinedBrakes(forceN: Int): ChassisCommandResult {
             combinedSubmissions += forceN
             return pendingSubmission?.await() ?: result
+        }
+
+        override suspend fun submitBrakeTimes(times: ChassisBrakeTimes): ChassisCommandResult {
+            if (result == ChassisCommandResult.Submitted) brakeTimes = times
+            return result
         }
 
         override suspend fun requestComparison(): ChassisComparisonResult {

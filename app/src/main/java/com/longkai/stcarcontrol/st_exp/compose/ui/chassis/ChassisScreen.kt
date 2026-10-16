@@ -74,6 +74,8 @@ fun ChassisScreen(
     state: ChassisUiState,
     telemetryState: State<ChassisTelemetryState>,
     onBrakeChartMaxSubmitted: (String) -> Unit,
+    onEhbTimeSubmitted: (String) -> Unit,
+    onEmbTimeSubmitted: (String) -> Unit,
     onControlChanged: (ChassisControlField, Int, Long) -> Unit,
     onControlCommitted: (ChassisControlField, Long) -> Unit,
     onControlInputSubmitted: (ChassisControlField, String, Long) -> Unit,
@@ -261,6 +263,9 @@ fun ChassisScreen(
             }
         }
         ChassisControlBar(
+            brakeTimes = state.brakeTimes,
+            onEhbTimeSubmitted = onEhbTimeSubmitted,
+            onEmbTimeSubmitted = onEmbTimeSubmitted,
             enabledControls = state.enabledControls,
             onSelected = onControlTabSelected,
             epbEnabled = state.epbEnabled,

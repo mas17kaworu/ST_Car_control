@@ -19,14 +19,27 @@ class ChassisDispatchTest {
     fun existingSendApiWritesChassisCommandsWithoutRegisteringAnAcknowledgment() {
         val connection = RecordingConnection()
         val dispatcher = ProtocolMessageDispatch(connection)
-        val commands = listOf(CMDChassisControl.setSpeed(20), CMDChassisEmergencyStop(true),
+        val timeCommand = CMDChassisControl.setBrakeTimes(1, 255)
+        val timeFrame = byteArrayOf(
+            0x5A, 0x3C, 0x1A, 0x3D, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 1, 0xFF.toByte(), 0xA7.toByte()
+        )
+        assertArrayEquals(timeFrame, timeCommand.toRawData())
+        for (invalid in listOf(-1, 256)) {
+            assertTrue(runCatching { CMDChassisControl.setBrakeTimes(invalid, 0) }
+                .exceptionOrNull() is IllegalArgumentException)
+            assertTrue(runCatching { CMDChassisControl.setBrakeTimes(0, invalid) }
+                .exceptionOrNull() is IllegalArgumentException)
+        }
+        val commands = listOf(timeCommand, CMDChassisControl.setSpeed(20), CMDChassisEmergencyStop(true),
             CMDChassisEmergencyStop(false), CMDChassisCompare())
         for (command in commands) {
             dispatcher.sendCommand(command, null)
             assertArrayEquals(command.toRawData(), connection.writes.last())
             assertEquals(0, dispatcher.sentCommandList.size())
         }
-        assertEquals(4, connection.writes.size)
+        assertEquals(5, connection.writes.size)
         assertArrayEquals(byteArrayOf(0x5A, 0x3C, 0x02, 0x40, 0xBD.toByte()), connection.writes.last())
     }
 
@@ -92,6 +105,9 @@ class ChassisDispatchTest {
             ChassisCommandResult.Rejected(ChassisError.NotReady),
             repository.submitControl(ChassisControl(ChassisControlField.Speed, 0))
         )
+        assertEquals(ChassisCommandResult.Rejected(ChassisError.NotReady),
+            repository.submitBrakeTimes(ChassisBrakeTimes(12, 34)))
+        assertEquals(ChassisBrakeTimes(), repository.brakeTimes)
         for (enabled in listOf(true, false)) {
             assertEquals(ChassisCommandResult.Rejected(ChassisError.NotReady), repository.setEpb(enabled))
             assertEquals(ChassisCommandResult.Rejected(ChassisError.NotReady), repository.setCurrentOffset(enabled))

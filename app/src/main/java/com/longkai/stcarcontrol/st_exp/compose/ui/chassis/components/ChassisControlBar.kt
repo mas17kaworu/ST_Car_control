@@ -45,9 +45,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.longkai.stcarcontrol.st_exp.R
 import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisControlTab
+import com.longkai.stcarcontrol.st_exp.compose.data.chassis.ChassisBrakeTimes
 
 @Composable
 fun ChassisControlBar(
+    brakeTimes: ChassisBrakeTimes,
+    onEhbTimeSubmitted: (String) -> Unit,
+    onEmbTimeSubmitted: (String) -> Unit,
     enabledControls: Set<ChassisControlTab>,
     onSelected: (ChassisControlTab) -> Unit,
     epbEnabled: Boolean,
@@ -59,7 +63,8 @@ fun ChassisControlBar(
     Box(modifier.height(56.dp).testTag("chassis-control-bar")) {
         Row(
             Modifier.align(Alignment.Center).padding(horizontal = 80.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             ChassisControlTab.values().forEach { tab ->
                 val label = stringResource(
@@ -96,6 +101,14 @@ fun ChassisControlBar(
                     }
                 }
             }
+            BrakeTimeInput(
+                stringResource(R.string.chassis_ehb_short), stringResource(R.string.chassis_ehb_time),
+                brakeTimes.ehbSeconds, onEhbTimeSubmitted, Color(0xFF45D6FF), "chassis-ehb-time-input"
+            )
+            BrakeTimeInput(
+                stringResource(R.string.chassis_emb_short), stringResource(R.string.chassis_emb_time),
+                brakeTimes.embSeconds, onEmbTimeSubmitted, Color(0xFFFFBC5C), "chassis-emb-time-input"
+            )
         }
         Box(
             Modifier.align(Alignment.CenterEnd).width(72.dp),
@@ -144,6 +157,30 @@ fun ChassisControlBar(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun BrakeTimeInput(
+    title: String,
+    label: String,
+    seconds: Int,
+    onSubmit: (String) -> Unit,
+    color: Color,
+    tag: String
+) {
+    Row(
+        Modifier.padding(start = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(title, color = color, fontSize = 11.sp, maxLines = 1)
+        ChassisValueInput(
+            value = seconds, range = ChassisBrakeTimes.RANGE, enabled = true, interactionKey = 0L,
+            label = label, unit = stringResource(R.string.chassis_unit_seconds),
+            onValueChange = {}, onSubmit = onSubmit,
+            modifier = Modifier.width(72.dp).testTag(tag)
+        )
     }
 }
 
